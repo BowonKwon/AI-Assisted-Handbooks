@@ -5,6 +5,8 @@
 - [화면본(HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/agentic-ai-reading/)
 - [인쇄본(PDF, 408쪽)](agentic-ai-reading-v1.0.pdf)
 
+GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일이 커서 표시되지 않습니다. 책은 위 화면본 링크로 여십시오.
+
 「일요일은 AI」 스터디가 매주 한 시간씩 Agentic AI 논문을 읽으려고 엮은 자습서입니다. 확률·통계·선형대수와 프로그래밍 기초가 있으면 읽기 편합니다. 자연어처리와 강화학습이 처음이면 0장(사전 자습)부터 읽으면 됩니다. 이용할 때 유의할 점과 만든 방식은 책 앞의 「이 책의 사용법」과 끝의 간기에 있습니다.
 
 ## 차례
