@@ -25,7 +25,7 @@ GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일
 
 ## 인용
 
-권보원 엮음, 『생각하고, 행동하고, 고쳐 쓰는 기계: ReAct에서 LLM Wiki까지, Agentic AI 논문 읽기』, 1.0판(2026. 10. 5.), https://github.com/BowonKwon/AI-Assisted-Handbooks
+권보원(Bowon Kwon) 엮음, 『생각하고, 행동하고, 고쳐 쓰는 기계: ReAct에서 LLM Wiki까지, Agentic AI 논문 읽기』, 1.0판(2026. 10. 5.), https://github.com/BowonKwon/AI-Assisted-Handbooks
 
 ## 판 이력
 

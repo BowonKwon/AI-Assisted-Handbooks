@@ -14,6 +14,8 @@
 ## 이용 허락
 
 - 엮은이가 쓴 부분은 [CC BY-NC 4.0](LICENSE)(저작자표시-비영리 4.0 국제)으로 공개합니다. 출처를 밝히면 비영리 목적으로 고쳐 쓰고 나눌 수 있습니다.
+- 인터랙티브 그림의 코드(HTML·자바스크립트)도 같은 CC BY-NC 4.0입니다.
+- © 2026 권보원(Bowon Kwon)
 - 원문에서 옮기거나 다시 그린 표·인용·그림은 각 원저작자의 권리를 따릅니다. 권리자께서 알려 주시면 고치거나 빼겠습니다.
 - 논문 PDF는 링크로만 안내합니다.
 
@@ -39,4 +41,4 @@ Study handbooks compiled with generative AI.
 
 The handbooks have been checked against the original sources several times, but errors may remain. Please report any discrepancy with the originals via [Issues](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues); corrections are released with a new version number and date.
 
-The editor's own text is licensed under [CC BY-NC 4.0](LICENSE). Tables, quotations, and figures reproduced or redrawn from original works remain subject to the rights of their authors. Papers are linked, not redistributed. These are personal study materials and do not represent the views of any institution the editor belongs to.
+The editor's own text, including the code of the interactive figures (HTML/JavaScript), is licensed under [CC BY-NC 4.0](LICENSE). © 2026 Bowon Kwon. Tables, quotations, and figures reproduced or redrawn from original works remain subject to the rights of their authors. Papers are linked, not redistributed. These are personal study materials and do not represent the views of any institution the editor belongs to.
