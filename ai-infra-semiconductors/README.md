@@ -24,11 +24,11 @@ GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일
 
 ## 인용
 
-권보원 엮음, 『AI 인프라와 반도체』, 2.0판(2026. 10. 8.), https://github.com/BowonKwon/AI-Assisted-Handbooks
+권보원(Bowon Kwon) 엮음, 『AI 인프라와 반도체』, 2.0판(2026. 10. 8.), https://github.com/BowonKwon/AI-Assisted-Handbooks
 
 ## 이용 허락
 
-글은 [CC BY-NC 4.0](../LICENSE), 인터랙티브 그림의 코드(HTML·자바스크립트)는 MIT 라이선스입니다. 원문에서 옮기거나 다시 그린 표·인용·그림은 각 원저작자의 권리를 따릅니다.
+글과 인터랙티브 그림의 코드(HTML·자바스크립트) 모두 [CC BY-NC 4.0](../LICENSE)입니다. 원문에서 옮기거나 다시 그린 표·인용·그림은 각 원저작자의 권리를 따릅니다.
 
 ## 판 이력
 
