@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>아레니우스 가속계수</title>
+<script>window.BOOK_DATA={"_about": "위젯이 함께 쓰는 상수. 값은 본문 표와 같아야 한다(위젯은 본문에 없는 수치를 만들지 않는다). 값을 바꾸면 인쇄본의 정지 그림도 다시 찍어야 한다. _src 는 값을 옮겨 온 본문 위치", "chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80, "_src": "2회차 자습 부록 A 실습 1 풀이 표(312 TFLOP/s, 2.04 TB/s). 용량 80GB 는 제품명"}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7, "_src": "2회차 6절 「실제 칩의 리지 포인트」 표(989 TFLOP/s, 3.35 TB/s, HBM3 80GB). tdp_kw 0.7 은 2회차 실습 4 풀이 「전력을 어디서 재는가」 표(H100 SXM 최대 TDP 700 W, H100 사양표)"}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 시스템(GPU당)", "B": 8.0, "cap": 180, "_src": "2회차 6절 「용량도 칩과 시스템이 다르다」 상자: DGX B200 데이터시트 8장 합계 64 TB/s(계산하면 GPU당 8.0 TB/s, I* ≈ 281), 사용자 안내서·데이터시트 8장 합계 1,440 GB(계산하면 GPU당 180 GB). 계산 기본값은 칩 값이고, 이 값은 roofline·kv-cache 에서 「시스템 기준」으로 바꿔 볼 때만 쓴다"}, "_src": "2회차 6절 같은 표(2,250 TFLOP/s, 7.7 TB/s, HBM3e 192GB). 192GB·7.7 TB/s 는 칩 공표값(NVIDIA Blackwell 아키텍처 기술 개요 V2.1 표 3, HGX B200 GPU당 최대)으로 둔다. 2,250 은 같은 표 희소 4.5 PFLOPS 의 절반. DGX B200 데이터시트의 합계 64 TB/s(GPU당 8.0)는 시스템 값이라 기본 계산에 쓰지 않는다. 그 값은 아래 sys 에 두고, roofline·kv-cache 의 「B200 · DGX 시스템」 단추를 눌렀을 때만 쓴다. DGX B200 시스템은 8장 합계 1,440GB, 계산하면 GPU당 180GB(사용자 안내서·데이터시트) — 본문 2회차 6절 「용량도 칩과 시스템이 다르다」가 둘을 구분한다"}], "_chips_units": "P = TFLOP/s(BF16 dense, 희소성 미적용), B = TB/s, cap = GB(10진)", "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64, "_src": "2회차 자습 부록 A 실습 3 풀이 설정(70B급, L = 80, GQA 8헤드 × 128, MHA 64헤드)"}, "tpu_v1": {"array": 256, "_src": "2회차 4절(256 × 256 = 65,536개 8비트 MAC)"}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048, "_src": "3회차 3절 길 ②(HBM3까지 1,024비트, HBM4 2,048비트)"}, "wafer": {"d_mm": 300, "_src": "4회차 0절·5절 「웨이퍼당 굿다이 수」, 6회차 실습 1 풀이(300 mm 웨이퍼, d = 30 cm). die-cost·chiplet 이 함께 쓴다"}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2, "_src": "2회차 실습 4 풀이 「전력을 어디서 재는가」 표(DGX H100/H200 사용자 안내서, 최대 10.2 kW, 계산하면 장당 1.275 kW), 7회차 실습 6 풀이(DGX H100 최대 입력 전력 10.2 kW)"}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440, "_src": "2회차 실습 4 풀이 끝(DGX B200 데이터시트 최대 약 14.3 kW, 장당 약 1.79 kW), 7회차 실습 5 (a)·(c) 풀이(14.3 kW, 8장 합계 1,440 GB)"}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100, "_src": "7회차 실습 5 (a)·(c) 풀이(약 14 kW, 8장 합계 2.1 TB)"}, "_about": "asic-breakeven·datacenter 가 함께 쓰는 제조사 시스템 사양. 모두 최대값이지 상시 소비가 아니다"}};window.WIDGET_ID="reliability";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/* 레이아웃: 한 단. 조작부 → 판독부 → E_a-등가 연수 곡선(로그 축) → 풀이 대조 순. 팔레트·글꼴 스택은 자습서 본편(견본 kv-cache.html).
+   책 안(html[data-embed])에서는 .standalone-only 가 숨는다. 부분이 하나라 인쇄본에 찍힐 부분을 id="figure" 로 감쌌다(data-part 없음).
+   식과 값은 6회차 7절 「패키지 신뢰성」의 아레니우스 문단과 E_a 표에서만 가져왔다. 공유 상수는 쓰지 않는다 */
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.grid line.minor { stroke-opacity: .5; }
+.tick { font-size: 13px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend svg { vertical-align: -2px; margin-right: 6px; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">6회차 7절 · 패키지 신뢰성</div>
+  <h1>1,000시간은 몇 년인가</h1>
+  <p class="lede">온도로 가속되는 고장은 흔히 아레니우스 식으로 시험 시간을 사용 시간으로 바꾼다. 같은 조건에서 E<sub>a</sub> 만 바꾸면 결론이 크게 흔들린다.</p>
+  <div class="formula">AF = exp[ (E<sub>a</sub> / k) · (1/T<sub>use</sub> − 1/T<sub>stress</sub>) ]　·　k = 8.617×10<sup>−5</sup> eV/K　·　T = °C + 273.15　·　등가 연수 = 시험 시간 × AF / 8,760</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">활성화 에너지에 따른 등가 사용 기간</h2>
+  <div class="bench" id="figure">
+    <div class="controls">
+      <div class="ctl">
+        <label for="ea"><span>겉보기 활성화 에너지 E<sub>a</sub></span> <output id="eaOut"></output></label>
+        <input type="range" id="ea" min="0.5" max="0.9" step="0.01" value="0.7">
+        <div class="seg" id="eaSeg">
+          <button type="button" data-v="0.5" aria-pressed="false">0.5 eV</button>
+          <button type="button" data-v="0.7" aria-pressed="true">0.7 eV</button>
+          <button type="button" data-v="0.9" aria-pressed="false">0.9 eV</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <div class="lab">조건</div>
+        <div class="seg" id="presetSeg">
+          <button type="button" data-v="htol" aria-pressed="true">HTOL · 125 °C · 1,000 h</button>
+          <button type="button" data-v="example" aria-pressed="true">본문 예제로</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="ts"><span>시험 온도 T<sub>stress</sub></span> <output id="tsOut"></output></label>
+        <input type="range" id="ts" min="85" max="175" step="1" value="125">
+      </div>
+      <div class="ctl">
+        <label for="tu"><span>사용 온도 T<sub>use</sub></span> <output id="tuOut"></output></label>
+        <input type="range" id="tu" min="25" max="105" step="1" value="55">
+      </div>
+      <div class="ctl">
+        <label for="hr">시험 시간 <output id="hrOut"></output></label>
+        <input type="range" id="hr" min="24" max="3000" step="1" value="1000">
+      </div>
+    </div>
+    <dl class="readout">
+      <div><dt>절대온도 시험 → 사용 [K]</dt><dd id="oK" style="font-size:16px"></dd></div>
+      <div><dt>가속계수 AF</dt><dd id="oAF"></dd></div>
+      <div><dt>등가 사용 시간</dt><dd id="oH"></dd></div>
+      <div class="big"><dt>등가 연수</dt><dd id="oY"></dd></div>
+    </dl>
+    <div class="chart" id="chart" role="img" aria-label="활성화 에너지에 따른 등가 연수 곡선, 로그 축"></div>
+    <div class="legend" id="legend"></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>본문과 대조 (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">시험 125 °C, 사용 55 °C, 1,000시간, 1년 = 8,760시간. 「본문」 열은 6회차 7절 아레니우스 문단·E<sub>a</sub> 표와 10절 오해 9의 값이다.</caption>
+        <thead><tr><th>항목</th><th>계산</th><th>본문</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 계산이 빼놓은 것</h2>
+  <ul class="limits">
+    <li>E<sub>a</sub> 는 고장 기구마다 다르다. 하나의 시험으로 「이 칩은 9년 간다」고 말할 수 없는 이유다.</li>
+    <li>JESD47I도 이 기간이 실제 사용 요구보다 짧을 수 있고 고장 기구와 사용 환경에 따라 달라진다고 단서를 달며, 장기 마모 기구는 웨이퍼 수준 신뢰성 자료로 보완하라고 한다.</li>
+    <li>이 식은 온도로 가속되는 고장에 쓴다. 고장 기구별 가속 모형은 JEDEC JEP122가 모아 둔다.</li>
+    <li>JESD47I도 표 1 주석에서 같은 조건(0.7 eV, 125 °C → 55 °C)을 예로 들어 가속계수 78.6, 약 9년이라고 적는다. 상수와 반올림 차이로 끝자리가 다르다.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>식: 『AI 인프라와 반도체』 6회차 7절 「패키지 신뢰성 — 열과 습기를 얼마나 견디나」. 시험 조건은 JEDEC JESD47I(2012년 7월판) 표 1의 HTOL.</div>
+  <div>『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·자바스크립트)는 MIT 라이선스, 설명 글은 CC BY-NC 4.0이다.</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>공유 상수(BOOK_DATA)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  // 이 위젯은 공유 상수를 쓰지 않는다. 상수는 6회차 7절 아레니우스 문단에서 그대로 옮겼다.
+  var K_B = 8.617e-5;          // 볼츠만 상수 [eV/K]
+  var C2K = 273.15;            // °C → K
+  var H_PER_YEAR = 8760;       // 1년 = 8,760시간
+  var EXAMPLE = { ea: 0.7, ts: 125, tu: 55, hr: 1000 };   // 본문 계산 예 = 처음 상태
+  var TABLE_EA = [0.5, 0.7, 0.9];                          // 본문 E_a 표
+  var state = { ea: EXAMPLE.ea, ts: EXAMPLE.ts, tu: EXAMPLE.tu, hr: EXAMPLE.hr };
+  var INIT = { ea: state.ea, ts: state.ts, tu: state.tu, hr: state.hr };
+
+  // ---- 순수 함수 ----
+  function af(ea, tsC, tuC) { return Math.exp(ea / K_B * (1 / (tuC + C2K) - 1 / (tsC + C2K))); }
+  function equiv(ea, tsC, tuC, hr) { var a = af(ea, tsC, tuC), h = hr * a; return { af: a, hours: h, years: h / H_PER_YEAR }; }
+
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
+  function sig3(x) { return x.toLocaleString("ko-KR", { maximumSignificantDigits: 3 }); }
+  function fmtAF(a) { return a < 1000 ? fmt(a, 1) : sig3(a); }
+  function $(id) { return document.getElementById(id); }
+  function isExample() { return state.ea === EXAMPLE.ea && state.ts === EXAMPLE.ts && state.tu === EXAMPLE.tu && state.hr === EXAMPLE.hr; }
+  function sameCond() { return state.ts === EXAMPLE.ts && state.tu === EXAMPLE.tu && state.hr === EXAMPLE.hr; }
+
+  // ---- 곡선 ----
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (tag === "text" && attrs.fill) e.style.fill = attrs.fill;   // .chart text 의 CSS fill 보다 앞서게
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  var W = 720, H = 300, L = 64, R = 92, T = 22, Bm = 48;
+  var EA0 = 0.5, EA1 = 0.9;
+  function sx(ea) { return L + (ea - EA0) / (EA1 - EA0) * (W - L - R); }
+  function curve(tsC, tuC, hr) {
+    var pts = [];
+    for (var i = 0; i <= 80; i++) { var ea = EA0 + (EA1 - EA0) * i / 80; pts.push([ea, equiv(ea, tsC, tuC, hr).years]); }
+    return pts;
+  }
+  function drawChart() {
+    var cur = curve(state.ts, state.tu, state.hr), base = curve(EXAMPLE.ts, EXAMPLE.tu, EXAMPLE.hr), same = sameCond();
+    var ys = cur.map(function (p) { return p[1]; }).concat(base.map(function (p) { return p[1]; }));
+    var lo = Math.floor(Math.log10(Math.min.apply(null, ys))), hi = Math.ceil(Math.log10(Math.max.apply(null, ys)));
+    if (hi - lo < 2) { hi = lo + 2; }
+    function sy(y) { return H - Bm - (Math.log10(y) - lo) / (hi - lo) * (H - T - Bm); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    for (var x = 5; x <= 9; x++) {
+      var ea = x / 10;
+      g.appendChild(el("line", { x1: sx(ea), x2: sx(ea), y1: T, y2: H - Bm }));
+      svg.appendChild(el("text", { x: sx(ea), y: H - Bm + 18, "text-anchor": "middle", "class": "tick" }, ea.toFixed(1)));
+    }
+    for (var e = lo; e <= hi; e++) {
+      var v = Math.pow(10, e);
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, v < 1 ? String(Number(v.toPrecision(1))) : fmt(v)));
+      if (e < hi) [2, 5].forEach(function (m) { g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(m * v), y2: sy(m * v), "class": "minor" })); });
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 10, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "겉보기 활성화 에너지 Eₐ [eV]"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "등가 사용 기간 [년, log]"));
+
+    function path(pts) { return pts.map(function (p, i) { return (i ? "L" : "M") + sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1); }).join(" "); }
+    if (!same) svg.appendChild(el("path", { d: path(base), fill: "none", stroke: "var(--mut)", "stroke-width": 1.4, "stroke-dasharray": "5 4", "stroke-opacity": 0.8 }));
+    svg.appendChild(el("path", { d: path(cur), fill: "none", stroke: "var(--accent2)", "stroke-width": 2.6 }));
+
+    // 본문 표의 세 점 (125 °C → 55 °C, 1,000 h)
+    TABLE_EA.forEach(function (ea, i) {
+      var y = equiv(ea, EXAMPLE.ts, EXAMPLE.tu, EXAMPLE.hr).years;
+      svg.appendChild(el("circle", { cx: sx(ea), cy: sy(y), r: 7, fill: "var(--card)", stroke: "var(--accent)", "stroke-width": 2 }));
+      var anchor = i === 0 ? "start" : i === 2 ? "end" : "middle", dx = i === 0 ? -2 : i === 2 ? 2 : 0;
+      svg.appendChild(el("text", { x: sx(ea) + dx, y: sy(y) - 13, "text-anchor": anchor, "font-size": 12.5, "font-weight": 600, fill: "var(--accent)" }, sig3(y) + "년"));
+    });
+
+    // 지금 조건의 양 끝 값과 흔들림 폭 (오른쪽 여백의 괄호)
+    var yA = cur[0][1], yB = cur[cur.length - 1][1], bx = W - R + 14;
+    if (!same) {
+      svg.appendChild(el("text", { x: sx(EA0) + 4, y: sy(yA) + 20, "font-size": 12, fill: "var(--accent2)" }, sig3(yA) + "년"));
+      svg.appendChild(el("text", { x: sx(EA1) - 4, y: sy(yB) + 20, "text-anchor": "end", "font-size": 12, fill: "var(--accent2)" }, sig3(yB) + "년"));
+    }
+    svg.appendChild(el("path", { d: "M" + (bx - 5) + "," + sy(yB).toFixed(1) + " H" + bx + " V" + sy(yA).toFixed(1) + " H" + (bx - 5), fill: "none", stroke: "var(--accent2)", "stroke-width": 1.4 }));
+    var mid = (sy(yA) + sy(yB)) / 2;
+    svg.appendChild(el("text", { x: bx + 6, y: mid - 2, "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" }, "×" + fmt(yB / yA, 1)));
+    svg.appendChild(el("text", { x: bx + 6, y: mid + 14, "font-size": 11.5, fill: "var(--mut)" }, "0.5→0.9 eV"));
+
+    // 지금 점
+    var now = equiv(state.ea, state.ts, state.tu, state.hr).years;
+    svg.appendChild(el("circle", { cx: sx(state.ea), cy: sy(now), r: 5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 1.5 }));
+    var nAnchor = state.ea < 0.56 ? "start" : state.ea > 0.84 ? "end" : "middle";
+    svg.appendChild(el("text", { x: sx(state.ea), y: sy(now) + 24, "text-anchor": nAnchor, "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" }, "지금 " + sig3(now) + "년"));
+    $("chart").replaceChildren(svg);
+
+    var ring = "<svg width='14' height='14' viewBox='0 0 14 14'><circle cx='7' cy='7' r='5' fill='none' stroke='var(--accent)' stroke-width='2'/></svg>";
+    var dot = "<svg width='14' height='14' viewBox='0 0 14 14'><circle cx='7' cy='7' r='5' fill='var(--accent2)'/></svg>";
+    var solid = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--accent2)' stroke-width='2.6'/></svg>";
+    var dash = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--mut)' stroke-width='1.4' stroke-dasharray='5 4'/></svg>";
+    $("legend").innerHTML = "<span>" + solid + "지금 조건 (" + state.ts + " °C → " + state.tu + " °C, " + fmt(state.hr) + " h)</span>" +
+      (same ? "" : "<span>" + dash + "본문 예제 조건</span>") +
+      "<span>" + ring + "본문 E<sub>a</sub> 표 (125 °C → 55 °C, 1,000 h)</span><span>" + dot + "지금 E<sub>a</sub></span>";
+    return { yA: yA, yB: yB };
+  }
+
+  function syncButtons() {
+    $("eaSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Math.abs(Number(b.dataset.v) - state.ea) < 1e-9)); });
+    var htol = state.ts === 125 && state.hr === 1000;
+    $("presetSeg").querySelector("[data-v=htol]").setAttribute("aria-pressed", String(htol));
+    $("presetSeg").querySelector("[data-v=example]").setAttribute("aria-pressed", String(isExample()));
+    $("ea").value = state.ea; $("ts").value = state.ts; $("tu").value = state.tu; $("hr").value = state.hr;
+  }
+
+  function update() {
+    var r = equiv(state.ea, state.ts, state.tu, state.hr);
+    $("eaOut").textContent = state.ea.toFixed(2) + " eV";
+    $("tsOut").textContent = state.ts + " °C";
+    $("tuOut").textContent = state.tu + " °C";
+    $("hrOut").textContent = fmt(state.hr) + " h";
+    $("oK").innerHTML = fmt(state.ts + C2K, 2) + " → " + fmt(state.tu + C2K, 2);
+    $("oAF").textContent = fmtAF(r.af);
+    $("oH").innerHTML = "약 " + sig3(r.hours) + " <small>h</small>";
+    $("oY").innerHTML = "약 " + sig3(r.years) + " <small>년</small>";
+    syncButtons();
+    var ends = drawChart(), msg;
+    if (state.tu >= state.ts) {
+      msg = "사용 온도가 시험 온도보다 낮지 않으면 1/T<sub>use</sub> − 1/T<sub>stress</sub> ≤ 0 이어서 AF ≤ 1 이다. 시험이 사용 조건보다 가혹하지 않으면 시간이 늘어나지 않는다.";
+    } else {
+      msg = "같은 시험(" + state.ts + " °C → " + state.tu + " °C, " + fmt(state.hr) + " h)이 E<sub>a</sub> 를 0.5 eV로 두면 <b>약 " + sig3(ends.yA) + "년</b>, 0.9 eV로 두면 <b>약 " + sig3(ends.yB) +
+        "년</b>이다(" + fmt(ends.yB / ends.yA, 1) + "배). 지금 E<sub>a</sub> " + state.ea.toFixed(2) + " eV에서는 AF " + fmtAF(r.af) + ", 약 " + sig3(r.years) + "년.";
+    }
+    $("msg").innerHTML = msg;
+  }
+
+  // ---- 본문 풀이와 대조: 표와 window.__selftest() 가 같은 행을 쓴다 ----
+  // status: "match" 일치 · "round" 풀이가 반올림한 중간값으로 곱해 끝자리만 다름 · "miss" 불일치
+  // 비교는 풀이가 적은 자릿수로 반올림해서 한다.
+  function checkRows() {
+    var rows = [];
+    function rnd(x, d) { if (d < 0) { var q = Math.pow(10, -d); return Math.round(x / q) * q; } var m = Math.pow(10, d); return Math.round(x * m) / m; }
+    function add(name, got, expected, d, shown) {
+      var g = rnd(got, d);
+      rows.push({ name: name, got: g, expected: expected, status: g === expected ? "match" : "miss", shown: shown, d: Math.max(d, 0) });
+    }
+    var ex = EXAMPLE;
+    add("계산 예 · 절대온도 시험 (K)", ex.ts + C2K, 398.15, 2);
+    add("계산 예 · 절대온도 사용 (K)", ex.tu + C2K, 328.15, 2);
+    var t = TABLE_EA.map(function (ea) { return equiv(ea, ex.ts, ex.tu, ex.hr); });
+    add("Eₐ 표 · 0.5 eV · AF", t[0].af, 22.4, 1);
+    add("Eₐ 표 · 0.5 eV · 등가 연수 (년)", t[0].years, 2.56, 2);
+    add("Eₐ 표 · 0.7 eV · AF", t[1].af, 77.7, 1);
+    add("Eₐ 표 · 0.7 eV · 등가 연수 (년)", t[1].years, 8.87, 2);
+    add("Eₐ 표 · 0.9 eV · AF", t[2].af, 269.3, 1);
+    add("Eₐ 표 · 0.9 eV · 등가 연수 (년)", t[2].years, 30.7, 1);
+    add("계산 예 · 0.7 eV · 등가 사용 시간 (h)", t[1].hours, 77700, -2);   // 엄밀값 77,658 → 본문 「약 77,700」(백 단위)
+    add("10절 오해 9 · 0.5 eV · 등가 연수 (년)", t[0].years, 2.6, 1);
+    add("10절 오해 9 · 0.9 eV · 등가 연수 (년)", t[2].years, 31, 0);
+    // 처음 상태: 슬라이더 기본값이 본문 계산 예(0.7 eV, 125 → 55 °C, 1,000 h)와 같고 AF 가 77.7 인지
+    var i0 = equiv(INIT.ea, INIT.ts, INIT.tu, INIT.hr);
+    var initSame = INIT.ea === 0.7 && INIT.ts === 125 && INIT.tu === 55 && INIT.hr === 1000;
+    var g0 = rnd(i0.af, 1);
+    rows.push({ name: "처음 상태 · AF (0.7 eV, 125→55 °C, 1,000 h)", got: g0, expected: 77.7, status: initSame && g0 === 77.7 ? "match" : "miss",
+      shown: initSame ? undefined : "조건 다름 · " + fmt(g0, 1), d: 1 });
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", round: "<span class='round'>반올림 차</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fmt(r.got, r.d)) + "</td><td class='num'>" + fmt(r.expected, r.d) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : " · 모두 일치");
+  }
+
+  // ---- 조작 ----
+  $("eaSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.ea = Number(b.dataset.v); update();
+  });
+  $("presetSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.v === "htol") { state.ts = 125; state.hr = 1000; }
+    else { state.ea = EXAMPLE.ea; state.ts = EXAMPLE.ts; state.tu = EXAMPLE.tu; state.hr = EXAMPLE.hr; }
+    update();
+  });
+  $("ea").addEventListener("input", function (e) { state.ea = Math.round(Number(e.target.value) * 100) / 100; update(); });
+  $("ts").addEventListener("input", function (e) { state.ts = Number(e.target.value); update(); });
+  $("tu").addEventListener("input", function (e) { state.tu = Number(e.target.value); update(); });
+  $("hr").addEventListener("input", function (e) { state.hr = Number(e.target.value); update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KV 캐시 예산판</title>
+<script>window.BOOK_DATA={"_about": "위젯이 함께 쓰는 상수. 값은 본문 표와 같아야 한다(위젯은 본문에 없는 수치를 만들지 않는다). 값을 바꾸면 인쇄본의 정지 그림도 다시 찍어야 한다. _src 는 값을 옮겨 온 본문 위치", "chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80, "_src": "2회차 자습 부록 A 실습 1 풀이 표(312 TFLOP/s, 2.04 TB/s). 용량 80GB 는 제품명"}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7, "_src": "2회차 6절 「실제 칩의 리지 포인트」 표(989 TFLOP/s, 3.35 TB/s, HBM3 80GB). tdp_kw 0.7 은 2회차 실습 4 풀이 「전력을 어디서 재는가」 표(H100 SXM 최대 TDP 700 W, H100 사양표)"}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 시스템(GPU당)", "B": 8.0, "cap": 180, "_src": "2회차 6절 「용량도 칩과 시스템이 다르다」 상자: DGX B200 데이터시트 8장 합계 64 TB/s(계산하면 GPU당 8.0 TB/s, I* ≈ 281), 사용자 안내서·데이터시트 8장 합계 1,440 GB(계산하면 GPU당 180 GB). 계산 기본값은 칩 값이고, 이 값은 roofline·kv-cache 에서 「시스템 기준」으로 바꿔 볼 때만 쓴다"}, "_src": "2회차 6절 같은 표(2,250 TFLOP/s, 7.7 TB/s, HBM3e 192GB). 192GB·7.7 TB/s 는 칩 공표값(NVIDIA Blackwell 아키텍처 기술 개요 V2.1 표 3, HGX B200 GPU당 최대)으로 둔다. 2,250 은 같은 표 희소 4.5 PFLOPS 의 절반. DGX B200 데이터시트의 합계 64 TB/s(GPU당 8.0)는 시스템 값이라 기본 계산에 쓰지 않는다. 그 값은 아래 sys 에 두고, roofline·kv-cache 의 「B200 · DGX 시스템」 단추를 눌렀을 때만 쓴다. DGX B200 시스템은 8장 합계 1,440GB, 계산하면 GPU당 180GB(사용자 안내서·데이터시트) — 본문 2회차 6절 「용량도 칩과 시스템이 다르다」가 둘을 구분한다"}], "_chips_units": "P = TFLOP/s(BF16 dense, 희소성 미적용), B = TB/s, cap = GB(10진)", "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64, "_src": "2회차 자습 부록 A 실습 3 풀이 설정(70B급, L = 80, GQA 8헤드 × 128, MHA 64헤드)"}, "tpu_v1": {"array": 256, "_src": "2회차 4절(256 × 256 = 65,536개 8비트 MAC)"}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048, "_src": "3회차 3절 길 ②(HBM3까지 1,024비트, HBM4 2,048비트)"}, "wafer": {"d_mm": 300, "_src": "4회차 0절·5절 「웨이퍼당 굿다이 수」, 6회차 실습 1 풀이(300 mm 웨이퍼, d = 30 cm). die-cost·chiplet 이 함께 쓴다"}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2, "_src": "2회차 실습 4 풀이 「전력을 어디서 재는가」 표(DGX H100/H200 사용자 안내서, 최대 10.2 kW, 계산하면 장당 1.275 kW), 7회차 실습 6 풀이(DGX H100 최대 입력 전력 10.2 kW)"}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440, "_src": "2회차 실습 4 풀이 끝(DGX B200 데이터시트 최대 약 14.3 kW, 장당 약 1.79 kW), 7회차 실습 5 (a)·(c) 풀이(14.3 kW, 8장 합계 1,440 GB)"}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100, "_src": "7회차 실습 5 (a)·(c) 풀이(약 14 kW, 8장 합계 2.1 TB)"}, "_about": "asic-breakeven·datacenter 가 함께 쓰는 제조사 시스템 사양. 모두 최대값이지 상시 소비가 아니다"}};window.WIDGET_ID="kv-cache";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/* 레이아웃: 한 단. 메모리 막대(용량이 어디에 쓰이나) → 조작부 → 배치-시퀀스 길이 곡선 → 풀이 대조 순. 팔레트·글꼴 스택은 자습서 본편.
+   책 안(html[data-embed])에서는 .standalone-only 가 숨는다. 칩·모델 상수는 window.BOOK_DATA(빌드가 data.json 에서 주입).
+   이 파일이 다른 위젯의 견본이다 — 팔레트, 조작부, 판독부, .standalone-only 구분, checkRows/__selftest 형식을 따른다 */
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.membar { display: flex; height: 54px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--bg); }
+.membar span { display: block; height: 100%; }
+.seg-w { background: var(--accent); }
+.seg-r { background: repeating-linear-gradient(135deg, var(--mut) 0 3px, transparent 3px 7px); opacity: .55; }
+.seg-k { background: var(--accent2); box-shadow: inset -1px 0 0 var(--card); }
+.seg-kc { background: var(--accent2); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; }
+.over { color: var(--warn); font-weight: 700; font-size: 14px; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+
+.sysnote { font-size: 13px; color: var(--mut); max-width: none; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">2회차 실습 3 · 3회차 실습 3</div>
+  <h1>KV 캐시 예산판</h1>
+  <p class="lede">가속기 메모리 한 장을 가중치와 KV 캐시가 나눠 쓴다. 남는 용량이 배치를 정하고, 배치가 연산강도를 정한다. 시퀀스 길이와 정밀도를 바꿔 가며 용량 제약이 어떻게 대역폭 효율까지 누르는지 본다.</p>
+  <div class="formula">KV/시퀀스 = 2 · L · S · d · b<sub>kv</sub>　·　B<sub>sz</sub> = ⌊(M − P·b − 예비) / KV⌋　·　tok/s ≲ B / (P·b) × B<sub>sz</sub></div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">메모리 한 장의 배분</h2>
+  <div class="bench" id="figure">
+    <div>
+      <div class="membar" id="membar" role="img" aria-label="메모리 용량 배분 막대"></div>
+      <div class="legend" style="margin-top:8px">
+        <span><i class="seg-w"></i>가중치</span>
+        <span><i class="seg-r"></i>예비(활성화·단편화)</span>
+        <span><i class="seg-kc"></i>KV 캐시 (한 칸이 시퀀스 하나)</span>
+        <span><i style="background:var(--bg);border:1px solid var(--line)"></i>남는 자리</span>
+      </div>
+      <p class="over" id="overflow" hidden></p>
+    </div>
+    <div class="controls">
+      <div class="ctl" style="grid-column: 1 / -1"><div class="lab">칩</div><div class="seg" id="chipSeg"></div><p class="sysnote" id="sysNote" hidden></p></div>
+      <div class="ctl"><div class="lab">가중치 정밀도</div>
+        <div class="seg" id="wSeg">
+          <button type="button" data-v="2" aria-pressed="false">fp16</button>
+          <button type="button" data-v="1" aria-pressed="true">INT8</button>
+          <button type="button" data-v="0.5" aria-pressed="false">INT4</button>
+        </div></div>
+      <div class="ctl"><div class="lab">KV 캐시 정밀도</div>
+        <div class="seg" id="kvSeg">
+          <button type="button" data-v="2" aria-pressed="true">fp16</button>
+          <button type="button" data-v="1" aria-pressed="false">INT8</button>
+        </div></div>
+      <div class="ctl"><div class="lab">어텐션 (KV 헤드 수)</div><div class="seg" id="attnSeg"></div></div>
+      <div class="ctl">
+        <label for="seq">시퀀스 길이 S <output id="seqOut"></output></label>
+        <input type="range" id="seq" min="9" max="17" step="0.25" value="12">
+      </div>
+      <div class="ctl">
+        <label for="res">예비 비율 (총 용량 대비) <output id="resOut"></output></label>
+        <input type="range" id="res" min="0" max="30" step="1" value="0">
+      </div>
+    </div>
+    <dl class="readout">
+      <div><dt>가중치</dt><dd id="oW"></dd></div>
+      <div><dt>KV / 시퀀스</dt><dd id="oK"></dd></div>
+      <div><dt>KV에 쓸 수 있는 용량</dt><dd id="oFree"></dd></div>
+      <div class="big"><dt>최대 배치</dt><dd id="oB"></dd></div>
+      <div><dt>처리량 상한</dt><dd id="oT"></dd></div>
+      <div><dt>연산 이용률 ≈ B<sub>sz</sub>/I*</dt><dd id="oU"></dd></div>
+    </dl>
+  </div>
+  <p class="note" id="msg"></p>
+</section>
+
+<section aria-labelledby="s2">
+  <h2 id="s2">시퀀스가 길어질수록 배치는 얼마나 줄어드나</h2>
+  <p class="standalone-only">지금 고른 칩·KV 정밀도·어텐션·예비 비율에서 가중치 정밀도 세 가지의 최대 배치를 그렸다. 점선은 지붕에 닿으려면 필요한 배치(B<sub>sz</sub> ≈ I*)다.</p>
+  <div class="bench"><div class="chart" id="chart" role="img" aria-label="시퀀스 길이에 따른 최대 배치 곡선"></div></div>
+  <details class="check">
+    <summary>풀이표와 대조 (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">H100 80GB, S = 4,096, KV fp16, 예비 0%. 「풀이」 열은 2회차 실습 3과 3회차 실습 3 풀이표의 반올림 값이다.</caption>
+        <thead><tr><th>항목</th><th>계산</th><th>풀이</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 계산이 빼놓은 것</h2>
+  <ul class="limits">
+    <li id="modelNote"></li>
+    <li>이용률은 B<sub>sz</sub> / I*(BF16)로 셌다. 연산도 가중치와 같은 정밀도로 한다고 보면 실제 연산강도 2B<sub>sz</sub>/b 와 그 정밀도의 리지 포인트 (2/b)·I* 가 함께 늘어, 두 값의 비가 이 값과 같다(2회차 실습 3 풀이 표). 가중치만 저정밀로 읽고 BF16으로 연산하면 연산강도가 2/b 배가 되어 이용률이 그만큼 높게 나온다(루프라인 실험대의 정밀도 단추가 이 경우다).</li>
+    <li>처리량 상한은 대역폭 쪽만 셌다. 배치가 리지 포인트를 넘으면 연산 바운드로 넘어가므로 이 식은 상한을 과대평가한다. 페이지가 그 경우를 따로 알린다.</li>
+    <li>KV 캐시를 읽는 트래픽은 빠져 있다. 문맥이 길면 매 스텝 KV도 읽어야 해서 실제 속도는 더 낮다.</li>
+    <li>모든 시퀀스가 최대 길이 S까지 찬다고 보았다. PagedAttention처럼 쓰는 만큼만 잡는 방식에서는 평균 길이가 기준이 된다.</li>
+    <li>용량은 본문처럼 10진 GB(10<sup>9</sup> 바이트)로 셌다.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>식: 『AI 인프라와 반도체』 2회차 실습 3, 3회차 실습 3 풀이.</div>
+  <div>『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·자바스크립트)는 MIT 라이선스, 설명 글은 CC BY-NC 4.0이다.</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.chips || !D.kv_model) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>공유 상수(BOOK_DATA)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  var CHIPS = D.chips.map(function (c) { return { id: c.id, name: c.name, label: c.label, P: c.P, B: c.B, cap: c.cap }; });
+  var NCHIP = CHIPS.length;  // data.json 의 칩 수(칩 공표값). 아래 시스템 기준은 단추만 하나 더 늘린다
+  // B200 시스템 기준: DGX B200 의 8장 합계를 GPU당으로 나눈 값(chips[b200].sys). 계산식은 그대로이고 cap·B 만 바뀐다(2회차 6절 상자)
+  var B2 = D.chips.filter(function (c) { return c.id === "b200"; })[0], DGX = D.systems && D.systems.dgx_b200;
+  if (B2 && B2.sys && DGX) CHIPS.push({ id: "b200sys", name: "B200 시스템", label: B2.sys.label, P: B2.P, B: B2.sys.B, cap: B2.sys.cap, sys: true });
+  function btnName(c) {
+    if (c.id === "b200" && CHIPS.length > NCHIP) return c.name + " · 칩 공표 " + c.cap + "GB";
+    if (c.sys) return "B200 · DGX 시스템 " + c.cap + "GB";
+    return c.name + " · " + c.cap + "GB";
+  }
+  var MODEL = D.kv_model;  // { P: 70, L: 80, headDim: 128, kvHeadsGQA: 8, kvHeadsMHA: 64 }
+  var state = { chip: "h100", wb: 1, kvb: 2, kvHeads: MODEL.kvHeadsGQA, s: 12, res: 0 };
+
+  // ---- 순수 함수 (단위: 10진 GB) ----
+  function kvPerSeq(S, kvHeads, kvb) { return 2 * MODEL.L * S * kvHeads * MODEL.headDim * kvb / 1e9; }
+  function budget(c, wb, S, kvHeads, kvb, resPct) {
+    var w = MODEL.P * wb, reserve = c.cap * resPct / 100, k = kvPerSeq(S, kvHeads, kvb);
+    var free = c.cap - w - reserve;
+    var bsz = free > 0 ? Math.floor(free / k + 1e-9) : 0;
+    var ridge = c.P / c.B;
+    var tps = bsz > 0 ? c.B * 1e12 / (MODEL.P * 1e9 * wb) * bsz : 0;
+    return { w: w, reserve: reserve, k: k, free: free, bsz: bsz, ridge: ridge, util: Math.min(1, bsz / ridge), tps: tps, fits: w + reserve <= c.cap };
+  }
+
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
+  function chipById(id) { return CHIPS.filter(function (c) { return c.id === id; })[0]; }
+  function chip() { return chipById(state.chip); }
+  function seqLen() { return Math.round(Math.pow(2, state.s)); }
+  function precName(b) { return b === 2 ? "fp16" : b === 1 ? "INT8" : "INT4"; }
+  function $(id) { return document.getElementById(id); }
+
+  function drawBar(c, r) {
+    var bar = $("membar"), html = "";
+    function pct(x) { return (Math.max(0, x) / c.cap * 100) + "%"; }
+    if (!r.fits) {
+      html = '<span class="seg-w" style="width:100%"></span>';
+      $("overflow").hidden = false;
+      $("overflow").textContent = "가중치 " + fmt(r.w) + " GB가 " + c.name + " 한 장(" + c.cap + " GB)에 들어가지 않는다. 정밀도를 낮추거나 칩을 나눠 써야 한다.";
+    } else {
+      $("overflow").hidden = true;
+      html += '<span class="seg-w" style="width:' + pct(r.w) + '" title="가중치 ' + fmt(r.w, 1) + ' GB"></span>';
+      if (r.reserve > 0) html += '<span class="seg-r" style="width:' + pct(r.reserve) + '" title="예비 ' + fmt(r.reserve, 1) + ' GB"></span>';
+      if (r.bsz > 0 && r.bsz <= 160) {
+        for (var i = 0; i < r.bsz; i++) html += '<span class="seg-k" style="width:' + pct(r.k) + '"></span>';
+      } else if (r.bsz > 160) {
+        html += '<span class="seg-kc" style="width:' + pct(r.k * r.bsz) + '" title="KV ' + r.bsz + '개"></span>';
+      }
+    }
+    bar.innerHTML = html;
+  }
+
+  // ---- 곡선 ----
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  var W = 720, H = 380, L = 64, R = 96, T = 20, Bm = 50;
+  function sx(lg2) { return L + (lg2 - 9) / 8 * (W - L - R); }
+  function sy(b) { return H - Bm - Math.log10(b) / 3 * (H - T - Bm); }
+  function drawChart() {
+    var c = chip(), svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    for (var e = 9; e <= 17; e += 2) {
+      g.appendChild(el("line", { x1: sx(e), x2: sx(e), y1: T, y2: H - Bm }));
+      var lab = Math.pow(2, e); lab = lab >= 1024 ? fmt(lab / 1024) + "K" : fmt(lab);
+      svg.appendChild(el("text", { x: sx(e), y: H - Bm + 18, "text-anchor": "middle", "class": "tick" }, lab));
+    }
+    [1, 10, 100, 1000].forEach(function (b) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(b), y2: sy(b) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(b) + 4, "text-anchor": "end", "class": "tick" }, fmt(b)));
+    });
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 10, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "시퀀스 길이 S [토큰, log]"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "최대 배치 [log]"));
+
+    var ridge = c.P / c.B;
+    if (ridge <= 1000) {
+      svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(ridge), y2: sy(ridge), stroke: "var(--accent)", "stroke-dasharray": "5 4", "stroke-opacity": 0.7 }));
+      svg.appendChild(el("text", { x: W - R + 6, y: sy(ridge) + 4, "font-size": 12, fill: "var(--accent)" }, "I* ≈ " + fmt(ridge)));
+    }
+    [2, 1, 0.5].forEach(function (wb) {
+      var on = wb === state.wb, d = "", started = false;
+      for (var lg = 9; lg <= 17.0001; lg += 0.0625) {
+        var r = budget(c, wb, Math.pow(2, lg), state.kvHeads, state.kvb, state.res);
+        if (r.bsz >= 1) { d += (started ? " L" : "M") + sx(lg).toFixed(1) + "," + sy(Math.min(r.bsz, 1000)).toFixed(1); started = true; }
+        else started = false;
+      }
+      if (!d) return;
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: on ? "var(--accent2)" : "var(--mut)", "stroke-width": on ? 2.6 : 1.3, "stroke-opacity": on ? 1 : 0.6 }));
+      var first = budget(c, wb, 512, state.kvHeads, state.kvb, state.res);
+      if (first.bsz >= 1) svg.appendChild(el("text", { x: sx(9) + 4, y: sy(Math.min(first.bsz, 1000)) - 6, "font-size": 12, "font-weight": on ? 700 : 400, fill: on ? "var(--accent2)" : "var(--mut)" }, "가중치 " + precName(wb)));
+    });
+    var cur = budget(c, state.wb, seqLen(), state.kvHeads, state.kvb, state.res);
+    if (cur.bsz >= 1) {
+      svg.appendChild(el("circle", { cx: sx(state.s), cy: sy(Math.min(cur.bsz, 1000)), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    }
+    $("chart").replaceChildren(svg);
+  }
+
+  function update() {
+    var c = chip(), S = seqLen(), r = budget(c, state.wb, S, state.kvHeads, state.kvb, state.res);
+    $("seqOut").textContent = fmt(S);
+    $("resOut").textContent = state.res + "%";
+    $("oW").innerHTML = fmt(r.w, 1) + " <small>GB</small>";
+    $("oK").innerHTML = fmt(r.k, r.k < 10 ? 2 : 1) + " <small>GB</small>";
+    $("oFree").innerHTML = fmt(Math.max(0, r.free), 1) + " <small>GB</small>";
+    $("oB").textContent = fmt(r.bsz);
+    $("oT").innerHTML = fmt(r.tps) + " <small>tok/s</small>";
+    $("oU").textContent = r.bsz ? fmt(r.util * 100, r.util < 0.1 ? 1 : 0) + "%" : "—";
+    var msg;
+    if (!r.fits) msg = "가중치부터 들어가지 않는다. 실습 3 풀이가 fp16 행을 「들어가지 않음」으로 둔 이유다.";
+    else if (r.bsz === 0) msg = "가중치는 들어가지만 KV 캐시가 시퀀스 하나 몫(" + fmt(r.k, 1) + " GB)도 남지 않는다. MHA·INT8 조합에서 풀이가 짚은 상황이다. 시퀀스를 줄이거나 GQA·KV 양자화로 KV를 줄여야 한다.";
+    else if (r.bsz > r.ridge) msg = "배치(" + fmt(r.bsz) + ")가 리지 포인트(" + fmt(r.ridge) + ")를 넘었다. 이제 연산 바운드이므로 위 처리량 상한은 과대평가다. 실제 상한은 연산 쪽이 정한다.";
+    else msg = "연산 유닛의 " + fmt((1 - r.util) * 100) + "%가 메모리를 기다린다. 지붕에 닿으려면 배치가 " + fmt(r.ridge) + " 안팎이어야 하는데, 용량이 " + fmt(r.bsz) + "에서 막았다.";
+    $("msg").textContent = msg;
+    $("sysNote").hidden = !c.sys;
+    $("sysNote").textContent = c.sys ? c.label + ": 데이터시트 합계 " + fmt(c.B * DGX.gpus) + " TB/s ÷ " + DGX.gpus + " = " + c.B.toFixed(1) +
+      " TB/s, " + fmt(DGX.mem_gb) + " GB ÷ " + DGX.gpus + " = " + fmt(c.cap) + " GB. 연산 " + fmt(c.P) + " TFLOP/s는 칩 값 그대로." : "";
+    drawBar(c, r);
+    drawChart();
+  }
+
+  // ---- 본문 풀이와 대조: 표와 window.__selftest() 가 같은 행을 쓴다 ----
+  // status: "match" 일치 · "round" 풀이가 반올림한 중간값으로 곱해 끝자리만 다름 · "miss" 불일치
+  function checkRows() {
+    var h = chipById("h100"), rows = [];
+    function add(name, got, expected, ok, shown) { rows.push({ name: name, got: got, expected: expected, status: ok ? "match" : "miss", shown: shown }); }
+    var g8 = budget(h, 1, 4096, MODEL.kvHeadsGQA, 2, 0);
+    var g4 = budget(h, 0.5, 4096, MODEL.kvHeadsGQA, 2, 0);
+    var m8 = budget(h, 1, 4096, MODEL.kvHeadsMHA, 2, 0);
+    function pct1(u) { return Math.round(u * 1000) / 10; }
+    add("실습 3 · GQA KV/시퀀스 (GB)", Math.round(g8.k * 100) / 100, 1.34, Math.round(g8.k * 100) / 100 === 1.34);
+    add("실습 3 · GQA·가중치 INT8 최대 배치(처음 상태)", g8.bsz, 7, g8.bsz === 7);
+    add("실습 3 · GQA·가중치 INT8 이용률 (%)", pct1(g8.util), 2.4, pct1(g8.util) === 2.4);
+    add("3회차 실습 3 · GQA·INT8 처리량 상한 (tok/s)", Math.round(g8.tps), 335, Math.round(g8.tps) === 335);
+    add("실습 3 · GQA·가중치 INT4 최대 배치", g4.bsz, 33, g4.bsz === 33);
+    add("실습 3 · GQA·가중치 INT4 이용률 (%)", pct1(g4.util), 11.2, pct1(g4.util) === 11.2);
+    add("3회차 실습 3 · GQA·INT4 처리량 상한 (tok/s)", Math.round(g4.tps), 3159, Math.round(g4.tps) === 3159);
+    add("실습 3 · MHA KV/시퀀스 (GB)", Math.round(m8.k * 10) / 10, 10.7, Math.round(m8.k * 10) / 10 === 10.7);
+    add("실습 3 · MHA·가중치 INT8 최대 배치", m8.bsz, 0, m8.bsz === 0);
+    // 2회차 6절 「용량도 칩과 시스템이 다르다」 상자: DGX B200 8장 합계 1,440 GB, 계산하면 GPU당 180 GB. 단추가 쓰는 값을 그대로 본다
+    var bs = chipById("b200sys");
+    if (bs) add("6절 상자 · B200 시스템 용량 (GB, DGX B200 GPU당)", bs.cap, 180, bs.cap === 180 && DGX.mem_gb / DGX.gpus === 180);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", round: "<span class='round'>반올림 차</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fmt(r.got, 2)) + "</td><td class='num'>" + fmt(r.expected, 2) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : " · 모두 일치");
+  }
+
+  function seg(id, key, parse) {
+    var box = $(id);
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      box.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      state[key] = parse(b.dataset.v); update();
+    });
+  }
+  function addBtn(box, v, text, on) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.v = v; b.textContent = text;
+    b.setAttribute("aria-pressed", String(on));
+    $(box).appendChild(b);
+  }
+  CHIPS.forEach(function (c) { addBtn("chipSeg", c.id, btnName(c), c.id === state.chip); });
+  addBtn("attnSeg", MODEL.kvHeadsGQA, "GQA · " + MODEL.kvHeadsGQA + "헤드", true);
+  addBtn("attnSeg", MODEL.kvHeadsMHA, "MHA · " + MODEL.kvHeadsMHA + "헤드", false);
+  seg("chipSeg", "chip", String); seg("wSeg", "wb", Number); seg("kvSeg", "kvb", Number); seg("attnSeg", "kvHeads", Number);
+  $("seq").addEventListener("input", function (e) { state.s = Number(e.target.value); update(); });
+  $("res").addEventListener("input", function (e) { state.res = Number(e.target.value); update(); });
+  $("modelNote").textContent = "모델은 본문 실습 3의 " + MODEL.P + "B급 설정 하나로 고정했다(L = " + MODEL.L + ", 헤드 차원 " + MODEL.headDim +
+    ", GQA면 KV 헤드 " + MODEL.kvHeadsGQA + "개). 다른 모델은 층 수와 KV 헤드 수가 달라 결과도 다르다.";
+  $("specLine").textContent = "칩 사양: NVIDIA 공표 BF16 dense 값. " +
+    CHIPS.slice(0, NCHIP).map(function (c) { return c.label + " " + c.B.toFixed(2).replace(/0$/, "") + " TB/s · " + c.cap + "GB · I* ≈ " + fmt(c.P / c.B); }).join(", ") +
+    ". 본문 2회차 6절 표와 실습 1 풀이를 따랐다." +
+    (chipById("b200sys") ? " B200은 기술 개요의 칩 값(" + B2.cap + " GB, " + B2.B + " TB/s)을 기본으로 쓴다. 「B200 · DGX 시스템」은 DGX B200 데이터시트의 " +
+      DGX.gpus + "장 합계 " + fmt(B2.sys.B * DGX.gpus) + " TB/s와 사용자 안내서·데이터시트의 " + fmt(DGX.mem_gb) + " GB를 " + DGX.gpus + "로 나눈 GPU당 값(" +
+      B2.sys.B.toFixed(1) + " TB/s, " + B2.sys.cap + " GB)이다(2회차 6절 「용량도 칩과 시스템이 다르다」)." : "");
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

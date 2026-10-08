@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HBM 설계 계산판</title>
+<script>window.BOOK_DATA={"_about": "위젯이 함께 쓰는 상수. 값은 본문 표와 같아야 한다(위젯은 본문에 없는 수치를 만들지 않는다). 값을 바꾸면 인쇄본의 정지 그림도 다시 찍어야 한다. _src 는 값을 옮겨 온 본문 위치", "chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80, "_src": "2회차 자습 부록 A 실습 1 풀이 표(312 TFLOP/s, 2.04 TB/s). 용량 80GB 는 제품명"}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7, "_src": "2회차 6절 「실제 칩의 리지 포인트」 표(989 TFLOP/s, 3.35 TB/s, HBM3 80GB). tdp_kw 0.7 은 2회차 실습 4 풀이 「전력을 어디서 재는가」 표(H100 SXM 최대 TDP 700 W, H100 사양표)"}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 시스템(GPU당)", "B": 8.0, "cap": 180, "_src": "2회차 6절 「용량도 칩과 시스템이 다르다」 상자: DGX B200 데이터시트 8장 합계 64 TB/s(계산하면 GPU당 8.0 TB/s, I* ≈ 281), 사용자 안내서·데이터시트 8장 합계 1,440 GB(계산하면 GPU당 180 GB). 계산 기본값은 칩 값이고, 이 값은 roofline·kv-cache 에서 「시스템 기준」으로 바꿔 볼 때만 쓴다"}, "_src": "2회차 6절 같은 표(2,250 TFLOP/s, 7.7 TB/s, HBM3e 192GB). 192GB·7.7 TB/s 는 칩 공표값(NVIDIA Blackwell 아키텍처 기술 개요 V2.1 표 3, HGX B200 GPU당 최대)으로 둔다. 2,250 은 같은 표 희소 4.5 PFLOPS 의 절반. DGX B200 데이터시트의 합계 64 TB/s(GPU당 8.0)는 시스템 값이라 기본 계산에 쓰지 않는다. 그 값은 아래 sys 에 두고, roofline·kv-cache 의 「B200 · DGX 시스템」 단추를 눌렀을 때만 쓴다. DGX B200 시스템은 8장 합계 1,440GB, 계산하면 GPU당 180GB(사용자 안내서·데이터시트) — 본문 2회차 6절 「용량도 칩과 시스템이 다르다」가 둘을 구분한다"}], "_chips_units": "P = TFLOP/s(BF16 dense, 희소성 미적용), B = TB/s, cap = GB(10진)", "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64, "_src": "2회차 자습 부록 A 실습 3 풀이 설정(70B급, L = 80, GQA 8헤드 × 128, MHA 64헤드)"}, "tpu_v1": {"array": 256, "_src": "2회차 4절(256 × 256 = 65,536개 8비트 MAC)"}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048, "_src": "3회차 3절 길 ②(HBM3까지 1,024비트, HBM4 2,048비트)"}, "wafer": {"d_mm": 300, "_src": "4회차 0절·5절 「웨이퍼당 굿다이 수」, 6회차 실습 1 풀이(300 mm 웨이퍼, d = 30 cm). die-cost·chiplet 이 함께 쓴다"}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2, "_src": "2회차 실습 4 풀이 「전력을 어디서 재는가」 표(DGX H100/H200 사용자 안내서, 최대 10.2 kW, 계산하면 장당 1.275 kW), 7회차 실습 6 풀이(DGX H100 최대 입력 전력 10.2 kW)"}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440, "_src": "2회차 실습 4 풀이 끝(DGX B200 데이터시트 최대 약 14.3 kW, 장당 약 1.79 kW), 7회차 실습 5 (a)·(c) 풀이(14.3 kW, 8장 합계 1,440 GB)"}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100, "_src": "7회차 실습 5 (a)·(c) 풀이(약 14 kW, 8장 합계 2.1 TB)"}, "_about": "asic-breakeven·datacenter 가 함께 쓰는 제조사 시스템 사양. 모두 최대값이지 상시 소비가 아니다"}};window.WIDGET_ID="hbm";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/* 레이아웃: 한 단, 두 실험. ① 대역폭 = 버스 폭 × 핀 속도와 그 전력(data-part="bw") ② 적층 수율과 버려지는 정상 다이(data-part="yield").
+   책에는 두 부분을 따로 넣는다(config 의 part). 책 안(html[data-embed])에서는 .standalone-only 가 숨는다. 버스 폭은 window.BOOK_DATA */
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --bad: #b0412e;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.figs { display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.btn { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 5px 12px; border-radius: 7px; cursor: pointer; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.presets button { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 4px 11px; border-radius: 7px; cursor: pointer; }
+.presets button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.presetline { font-size: 13.5px; background: var(--soft); padding: 8px 12px; border-radius: 6px; max-width: none; }
+
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.lane { border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.lane h3 { margin: 0; font-size: 15px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.lane h3 span { font-family: var(--mono); font-weight: 500; font-size: 13px; color: var(--mut); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; margin: 0; }
+.kv dt { color: var(--mut); }
+.kv dd { margin: 0; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.kv dd.hl { color: var(--accent2); font-size: 17px; font-weight: 500; }
+.regime { font-family: var(--sans); font-size: 12.5px; font-weight: 700; }
+.regime.hot { color: var(--bad); } .regime.cool { color: var(--ok); } .regime.mid { color: var(--mut); }
+
+.powerchart svg, .chart svg { display: block; width: 100%; height: auto; }
+.chart { overflow-x: auto; }
+.chart svg { min-width: 480px; }
+.powerchart text, .chart text { fill: var(--fg); font-family: var(--sans); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.grid line { stroke: var(--line); }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+
+.stacks { display: flex; flex-wrap: wrap; gap: 5px 4px; align-items: flex-end; }
+.stk { display: flex; flex-direction: column-reverse; gap: 1px; padding: 1px; border-radius: 2px; }
+.stk.fail { outline: 1.5px solid var(--bad); outline-offset: 0; }
+.die { width: 9px; height: 3px; border-radius: 1px; background: var(--accent); }
+.die.bad { background: var(--bad); }
+.die.waste { background: transparent; box-shadow: inset 0 0 0 1px var(--accent); opacity: .7; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); align-items: center; }
+.legend i { display: inline-block; width: 14px; height: 5px; border-radius: 1px; margin-right: 6px; vertical-align: 2px; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+.round { color: var(--mut); font-size: 12.5px; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">3회차 실습 1 · 2</div>
+  <h1>HBM 설계 계산판</h1>
+  <p class="lede">HBM이 지금 모양이 된 이유 두 가지를 숫자로 확인한다. 하나는 전력이다. 대역폭을 빠른 핀 몇 가닥으로 만들지 않고 느린 핀을 아주 많이 써서 만든다. 다른 하나는 수율이다. 다이를 높이 쌓을수록 멀쩡한 다이까지 함께 버려진다.</p>
+</header>
+
+<section aria-labelledby="s1" data-part="bw">
+  <h2 id="s1">① 넓고 느리게, 좁고 빠르게</h2>
+  <div class="formula standalone-only">B = 버스 폭 × 핀당 전송률　·　전력 = (B × 8) × pJ/bit × 스택 수</div>
+  <div class="bench" id="figure-bw">
+    <div class="controls">
+      <div class="ctl" style="grid-column: 1 / -1"><div class="lab">제품 프리셋</div><div class="presets" id="presetBox"></div></div>
+      <div class="ctl"><label for="tgt">스택당 목표 대역폭 <output id="tgtOut"></output></label><input type="range" id="tgt" min="0.5" max="4" step="0.25" value="4"></div>
+      <div class="ctl"><label for="stk">가속기 한 장의 스택 수 <output id="stkOut"></output></label><input type="range" id="stk" min="1" max="8" step="1" value="8"></div>
+    </div>
+    <p class="presetline" id="presetLine" hidden></p>
+    <div class="two">
+      <div class="lane">
+        <h3>(a) 좁고 빠르게 <span id="aWidth"></span></h3>
+        <dl class="kv">
+          <dt>필요한 핀당 전송률</dt><dd class="hl" id="aRate"></dd>
+          <dt></dt><dd><span class="regime" id="aReg"></span></dd>
+          <dt><label for="aPj">pJ/bit</label></dt><dd id="aPjOut"></dd>
+        </dl>
+        <input type="range" id="aPj" min="0.25" max="6" step="0.25" value="3" aria-label="(a)의 비트당 에너지">
+        <dl class="kv"><dt>스택 하나</dt><dd id="aOne"></dd><dt>가속기 한 장</dt><dd class="hl" id="aAll"></dd></dl>
+      </div>
+      <div class="lane">
+        <h3>(b) 넓고 느리게 <span id="bWidth"></span></h3>
+        <dl class="kv">
+          <dt>필요한 핀당 전송률</dt><dd class="hl" id="bRate"></dd>
+          <dt></dt><dd><span class="regime" id="bReg"></span></dd>
+          <dt><label for="bPj">pJ/bit</label></dt><dd id="bPjOut"></dd>
+        </dl>
+        <input type="range" id="bPj" min="0.25" max="6" step="0.25" value="0.75" aria-label="(b)의 비트당 에너지">
+        <dl class="kv"><dt>스택 하나</dt><dd id="bOne"></dd><dt>가속기 한 장</dt><dd class="hl" id="bAll"></dd></dl>
+      </div>
+    </div>
+    <div class="powerchart" id="pchart" role="img" aria-label="메모리 전력 비교 막대"></div>
+  </div>
+  <p class="note standalone-only">pJ/bit의 처음 값은 본문 실습 2가 4 TB/s 기준으로 든 대략적 감에서 골랐다. (a)는 풀이가 계산 예로 쓴 3(범위 3~5의 아래 끝), (b)는 범위 0.5~1의 가운데 값이다. 목표 대역폭을 바꾸면 핀 속도가 바뀌므로 pJ/bit도 직접 옮겨야 한다. 이 페이지는 핀 속도와 pJ/bit의 관계를 식으로 만들지 않았다. 본문에 그런 식이 없고, 실제 값은 회로와 공정마다 다르다.</p>
+  <p class="note standalone-only">제품 프리셋은 본문 4절 세대별 사양 표와 그 아래 목록, 3절 길 ①의 값으로 스택당 목표 대역폭을 맞춘다. 대역폭은 핀 속도에 인터페이스 폭을 곱해 계산한 값이다. 표준 열은 JEDEC 표준이 정한 핀 속도로 낼 수 있는 값이고, 양산 HBM4는 표준 핀 속도를 넘어섰다. HBM4E 샘플은 보도자료가 인터페이스 폭을 적지 않아, 본문처럼 HBM4와 같은 2,048비트로 보고 곱했다. GDDR7은 스택이 아니라 디바이스 하나의 값(JESD239, 디바이스당 최대 192 GB/s)이므로 목표 대역폭을 바꾸지 않는다. 두 길을 섞은 SPHBM4(JESD330-4)는 HBM4와 같은 DRAM 다이를 쓰되 데이터 신호를 2,048개에서 512개로 줄이고 4:1 직렬화로 같은 총대역폭을 낸다. 핀 수가 줄어 실리콘 인터포저 대신 일반 유기 기판에 올릴 수 있다. 그 대가가 pJ/bit로 얼마인지는 보도자료에 없어 이 그림에 넣지 않았다.</p>
+</section>
+
+<section aria-labelledby="s2" data-part="yield">
+  <h2 id="s2">② 쌓을수록 함께 버려지는 다이</h2>
+  <div class="formula standalone-only">Y<sub>stack</sub> = y<sup>n</sup> × y<sub>bond</sub><sup>n−1</sup>　·　버려지는 정상 다이 = n·y − n·Y<sub>stack</sub> (스택 하나당 기댓값)</div>
+  <div class="figs" id="figure-yield">
+    <div class="bench">
+      <div class="controls">
+        <div class="ctl"><label for="yIn">다이 수율 y <output id="yOut"></output></label><input type="range" id="yIn" min="0.9" max="0.999" step="0.001" value="0.95"></div>
+        <div class="ctl"><label for="nIn">적층 수 n <output id="nOut"></output></label><input type="range" id="nIn" min="2" max="16" step="1" value="12"></div>
+        <div class="ctl"><label for="bIn"><span>접합 수율 y<sub>bond</sub></span> <output id="bOut"></output></label><input type="range" id="bIn" min="0.99" max="1" step="0.0005" value="1"></div>
+        <div class="ctl"><div class="lab">적층 전 선별 (KGD)</div>
+          <div class="seg" id="kgdSeg">
+            <button type="button" data-v="0" aria-pressed="true">없음</button>
+            <button type="button" data-v="1" aria-pressed="false">완벽한 선별</button>
+          </div></div>
+      </div>
+      <dl class="readout">
+        <div class="big"><dt>스택 수율</dt><dd id="oY"></dd></div>
+        <div><dt>불량 스택 하나에 든 정상 다이</dt><dd id="oCond"></dd></div>
+        <div><dt>스택 1,000개 중 완성</dt><dd id="oDone"></dd></div>
+        <div><dt>버려진 정상 다이</dt><dd id="oWaste"></dd></div>
+        <div><dt>정상 다이 중 낭비 비율</dt><dd id="oPct"></dd></div>
+      </dl>
+      <div>
+        <div class="stacks" id="stacks" role="img" aria-label="무작위로 뽑은 스택 100개"></div>
+        <div class="legend" style="margin-top:10px">
+          <span><i style="background:var(--accent)"></i>정상 다이</span>
+          <span><i style="background:var(--bad)"></i>불량 다이</span>
+          <span><i style="box-shadow:inset 0 0 0 1px var(--accent)"></i>불량 스택에 묶여 버려지는 정상 다이</span>
+          <span>빨간 테두리 = 불량 스택</span>
+          <button type="button" class="btn" id="redraw">다시 뽑기</button>
+        </div>
+      </div>
+      <p class="note" id="sampleNote"></p>
+    </div>
+    <div class="bench"><div class="chart" id="ychart" role="img" aria-label="적층 수에 따른 스택 수율 곡선"></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="s3">
+  <details class="check">
+    <summary>풀이표와 대조 (<span id="checkSum"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">3회차 5절 수치 예시와 실습 1·2 풀이표의 값을 이 그림의 식으로 다시 셈한 것이다. 풀이 값은 반올림 값이다. 「반올림 차」는 풀이가 반올림한 중간값(예: 0.961 × 0.985)으로 곱해 끝자리가 엄밀한 값과 갈린 경우다.</caption>
+      <thead><tr><th>항목</th><th>계산</th><th>풀이</th><th></th></tr></thead>
+      <tbody id="check"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 계산이 빼놓은 것</h2>
+  <ul class="limits">
+    <li>pJ/bit는 본문이 「대략적인 감」이라고 단서를 단 범위다. 벤더 실측치가 아니다.</li>
+    <li>수율 식은 다이 결함이 서로 독립이라고 본다. 실제 결함은 웨이퍼 위에서 뭉쳐 나타나는 경향이 있다.</li>
+    <li>「완벽한 선별」은 KGD 테스트가 불량을 하나도 놓치지 않는다는 극단이다. 테스트 자체의 비용과 놓침률은 넣지 않았다.</li>
+    <li>여분 회로(redundancy)로 결함을 고치는 효과는 다이 수율 y 안에 이미 들어 있다고 본다.</li>
+    <li>HBM 세대별 실제 핀 속도와 스택 대역폭은 벤더·제품마다 다르다. 본문 4절 세대표의 HBM2E·HBM3 값과 HBM3E 행은 대략적 범위이고, HBM4·HBM4E는 제조사 발표값이다.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>『AI 인프라와 반도체』 3회차 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·자바스크립트)는 MIT 라이선스, 설명 글은 CC BY-NC 4.0이다.</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.hbm_bus_bits) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>공유 상수(BOOK_DATA)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  var NARROW = D.hbm_bus_bits.narrow, WIDE = D.hbm_bus_bits.wide;  // 1,024 / 2,048 bit
+  // 처음 상태(본문 예제와 같다). 대조표는 사용자가 움직인 값이 아니라 이 값을 본다
+  var INIT = { tgt: 4, stk: 8, aPj: 3, bPj: 0.75, y: 0.95, n: 12, yb: 1, kgd: 0 };
+  var st = { tgt: INIT.tgt, stk: INIT.stk, aPj: INIT.aPj, bPj: INIT.bPj, y: INIT.y, n: INIT.n, yb: INIT.yb, kgd: INIT.kgd, seed: 7, preset: "none" };
+
+  // 제품 프리셋(위젯 전용 입력값). 처음에는 아무 것도 고르지 않는다(「직접 정함」). 대역폭은 핀 속도 × 폭으로 계산한다
+  var HBM4_STD_PIN = 8;                        // 4절 표 HBM4 표준 열(JESD270-4) 8 Gbps
+  var PRESETS = [
+    { id: "hbm3e", label: "HBM3E", pin: 9.6, width: NARROW, book: "약 1.2 TB/s", src: "4절 표 HBM3E 행, 삼성 HBM4 보도자료의 비교값" },
+    { id: "hbm4std", label: "HBM4 표준 (JEDEC)", pin: HBM4_STD_PIN, width: WIDE, book: "최대 약 2 TB/s", src: "4절 표 표준 열, JESD270-4" },
+    { id: "hbm4", label: "HBM4 양산", pin: 11.7, width: WIDE, book: "약 3.0 TB/s", src: "4절 목록, 삼성 2026-02-12 양산 출하" },
+    { id: "hbm4max", label: "HBM4 양산 최대", pin: 13, width: WIDE, book: "약 3.3 TB/s, 보도자료 「스택당 최대 3.3 TB/s」", src: "4절 목록, 삼성 2026-02-12" },
+    { id: "hbm4e", label: "HBM4E 샘플", pin: 14, width: WIDE, book: "약 3.6 TB/s", src: "4절 목록, 삼성 2026-05-29 샘플 출하 · 2,048비트는 본문의 가정" }
+  ];
+  var GDDR7 = { id: "gddr7", label: "GDDR7 (디바이스)", pin: 48, width: 32 };  // 3절 길 ①: 디바이스당 최대 192 GB/s, 32비트로 계산하면 핀당 48 Gbps
+  function presetById(id) { return PRESETS.filter(function (p) { return p.id === id; })[0]; }
+
+  // ---- 순수 함수 ----
+  function pinRate(tbps, width) { return tbps * 1e12 * 8 / width / 1e9; }           // Gbps
+  function stackPower(tbps, pj) { return tbps * 1e12 * 8 * pj * 1e-12; }              // W
+  function presetBW(pinGbps, width) { return pinGbps * 1e9 * width / 8 / 1e12; }     // TB/s (pinRate 의 역)
+  function stackYield(y, n, yb, kgd) { return (kgd ? 1 : Math.pow(y, n)) * Math.pow(yb, n - 1); }
+  function waste(y, n, yb, kgd) {
+    var Y = stackYield(y, n, yb, kgd);
+    var good = kgd ? n : n * y;              // 스택 하나에 들어가는 정상 다이 기댓값
+    var w = good - n * Y;                    // 불량 스택에 묶여 버려지는 정상 다이
+    return { Y: Y, good: good, waste: w, cond: Y < 1 ? w / (1 - Y) : 0, pct: good > 0 ? w / good : 0 };
+  }
+  function rng(seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: d === undefined ? 0 : Math.min(d, 1) }); }
+  function pctS(x, d) { return fmt(x * 100, d === undefined ? 1 : d) + "%"; }
+  function fmtN(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d }); }
+
+  // ---- ① 대역폭과 전력 ----
+  function regime(rate) {
+    if (rate >= 25) return ['hot', '본문의 「30 Gbps급 고속 SerDes」 쪽'];
+    if (rate <= 16) return ['cool', '본문의 「15 Gbps급 광폭 병렬」 쪽'];
+    return ['mid', '본문의 두 기준점 사이'];
+  }
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function drawPower(aW, bW) {
+    var W = 720, H = 150, L = 130, R = 30, max = Math.max(1300, aW, bW) * 1.05;
+    function sx(w) { return L + w / max * (W - L - R); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    svg.appendChild(el("rect", { x: sx(700), y: 8, width: sx(1000) - sx(700), height: 100, fill: "var(--accent2)", "fill-opacity": 0.12 }));
+    svg.appendChild(el("text", { x: (sx(700) + sx(1000)) / 2, y: 22, "text-anchor": "middle", "font-size": 11.5, fill: "var(--accent2)" }, "가속기 자체 700~1,000 W"));
+    [[aW, "(a) " + fmt(NARROW) + " bit", 34], [bW, "(b) " + fmt(WIDE) + " bit", 70]].forEach(function (r) {
+      svg.appendChild(el("text", { x: L - 10, y: r[2] + 15, "text-anchor": "end", "font-size": 13 }, r[1]));
+      svg.appendChild(el("rect", { x: L, y: r[2], width: Math.max(1, sx(r[0]) - L), height: 22, rx: 3, fill: r[2] === 34 ? "var(--bad)" : "var(--accent)" }));
+      svg.appendChild(el("text", { x: sx(r[0]) + 6, y: r[2] + 15, "font-size": 12.5, "font-family": "var(--mono)" }, fmt(r[0]) + " W"));
+    });
+    for (var w = 0; w <= max; w += 250) {
+      svg.appendChild(el("line", { x1: sx(w), x2: sx(w), y1: 104, y2: 110, stroke: "var(--mut)" }));
+      svg.appendChild(el("text", { x: sx(w), y: 126, "text-anchor": "middle", "class": "tick" }, fmt(w)));
+    }
+    svg.appendChild(el("text", { x: W - R, y: 145, "text-anchor": "end", "font-size": 12, opacity: 0.8 }, "메모리 인터페이스 전력 [W], 가속기 한 장"));
+    $("pchart").replaceChildren(svg);
+  }
+  function updateBW() {
+    $("tgtOut").textContent = fmt(st.tgt, 2) + " TB/s";
+    $("stkOut").textContent = st.stk + "개";
+    var lanes = [["a", NARROW, st.aPj], ["b", WIDE, st.bPj]], out = [];
+    lanes.forEach(function (l) {
+      var rate = pinRate(st.tgt, l[1]), one = stackPower(st.tgt, l[2]), all = one * st.stk, rg = regime(rate);
+      $(l[0] + "Width").textContent = fmt(l[1]) + " bit";
+      $(l[0] + "Rate").textContent = fmt(rate, 2) + " Gbps";
+      $(l[0] + "Reg").className = "regime " + rg[0]; $(l[0] + "Reg").textContent = rg[1];
+      $(l[0] + "PjOut").textContent = fmt(l[2], 2);
+      $(l[0] + "One").textContent = fmt(one, 1) + " W";
+      $(l[0] + "All").textContent = fmt(all) + " W";
+      out.push(all);
+    });
+    drawPower(out[0], out[1]);
+    updatePresetLine();
+  }
+  function updatePresetLine() {
+    var line = $("presetLine"), p = presetById(st.preset), t;
+    if (p) {
+      t = "제품: " + p.label + " · 핀 " + (p.id === "hbm3e" ? "최대 " : "") + fmtN(p.pin, 1) + " Gbps × " + fmt(p.width) + "비트 = " + fmtN(presetBW(p.pin, p.width), 3) +
+        " TB/s (본문: " + p.book + ". " + p.src + ")";
+      if (p.id === "hbm4std" || p.id === "hbm4" || p.id === "hbm4max") t +=" 표준 열 약 2 TB/s는 JEDEC " + HBM4_STD_PIN + " Gbps 기준이고, 양산품은 표준 핀 속도를 넘었다.";
+      t += " 프리셋은 핀 속도만 바꾼다. pJ/bit는 아래에서 직접 옮겨야 한다.";
+    } else if (st.preset === GDDR7.id) {
+      var g = presetBW(GDDR7.pin, GDDR7.width), n = Math.ceil(st.tgt / g - 1e-9);
+      t = "GDDR7 디바이스 하나 최대 " + fmtN(g * 1000) + " GB/s(핀 " + GDDR7.pin + " Gbps × " + GDDR7.width + "비트). 계산하면 지금 목표 " + fmt(st.tgt, 2) +
+        " TB/s를 내려면 디바이스 " + n + "개가 필요하고, 핀 속도는 HBM4 표준 " + HBM4_STD_PIN + " Gbps의 " + fmtN(GDDR7.pin / HBM4_STD_PIN, 1) + "배다.";
+    }
+    line.hidden = !t;
+    line.textContent = t || "";
+  }
+  function markPresets() {
+    $("presetBox").querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.v === st.preset)); });
+  }
+  function setPreset(id) {
+    st.preset = id;
+    var p = presetById(id);
+    if (p) { st.tgt = presetBW(p.pin, p.width); $("tgt").value = st.tgt; }  // 슬라이더는 0.25 눈금에 붙지만 계산은 st.tgt(계산값)로 한다
+    markPresets(); updateBW();
+  }
+
+  // ---- ② 적층 수율 ----
+  function drawStacks() {
+    var r = rng(st.seed * 97 + st.n * 13 + Math.round(st.y * 1000) + Math.round(st.yb * 10000) + st.kgd * 7);
+    var h = "", fails = 0;
+    for (var s = 0; s < 100; s++) {
+      var dies = [], anyBad = false;
+      for (var d = 0; d < st.n; d++) { var ok = st.kgd ? true : r() < st.y; dies.push(ok); if (!ok) anyBad = true; }
+      var bondFail = false;
+      for (var b = 0; b < st.n - 1; b++) if (r() >= st.yb) bondFail = true;
+      var fail = anyBad || bondFail;
+      if (fail) fails++;
+      h += '<div class="stk' + (fail ? " fail" : "") + '">' + dies.map(function (ok) {
+        return '<span class="die' + (!ok ? " bad" : fail ? " waste" : "") + '"></span>';
+      }).join("") + "</div>";
+    }
+    $("stacks").innerHTML = h;
+    $("sampleNote").textContent = "표본 100개 중 불량 스택 " + fails + "개(기댓값 " + fmt((1 - stackYield(st.y, st.n, st.yb, st.kgd)) * 100, 1) + "개). 빨간 테두리 안의 속 빈 칸이 멀쩡한데도 함께 버려지는 다이다. 「다시 뽑기」로 표본 변동을 볼 수 있다.";
+  }
+  function drawYieldChart() {
+    var W = 720, H = 300, L = 56, R = 110, T = 18, Bm = 46;
+    function sx(n) { return L + (n - 2) / 14 * (W - L - R); }
+    function sy(y) { return H - Bm - y * (H - T - Bm); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    [2, 4, 8, 12, 16].forEach(function (n) {
+      g.appendChild(el("line", { x1: sx(n), x2: sx(n), y1: T, y2: H - Bm }));
+      svg.appendChild(el("text", { x: sx(n), y: H - Bm + 18, "text-anchor": "middle", "class": "tick" }, n));
+    });
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (y) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(y), y2: sy(y) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(y) + 4, "text-anchor": "end", "class": "tick" }, (y * 100) + "%"));
+    });
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 8, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "적층 수 n"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "스택 수율"));
+    // 기준 곡선 가운데 지금 고른 y 와 같은 것은 빼서 이름표가 겹치지 않게 한다
+    var series = [[0.95, false], [0.98, false], [0.995, false]].filter(function (s) { return Math.abs(s[0] - st.y) > 1e-9; });
+    series.push([st.y, true]);
+    series.forEach(function (s) {
+      var d = "";
+      for (var n = 2; n <= 16; n++) d += (n === 2 ? "M" : " L") + sx(n).toFixed(1) + "," + sy(stackYield(s[0], n, st.yb, st.kgd)).toFixed(1);
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: s[1] ? "var(--accent2)" : "var(--mut)", "stroke-width": s[1] ? 2.6 : 1.2, "stroke-opacity": s[1] ? 1 : 0.6, "stroke-dasharray": s[1] ? "" : "4 3" }));
+      svg.appendChild(el("text", { x: sx(16) + 6, y: sy(stackYield(s[0], 16, st.yb, st.kgd)) + 4, "font-size": 12, fill: s[1] ? "var(--accent2)" : "var(--mut)", "font-weight": s[1] ? 700 : 400 }, (s[1] ? "지금 " : "") + "y = " + s[0]));
+    });
+    svg.appendChild(el("circle", { cx: sx(st.n), cy: sy(stackYield(st.y, st.n, st.yb, st.kgd)), r: 6, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    $("ychart").replaceChildren(svg);
+  }
+  function updateYield() {
+    $("yOut").textContent = st.y.toFixed(3); $("nOut").textContent = st.n + "단"; $("bOut").textContent = st.yb.toFixed(4);
+    var w = waste(st.y, st.n, st.yb, st.kgd);
+    $("oY").textContent = pctS(w.Y);
+    $("oCond").innerHTML = w.Y < 1 ? fmt(w.cond, 1) + " <small>/ " + st.n + "개</small>" : "—";
+    $("oDone").textContent = fmt(w.Y * 1000) + "개";
+    $("oWaste").innerHTML = fmt(w.waste * 1000) + " <small>/ 정상 " + fmt(w.good * 1000) + "</small>";
+    $("oPct").textContent = pctS(w.pct);
+    drawStacks(); drawYieldChart();
+  }
+
+  // ---- 본문 풀이와 대조: 표와 window.__selftest() 가 같은 행을 쓴다 ----
+  // status: "match" 일치 · "round" 풀이가 반올림한 중간값으로 곱해 끝자리만 다름 · "miss" 불일치
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected, st, shown, bookShown) { rows.push({ name: name, got: got, expected: expected, status: st === true ? "match" : st === "round" ? "round" : "miss", shown: shown, bookShown: bookShown }); }
+    function near(v, b, exactTol, roundTol) { var d = Math.abs(v - b); return d <= exactTol ? true : d <= roundTol ? "round" : false; }
+    // 실습 2 (처음 상태: 스택당 4 TB/s)
+    var a = pinRate(4, NARROW), b = pinRate(4, WIDE);
+    add("실습 2 · " + fmt(NARROW) + " bit 핀 속도 (Gbps)", Math.round(a * 100) / 100, 31.25, Math.abs(a - 31.25) < 0.005);
+    add("실습 2 · " + fmt(WIDE) + " bit 핀 속도 (Gbps)", Math.round(b * 100) / 100, 15.6, Math.round(b * 10) / 10 === 15.6);
+    add("실습 2 · 4 TB/s × 3 pJ/bit (W)", Math.round(stackPower(4, 3)), 96, Math.round(stackPower(4, 3)) === 96);
+    add("실습 2 · 4 TB/s × 0.5 pJ/bit (W)", Math.round(stackPower(4, 0.5)), 16, Math.round(stackPower(4, 0.5)) === 16);
+    add("실습 2 · 4 TB/s × 1 pJ/bit (W)", Math.round(stackPower(4, 1)), 32, Math.round(stackPower(4, 1)) === 32);
+    // 처음 상태 = 실습 2 결론(스택 8개): (a) 96 W × 8 「800W에 육박」, (b) 0.75 pJ/bit → 「0.5~1 pJ/bit 범위에서 약 130~260W」 안
+    var a8 = stackPower(INIT.tgt, INIT.aPj) * INIT.stk, b8 = stackPower(INIT.tgt, INIT.bPj) * INIT.stk;
+    add("실습 2 결론 · (a) 처음 상태 스택 8개 (W, 96 W × 8)", Math.round(a8), 768, Math.round(a8) === 768);
+    add("실습 2 결론 · (b) 처음 상태 스택 8개 (W, 약 130~260 W 범위 안)", Math.round(b8), 192, Math.round(b8) === 192 && b8 >= 128 && b8 <= 256, fmt(b8), "130~260 안");
+    // 실습 1 표
+    var book1 = { "0.95": [66.3, 54.0, 44.0], "0.98": [85.1, 78.5, 72.4], "0.995": [96.1, 94.2, 92.3] };
+    Object.keys(book1).forEach(function (y) {
+      [8, 12, 16].forEach(function (n, i) {
+        var v = Math.round(stackYield(Number(y), n, 1, 0) * 1000) / 10;
+        add("실습 1 · y = " + y + ", " + n + "단 스택 수율 (%)", v, book1[y][i], v === book1[y][i], fmt(v, 1), fmt(book1[y][i], 1));
+      });
+    });
+    var w = waste(0.95, 12, 1, 0);
+    add("실습 1 · 불량 스택 속 정상 다이 (y 0.95, 12단)", Math.round(w.cond * 10) / 10, 10.7, Math.round(w.cond * 10) / 10 === 10.7);
+    add("실습 1 · 1,000스택 중 버려진 정상 다이", Math.round(w.waste * 10000) / 10, 4915.7, near(w.waste * 1000, 4915.7, 0.05, 1.5), fmt(w.waste * 1000, 1), "4,915.7");
+    add("실습 1 · 낭비 비율 (%)", Math.round(w.pct * 100), 43, Math.round(w.pct * 100) === 43);
+    // 실습 1 풀이의 아홉 조합 표: 불량 스택 속 정상 다이(소수 한 자리)와 1,000스택당 버려진 정상 다이(정수)
+    var bookC = { "0.95": [6.8, 10.7, 14.6], "0.98": [6.9, 10.9, 14.8], "0.995": [7.0, 11.0, 15.0] };
+    var bookW = { "0.95": [2293, 4916, 8158], "0.98": [1034, 2343, 4099], "0.995": [274, 641, 1153] };
+    Object.keys(bookC).forEach(function (y) {
+      [8, 12, 16].forEach(function (n, i) {
+        var q = waste(Number(y), n, 1, 0), c = Math.round(q.cond * 10) / 10, k = Math.round(q.waste * 1000);
+        add("실습 1 표 · y = " + y + ", " + n + "단 불량 스택 속 정상 다이", c, bookC[y][i], c === bookC[y][i], fmt(c, 1), fmt(bookC[y][i], 1));
+        add("실습 1 표 · y = " + y + ", " + n + "단 1,000스택당 버려진 정상 다이", k, bookW[y][i], k === bookW[y][i], fmt(q.waste * 1000, 1), fmt(bookW[y][i]));
+      });
+    });
+    // 5절 표 (y 0.99, 접합 0.995)
+    var book5 = { 4: 0.946, 8: 0.891, 12: 0.839, 16: 0.790 };
+    Object.keys(book5).forEach(function (n) {
+      var v = stackYield(0.99, Number(n), 0.995, 0);
+      add("5절 · y 0.99, 접합 0.995, " + n + "단 스택 수율", Math.round(v * 10000) / 10000, book5[n], near(v, book5[n], 0.0005, 0.0015), v.toFixed(4), book5[n].toFixed(3));
+    });
+    // 제품 프리셋(단추가 쓰는 값 그대로). 풀이가 적은 자릿수로 반올림해 비교한다 — 반올림 차는 두지 않는다
+    var book4 = { hbm3e: [1.2, 1, "약 1.2"], hbm4std: [2, 0, "최대 약 2"], hbm4: [3.0, 1, "약 3.0"], hbm4max: [3.3, 1, "약 3.3"], hbm4e: [3.6, 1, "약 3.6"] };
+    PRESETS.forEach(function (p) {
+      var v = presetBW(p.pin, p.width), e = book4[p.id], k = Math.pow(10, e[1]), r = Math.round(v * k) / k;
+      add("4절 · " + p.label + " " + fmtN(p.pin, 1) + " Gbps × " + fmt(p.width) + "비트 (TB/s)", r, e[0], r === e[0], fmtN(v, 4), e[2]);
+    });
+    var g7 = presetBW(GDDR7.pin, GDDR7.width) * 1000;
+    add("3절 길 ① · GDDR7 " + GDDR7.pin + " Gbps × " + GDDR7.width + "비트 (GB/s)", Math.round(g7), 192, Math.round(g7) === 192, fmtN(g7, 2), "192");
+    var ratio = GDDR7.pin / HBM4_STD_PIN;
+    add("3절 길 ① · GDDR7 핀 ÷ HBM4 표준 핀 (배)", Math.round(ratio), 6, Math.round(ratio) === 6, fmtN(ratio, 2), "6");
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", round: "<span class='round'>반올림 차</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fmt(r.got, 2)) + "</td><td class='num'>" + (r.bookShown || fmt(r.expected, 2)) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length, round = rows.filter(function (r) { return r.status === "round"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : "") + (round ? " · 반올림 차 " + round : "") + (!miss && !round ? " · 모두 일치" : "");
+  }
+
+  // ---- 연결 ----
+  function bind(id, key, fn) { $(id).addEventListener("input", function (e) { st[key] = Number(e.target.value); fn(); }); }
+  // 목표 대역폭을 손으로 움직이면 HBM 프리셋 표시는 풀린다(GDDR7 은 목표를 바꾸지 않으므로 그대로 두고 개수만 다시 센다)
+  $("tgt").addEventListener("input", function (e) {
+    st.tgt = Number(e.target.value);
+    if (presetById(st.preset)) { st.preset = "none"; markPresets(); }
+    updateBW();
+  });
+  [["none", "직접 정함"]].concat(PRESETS.map(function (p) { return [p.id, p.label]; }), [[GDDR7.id, GDDR7.label]]).forEach(function (o) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.v = o[0]; b.textContent = o[1];
+    $("presetBox").appendChild(b);
+  });
+  markPresets();
+  $("presetBox").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) setPreset(b.dataset.v); });
+  bind("stk", "stk", updateBW); bind("aPj", "aPj", updateBW); bind("bPj", "bPj", updateBW);
+  bind("yIn", "y", updateYield); bind("nIn", "n", updateYield); bind("bIn", "yb", updateYield);
+  $("kgdSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    this.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    st.kgd = Number(b.dataset.v); updateYield();
+  });
+  $("redraw").addEventListener("click", function () { st.seed++; drawStacks(); });
+  $("specLine").textContent = "식과 수치: 『AI 인프라와 반도체』 3회차 3·4·5절, 실습 1·2 풀이(제품 프리셋은 4절 세대별 사양). HBM 버스 폭(HBM3까지 " + fmt(NARROW) +
+    "비트, HBM4 " + fmt(WIDE) + "비트)은 본문 3회차 3절을 따랐다.";
+
+  renderCheck(); updateBW(); updateYield();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>
