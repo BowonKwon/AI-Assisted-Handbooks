@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>칩렛 손익판</title>
+<script>window.BOOK_DATA={"_about": "위젯이 함께 쓰는 상수. 값은 본문 표와 같아야 한다(위젯은 본문에 없는 수치를 만들지 않는다). 값을 바꾸면 인쇄본의 정지 그림도 다시 찍어야 한다. _src 는 값을 옮겨 온 본문 위치", "chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80, "_src": "2회차 자습 부록 A 실습 1 풀이 표(312 TFLOP/s, 2.04 TB/s). 용량 80GB 는 제품명"}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7, "_src": "2회차 6절 「실제 칩의 리지 포인트」 표(989 TFLOP/s, 3.35 TB/s, HBM3 80GB). tdp_kw 0.7 은 2회차 실습 4 풀이 「전력을 어디서 재는가」 표(H100 SXM 최대 TDP 700 W, H100 사양표)"}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 시스템(GPU당)", "B": 8.0, "cap": 180, "_src": "2회차 6절 「용량도 칩과 시스템이 다르다」 상자: DGX B200 데이터시트 8장 합계 64 TB/s(계산하면 GPU당 8.0 TB/s, I* ≈ 281), 사용자 안내서·데이터시트 8장 합계 1,440 GB(계산하면 GPU당 180 GB). 계산 기본값은 칩 값이고, 이 값은 roofline·kv-cache 에서 「시스템 기준」으로 바꿔 볼 때만 쓴다"}, "_src": "2회차 6절 같은 표(2,250 TFLOP/s, 7.7 TB/s, HBM3e 192GB). 192GB·7.7 TB/s 는 칩 공표값(NVIDIA Blackwell 아키텍처 기술 개요 V2.1 표 3, HGX B200 GPU당 최대)으로 둔다. 2,250 은 같은 표 희소 4.5 PFLOPS 의 절반. DGX B200 데이터시트의 합계 64 TB/s(GPU당 8.0)는 시스템 값이라 기본 계산에 쓰지 않는다. 그 값은 아래 sys 에 두고, roofline·kv-cache 의 「B200 · DGX 시스템」 단추를 눌렀을 때만 쓴다. DGX B200 시스템은 8장 합계 1,440GB, 계산하면 GPU당 180GB(사용자 안내서·데이터시트) — 본문 2회차 6절 「용량도 칩과 시스템이 다르다」가 둘을 구분한다"}], "_chips_units": "P = TFLOP/s(BF16 dense, 희소성 미적용), B = TB/s, cap = GB(10진)", "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64, "_src": "2회차 자습 부록 A 실습 3 풀이 설정(70B급, L = 80, GQA 8헤드 × 128, MHA 64헤드)"}, "tpu_v1": {"array": 256, "_src": "2회차 4절(256 × 256 = 65,536개 8비트 MAC)"}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048, "_src": "3회차 3절 길 ②(HBM3까지 1,024비트, HBM4 2,048비트)"}, "wafer": {"d_mm": 300, "_src": "4회차 0절·5절 「웨이퍼당 굿다이 수」, 6회차 실습 1 풀이(300 mm 웨이퍼, d = 30 cm). die-cost·chiplet 이 함께 쓴다"}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2, "_src": "2회차 실습 4 풀이 「전력을 어디서 재는가」 표(DGX H100/H200 사용자 안내서, 최대 10.2 kW, 계산하면 장당 1.275 kW), 7회차 실습 6 풀이(DGX H100 최대 입력 전력 10.2 kW)"}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440, "_src": "2회차 실습 4 풀이 끝(DGX B200 데이터시트 최대 약 14.3 kW, 장당 약 1.79 kW), 7회차 실습 5 (a)·(c) 풀이(14.3 kW, 8장 합계 1,440 GB)"}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100, "_src": "7회차 실습 5 (a)·(c) 풀이(약 14 kW, 8장 합계 2.1 TB)"}, "_about": "asic-breakeven·datacenter 가 함께 쓰는 제조사 시스템 사양. 모두 최대값이지 상시 소비가 아니다"}};window.WIDGET_ID="chiplet";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/* 레이아웃: 한 단, 두 실험. ① 분할 수에 따른 총원가(data-part="split") ② W2W 대 D2W 적층 수율(data-part="stack").
+   책에는 두 부분을 따로 넣는다(config 의 part). 책 안(html[data-embed])에서는 .standalone-only 가 숨는다.
+   웨이퍼 지름은 window.BOOK_DATA.wafer.d_mm. 식은 6회차 6절·실습 1 풀이, 4회차 실습 2·4 풀이 */
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl.wide { grid-column: 1 / -1; }
+.controls.two { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.inl { display: flex; align-items: center; gap: 12px; }
+.inl input[type=range] { flex: 1; min-width: 0; }
+.inl .seg button { padding: 3px 9px; font-size: 13px; }
+.readout.three { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); }
+.readout dd small.sub { display: block; font-size: 12.5px; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; white-space: nowrap; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; align-content: start; }
+.readout div[hidden] { display: none; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+.assume { font-size: 11.5px; color: var(--warn); font-family: var(--sans); border: 1px solid var(--warn); border-radius: 4px; padding: 0 4px; margin-left: 4px; vertical-align: 1px; }
+
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 13px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend i { display: inline-block; width: 14px; height: 3px; vertical-align: 4px; margin-right: 6px; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+table.rows { font-size: 13px; }
+table.rows th, table.rows td { padding: 4px 6px; }
+table.rows td { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+table.rows tr.sel td { background: var(--mark); font-weight: 700; }
+table.rows td.cost { color: var(--accent2); }
+.match { color: var(--ok); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">6회차 6절 · 실습 1 · 4회차 실습 4</div>
+  <h1>쪼개면 얼마나 싸지나, 쌓으면 얼마나 남나</h1>
+  <p class="lede">큰 칩을 못 만드는데 큰 성능이 필요하면 어떻게 하는가. 800 mm²의 실리콘을 몇 개로 나눌 때 웨이퍼 한 장에서 얻는 시스템이 가장 싼지, 다이를 웨이퍼째 쌓을 때와 양품만 골라 쌓을 때 수율이 얼마나 벌어지는지를 본문의 식으로 셈한다.</p>
+</header>
+
+<section aria-labelledby="s1" data-part="split">
+  <h2 id="s1">① 분할 수에 따른 총원가</h2>
+  <div class="formula standalone-only">A<sub>n</sub> = 8 × [1 + o(n−1)] / n cm²　·　GDPW(A) = (πd²/4)/A − πd/√(2A)　·　비용 = W ÷ [GDPW · e<sup>−A<sub>n</sub>D<sub>0</sub></sup> ÷ n × a<sup>n−1</sup>]</div>
+  <div class="bench" id="figure-split">
+    <div class="controls two">
+      <div class="ctl wide"><div class="lab">가정</div>
+        <div class="seg" id="modeSeg">
+          <button type="button" data-v="s6" aria-pressed="true">6회차 실습 1 (오버헤드 누적)</button>
+          <button type="button" data-v="s4" aria-pressed="false">4회차 실습 4 (칩렛 4개 · 오버헤드 10% · 조립 0.95)</button>
+        </div></div>
+      <div class="ctl"><label for="d0"><span>결함밀도 D<sub>0</sub> [/cm²]</span> <output id="d0Out"></output></label>
+        <div class="inl"><input type="range" id="d0" min="0.01" max="0.3" step="0.01" value="0.1">
+        <div class="seg" id="d0Seg"></div></div></div>
+      <div class="ctl"><label for="nS">분할 수 n <output id="nSOut"></output></label>
+        <input type="range" id="nS" min="1" max="16" step="1" value="4"></div>
+      <div class="ctl"><label for="ov"><span id="ovLab"></span> <output id="ovOut"></output></label>
+        <input type="range" id="ov" min="0" max="20" step="1" value="5"></div>
+      <div class="ctl"><label for="asm"><span id="asmLab"></span> <output id="asmOut"></output></label>
+        <input type="range" id="asm" min="0.9" max="1" step="0.005" value="0.99"></div>
+    </div>
+    <p class="note" id="modeNote" hidden></p>
+    <div>
+      <div class="chart" id="splitChart" role="img" aria-label="분할 수에 따른 시스템당 비용 곡선"></div>
+      <div class="legend" style="margin-top:6px">
+        <span><i style="background:var(--accent2)"></i>지금 D<sub>0</sub></span>
+        <span><i style="background:var(--mut);opacity:.6"></i>풀이의 다른 D<sub>0</sub>(같은 가정)</span>
+        <span id="markLegend"></span>
+      </div>
+    </div>
+    <dl class="readout three">
+      <div><dt>칩렛 면적 (n = <span id="rN"></span>)</dt><dd id="rA"></dd></div>
+      <div class="big"><dt>시스템당 비용</dt><dd id="rC"></dd></div>
+      <div><dt>단일 다이 대비 절감률</dt><dd id="rS"></dd></div>
+      <div id="rSaBox" hidden><dt>절감액 = 추가 비용의 한도</dt><dd id="rSa"></dd></div>
+      <div id="r14Box" hidden><dt>단일 다이(n = 1) 대 칩렛 4개(n = 4)</dt><dd id="r14"></dd></div>
+      <div id="rO4Box"><dt>n = 1·2·4·8 중 최적</dt><dd id="rO4"></dd></div>
+      <div id="rOallBox"><dt>n = 1~16 전체 최적</dt><dd id="rOall"></dd></div>
+    </dl>
+    <div class="tbl">
+      <table class="rows">
+        <thead><tr><th>n</th><th>칩렛 면적</th><th>GDPW</th><th>수율</th><th>굿다이</th><th>시스템/웨이퍼</th><th>조립수율</th><th>유효</th><th>비용 [W]</th></tr></thead>
+        <tbody id="splitRows"></tbody>
+      </table>
+    </div>
+  </div>
+  <p class="standalone-only">비용은 웨이퍼 한 장 값 W의 배수로 적은 시스템 하나의 실리콘 원가다. 결함이 많을수록 잘게 쪼개는 쪽이 유리하고, 무한정 쪼개면 인터페이스 오버헤드와 조립 수율 손실이 수율 이득을 잡아먹는다. 4회차 실습 4 가정은 칩렛마다 면적 10%를 더하고 조립 수율 0.95를 곱한다. 그때 절감액은 인터포저·조립 추가 비용이 넘으면 안 되는 한도로 읽는다.</p>
+</section>
+
+<section aria-labelledby="s2" data-part="stack">
+  <h2 id="s2">② 웨이퍼째 쌓기(W2W)와 골라 쌓기(D2W)</h2>
+  <div class="formula standalone-only">Y<sub>W2W</sub> = y<sup>n</sup> × y<sub>bond</sub><sup>n−1</sup>　·　Y<sub>D2W</sub> ≈ y<sub>bond</sub><sup>n−1</sup> (선별이 완벽할 때)　·　비 = D2W ÷ W2W</div>
+  <div class="bench" id="figure-stack">
+    <div class="controls">
+      <div class="ctl"><label for="yIn">다이 수율 y <output id="yOut"></output></label><input type="range" id="yIn" min="0.5" max="1" step="0.005" value="0.9"></div>
+      <div class="ctl"><label for="ybIn"><span>본딩 한 번의 수율 y<sub>bond</sub></span> <output id="ybOut"></output></label><input type="range" id="ybIn" min="0.95" max="1" step="0.001" value="0.995"></div>
+      <div class="ctl"><label for="nT">적층 수 n <output id="nTOut"></output></label><input type="range" id="nT" min="2" max="16" step="1" value="8"></div>
+    </div>
+    <dl class="readout">
+      <div><dt>W2W 수율 (n = <span id="tN"></span>)</dt><dd id="tW"></dd></div>
+      <div><dt>D2W 수율</dt><dd id="tD"></dd></div>
+      <div class="big"><dt>D2W ÷ W2W</dt><dd id="tR"></dd></div>
+      <div><dt>입력</dt><dd style="font-size:14px" id="tIn"></dd></div>
+    </dl>
+    <div>
+      <div class="chart" id="stackChart" role="img" aria-label="적층 수에 따른 W2W와 D2W 수율 곡선"></div>
+      <div class="legend" style="margin-top:6px">
+        <span><i style="background:var(--accent)"></i>D2W y<sub>bond</sub><sup>n−1</sup></span>
+        <span><i style="background:var(--accent2)"></i>W2W y<sup>n</sup>y<sub>bond</sub><sup>n−1</sup></span>
+        <span>큰 점 = 본문 표의 n = 2·8·12·16, 아래 숫자 = 그 n의 D2W ÷ W2W</span>
+      </div>
+    </div>
+  </div>
+  <p class="standalone-only">W2W는 웨이퍼 두 장을 한 번에 붙여 생산성이 높지만 양품을 골라 붙일 수 없다. 위 웨이퍼의 불량 다이가 아래 웨이퍼의 양품 다이 위에 그대로 얹힌다. D2W는 다이를 잘라 시험한 뒤 양품(KGD)만 골라 붙인다. 두 층이면 차이가 20%대지만 층이 늘면 몇 배로 벌어진다.</p>
+</section>
+
+<section aria-labelledby="s3">
+  <details class="check">
+    <summary>풀이표와 대조 (<span id="checkSum"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">6회차 실습 1 풀이의 두 표와 그 아래 문단, 4회차 실습 4 풀이, 6회차 6절 표의 값을 이 그림의 식으로 다시 셈한 것이다. 풀이 값은 반올림 값이다. 계산값을 풀이가 적은 자릿수로 반올림해 비교한다.</caption>
+      <thead><tr><th>항목</th><th>계산</th><th>풀이</th><th></th></tr></thead>
+      <tbody id="check"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 계산이 빼놓은 것</h2>
+  <ul class="limits">
+    <li>인터포저·조립 추가 비용의 금액은 넣지 않았다. 풀이도 숫자를 주지 않고, 절감액을 그 비용이 넘으면 안 되는 한도로 읽는다(4회차 실습 4). D<sub>0</sub> = 0.05처럼 결함이 적으면 이 비용을 넣을 때 역전될 수 있다.</li>
+    <li>칩렛 간 통신 회로(PHY)의 대가는 면적 오버헤드로만 들어가 있다. 본문 6회차 2절은 PHY가 전력도 잡아먹고, 다이를 건너는 통신이 온다이 통신보다 느리고 비싸다고 적는다.</li>
+    <li>최적점 근처에서는 곡선이 평평하다. D<sub>0</sub> = 0.1에서 n = 4~6은 모두 최적과 2% 안에 든다.</li>
+    <li>수율은 푸아송 모형 e<sup>−AD<sub>0</sub></sup>이다. 결함이 뭉쳐 나타나면 실제 수율이 푸아송 예측보다 높다(4회차 5절·실습 3).</li>
+    <li>GDPW 근사식은 100~800 mm² 다이에서 직접 센 개수보다 1~5% 적게 나온다(4회차 5절).</li>
+    <li>D2W 식은 선별이 완벽하다고 둔 근사다. D2W에서도 버린 불량 다이의 값은 비용으로 남는다. 수율 손실이 사라지는 것이 아니라 적층하기 전으로 옮겨 간다.</li>
+    <li>y = 0.9, y<sub>bond</sub> = 0.995는 본문의 가정값이다. 본딩 수율은 3회차 5절 예시와 같은 값이다.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>식: 『AI 인프라와 반도체』 6회차 6절과 실습 1 풀이, 4회차 실습 2·4 풀이.</div>
+  <div>『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·자바스크립트)는 MIT 라이선스, 설명 글은 CC BY-NC 4.0이다.</div>
+</footer>
+</div>
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.wafer || !D.wafer.d_mm) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>공유 상수(BOOK_DATA)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  var DCM = D.wafer.d_mm / 10;          // 웨이퍼 지름 [cm] — 6회차 실습 1 풀이 d = 30 cm
+  var ATOT = 8;                          // 총 실리콘 800 mm² = 8 cm² (6회차 실습 1, 4회차 실습 4)
+  var D0_PRESETS = [0.05, 0.1, 0.2];     // 6회차 실습 1 의 세 값
+  var D0_PRESETS_S4 = [0.02, 0.1];       // 4회차 실습 4 표의 두 값
+  var PICKS = [1, 2, 4, 8];              // 6회차 실습 1 이 고른 분할 수
+  var PICKS_S4 = [1, 4];                 // 4회차 실습 4 가 비교한 분할 수(단일 다이 대 칩렛 4개)
+  function presetsFor(mode) { return mode === "s4" ? D0_PRESETS_S4 : D0_PRESETS; }
+  function picksFor(mode) { return mode === "s4" ? PICKS_S4 : PICKS; }
+  var STACK_PICKS = [2, 8, 12, 16];      // 6회차 6절 표의 적층 수
+  // 처음 상태 = 본문 예제. 6회차 실습 1(D0 0.1, n 4, 오버헤드 5%/분할, 조립 0.99/다이), 6회차 6절(y 0.9, y_bond 0.995, n 8)
+  var MODES = { s6: { ov: 5, asm: 0.99 }, s4: { ov: 10, asm: 0.95, n: 4 } };
+  var INIT = { mode: "s6", D0: 0.1, n: 4, ov: 5, asm: 0.99, y: 0.9, yb: 0.995, nt: 8 };
+  var state = JSON.parse(JSON.stringify(INIT));
+
+  // ---- 순수 함수 ----
+  function gdpw(A) { return Math.PI * DCM * DCM / 4 / A - Math.PI * DCM / Math.sqrt(2 * A); }
+  // mode "s6": 분할마다 오버헤드 누적 A = 8[1+o(n−1)]/n, 조립 a^(n−1)
+  // mode "s4": 칩렛마다 오버헤드 A = 8(1+o)/n, 조립 a 를 전체에 한 번. n = 1 이면 오버헤드·조립 없음
+  function split(n, D0, ovPct, asm, mode) {
+    var o = ovPct / 100, A, a;
+    if (mode === "s4") { A = n === 1 ? ATOT : ATOT * (1 + o) / n; a = n === 1 ? 1 : asm; }
+    else { A = ATOT * (1 + o * (n - 1)) / n; a = Math.pow(asm, n - 1); }
+    var G = gdpw(A), Y = Math.exp(-A * D0), good = G * Y, sys = good / n, eff = sys * a;
+    return { n: n, A: A, G: G, Y: Y, good: good, sys: sys, a: a, eff: eff, cost: 1 / eff };
+  }
+  function sweep(D0, ovPct, asm, mode) {
+    var all = [], best = null, best4 = null;
+    for (var n = 1; n <= 16; n++) {
+      var r = split(n, D0, ovPct, asm, mode); all.push(r);
+      if (!best || r.cost < best.cost) best = r;
+      if (PICKS.indexOf(n) >= 0 && (!best4 || r.cost < best4.cost)) best4 = r;
+    }
+    return { all: all, best: best, best4: best4, single: all[0] };
+  }
+  function saving(r, single) { return 1 - r.cost / single.cost; }
+  function stack(y, yb, n) { var w = Math.pow(y, n) * Math.pow(yb, n - 1), d = Math.pow(yb, n - 1); return { w2w: w, d2w: d, ratio: d / w }; }
+
+  function $(id) { return document.getElementById(id); }
+  function fx(x, d) { return x.toFixed(d); }
+  function pct(x, d) { return (x * 100).toFixed(d === undefined ? 1 : d) + "%"; }
+
+  // ---- 그림 공통 ----
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function niceStep(span, target) {
+    var raw = span / target, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+  }
+
+  // ---- ① 분할 ----
+  var W = 720, H = 280, L = 66, R = 24, T = 18, Bm = 44;
+  function drawSplit(sw) {
+    var curves = [{ D0: state.D0, sw: sw, on: true }];
+    var s4 = state.mode === "s4", picks = picksFor(state.mode);
+    presetsFor(state.mode).forEach(function (d) { if (Math.abs(d - state.D0) > 1e-9) curves.push({ D0: d, sw: sweep(d, state.ov, state.asm, state.mode), on: false }); });
+    var ymax = 0;
+    curves.forEach(function (c) { c.sw.all.forEach(function (r) { ymax = Math.max(ymax, r.cost); }); });
+    var step = niceStep(ymax, 5); ymax = Math.ceil(ymax / step - 1e-9) * step;
+    function sx(n) { return L + (n - 1) / 15 * (W - L - R); }
+    function sy(c) { return H - Bm - c / ymax * (H - T - Bm); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    var dec = step < 0.01 ? 3 : 2;
+    for (var i = 0; i * step <= ymax + 1e-12; i++) {
+      var v = i * step;
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, i === 0 ? "0" : fx(v, dec)));
+    }
+    for (var n = 1; n <= 16; n++) {
+      if (picks.indexOf(n) >= 0 || n % 2 === 0) g.appendChild(el("line", { x1: sx(n), x2: sx(n), y1: T, y2: H - Bm, "stroke-opacity": picks.indexOf(n) >= 0 ? 1 : 0.4 }));
+      svg.appendChild(el("text", { x: sx(n), y: H - Bm + 16, "text-anchor": "middle", "class": "tick" }, String(n)));
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "분할 수 n"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "시스템당 비용 [W]"));
+    svg.appendChild(el("line", { x1: sx(state.n), x2: sx(state.n), y1: T, y2: H - Bm, stroke: "var(--accent2)", "stroke-dasharray": "4 4", "stroke-opacity": 0.7 }));
+    curves.slice().reverse().forEach(function (c) {
+      var d = c.sw.all.map(function (r, k) { return (k ? "L" : "M") + sx(r.n).toFixed(1) + "," + sy(r.cost).toFixed(1); }).join(" ");
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: c.on ? "var(--accent2)" : "var(--mut)", "stroke-width": c.on ? 2.6 : 1.3, "stroke-opacity": c.on ? 1 : 0.55 }));
+      if (!c.on) {
+        // 오른쪽 끝에서 곡선이 모이므로, 지금 곡선보다 위면 선 위에, 아래면 선 아래에 이름을 단다
+        var last = c.sw.all[15], above = last.cost > sw.all[15].cost;
+        svg.appendChild(el("text", { x: sx(16) - 4, y: sy(last.cost) + (above ? -7 : 15), "text-anchor": "end", "font-size": 11.5, fill: "var(--mut)" }, "D₀ " + c.D0));
+      }
+    });
+    picks.forEach(function (k) {
+      var r = sw.all[k - 1];
+      svg.appendChild(el("circle", { cx: sx(k), cy: sy(r.cost), r: 5, fill: "var(--card)", stroke: "var(--accent2)", "stroke-width": 2 }));
+    });
+    // 네 값 중 최적(◆)과 전체 최적(▲)은 x축 바로 위 띠에 둔다 — 높이는 비용 값이 아니라 어느 n인지만 가리킨다.
+    // 곡선 최저점은 이 띠보다 훨씬 위에 있다. 4회차 가정에서는 본문가 n = 1 대 4만 다루므로 그리지 않는다.
+    if (!s4) {
+      var b4 = sw.best4, ba = sw.best, base = H - Bm - 9;
+      var dx = sx(b4.n), dy = base;
+      svg.appendChild(el("path", { d: "M" + dx + "," + (dy - 5) + " L" + (dx + 5) + "," + dy + " L" + dx + "," + (dy + 5) + " L" + (dx - 5) + "," + dy + " Z", fill: "var(--accent)", stroke: "var(--card)", "stroke-width": 1.5 }));
+      var ax = sx(ba.n), ay = base - (ba.n === b4.n ? 13 : 0);
+      svg.appendChild(el("path", { d: "M" + ax + "," + (ay - 5) + " L" + (ax + 5) + "," + (ay + 4) + " L" + (ax - 5) + "," + (ay + 4) + " Z", fill: "var(--ok)", stroke: "var(--card)", "stroke-width": 1.5 }));
+    }
+    var cur = sw.all[state.n - 1], right = state.n <= 11;
+    svg.appendChild(el("circle", { cx: sx(state.n), cy: sy(cur.cost), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("text", { x: sx(state.n) + (right ? 10 : -10), y: sy(cur.cost) - 12, "text-anchor": right ? "start" : "end", "font-size": 13, "font-weight": 700, fill: "var(--accent2)" }, "n = " + state.n + " · " + fx(cur.cost, 5) + " W"));
+    $("splitChart").replaceChildren(svg);
+  }
+
+  function rowHtml(r, sel) {
+    return "<tr" + (sel ? " class='sel'" : "") + "><td>" + r.n + "</td><td>" + fx(r.A, 2) + " cm²</td><td>" + fx(r.G, 1) + "</td><td>" + fx(r.Y, 3) + "</td><td>" + fx(r.good, 1) +
+      "</td><td>" + fx(r.sys, 1) + "</td><td>" + fx(r.a, 3) + "</td><td>" + fx(r.eff, 1) + "</td><td class='cost'>" + fx(r.cost, 5) + "</td></tr>";
+  }
+
+  function updateSplit() {
+    var sw = sweep(state.D0, state.ov, state.asm, state.mode), cur = sw.all[state.n - 1], s4 = state.mode === "s4";
+    $("d0Out").textContent = fx(state.D0, 2);
+    $("nSOut").textContent = String(state.n);
+    $("ovOut").textContent = state.ov + "%";
+    $("asmOut").textContent = fx(state.asm, 3);
+    $("ovLab").textContent = s4 ? "인터페이스 오버헤드 (칩렛마다)" : "인터페이스 오버헤드 (분할 하나마다 누적)";
+    $("asmLab").textContent = s4 ? "조립 수율 (전체에 한 번)" : "조립 수율 (다이 하나 추가마다)";
+    var presets = presetsFor(state.mode), seg = $("d0Seg");
+    if (seg.dataset.mode !== state.mode) {
+      seg.dataset.mode = state.mode;
+      seg.innerHTML = presets.map(function (d) { return "<button type='button' data-v='" + d + "' aria-pressed='false'>" + d + "</button>"; }).join("");
+    }
+    seg.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Math.abs(Number(b.dataset.v) - state.D0) < 1e-9)); });
+    $("modeSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === state.mode)); });
+    // 4회차 가정일 때만 적용 방식을 화면에 적는다(6회차 가정은 조작부 이름표가 이미 말한다)
+    $("modeNote").hidden = !s4;
+    $("modeNote").textContent = s4
+      ? "4회차 실습 4 가정: 칩렛마다 면적 +" + state.ov + "%(분할 수에 따라 누적하지 않는다), 조립 수율 " + fx(state.asm, 3) + "을 전체에 한 번 곱한다. n을 바꾸면 같은 가정을 그 n에 적용한다. n = 1이면 오버헤드·조립이 없다. 비용 = (n ÷ 굿다이) ÷ 조립 수율."
+      : "";
+    $("rN").textContent = String(state.n);
+    $("rA").innerHTML = fx(cur.A, 2) + " <small>cm²</small>";
+    $("rC").innerHTML = fx(cur.cost, 5) + " <small>W</small>";
+    $("rS").textContent = pct(saving(cur, sw.single));
+    // 「절감액 = 추가 비용의 한도」와 n = 1 대 4 비교는 4회차 실습 4 의 읽기다. 6회차 가정에서는 본문가 네 값 중 최적·전체 최적을 말한다.
+    $("rSaBox").hidden = !s4; $("r14Box").hidden = !s4;
+    $("rO4Box").hidden = s4; $("rOallBox").hidden = s4;
+    $("rSa").innerHTML = fx(sw.single.cost - cur.cost, 5) + " <small>W</small>";
+    var c4 = sw.all[3];
+    $("r14").innerHTML = fx(sw.single.cost, 5) + " → " + fx(c4.cost, 5) + " <small>W</small><small class='sub'>절감액 " + fx(sw.single.cost - c4.cost, 5) + " W</small>";
+    $("rO4").innerHTML = "n = " + sw.best4.n + " <small class='sub'>" + fx(sw.best4.cost, 5) + " W<br>절감률 " + pct(saving(sw.best4, sw.single)) + "</small>";
+    $("rOall").innerHTML = "n = " + sw.best.n + " <small class='sub'>" + fx(sw.best.cost, 5) + " W<br>절감률 " + pct(saving(sw.best, sw.single)) + "</small>";
+    $("markLegend").textContent = s4
+      ? "큰 점 = 풀이가 비교한 n = 1(단일 다이)·4(칩렛 4개)"
+      : "큰 점 = 실습이 고른 n = 1·2·4·8 · x축 위 ◆ = 그 네 값 중 최적 · ▲ = 1~16 전체 최적";
+    var ns = picksFor(state.mode).slice(); if (ns.indexOf(state.n) < 0) { ns.push(state.n); ns.sort(function (a, b) { return a - b; }); }
+    $("splitRows").innerHTML = ns.map(function (n) { return rowHtml(sw.all[n - 1], n === state.n); }).join("");
+    drawSplit(sw);
+  }
+
+  // ---- ② 적층 ----
+  var W2 = 720, H2 = 320, L2 = 56, R2 = 70, T2 = 16, B2 = 44;
+  function drawStack() {
+    function sx(n) { return L2 + (n - 2) / 14 * (W2 - L2 - R2); }
+    function sy(v) { return H2 - B2 - v * (H2 - T2 - B2); }
+    var svg = el("svg", { viewBox: "0 0 " + W2 + " " + H2 }), g = el("g", { "class": "grid" });
+    for (var i = 0; i <= 5; i++) {
+      var v = i * 0.2;
+      g.appendChild(el("line", { x1: L2, x2: W2 - R2, y1: sy(v), y2: sy(v) }));
+      svg.appendChild(el("text", { x: L2 - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, fx(v, 1)));
+    }
+    for (var n = 2; n <= 16; n += 2) {
+      g.appendChild(el("line", { x1: sx(n), x2: sx(n), y1: T2, y2: H2 - B2, "stroke-opacity": STACK_PICKS.indexOf(n) >= 0 ? 1 : 0.4 }));
+      svg.appendChild(el("text", { x: sx(n), y: H2 - B2 + 16, "text-anchor": "middle", "class": "tick" }, String(n)));
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W2 - R2, y: H2 - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "적층 수 n"));
+    svg.appendChild(el("text", { x: 14, y: T2 + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T2 + 4) + ")", "text-anchor": "end" }, "적층 수율"));
+    svg.appendChild(el("line", { x1: sx(state.nt), x2: sx(state.nt), y1: T2, y2: H2 - B2, stroke: "var(--accent2)", "stroke-dasharray": "4 4", "stroke-opacity": 0.7 }));
+    var dW = "", dD = "";
+    for (var k = 2; k <= 16; k++) {
+      var s = stack(state.y, state.yb, k);
+      dW += (k > 2 ? " L" : "M") + sx(k).toFixed(1) + "," + sy(s.w2w).toFixed(1);
+      dD += (k > 2 ? " L" : "M") + sx(k).toFixed(1) + "," + sy(s.d2w).toFixed(1);
+    }
+    svg.appendChild(el("path", { d: dD, fill: "none", stroke: "var(--accent)", "stroke-width": 2.4 }));
+    svg.appendChild(el("path", { d: dW, fill: "none", stroke: "var(--accent2)", "stroke-width": 2.4 }));
+    var e16 = stack(state.y, state.yb, 16);
+    svg.appendChild(el("text", { x: sx(16) + 8, y: sy(e16.d2w) + 4, "font-size": 12.5, "font-weight": 700, fill: "var(--accent)" }, "D2W"));
+    svg.appendChild(el("text", { x: sx(16) + 8, y: sy(e16.w2w) + 4, "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" }, "W2W"));
+    STACK_PICKS.forEach(function (m) {
+      var s = stack(state.y, state.yb, m);
+      svg.appendChild(el("circle", { cx: sx(m), cy: sy(s.d2w), r: 5, fill: "var(--card)", stroke: "var(--accent)", "stroke-width": 2 }));
+      svg.appendChild(el("circle", { cx: sx(m), cy: sy(s.w2w), r: 5, fill: "var(--card)", stroke: "var(--accent2)", "stroke-width": 2 }));
+      svg.appendChild(el("text", { x: sx(m), y: Math.min(sy(s.w2w) + 22, H2 - B2 - 6), "text-anchor": "middle", "font-size": 12, fill: "var(--mut)", "font-family": "var(--mono)" }, "×" + fx(s.ratio, 2)));
+    });
+    var c = stack(state.y, state.yb, state.nt), right = state.nt <= 12, tx = sx(state.nt) + (right ? 10 : -10), anc = right ? "start" : "end";
+    svg.appendChild(el("circle", { cx: sx(state.nt), cy: sy(c.d2w), r: 6.5, fill: "var(--accent)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("circle", { cx: sx(state.nt), cy: sy(c.w2w), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("text", { x: tx, y: sy(c.d2w) + 20, "text-anchor": anc, "font-size": 13, "font-weight": 700, fill: "var(--accent)" }, fx(c.d2w, 3)));
+    svg.appendChild(el("text", { x: tx, y: sy(c.w2w) - 10, "text-anchor": anc, "font-size": 13, "font-weight": 700, fill: "var(--accent2)" }, fx(c.w2w, 3)));
+    $("stackChart").replaceChildren(svg);
+  }
+  function updateStack() {
+    var c = stack(state.y, state.yb, state.nt);
+    var yAssume = Math.abs(state.y - INIT.y) < 1e-9, ybAssume = Math.abs(state.yb - INIT.yb) < 1e-9;
+    $("yOut").textContent = fx(state.y, 3);
+    $("ybOut").textContent = fx(state.yb, 3);
+    $("nTOut").textContent = String(state.nt);
+    $("tN").textContent = String(state.nt);
+    $("tW").textContent = fx(c.w2w, 3);
+    $("tD").textContent = fx(c.d2w, 3);
+    $("tR").innerHTML = fx(c.ratio, 2) + " <small>배</small>";
+    $("tIn").innerHTML = "y " + fx(state.y, 3) + (yAssume ? "<span class='assume'>가정값</span>" : "") + "<br>y<sub>bond</sub> " + fx(state.yb, 3) + (ybAssume ? "<span class='assume'>가정값</span>" : "");
+    drawStack();
+  }
+
+  // ---- 본문 풀이와 대조: 표와 window.__selftest() 가 같은 행을 쓴다 ----
+  // status: "match" 일치 · "miss" 불일치. 계산값을 풀이가 적은 자릿수로 반올림해 비교한다.
+  // 한 행에 값 여러 개를 묶을 때는 값마다 [계산, 풀이, 소수 자릿수] 로 비교한다.
+  function cmpOne(got, exp, dp) {
+    var g = Number(got.toFixed(dp)), unit = Math.pow(10, -dp);
+    return Math.abs(g - exp) < unit / 2 ? "match" : "miss";
+  }
+  function checkRows() {
+    var rows = [];
+    function add(name, items, unit) {
+      var st = "match", got = [], exp = [];
+      items.forEach(function (it) {
+        if (cmpOne(it[0], it[1], it[2]) === "miss") st = "miss";
+        got.push(it[0].toFixed(it[2])); exp.push(it[1].toFixed(it[2]));
+      });
+      rows.push({ name: name, got: got.join(" · ") + (unit || ""), expected: exp.join(" · ") + (unit || ""), status: st });
+    }
+    function sw6(d0) { return sweep(d0, MODES.s6.ov, MODES.s6.asm, "s6"); }
+    var a = sw6(0.1), b = sw6(0.05), c = sw6(0.2);
+    function at(sw, key, exps, dp) {
+      return PICKS.map(function (n, i) { return [sw.all[n - 1][key], exps[i], dp]; });
+    }
+    add("6회차 실습 1 · D₀ 0.1 · 칩렛 면적 n = 1·2·4·8", at(a, "A", [8.00, 4.20, 2.30, 1.35], 2), " cm²");
+    add("같은 표 · GDPW", at(a, "G", [64.8, 135.8, 263.4, 466.2], 1));
+    add("같은 표 · 수율", at(a, "Y", [0.449, 0.657, 0.795, 0.874], 3));
+    add("같은 표 · 굿다이", at(a, "good", [29.1, 89.2, 209.3, 407.4], 1));
+    add("같은 표 · 시스템/웨이퍼", at(a, "sys", [29.1, 44.6, 52.3, 50.9], 1));
+    add("같은 표 · 조립수율", at(a, "a", [1.000, 0.990, 0.970, 0.932], 3));
+    add("같은 표 · 유효", at(a, "eff", [29.1, 44.2, 50.8, 47.5], 1));
+    add("같은 표 · 비용", at(a, "cost", [0.03435, 0.02264, 0.01970, 0.02107], 5), " W");
+    add("6회차 실습 1 · D₀ 0.05 · 비용 n = 1·2·4·8", at(b, "cost", [0.02302, 0.01836, 0.01756, 0.01969], 5), " W");
+    add("6회차 실습 1 · D₀ 0.2 · 비용 n = 1·2·4·8", at(c, "cost", [0.07644, 0.03446, 0.02479, 0.02412], 5), " W");
+    add("실습 네 값 중 최적 n (D₀ 0.05·0.1·0.2)", [[b.best4.n, 4, 0], [a.best4.n, 4, 0], [c.best4.n, 8, 0]]);
+    add("절감률 (D₀ 0.05·0.1·0.2)", [[saving(b.best4, b.single) * 100, 23.7, 1], [saving(a.best4, a.single) * 100, 42.6, 1], [saving(c.best4, c.single) * 100, 68.5, 1]], " %");
+    add("1~16 정수 전체 최적 n (D₀ 0.05·0.1·0.2)", [[b.best.n, 3, 0], [a.best.n, 4, 0], [c.best.n, 6, 0]]);
+    add("전체 최적 · D₀ 0.05 비용·절감률", [[b.best.cost, 0.01754, 5], [saving(b.best, b.single) * 100, 23.8, 1]]);
+    add("전체 최적 · D₀ 0.2 비용·절감률", [[c.best.cost, 0.02364, 5], [saving(c.best, c.single) * 100, 69.1, 1]]);
+    add("D₀ 0.1 · n = 5 비용", [[a.all[4].cost, 0.01971, 5]], " W");
+    // 4회차 실습 4: 칩렛 4개 × 220 mm², 조립 0.95 한 번
+    var q = split(4, 0.1, MODES.s4.ov, MODES.s4.asm, "s4"), q1 = split(1, 0.1, MODES.s4.ov, MODES.s4.asm, "s4");
+    add("4회차 실습 2·4 · 단일 다이 800 mm² 원가", [[q1.cost, 0.03435, 5]], " W");
+    add("4회차 실습 4 · 칩렛 GDPW·수율·굿다이", [[q.G, 276.4, 1], [q.Y, 0.8025, 4], [q.good, 221.8, 1]]);
+    add("4회차 실습 4 · 칩렛 하나·네 개 원가, ÷0.95", [[q.cost * q.a / 4, 0.004509, 6], [q.cost * q.a, 0.018035, 6], [q.cost, 0.018984, 6]], " W");
+    add("4회차 실습 4 · 절감액 D₀ 0.1 (본문)", [[q1.cost - q.cost, 0.01536, 5]], " W");
+    add("4회차 실습 4 · 절감액의 웨이퍼값 대비 비율", [[(q1.cost - q.cost) * 100, 1.5, 1]], " %");
+    add("4회차 실습 4 · 웨이퍼 15,000달러일 때 시스템당 여유", [[(q1.cost - q.cost) * 15000, 230, 0]], " 달러");
+    add("4회차 실습 4 표 · D₀ 0.1 단일·칩렛·절감액", [[q1.cost, 0.03435, 5], [q.cost, 0.01898, 5], [q1.cost - q.cost, 0.0154, 4]], " W");
+    var r1 = split(1, 0.02, MODES.s4.ov, MODES.s4.asm, "s4"), r4 = split(4, 0.02, MODES.s4.ov, MODES.s4.asm, "s4");
+    add("4회차 실습 4 표 · D₀ 0.02 단일·칩렛·절감액", [[r1.cost, 0.01811, 5], [r4.cost, 0.01592, 5], [r1.cost - r4.cost, 0.0022, 4]], " W");
+    add("4회차 실습 4 표 · D₀ 0.02 절감액의 웨이퍼값 대비 비율", [[(r1.cost - r4.cost) * 100, 0.22, 2]], " %");
+    function st(key, exps, dp) { return STACK_PICKS.map(function (n, i) { return [stack(0.9, 0.995, n)[key], exps[i], dp]; }); }
+    add("6회차 6절 · W2W n = 2·8·12·16", st("w2w", [0.806, 0.416, 0.267, 0.172], 3));
+    add("6회차 6절 · D2W n = 2·8·12·16", st("d2w", [0.995, 0.966, 0.946, 0.928], 3));
+    add("6회차 6절 · D2W ÷ W2W n = 2·8·12·16", st("ratio", [1.23, 2.32, 3.54, 5.40], 2), " 배");
+    // 처음 상태: 화면이 처음 띄우는 값(INIT)이 본문 예제와 같은가
+    var i0 = sweep(INIT.D0, INIT.ov, INIT.asm, INIT.mode), ic = i0.all[INIT.n - 1];
+    add("처음 상태 (split) · D₀ 0.1, n 4 · 칩렛 면적·비용·두 최적 n·절감률",
+      [[ic.A, 2.30, 2], [ic.cost, 0.01970, 5], [i0.best4.n, 4, 0], [i0.best.n, 4, 0], [saving(ic, i0.single) * 100, 42.6, 1]]);
+    var is = stack(INIT.y, INIT.yb, INIT.nt);
+    add("처음 상태 (stack) · y 0.9, y_bond 0.995, n 8 · W2W·D2W", [[is.w2w, 0.416, 3], [is.d2w, 0.966, 3]]);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + r.got + "</td><td class='num'>" + r.expected + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : " · 모두 일치");
+  }
+
+  // ---- 조작 ----
+  function syncInputs() { $("d0").value = state.D0; $("nS").value = state.n; $("ov").value = state.ov; $("asm").value = state.asm; }
+  $("modeSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var m = MODES[b.dataset.v];
+    state.mode = b.dataset.v; state.ov = m.ov; state.asm = m.asm; if (m.n) state.n = m.n;
+    syncInputs(); updateSplit();
+  });
+  $("d0Seg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.D0 = Number(b.dataset.v); syncInputs(); updateSplit();
+  });
+  $("d0").addEventListener("input", function (e) { state.D0 = Math.round(Number(e.target.value) * 100) / 100; updateSplit(); });
+  $("nS").addEventListener("input", function (e) { state.n = Number(e.target.value); updateSplit(); });
+  $("ov").addEventListener("input", function (e) { state.ov = Number(e.target.value); updateSplit(); });
+  $("asm").addEventListener("input", function (e) { state.asm = Math.round(Number(e.target.value) * 1000) / 1000; updateSplit(); });
+  $("yIn").addEventListener("input", function (e) { state.y = Math.round(Number(e.target.value) * 1000) / 1000; updateStack(); });
+  $("ybIn").addEventListener("input", function (e) { state.yb = Math.round(Number(e.target.value) * 1000) / 1000; updateStack(); });
+  $("nT").addEventListener("input", function (e) { state.nt = Number(e.target.value); updateStack(); });
+
+  $("specLine").textContent = "웨이퍼 지름 d = " + D.wafer.d_mm + " mm, πd²/4 = " + fx(Math.PI * DCM * DCM / 4, 1) + " cm², πd = " + fx(Math.PI * DCM, 2) +
+    " cm. 총 실리콘 800 mm². 비용은 웨이퍼 한 장 값 W의 배수다.";
+  syncInputs();
+  renderCheck();
+  updateSplit();
+  updateStack();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

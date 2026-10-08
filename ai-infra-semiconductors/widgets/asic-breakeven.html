@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASIC 손익분기 계산판</title>
+<script>window.BOOK_DATA={"_about": "위젯이 함께 쓰는 상수. 값은 본문 표와 같아야 한다(위젯은 본문에 없는 수치를 만들지 않는다). 값을 바꾸면 인쇄본의 정지 그림도 다시 찍어야 한다. _src 는 값을 옮겨 온 본문 위치", "chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80, "_src": "2회차 자습 부록 A 실습 1 풀이 표(312 TFLOP/s, 2.04 TB/s). 용량 80GB 는 제품명"}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7, "_src": "2회차 6절 「실제 칩의 리지 포인트」 표(989 TFLOP/s, 3.35 TB/s, HBM3 80GB). tdp_kw 0.7 은 2회차 실습 4 풀이 「전력을 어디서 재는가」 표(H100 SXM 최대 TDP 700 W, H100 사양표)"}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 시스템(GPU당)", "B": 8.0, "cap": 180, "_src": "2회차 6절 「용량도 칩과 시스템이 다르다」 상자: DGX B200 데이터시트 8장 합계 64 TB/s(계산하면 GPU당 8.0 TB/s, I* ≈ 281), 사용자 안내서·데이터시트 8장 합계 1,440 GB(계산하면 GPU당 180 GB). 계산 기본값은 칩 값이고, 이 값은 roofline·kv-cache 에서 「시스템 기준」으로 바꿔 볼 때만 쓴다"}, "_src": "2회차 6절 같은 표(2,250 TFLOP/s, 7.7 TB/s, HBM3e 192GB). 192GB·7.7 TB/s 는 칩 공표값(NVIDIA Blackwell 아키텍처 기술 개요 V2.1 표 3, HGX B200 GPU당 최대)으로 둔다. 2,250 은 같은 표 희소 4.5 PFLOPS 의 절반. DGX B200 데이터시트의 합계 64 TB/s(GPU당 8.0)는 시스템 값이라 기본 계산에 쓰지 않는다. 그 값은 아래 sys 에 두고, roofline·kv-cache 의 「B200 · DGX 시스템」 단추를 눌렀을 때만 쓴다. DGX B200 시스템은 8장 합계 1,440GB, 계산하면 GPU당 180GB(사용자 안내서·데이터시트) — 본문 2회차 6절 「용량도 칩과 시스템이 다르다」가 둘을 구분한다"}], "_chips_units": "P = TFLOP/s(BF16 dense, 희소성 미적용), B = TB/s, cap = GB(10진)", "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64, "_src": "2회차 자습 부록 A 실습 3 풀이 설정(70B급, L = 80, GQA 8헤드 × 128, MHA 64헤드)"}, "tpu_v1": {"array": 256, "_src": "2회차 4절(256 × 256 = 65,536개 8비트 MAC)"}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048, "_src": "3회차 3절 길 ②(HBM3까지 1,024비트, HBM4 2,048비트)"}, "wafer": {"d_mm": 300, "_src": "4회차 0절·5절 「웨이퍼당 굿다이 수」, 6회차 실습 1 풀이(300 mm 웨이퍼, d = 30 cm). die-cost·chiplet 이 함께 쓴다"}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2, "_src": "2회차 실습 4 풀이 「전력을 어디서 재는가」 표(DGX H100/H200 사용자 안내서, 최대 10.2 kW, 계산하면 장당 1.275 kW), 7회차 실습 6 풀이(DGX H100 최대 입력 전력 10.2 kW)"}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440, "_src": "2회차 실습 4 풀이 끝(DGX B200 데이터시트 최대 약 14.3 kW, 장당 약 1.79 kW), 7회차 실습 5 (a)·(c) 풀이(14.3 kW, 8장 합계 1,440 GB)"}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100, "_src": "7회차 실습 5 (a)·(c) 풀이(약 14 kW, 8장 합계 2.1 TB)"}, "_about": "asic-breakeven·datacenter 가 함께 쓰는 제조사 시스템 사양. 모두 최대값이지 상시 소비가 아니다"}};window.WIDGET_ID="asic-breakeven";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/* 레이아웃: 한 단, 두 부분. ① 전력 경계 사다리를 붙인 손익분기(data-part="ch2", 2회차 실습 4)
+   ② 운영비를 직접 넣는 손익분기와 조직별 물량 띠(data-part="ch4", 4회차 실습 5). 대조표는 공통.
+   책 안(html[data-embed])에서는 .standalone-only 가 숨는다. 전력 상한은 window.BOOK_DATA(chips[h100].tdp_kw, systems.dgx_*) */
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --bad: #b0412e;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+
+.bar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.bar .lab { font-size: 13px; color: var(--mut); }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 20px; }
+.ctl { display: grid; gap: 2px; min-width: 0; }
+.ctl > label { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 6px; align-items: baseline; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; white-space: nowrap; }
+input[type=range] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
+.tag { font-style: normal; font-size: 10.5px; line-height: 1.4; color: var(--accent2); border: 1px solid currentColor; border-radius: 4px; padding: 0 3px; margin-left: 3px; white-space: nowrap; vertical-align: 1px; }
+.tag.mfr { color: var(--accent); }
+.tag.own { color: var(--mut); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 5px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.btn { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 4px 12px; border-radius: 7px; cursor: pointer; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.svgbox svg { display: block; width: 100%; height: auto; }
+.svgbox text { fill: var(--fg); font-family: var(--sans); }
+.svgbox .mono { font-family: var(--mono); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; border-top: 1px solid var(--line); padding-top: 12px; margin: 0; }
+.readout div { display: grid; gap: 1px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 23px; color: var(--accent2); font-weight: 500; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 8px 14px; border-radius: 6px; max-width: none; }
+.note.warn { color: var(--fg); border-left: 3px solid var(--bad); }
+.note.warn b { color: var(--bad); }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">2회차 실습 4 · 4회차 실습 5</div>
+  <h1>ASIC 손익분기 계산판</h1>
+  <p class="lede">전용 칩을 만들지 사올지의 판단은 정량화할 수 있다. 개발비 C<sub>NRE</sub> 를 단위당 비용 차이로 나누면 손익분기 물량 N*가 나온다. 2회차 실습 4는 전력비를 칩·서버·시설 가운데 어디서 재는지 따져 N*를 다시 세고, 4회차 실습 5는 다른 가정값으로 N*를 따로 구해 그 물량이 어떤 조직의 것인지 묻는다.</p>
+  <div class="formula">N* = C<sub>NRE</sub> / [(c<sub>G</sub> + o<sub>G</sub>) − (c<sub>A</sub> + o<sub>A</sub>)]　·　o = 장당 kW × PUE × 8,760 × 년 × 가동률 × 전기료</div>
+</header>
+
+<section aria-labelledby="s1" data-part="ch2">
+  <h2 id="s1">① 전력을 어디서 재는가 — 칩, 서버, 시설</h2>
+  <div class="bench" id="figure-ch2">
+    <div class="bar">
+      <span class="lab">전력 경계</span>
+      <div class="seg" id="bdSeg">
+        <button type="button" data-v="chip" aria-pressed="true">칩</button>
+        <button type="button" data-v="server" aria-pressed="false">서버(양쪽)</button>
+        <button type="button" data-v="gpuonly" aria-pressed="false">서버(GPU만)</button>
+      </div>
+      <button type="button" class="btn" id="reset2">풀이 예제로</button>
+      <button type="button" class="btn" id="life2">모델 수명 2년</button>
+    </div>
+    <div class="svgbox" id="ladder" role="img" aria-label="전력 경계 사다리: 칩에서 서버, 시설, 기간 전력량, 운영비까지"></div>
+    <div class="controls" id="ctl2"></div>
+    <div class="svgbox" id="lines2" role="img" aria-label="GPU와 ASIC의 누적 총비용 직선과 손익분기 물량"></div>
+    <div class="svgbox" id="split2" role="img" aria-label="분모를 취득원가 차이와 운영비 차이로 나눈 막대"></div>
+    <dl class="readout">
+      <div><dt>GPU 운영비 o<sub>G</sub></dt><dd id="r2oG"></dd></div>
+      <div><dt>ASIC 운영비 o<sub>A</sub></dt><dd id="r2oA"></dd></div>
+      <div><dt>분모</dt><dd id="r2den"></dd></div>
+      <div><dt>분모 중 전력비 차이</dt><dd id="r2share"></dd></div>
+      <div class="big"><dt>손익분기 물량 N*</dt><dd id="r2n"></dd></div>
+    </dl>
+    <p class="note" id="msg2"></p>
+  </div>
+  <p class="standalone-only">같은 가정이면 어느 경계로 세든 N*는 3,400~3,600대에 머문다. 칩 경계에서 분모 27,875달러 중 전력비 차이는 875달러, 겨우 3%다(서버 경계로 세도 약 6%). 지배하는 것은 취득원가 차이 27,000달러다. 「전기를 아끼려고 자체 칩을 만든다」는 흔한 설명은 이 수치와 맞지 않는다.</p>
+</section>
+
+<section aria-labelledby="s2" data-part="ch4">
+  <h2 id="s2">② N*는 누구의 물량인가</h2>
+  <div class="bench" id="figure-ch4">
+    <div class="bar">
+      <span class="lab">3년 전력비 o 는 계산하지 않고 값으로 넣는다</span>
+      <button type="button" class="btn" id="reset4">풀이 예제로</button>
+    </div>
+    <div class="controls" id="ctl4"></div>
+    <div class="svgbox" id="lines4" role="img" aria-label="GPU와 ASIC의 누적 총비용 직선과 손익분기 물량"></div>
+    <div class="svgbox" id="bands4" role="img" aria-label="조직 유형별 3년 도입 규모 띠와 N*의 자리"></div>
+    <dl class="readout">
+      <div><dt>GPU 단위당 c<sub>G</sub> + o<sub>G</sub></dt><dd id="r4g"></dd></div>
+      <div><dt>ASIC 단위당 c<sub>A</sub> + o<sub>A</sub></dt><dd id="r4a"></dd></div>
+      <div><dt>분모</dt><dd id="r4den"></dd></div>
+      <div class="big"><dt>손익분기 물량 N*</dt><dd id="r4n"></dd></div>
+    </dl>
+    <p class="note" id="msg4"></p>
+  </div>
+  <p class="standalone-only">N*는 필요조건일 뿐이다. 충분조건은 개발 2~3년 후에도 그 워크로드가 살아 있을 것이며, 이것을 보장할 수 있는 조직은 자기 모델을 자기가 통제하는 곳뿐이다. 5,000대라는 문턱은 생각보다 낮아서, 하이퍼스케일러가 아니어도 「거의 하이퍼스케일러급」 사업자들이 커스텀 실리콘을 고려할 수 있다.</p>
+</section>
+
+<section aria-labelledby="s3">
+  <details class="check">
+    <summary>풀이와 대조 (<span id="checkSum"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">2회차 실습 4 풀이(칩 경계·수명 2년·서버 경계·GPU만 서버 경계)와 4회차 실습 5 풀이의 값을 이 그림의 식으로 다시 셈한 것이다. 「풀이」 열은 풀이에 적힌 값이고, 그 자릿수로 반올림해 비교한다.</caption>
+      <thead><tr><th>항목</th><th>계산</th><th>풀이</th><th></th></tr></thead>
+      <tbody id="check"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 계산이 빼놓은 것</h2>
+  <ul class="limits">
+    <li>ASIC 한 대가 GPU 한 대의 일을 같은 처리량·지연·품질로 대신한다고 보았다(1:1 대체). ASIC 처리량이 GPU의 r배라면 같은 수요에 ASIC N/r대가 필요하므로, ASIC 쪽 단위 비용 c<sub>A</sub> + o<sub>A</sub> 를 r로 나눠 넣어야 같은 일의 비교가 된다.</li>
+    <li>전력 값은 상한이다. H100 SXM의 700 W는 칩 하나가 낼 수 있는 열의 상한이지 작업 중 평균 소비가 아니고, DGX H100의 10.2 kW도 최대값이다.</li>
+    <li>단가·전기료·PUE·가동률은 예시용 가정값이고, 제조사 사양에서 온 것은 칩과 서버의 전력 상한뿐이다.</li>
+    <li>ASIC 서버의 사양을 정할 근거가 없으므로, 서버 경계에서는 ASIC도 GPU와 같은 비율(1.275/0.7 ≈ 1.82배)로 올렸다.</li>
+    <li>시간 축. 칩 개발에 2~3년이 걸리는데 모델 아키텍처는 그보다 빨리 바뀐다. 진짜 제약은 N*가 아니라 이 시간이고, 2년 전의 설계 결정이 오늘의 모델 구조를 맞힐 확률이 실제 의사결정 변수다. 이 그림은 그것을 숫자로 넣지 않는다.</li>
+    <li>협상력. 자체 칩이 있으면 상용 GPU 벤더와의 가격 협상에서 옵션 가치를 얻는다. 이것도 숫자로 넣지 않았다.</li>
+    <li>c<sub>A</sub> 는 4회차 5절의 다이당 원가 + 패키징 + 테스트로 계산하는 값이다. 여기서는 값을 직접 넣는다.</li>
+    <li>4회차는 o 를 수명기간 운영비(주로 전력비)의 현재가치라고 부르지만 할인율을 주지 않는다. 이 그림도 할인하지 않는다.</li>
+    <li>②의 띠는 4회차 실습 5 표의 「수십 대」「수백~수천 대」「수만 대」「수십만 대」를 각각 10~99, 100~9,999, 10,000~99,999, 100,000~999,999대로 옮겨 그렸다.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>식: 『AI 인프라와 반도체』 2회차 5절·실습 4 풀이, 4회차 6절·실습 5 풀이.</div>
+  <div>『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·자바스크립트)는 MIT 라이선스, 설명 글은 CC BY-NC 4.0이다.</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  var H100 = D && D.chips ? D.chips.filter(function (c) { return c.id === "h100"; })[0] : null;
+  if (!D || !H100 || !H100.tdp_kw || !D.systems || !D.systems.dgx_h100 || !D.systems.dgx_b200) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>공유 상수(BOOK_DATA)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  var DGX = D.systems.dgx_h100, DGXB = D.systems.dgx_b200;
+  var HOURS = 8760;
+  // 장당 전력(kW). GPU 칩·서버는 제조사 최대값(BOOK_DATA), ASIC 칩 0.3 kW 는 2회차 실습 4의 가정값.
+  // ASIC 서버는 본문처럼 GPU와 같은 비율로 올린다(0.3 × 1.275 / 0.7 = 0.5464)
+  var KW = { gChip: H100.tdp_kw, gSrv: DGX.kw / DGX.gpus, aChip: 0.3 };
+  KW.ratio = KW.gSrv / KW.gChip;
+  KW.aSrv = KW.aChip * KW.ratio;
+  var B200_PER = DGXB.kw / DGXB.gpus;   // 참고 눈금만. 이 값으로 N*를 세는 프리셋은 두지 않는다
+
+  // 처음 상태(본문 예제). 대조표는 사용자가 움직인 값이 아니라 이 값을 본다
+  var INIT2 = { nre: 1, cA: 3000, cG: 30000, gkw: KW.gChip, akw: KW.aChip, pue: 1.3, util: 0.8, price: 0.08, yrs: 3 };  // 2회차 실습 4
+  var INIT4 = { nre: 1.5, cA: 4000, cG: 30000, oA: 2000, oG: 6000 };                                                 // 4회차 실습 5
+  var s2 = assign({}, INIT2), s4 = assign({}, INIT4);
+
+  // ---- 순수 함수 ----
+  function energy(kw, pue, util, yrs) { return kw * pue * HOURS * yrs * util; }                // kWh
+  function breakeven(nreUsd, cA, cG, oA, oG) {
+    var den = (cG + oG) - (cA + oA);
+    return { nre: nreUsd, cA: cA, cG: cG, oA: oA, oG: oG, den: den, acq: cG - cA, op: oG - oA, n: den > 0 ? nreUsd / den : NaN };
+  }
+  function calc2(s) {
+    var eG = energy(s.gkw, s.pue, s.util, s.yrs), eA = energy(s.akw, s.pue, s.util, s.yrs);
+    var r = breakeven(s.nre * 1e8, s.cA, s.cG, eA * s.price, eG * s.price);
+    r.eG = eG; r.eA = eA; return r;
+  }
+  function calc4(s) { return breakeven(s.nre * 1e8, s.cA, s.cG, s.oA, s.oG); }
+  function same(a, b) { return Math.abs(a - b) < 1e-9; }
+  function which(kw, chip, srv) { return same(kw, chip) ? "chip" : same(kw, srv) ? "server" : null; }
+  function boundary(s) {
+    var g = which(s.gkw, KW.gChip, KW.gSrv), a = which(s.akw, KW.aChip, KW.aSrv);
+    if (g === "chip" && a === "chip") return "chip";
+    if (g === "server" && a === "server") return "server";
+    if (g === "server" && a === "chip") return "gpuonly";
+    if (g === "chip" && a === "server") return "asiconly";
+    return null;
+  }
+  function assign(t, o) { for (var k in o) t[k] = o[k]; return t; }
+
+  // ---- 표기 ----
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
+  function fix(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d, minimumFractionDigits: d }); }
+  function kwS(v) { return Math.abs(v * 1000 - Math.round(v * 1000)) > 1e-6 ? fix(v, 4) : fix(v, 3); }
+  function usd(x) { return fmt(Math.round(x)) + "달러"; }
+  function nShow(n) { return n >= 1000 ? Math.round(n / 10) * 10 : Math.round(n); }   // 본문처럼 천 대 이상은 십의 자리
+  function eq(n) { return Math.abs(nShow(n) - n) < 1e-6 ? "= " : "≈ "; }   // 나누어떨어지면 본문처럼 「=」
+  function nText(n) { return isFinite(n) ? eq(n) + fmt(nShow(n)) + "대" : "없음"; }
+  function nHtml(n) {
+    if (!isFinite(n)) return "없음 <small>분모 ≤ 0</small>";
+    var sh = nShow(n);
+    return eq(n) + fmt(sh) + "<small>대</small>" + (Math.abs(sh - n) > 0.05 ? "<small style='display:block;font-size:11.5px'>나눗셈 값 " + fmt(n, 1) + "</small>" : "");
+  }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function niceStep(range, n) {
+    var raw = range / n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+  }
+
+  // ---- 전력 경계 사다리 (ch2) ----
+  function drawLadder(s, r) {
+    var W = 720, H = 172, L0 = 48, bw = 122, gap = 12, bh = 58;
+    function cx(i) { return L0 + i * (bw + gap); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    // 제목은 칸 폭(bw) 안에 들어가야 옆 칸 제목과 겹치지 않는다. 「경계 전력 × PUE」의 내역은 칸 안 둘째 줄이 보여 준다
+    ["① 칩", "② 서버 (장당)", "③ 시설 (× PUE)", "④ 기간 전력량", "⑤ 운영비 o"].forEach(function (h, i) {
+      svg.appendChild(el("text", { x: cx(i) + 4, y: 13, "font-size": 12, "font-weight": 700, fill: "var(--mut)" }, h));
+    });
+    var rows = [
+      { name: "GPU", y: 20, kw: s.gkw, chip: KW.gChip, srv: KW.gSrv, e: r.eG, o: r.oG,
+        chipNote: ["H100 사양표 최대 TDP", "제조사 최대값"], srvNote: ["DGX H100 " + fmt(DGX.kw, 1) + " kW ÷ " + DGX.gpus, "제조사 최대값"] },
+      { name: "ASIC", y: 86, kw: s.akw, chip: KW.aChip, srv: KW.aSrv, e: r.eA, o: r.oA,
+        chipNote: ["가정값", ""], srvNote: [fmt(KW.aChip, 1) + " × " + fix(KW.gSrv, 3) + " ÷ " + fmt(KW.gChip, 1), "GPU와 같은 비율로 올림"] }
+    ];
+    rows.forEach(function (rw) {
+      var used = which(rw.kw, rw.chip, rw.srv);
+      svg.appendChild(el("text", { x: 4, y: rw.y + bh / 2 + 5, "font-size": 13.5, "font-weight": 700 }, rw.name));
+      var cells = [
+        [kwS(rw.chip) + " kW", rw.chipNote[0], rw.chipNote[1], used === "chip" ? "used" : "off"],
+        [kwS(rw.srv) + " kW", rw.srvNote[0], rw.srvNote[1], used === "server" ? "used" : "off"],
+        [fix(rw.kw * s.pue, 3) + " kW", (used === "chip" ? "칩 " : used === "server" ? "서버 " : "직접 ") + kwS(rw.kw) + " × " + fix(s.pue, 2), "PUE 가정값", "calc"],
+        [fmt(Math.round(rw.e)) + " kWh", "× 8,760 h × " + fmt(s.yrs) + "년", "× 가동률 " + fix(s.util, 2), "calc"],
+        [usd(rw.o), "× $" + fix(s.price, 2) + "/kWh", "전기료 가정값", "calc"]
+      ];
+      cells.forEach(function (c, i) {
+        var st = c[3], x = cx(i);
+        var box = { x: x, y: rw.y, width: bw, height: bh, rx: 6 };
+        if (st === "used") assign(box, { fill: "var(--mark)", stroke: "var(--accent2)", "stroke-width": 2 });
+        else if (st === "off") assign(box, { fill: "none", stroke: "var(--line)", "stroke-width": 1.2, "stroke-dasharray": "4 3" });
+        else assign(box, { fill: "var(--soft)", stroke: "var(--line)", "stroke-width": 1 });
+        svg.appendChild(el("rect", box));
+        var op = st === "off" ? 0.5 : 1;
+        svg.appendChild(el("text", { x: x + 8, y: rw.y + 20, "font-size": 14.5, "font-weight": st === "used" || i === 4 ? 700 : 500, "class": "mono", opacity: op,
+          fill: i === 4 ? "var(--accent2)" : "var(--fg)" }, c[0]));
+        if (c[1]) svg.appendChild(el("text", { x: x + 8, y: rw.y + 36, "font-size": 10.5, fill: "var(--mut)", opacity: op }, c[1]));
+        if (c[2]) svg.appendChild(el("text", { x: x + 8, y: rw.y + 50, "font-size": 10.5, opacity: op,
+          fill: /제조사/.test(c[2]) ? "var(--accent)" : /가정/.test(c[2]) ? "var(--accent2)" : "var(--mut)" }, c[2]));
+        if (i < 4) {
+          var ax = x + bw + 2, ay = rw.y + bh / 2;
+          svg.appendChild(el("path", { d: "M" + ax + "," + (ay - 5) + " L" + (ax + gap - 4) + "," + ay + " L" + ax + "," + (ay + 5) + " z", fill: "var(--mut)", "fill-opacity": i === 0 ? 0.4 : 0.8 }));
+        }
+      });
+    });
+    svg.appendChild(el("text", { x: cx(1) + 4, y: H - 6, "font-size": 11, fill: "var(--mut)" },
+      "참고: " + DGXB.label + " 최대 약 " + fmt(DGXB.kw, 1) + " kW ÷ " + DGXB.gpus + " ≈ 장당 " + fix(B200_PER, 2) + " kW (제조사 최대값, 계산에 넣지 않음)"));
+    $("ladder").replaceChildren(svg);
+  }
+
+  // ---- 총비용 두 직선 (ch2·ch4 공통) ----
+  function drawLines(boxId, r) {
+    var W = 720, H = 236, L = 56, R = 14, T = 14, Bm = 36, pw = W - L - R, ph = H - T - Bm, CAP = 2e6;
+    var has = r.den > 0, n = r.n, xmax = 8000;
+    if (has && n * 1.3 > xmax) { var st0 = niceStep(n * 1.3, 4); xmax = Math.min(CAP, Math.ceil(n * 1.3 / st0) * st0); }
+    var uG = r.cG + r.oG, uA = r.cA + r.oA;
+    var gEnd = xmax * uG, aEnd = r.nre + xmax * uA, yTop = Math.max(gEnd, aEnd) * 1.14;
+    function sx(v) { return L + v / xmax * pw; }
+    function sy(v) { return T + ph - v / yTop * ph; }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    var xs = niceStep(xmax, 4);
+    for (var x = 0; x <= xmax + 1e-9; x += xs) {
+      g.appendChild(el("line", { x1: sx(x), x2: sx(x), y1: T, y2: T + ph }));
+      svg.appendChild(el("text", { x: sx(x), y: T + ph + 16, "text-anchor": x + xs > xmax + 1e-9 ? "end" : "middle", "class": "tick" }, fmt(x)));
+    }
+    var ys = niceStep(yTop / 1e8, 4);
+    for (var y = 0; y <= yTop / 1e8 + 1e-9; y += ys) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(y * 1e8), y2: sy(y * 1e8) }));
+      svg.appendChild(el("text", { x: L - 7, y: sy(y * 1e8) + 4, "text-anchor": "end", "class": "tick" }, fmt(y, 2)));
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 3, "text-anchor": "end", "font-size": 12, opacity: 0.8 }, "물량 N [대]"));
+    svg.appendChild(el("text", { x: 12, y: T + 2, "font-size": 12, opacity: 0.8, transform: "rotate(-90 12 " + (T + 2) + ")", "text-anchor": "end" }, "누적 총비용 [억 달러]"));
+    svg.appendChild(el("line", { x1: sx(0), y1: sy(0), x2: sx(xmax), y2: sy(gEnd), stroke: "var(--accent)", "stroke-width": 2.4 }));
+    svg.appendChild(el("line", { x1: sx(0), y1: sy(r.nre), x2: sx(xmax), y2: sy(aEnd), stroke: "var(--accent2)", "stroke-width": 2.4 }));
+    svg.appendChild(el("circle", { cx: sx(0), cy: sy(r.nre), r: 3.5, fill: "var(--accent2)" }));
+    svg.appendChild(el("text", { x: sx(0) + 8, y: sy(r.nre) + 17, "font-size": 11.5, fill: "var(--accent2)" }, "C_NRE " + fmt(r.nre / 1e8, 2) + "억 달러"));
+    // 범례는 왼쪽 위(두 직선이 지나지 않는 자리)에 둔다
+    [["GPU 총비용  N × (c_G + o_G)", "var(--accent)", T + 14], ["ASIC 총비용  C_NRE + N × (c_A + o_A)", "var(--accent2)", T + 32]].forEach(function (lg) {
+      svg.appendChild(el("line", { x1: L + 10, x2: L + 30, y1: lg[2] - 4, y2: lg[2] - 4, stroke: lg[1], "stroke-width": 2.6 }));
+      svg.appendChild(el("text", { x: L + 36, y: lg[2], "font-size": 12.5, "font-weight": 700, fill: lg[1] }, lg[0]));
+    });
+    if (!has) {
+      svg.appendChild(el("text", { x: L + pw / 2, y: T + ph / 2 + 30, "text-anchor": "middle", "font-size": 13.5, "font-weight": 700, fill: "var(--bad)" }, "두 직선이 만나지 않는다 — ASIC이 단위당 더 비싸 언제나 손해"));
+    } else if (n > xmax) {
+      svg.appendChild(el("text", { x: W - R - 4, y: T + ph - 8, "text-anchor": "end", "font-size": 12.5, fill: "var(--bad)" }, "N* " + nText(n) + " — 그림 오른쪽 밖"));
+    } else {
+      var cxp = sx(n), cyp = sy(n * uG);
+      svg.appendChild(el("line", { x1: cxp, x2: cxp, y1: T, y2: T + ph, stroke: "var(--fg)", "stroke-opacity": 0.45, "stroke-dasharray": "4 4" }));
+      svg.appendChild(el("circle", { cx: cxp, cy: cyp, r: 6, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+      var right = cxp < W - R - 150;
+      svg.appendChild(el("text", { x: right ? cxp + 10 : cxp - 10, y: cyp + 22, "text-anchor": right ? "start" : "end", "font-size": 14, "font-weight": 700, "class": "mono", fill: "var(--accent2)" }, "N* " + nText(n)));
+      if (cxp - L > 120) svg.appendChild(el("text", { x: cxp - 8, y: T + ph - 8, "text-anchor": "end", "font-size": 11.5, fill: "var(--mut)" }, "← GPU를 사는 편이 싸다"));
+      if (W - R - cxp > 120) svg.appendChild(el("text", { x: cxp + 8, y: T + ph - 8, "font-size": 11.5, fill: "var(--mut)" }, "ASIC이 싸다 →"));
+    }
+    $(boxId).replaceChildren(svg);
+  }
+
+  // ---- 분모 쪼개기 (ch2) ----
+  function drawSplit(r) {
+    var W = 720, H = 64, svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    if (!(r.den > 0)) {
+      svg.appendChild(el("text", { x: 0, y: 30, "font-size": 13.5, fill: "var(--bad)", "font-weight": 700 }, "분모 " + usd(r.den) + " ≤ 0 — 손익분기 물량이 없다"));
+      $("split2").replaceChildren(svg); return;
+    }
+    var a = Math.abs(r.acq), o = Math.abs(r.op), tot = a + o || 1, wA = a / tot * W, wO = o / tot * W;
+    svg.appendChild(el("text", { x: 0, y: 13, "font-size": 12.5, "font-weight": 700 }, "분모 " + usd(r.den) + " = 취득원가 차이 + 운영비 차이"));
+    function seg(x, w, v, color) {
+      var at = { x: x, y: 20, width: Math.max(w, 1), height: 18, fill: color };
+      if (v < 0) assign(at, { "fill-opacity": 0.25, stroke: "var(--bad)", "stroke-dasharray": "3 2" });
+      svg.appendChild(el("rect", at));
+    }
+    seg(0, wA, r.acq, "var(--accent)");
+    seg(wA, wO, r.op, "var(--accent2)");
+    function pc(v) { return fmt(v / r.den * 100) + "%"; }
+    svg.appendChild(el("text", { x: 0, y: 56, "font-size": 12, fill: "var(--accent)" }, "취득원가 차이 c_G − c_A  " + usd(r.acq) + " · " + pc(r.acq)));
+    svg.appendChild(el("text", { x: W, y: 56, "text-anchor": "end", "font-size": 12, fill: "var(--accent2)", "font-weight": 700 }, "운영비(전력비) 차이 o_G − o_A  " + usd(r.op) + " · " + pc(r.op)));
+    $("split2").replaceChildren(svg);
+  }
+
+  // ---- 조직 유형 띠 (ch4) ----
+  // 4회차 실습 5 표의 「3년 도입 규모」. 괄호 범위는 수사(수십·수백~수천·수만·수십만)를 옮긴 것
+  var BANDS = [
+    { name: "일반 기업·연구기관", qty: "수십 대", lo: 10, hi: 99 },
+    { name: "대기업 사내 AI 인프라", qty: "수백~수천 대 · 경계선", lo: 100, hi: 9999 },
+    { name: "대형 AI 랩", qty: "수만 대", lo: 10000, hi: 99999 },
+    { name: "하이퍼스케일러", qty: "수십만 대", lo: 100000, hi: 999999 }
+  ];
+  function bandOf(n) { for (var i = 0; i < BANDS.length; i++) if (n >= BANDS[i].lo && n < BANDS[i].hi + 1) return BANDS[i]; return null; }
+  function drawBands(r) {
+    var W = 720, H = 120, L = 14, R = 14, pw = W - L - R, y0 = 24, bh = 56;
+    function sx(v) { return L + (Math.log10(v) - 1) / 5 * pw; }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), n = r.n, has = isFinite(n);
+    BANDS.forEach(function (b) {
+      var x1 = sx(b.lo), x2 = sx(b.hi + 1), st = !has ? "" : b.hi < n ? "N*에 못 미친다" : b.lo >= n ? "N*를 넘는다" : "N*가 이 띠 안";
+      var over = has && b.lo >= n, inside = has && !over && b.hi >= n;
+      svg.appendChild(el("rect", { x: x1 + 1, y: y0, width: x2 - x1 - 2, height: bh, rx: 5,
+        fill: inside ? "var(--mark)" : over ? "var(--soft)" : "none", stroke: inside ? "var(--accent2)" : "var(--line)", "stroke-width": inside ? 1.6 : 1 }));
+      var mx = (x1 + x2) / 2;
+      svg.appendChild(el("text", { x: mx, y: y0 + 18, "text-anchor": "middle", "font-size": 12, "font-weight": 700 }, b.name));
+      svg.appendChild(el("text", { x: mx, y: y0 + 34, "text-anchor": "middle", "font-size": 11.5, fill: "var(--mut)" }, b.qty));
+      if (st) svg.appendChild(el("text", { x: mx, y: y0 + 49, "text-anchor": "middle", "font-size": 11, fill: inside ? "var(--accent2)" : over ? "var(--accent)" : "var(--mut)", "font-weight": inside ? 700 : 400 }, st));
+    });
+    [[10, "10"], [100, "100"], [1000, "1천"], [10000, "1만"], [100000, "10만"], [1000000, "100만"]].forEach(function (t) {
+      svg.appendChild(el("line", { x1: sx(t[0]), x2: sx(t[0]), y1: y0 + bh, y2: y0 + bh + 5, stroke: "var(--mut)" }));
+      svg.appendChild(el("text", { x: sx(t[0]), y: y0 + bh + 18, "text-anchor": t[0] === 10 ? "start" : t[0] === 1e6 ? "end" : "middle", "class": "tick" }, t[1]));
+    });
+    svg.appendChild(el("text", { x: W - R, y: H - 2, "text-anchor": "end", "font-size": 11.5, opacity: 0.8 }, "조직 유형별 3년 도입 규모 [대, log]"));
+    if (has) {
+      var cl = Math.min(Math.max(n, 10), 1e6), x = sx(cl), lab = (n < 10 ? "◀ " : "") + "N* " + nText(n) + (n > 1e6 ? " ▶" : "");
+      svg.appendChild(el("line", { x1: x, x2: x, y1: 14, y2: y0 + bh + 4, stroke: "var(--accent2)", "stroke-width": 2.4 }));
+      svg.appendChild(el("path", { d: "M" + (x - 6) + ",8 L" + (x + 6) + ",8 L" + x + ",16 z", fill: "var(--accent2)" }));
+      var endSide = x > W - 160;
+      svg.appendChild(el("text", { x: endSide ? x - 10 : x + 10, y: 14, "text-anchor": endSide ? "end" : "start", "font-size": 12.5, "font-weight": 700, "class": "mono", fill: "var(--accent2)" }, lab));
+    } else {
+      svg.appendChild(el("text", { x: W / 2, y: 14, "text-anchor": "middle", "font-size": 12.5, fill: "var(--bad)", "font-weight": 700 }, "분모 ≤ 0 — 손익분기 물량이 없다"));
+    }
+    $("bands4").replaceChildren(svg);
+  }
+
+  // ---- 조작부 ----
+  var MFR = "<em class='tag mfr'>제조사 최대값</em>", ASM = "<em class='tag'>가정값</em>", OWN = "<em class='tag own'>직접 넣은 값</em>";
+  var CTL2 = [
+    { k: "nre", lab: "개발비 C<sub>NRE</sub>", tag: ASM, min: 0.1, max: 5, step: 0.1, out: function (v) { return fmt(v, 2) + "억 달러"; } },
+    { k: "cA", lab: "ASIC 단가 c<sub>A</sub>", tag: ASM, min: 500, max: 30000, step: 100, out: usd },
+    { k: "cG", lab: "GPU 단가 c<sub>G</sub>", tag: ASM, min: 5000, max: 60000, step: 500, out: usd },
+    { k: "gkw", lab: "GPU 전력", tag: function (s) { return which(s.gkw, KW.gChip, KW.gSrv) ? MFR : OWN; }, min: 0.1, max: 2.5, step: 0.005, out: function (v) { return kwS(v) + " kW"; } },
+    { k: "akw", lab: "ASIC 전력", tag: ASM, min: 0.05, max: 2.5, step: 0.005, out: function (v) { return kwS(v) + " kW"; } },
+    { k: "pue", lab: "PUE", tag: ASM, min: 1, max: 2, step: 0.01, out: function (v) { return fix(v, 2); } },
+    { k: "util", lab: "가동률", tag: ASM, min: 0.1, max: 1, step: 0.05, out: function (v) { return fix(v, 2); } },
+    { k: "price", lab: "전기료", tag: ASM, min: 0.02, max: 0.3, step: 0.01, out: function (v) { return "$" + fix(v, 2) + "/kWh"; } },
+    { k: "yrs", lab: "기간", tag: ASM, min: 1, max: 6, step: 1, out: function (v) { return fmt(v) + "년"; } }
+  ];
+  var CTL4 = [
+    { k: "nre", lab: "개발비 C<sub>NRE</sub>", tag: ASM, min: 0.1, max: 5, step: 0.1, out: function (v) { return fmt(v, 2) + "억 달러"; } },
+    { k: "cA", lab: "ASIC 단가 c<sub>A</sub>", tag: ASM, min: 500, max: 30000, step: 100, out: usd },
+    { k: "cG", lab: "GPU 단가 c<sub>G</sub>", tag: ASM, min: 5000, max: 60000, step: 500, out: usd },
+    { k: "oA", lab: "ASIC 전력비 o<sub>A</sub>", tag: ASM, min: 0, max: 20000, step: 100, out: usd },
+    { k: "oG", lab: "GPU 전력비 o<sub>G</sub>", tag: ASM, min: 0, max: 30000, step: 100, out: usd }
+  ];
+  function buildCtl(boxId, spec, st, pre, onChange) {
+    var box = $(boxId);
+    spec.forEach(function (c) {
+      var d = document.createElement("div"); d.className = "ctl";
+      d.innerHTML = "<label for='" + pre + c.k + "'><span>" + c.lab + "<span id='" + pre + c.k + "Tag'></span></span><output id='" + pre + c.k + "Out'></output></label>" +
+        "<input type='range' id='" + pre + c.k + "' min='" + c.min + "' max='" + c.max + "' step='" + c.step + "'>";
+      box.appendChild(d);
+      $(pre + c.k).addEventListener("input", function (e) { st[c.k] = Number(e.target.value); onChange(); });
+    });
+  }
+  // 상태를 조작부에 옮긴다. 상태는 따로 들고 있으므로 슬라이더 눈금에 없는 값(0.5464 kW)도 계산은 정확하다
+  function syncCtl(spec, st, pre) {
+    spec.forEach(function (c) {
+      var inp = $(pre + c.k);
+      if (Math.abs(Number(inp.value) - st[c.k]) > c.step / 2) inp.value = st[c.k];
+      $(pre + c.k + "Out").textContent = c.out(st[c.k]);
+      $(pre + c.k + "Tag").innerHTML = typeof c.tag === "function" ? c.tag(st) : c.tag;
+    });
+  }
+
+  function share(r) { return r.den > 0 ? fmt(r.op / r.den * 100) + "%" : "—"; }
+  function update2() {
+    syncCtl(CTL2, s2, "c2-");
+    var r = calc2(s2), bd = boundary(s2);
+    $("bdSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === bd)); });
+    $("r2oG").innerHTML = fmt(Math.round(r.oG)) + "<small>달러</small>";
+    $("r2oA").innerHTML = fmt(Math.round(r.oA)) + "<small>달러</small>";
+    $("r2den").innerHTML = fmt(Math.round(r.den)) + "<small>달러</small>";
+    $("r2share").textContent = share(r);
+    $("r2n").innerHTML = nHtml(r.n);
+    var m = $("msg2"), lead, warn = false;
+    if (bd === "chip") lead = "칩 경계: GPU는 H100 SXM 최대 TDP(제조사 값), ASIC은 가정값 0.3 kW로 셌다.";
+    else if (bd === "server") lead = "서버 경계: ASIC도 같은 경계로 올려 비교했다.";
+    else if (bd === "gpuonly") { warn = true; lead = "<b>경계를 한쪽만 옮기면 비교가 틀어진다.</b> GPU는 서버 경계(" + kwS(KW.gSrv) + " kW), ASIC은 칩 " + kwS(KW.aChip) + " kW 그대로라 분모가 커지고 N*가 ASIC 쪽으로 기운다."; }
+    else if (bd === "asiconly") { warn = true; lead = "<b>경계를 한쪽만 옮기면 비교가 틀어진다.</b> GPU는 칩 경계, ASIC은 서버 경계로 셌다."; }
+    else lead = "장당 전력을 직접 넣었다(GPU " + kwS(s2.gkw) + " kW, ASIC " + kwS(s2.akw) + " kW).";
+    var tail;
+    if (!(r.den > 0)) { warn = true; tail = " <b>분모가 0 이하다 — ASIC이 단위당 더 비싸 언제나 손해다.</b> 손익분기 물량은 없다."; }
+    else tail = " 분모 " + usd(r.den) + " 가운데 전력비 차이는 " + usd(r.op) + "(" + share(r) + ")이고, " +
+      (Math.abs(r.acq) >= Math.abs(r.op) ? "지배하는 것은 취득원가 차이 " + usd(r.acq) + "다." : "이 값에서는 운영비 차이가 취득원가 차이(" + usd(r.acq) + ")보다 크다.");
+    m.className = "note" + (warn ? " warn" : "");
+    m.innerHTML = lead + tail;
+    drawLadder(s2, r); drawLines("lines2", r); drawSplit(r);
+  }
+  function update4() {
+    syncCtl(CTL4, s4, "c4-");
+    var r = calc4(s4), b = isFinite(r.n) ? bandOf(r.n) : null, m = $("msg4");
+    $("r4g").innerHTML = fmt(r.cG + r.oG) + "<small>달러</small>";
+    $("r4a").innerHTML = fmt(r.cA + r.oA) + "<small>달러</small>";
+    $("r4den").innerHTML = fmt(r.den) + "<small>달러</small>";
+    $("r4n").innerHTML = nHtml(r.n);
+    if (!(r.den > 0)) { m.className = "note warn"; m.innerHTML = "<b>분모가 0 이하다 — ASIC이 단위당 더 비싸 언제나 손해다.</b> 손익분기 물량은 없다."; }
+    else {
+      m.className = "note";
+      m.textContent = "N* " + nText(r.n) + (b ? "는 「" + b.name + " — " + b.qty + "」 띠 안에 놓인다." : "는 표의 네 띠 밖에 놓인다.") +
+        (b && b !== BANDS[BANDS.length - 1] ? " 이보다 오른쪽 띠의 조직은 3년 도입 규모가 N*를 넘는다." : "");
+    }
+    drawLines("lines4", r); drawBands(r);
+  }
+
+  // ---- 본문 풀이와 대조: 표와 window.__selftest() 가 같은 행을 쓴다 ----
+  // status: "match" 일치 · "miss" 불일치. 「round」는 쓰지 않는다 — 본문 값을 그 자릿수로 반올림해 비교한다
+  function rnd(x, d) { var p = Math.pow(10, d); return Math.round((x + (x >= 0 ? 1e-9 : -1e-9)) * p) / p; }
+  function shownD(x, d) { return d >= 0 ? fix(x, d) : fmt(x); }
+  function checkRows() {
+    var rows = [];
+    function add(name, raw, expected, d) {
+      var got = rnd(raw, d), ok = Math.abs(got - expected) < 1e-9;
+      rows.push({ name: name, got: got, expected: expected, status: ok ? "match" : "miss", shown: shownD(got, d), bookShown: shownD(expected, d) });
+    }
+    var base = { nre: 1, cA: 3000, cG: 30000, pue: 1.3, util: 0.8, price: 0.08, yrs: 3 };
+    var chip = calc2(assign(assign({}, base), { gkw: KW.gChip, akw: KW.aChip }));
+    var life2 = calc2(assign(assign({}, base), { gkw: KW.gChip, akw: KW.aChip, yrs: 2 }));
+    var srv = calc2(assign(assign({}, base), { gkw: KW.gSrv, akw: KW.aSrv }));
+    var gpo = calc2(assign(assign({}, base), { gkw: KW.gSrv, akw: KW.aChip }));
+    var c4 = calc4({ nre: 1.5, cA: 4000, cG: 30000, oA: 2000, oG: 6000 });
+    add("2회차 실습 4 · 칩 · GPU 전력량 (kWh)", chip.eG, 19132, 0);
+    add("2회차 실습 4 · 칩 · o_G (달러)", chip.oG, 1531, 0);
+    add("2회차 실습 4 · 칩 · ASIC 전력량 (kWh)", chip.eA, 8199, 0);
+    add("2회차 실습 4 · 칩 · o_A (달러)", chip.oA, 656, 0);
+    add("2회차 실습 4 · 칩 · 분모 (달러)", chip.den, 27875, 0);
+    add("2회차 실습 4 · 칩 · N* (대, 십의 자리)", chip.n, 3590, -1);
+    add("2회차 실습 4 · 수명 2년 · 분모 (달러)", life2.den, 27583, 0);
+    add("2회차 실습 4 · 수명 2년 · N* (대, 십의 자리)", life2.n, 3630, -1);
+    add("2회차 실습 4 · 칩 · 전력비 차이 (달러)", chip.op, 875, 0);
+    add("2회차 실습 4 · 칩 · 전력비 차이 몫 (%)", chip.op / chip.den * 100, 3, 0);
+    add("서버 경계 · GPU 장당 (kW)", KW.gSrv, 1.275, 3);
+    add("서버 경계 · 칩 대비 배율", KW.ratio, 1.82, 2);
+    add("서버 경계 · ASIC 장당 (kW)", KW.aSrv, 0.5464, 4);
+    add("서버 경계 · GPU 전력량 (kWh)", srv.eG, 34847, 0);
+    add("서버 경계 · o_G (달러)", srv.oG, 2788, 0);
+    add("서버 경계 · o_G 칩 경계 대비 (배)", srv.oG / chip.oG, 1.8, 1);
+    add("서버 경계 · ASIC 전력량 (kWh)", srv.eA, 14935, 0);
+    add("서버 경계 · o_A (달러)", srv.oA, 1195, 0);
+    add("서버 경계 · 분모 (달러)", srv.den, 28593, 0);
+    add("서버 경계 · N* (대, 십의 자리)", srv.n, 3500, -1);
+    add("서버 경계 · 전력비 차이 (달러)", srv.op, 1593, 0);
+    add("서버 경계 · 전력비 차이 몫 (%)", srv.op / srv.den * 100, 6, 0);
+    add("서버(GPU만) · 분모 (달러)", gpo.den, 29132, 0);
+    add("서버(GPU만) · N* (대, 십의 자리)", gpo.n, 3430, -1);
+    add("참고 · DGX B200 장당 (kW)", B200_PER, 1.79, 2);
+    add("4회차 실습 5 · 분모 (달러)", c4.den, 30000, 0);
+    add("4회차 실습 5 · N* (대)", c4.n, 5000, 0);
+    add("처음 상태 (ch2, 칩 경계) · N* (대, 십의 자리)", calc2(INIT2).n, 3590, -1);
+    add("처음 상태 (ch4) · N* (대)", calc4(INIT4).n, 5000, 0);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", round: "<span class='round'>반올림 차</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + r.shown + "</td><td class='num'>" + r.bookShown + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : " · 모두 일치");
+  }
+
+  // ---- 연결 ----
+  buildCtl("ctl2", CTL2, s2, "c2-", update2);
+  buildCtl("ctl4", CTL4, s4, "c4-", update4);
+  $("bdSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var v = b.dataset.v;
+    s2.gkw = v === "chip" ? KW.gChip : KW.gSrv;
+    s2.akw = v === "server" ? KW.aSrv : KW.aChip;
+    update2();
+  });
+  $("reset2").addEventListener("click", function () { assign(s2, INIT2); update2(); });
+  $("life2").addEventListener("click", function () { assign(s2, INIT2); s2.yrs = 2; update2(); });
+  $("reset4").addEventListener("click", function () { assign(s4, INIT4); update4(); });
+  $("specLine").textContent = "전력 상한(제조사 최대값): H100 SXM 최대 TDP " + fmt(KW.gChip * 1000) + " W, " + DGX.label + " 최대 " + fmt(DGX.kw, 1) + " kW(GPU " + DGX.gpus + "장), " +
+    DGXB.label + " 최대 약 " + fmt(DGXB.kw, 1) + " kW(GPU " + DGXB.gpus + "장). 2회차 실습 4 풀이 「전력을 어디서 재는가」 표를 따랐다. 단가·전기료·PUE·가동률·ASIC 전력은 이 책의 가정값이다.";
+  renderCheck(); update2(); update4();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>
