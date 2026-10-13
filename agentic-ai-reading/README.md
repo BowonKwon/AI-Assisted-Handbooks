@@ -3,7 +3,7 @@
 **ReAct에서 LLM Wiki까지, Agentic AI 논문 읽기** · 일요일은 AI · 에이전트 스터디 · 권보원 엮음 · 1.0판(2026. 10. 5.)
 
 - [화면본(HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/agentic-ai-reading/)
-- [인쇄본(PDF, 408쪽)](agentic-ai-reading-v1.0.pdf)
+- [인쇄본(PDF, 411쪽)](agentic-ai-reading-v1.0.pdf)
 
 GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일이 커서 표시되지 않습니다. 책은 위 화면본 링크로 여십시오.
 
