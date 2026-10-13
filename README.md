@@ -15,10 +15,10 @@
 
 ## 이용 허락
 
-- 엮은이가 쓴 부분은 [CC BY-NC 4.0](LICENSE)(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 고쳐 쓰고 나눌 수 있습니다. 받은 사람에게 이 라이선스보다 좁은 조건을 덧붙여서는 안 됩니다.
-- 인터랙티브 그림의 코드(HTML·자바스크립트)도 같은 CC BY-NC 4.0입니다.
+- 이 저장소의 자료에서 엮은이에게 권리가 있는 부분은 [CC BY-NC 4.0](LICENSE)(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 고쳐 쓰고 나눌 수 있습니다. 받은 사람의 이용을 법적 조건이나 기술적 조치로 제한해서는 안 됩니다. 이 요약은 이해를 돕기 위한 것이고, 조건은 라이선스 원문을 따릅니다.
+- 인터랙티브 그림의 코드(HTML·CSS·자바스크립트)는 [PolyForm Noncommercial 1.0.0](ai-infra-semiconductors/widgets/LICENSE.md)으로 공개합니다. 비영리 목적의 이용·수정·재배포는 그 라이선스의 조건에 따라 허용됩니다. 상업적으로 이용하시려면 미리 [Issues](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues)로 연락해 이용 조건을 따로 협의해 주십시오.
 - © 2026 권보원(Bowon Kwon)
-- 원문에서 옮기거나 다시 그린 표·인용·그림은 각 원저작자의 권리를 따릅니다. 권리자께서 알려 주시면 고치거나 빼겠습니다.
+- 원문에서 옮기거나 다시 그린 표·인용·그림은 이 라이선스들의 대상이 아니며 각 원저작자의 권리를 따릅니다. 권리자께서 알려 주시면 고치거나 빼겠습니다.
 - 논문 PDF는 링크로만 안내합니다.
 
 ## 일러두기
@@ -41,8 +41,8 @@ Study handbooks compiled with generative AI.
 | *Machines That Think, Act, and Revise: Reading Agentic AI Papers, from ReAct to LLM Wiki* | Korean | Study-group members and self-learners with basic statistics and programming | Computer science / AI | 1.0 (Oct 5, 2026) |
 | *AI Infrastructure and Semiconductors: A Seven-Session Self-Study Guide* | Korean | Learners with statistics, computing, or AI backgrounds | Semiconductors / computer architecture | 2.0 (Oct 8, 2026) |
 | *Harness in Hand: Building AI Agents with Claude Code and Codex* (hands-on companion to *Machines That Think, Act, and Revise*) | Korean | Study-group members and self-learners new to Claude Code or Codex | Computer science / AI | 1.0 (Oct 13, 2026) |
-| *A Library That Remembers What You Read: An LLM Wiki Self-Study Guide for Lawyers* | Korean | Lawyers (judges, attorneys, in-house counsel, researchers) and self-learners | Law / applied AI | 2.0 (Oct 13, 2026) |
+| *A Library That Remembers What You Read: Building an LLM Wiki — A Self-Study Guide for Lawyers* | Korean | Lawyers (judges, attorneys, in-house counsel, researchers) and self-learners | Law / applied AI | 2.0 (Oct 13, 2026) |
 
 The handbooks have been checked against the original sources several times, but errors may remain. Please report any discrepancy with the originals via [Issues](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues); corrections are released with a new version number and date.
 
-The editor's own text, including the code of the interactive figures (HTML/JavaScript), is licensed under [CC BY-NC 4.0](LICENSE). © 2026 Bowon Kwon. Tables, quotations, and figures reproduced or redrawn from original works remain subject to the rights of their authors. Papers are linked, not redistributed. These are personal study materials and do not represent the views of any institution the editor belongs to.
+To the extent the editor holds rights in them, the texts are licensed under [CC BY-NC 4.0](LICENSE); this summary is for convenience, and the license text governs. The code of the interactive figures (HTML/CSS/JavaScript) is licensed under the [PolyForm Noncommercial License 1.0.0](ai-infra-semiconductors/widgets/LICENSE.md); for commercial use, please open an [issue](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues) to arrange separate terms. © 2026 Bowon Kwon. Tables, quotations, and figures reproduced or redrawn from original works are not covered by these licenses and remain subject to the rights of their authors. Papers are linked, not redistributed. These are personal study materials and do not represent the views of any institution the editor belongs to.

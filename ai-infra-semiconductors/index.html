@@ -154,7 +154,11 @@ details>*:last-child{padding-bottom:10px}
 .printtoc{display:none}
 
 @media (max-width:1080px){
-  .layout{grid-template-columns:1fr}
+  .layout{grid-template-columns:minmax(0,1fr)}  /* 1fr 은 가장 넓은 내용보다 좁아지지 못해 휴대전화에서 가로 넘침(2026-10-13) */
+  :not(pre)>code{overflow-wrap:anywhere}         /* 긴 URL·설정 키 인라인 코드 */
+  .mb{overflow-x:auto;overflow-y:hidden}         /* 화면보다 넓은 블록 수식은 상자 안에서 가로 스크롤 */
+  main{overflow-wrap:break-word}                 /* 글자로 적은 긴 URL — 넘칠 때만 끊는다 */
+  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}  /* 긴 인라인 수식 */
   .rail{position:static;height:auto;border-right:0;
     border-bottom:1px solid var(--line);padding:18px}
   main{padding:32px 22px 80px}
@@ -677,7 +681,7 @@ figure.widget figcaption b,figure.widget-still figcaption b{color:var(--fg)}
 <aside class="callout note">
 <p class="ctitle">먼저 알아 둘 것</p>
 <p>이 책은 엮은이가 생성형 AI(Claude)와 함께 만들었습니다. 회차마다 1차 출처와 대조하는 검증을 여러 차례 거쳤지만 틀린 서술이 남아 있을 수 있습니다. 수치와 인용은 원문으로 다시 확인해 주십시오. 이 책은 앞으로도 계속 고쳐 나가겠습니다. 지금 보시는 판과 날짜는 표지와 간기에 있습니다(2.0판 · 2026. 10. 8.).</p>
-<p>엮은이가 쓴 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 자유롭게 고쳐 쓰고 나눌 수 있습니다. 받은 사람에게 이 라이선스보다 좁은 조건을 덧붙여서는 안 됩니다. 원문에서 옮기거나 다시 그린 표·인용·그림은 각 원저작자의 권리를 따릅니다. 권리자께서 저장소 이슈로 알려 주시면 고치거나 빼겠습니다. 화면본에 든 인터랙티브 그림의 코드(HTML·자바스크립트)도 CC BY-NC 4.0으로 공개합니다.</p>
+<p>이 책에서 엮은이에게 권리가 있는 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 자유롭게 고쳐 쓰고 나눌 수 있습니다. 받은 사람의 이용을 법적 조건이나 기술적 조치로 제한해서는 안 됩니다. 이 요약은 이해를 돕기 위한 것이고, 조건은 라이선스 원문을 따릅니다. 화면본에 든 인터랙티브 그림의 코드(HTML·CSS·자바스크립트)는 <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>으로 따로 공개합니다. 비영리 목적의 이용·수정·재배포는 그 라이선스의 조건에 따라 허용되고, 상업적으로 이용하시려면 미리 저장소 이슈로 연락해 이용 조건을 따로 협의해 주십시오. 원문에서 옮기거나 다시 그린 표·인용·그림은 이 라이선스들의 대상이 아니며 각 원저작자의 권리를 따릅니다. 권리자께서 저장소 이슈로 알려 주시면 고치거나 빼겠습니다.</p>
 </aside>
 <p>이 책은 「일요일은 AI」 스터디의 반도체 회차를 위해 엮은 자습서로, AI 인프라와 반도체를 일곱 회차로 다룹니다. 통계·전산·AI 배경은 있지만 반도체를 전공하지 않은 분을 위해 썼고, 용어를 외우게 하는 대신 <strong class="lng">몇 개의 식을 세워 숫자를 직접 넣어 보게</strong> 합니다. 회차마다 계산 실습과 전체 풀이가 붙어 있어 혼자서도 답을 검증할 수 있습니다. 화면본(HTML)에서는 식 가까이에 놓인 인터랙티브 그림에서 값을 바꿔 볼 수 있고, 인쇄본(PDF)에는 같은 자리에 처음 상태의 그림이 실려 있습니다. 다른 모임에서 같은 방식으로 읽으시거나 혼자 읽으셔도 좋습니다.</p>
 <hr>
@@ -2013,8 +2017,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -2171,7 +2175,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;TPU v1의 256 × 256 = 65,536개 8비트 MAC 배열: Jouppi et al., “In-Datacenter Performance Analysis of a Tensor Processing Unit,” ISCA 2017. 본문 2회차 4절을 따랐다.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 2회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -2626,8 +2631,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -2793,7 +2798,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;모형: Williams, Waterman &amp;amp; Patterson, “Roofline: An Insightful Visual Performance Model for Multicore Architectures,” &lt;i&gt;CACM&lt;/i&gt; 52(4), 2009.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 2회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -3429,8 +3435,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -3578,7 +3584,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 2회차 실습 3, 3회차 실습 3 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -3900,8 +3907,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -4046,7 +4053,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 2회차 5절·실습 4 풀이, 4회차 6절·실습 5 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -5364,8 +5372,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -5517,7 +5525,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div&gt;값: HBF는 2026-08-04 OCP 공개 첫 표준 사양(SK하이닉스 발표 — 스택당 최대 512 GB, 세 등급 약 0.4~3.0 TB/s)과 SanDisk 1세대 제품 목표(2025년 7월 자료, 1.6 TB/s). HBM4는 JESD270-4(8 Gbps)와 삼성 양산 출하 발표(2026-02-12, 11.7 Gbps·최대 13 Gbps, 스택당 최대 3.3 TB/s, 12단 24~36 GB).&lt;/div&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 3회차 6절 「두 계층을 섞으면 — 단순 모형」.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -5956,8 +5965,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -6141,7 +6150,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 3회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -6531,8 +6541,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -6716,7 +6726,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 3회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -8253,8 +8264,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 h3 { font-size: 15px; margin: 0; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
@@ -8480,7 +8491,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 4회차 0절 「이 식도 근사다」, 5절 수율의 경제학, 자습 부록 A 실습 1~3 풀이. GDPW 근사식 비교 문헌은 de Vries(2005).&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 4회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -8968,8 +8980,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 h3 { font-size: 15px; margin: 0; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
@@ -9195,7 +9207,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 4회차 0절 「이 식도 근사다」, 5절 수율의 경제학, 자습 부록 A 실습 1~3 풀이. GDPW 근사식 비교 문헌은 de Vries(2005).&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 4회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -9723,8 +9736,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -9869,7 +9882,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 2회차 5절·실습 4 풀이, 4회차 6절·실습 5 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -11329,8 +11343,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -11533,7 +11547,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 5회차 4절(레일리 판정식, 축소 투영, EUV의 잔인한 물리, High-NA EUV)과 실습 1~5 풀이. 기준 광원 출력 250 W는 TSMC가 2019년 첫 EUV 양산 공정을 알리며 밝힌 일상 운영 출력(250 W 이상)이다.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 5회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -12049,8 +12064,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -12253,7 +12268,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 5회차 4절(레일리 판정식, 축소 투영, EUV의 잔인한 물리, High-NA EUV)과 실습 1~5 풀이. 기준 광원 출력 250 W는 TSMC가 2019년 첫 EUV 양산 공정을 알리며 밝힌 일상 운영 출력(250 W 이상)이다.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 5회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -12773,8 +12789,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -12977,7 +12993,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 5회차 4절(레일리 판정식, 축소 투영, EUV의 잔인한 물리, High-NA EUV)과 실습 1~5 풀이. 기준 광원 출력 250 W는 TSMC가 2019년 첫 EUV 양산 공정을 알리며 밝힌 일상 운영 출력(250 W 이상)이다.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 5회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -13521,8 +13538,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -13725,7 +13742,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 5회차 4절(레일리 판정식, 축소 투영, EUV의 잔인한 물리, High-NA EUV)과 실습 1~5 풀이. 기준 광원 출력 250 W는 TSMC가 2019년 첫 EUV 양산 공정을 알리며 밝힌 일상 운영 출력(250 W 이상)이다.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 5회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -15118,13 +15136,13 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
 .formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
-.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
 
 .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 24px; }
 .ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
@@ -15293,7 +15311,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 6회차 6절과 실습 1 풀이, 4회차 실습 2·4 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 &lt;script&gt;
@@ -15761,8 +15780,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -15963,7 +15982,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 6회차 7절 「3D의 최대 적 — 열」, 실습 2·4 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 6회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -16555,8 +16575,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -16685,7 +16705,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 6회차 7절 「패키지 신뢰성 — 열과 습기를 얼마나 견디나」. 시험 조건은 JEDEC JESD47I(2012년 7월판) 표 1의 HTOL.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -17237,13 +17258,13 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
 .formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
-.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
 
 .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 24px; }
 .ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
@@ -17412,7 +17433,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식: 『AI 인프라와 반도체』 6회차 6절과 실습 1 풀이, 4회차 실습 2·4 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 &lt;script&gt;
@@ -17855,8 +17877,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -18057,7 +18079,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 6회차 7절 「3D의 최대 적 — 열」, 실습 2·4 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 6회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -18624,8 +18647,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -18826,7 +18849,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 &lt;footer class=&quot;standalone-only&quot;&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 6회차 7절 「3D의 최대 적 — 열」, 실습 2·4 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 6회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -20289,8 +20313,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 h3 { margin: 0; font-size: 14.5px; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
@@ -20632,7 +20656,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 7회차 2·3·4·6절, 실습 1~6 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 7회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -21354,8 +21379,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 h3 { margin: 0; font-size: 14.5px; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
@@ -21697,7 +21722,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 7회차 2·3·4·6절, 실습 1~6 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 7회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -22444,8 +22470,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 h3 { margin: 0; font-size: 14.5px; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
@@ -22787,7 +22813,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 7회차 2·3·4·6절, 실습 1~6 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 7회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -23519,8 +23546,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 h3 { margin: 0; font-size: 14.5px; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
@@ -23862,7 +23889,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 7회차 2·3·4·6절, 실습 1~6 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 7회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -24661,8 +24689,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 h3 { margin: 0; font-size: 14.5px; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
@@ -25004,7 +25032,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 7회차 2·3·4·6절, 실습 1~6 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 7회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -25748,8 +25777,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 h3 { margin: 0; font-size: 14.5px; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
@@ -26091,7 +26120,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   &lt;div id=&quot;specLine&quot;&gt;&lt;/div&gt;
   &lt;div&gt;식과 수치: 『AI 인프라와 반도체』 7회차 2·3·4·6절, 실습 1~6 풀이.&lt;/div&gt;
   &lt;div&gt;『AI 인프라와 반도체』 7회차 인터랙티브 그림 · 권보원 엮음&lt;/div&gt;
-  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 &lt;a href=&quot;https://polyformproject.org/licenses/noncommercial/1.0.0&quot;&gt;PolyForm Noncommercial 1.0.0&lt;/a&gt;, 설명 글은 &lt;a href=&quot;https://creativecommons.org/licenses/by-nc/4.0/deed.ko&quot;&gt;CC BY-NC 4.0&lt;/a&gt;이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 &lt;a href=&quot;https://github.com/BowonKwon/AI-Assisted-Handbooks/issues&quot;&gt;저장소 이슈&lt;/a&gt;로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)&lt;/div&gt;
+  &lt;div&gt;Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)&lt;/div&gt;
 &lt;/footer&gt;
 &lt;/div&gt;
 
@@ -28210,7 +28240,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 </tr>
 <tr>
 <td>이용 허락</td>
-<td>엮은이가 쓴 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제). 화면본에 든 인터랙티브 그림의 코드(HTML·자바스크립트)도 CC BY-NC 4.0이다. 원문에서 옮기거나 다시 그린 표·인용·그림은 각 원저작자의 권리를 따른다. 권리자가 알려 오면 고치거나 뺀다. © 2026 권보원(Bowon Kwon)</td>
+<td>이 책에서 엮은이에게 권리가 있는 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제). 요약은 「이 책의 사용법」 첫 상자에 있고, 조건은 라이선스 원문을 따른다. 화면본 인터랙티브 그림의 코드(HTML·CSS·자바스크립트)는 <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>이고, 상업적 이용은 따로 협의한다. 원문에서 옮기거나 다시 그린 표·인용·그림은 이 라이선스들의 대상이 아니며 각 원저작자의 권리를 따른다. 권리자가 알려 오면 고치거나 뺀다. © 2026 권보원(Bowon Kwon)</td>
 </tr>
 <tr>
 <td>구성</td>
@@ -28265,6 +28295,11 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <td>2.0판</td>
 <td>2026. 10. 8.</td>
 <td><strong>첫 공개판.</strong> 1판을 바탕으로 스터디 발표·토론에서 나온 내용을 1차 출처로 확인해 더하고, 인터랙티브 그림 12개(화면본. PDF는 같은 자리에 정지 그림)와 원자료 링크를 넣었다. 시점이 지난 수치를 다시 확인하고, 다른 AI 모델의 전권 통독으로 계산·서술 오류와 지나친 단정을 고쳤다. 용어 색인은 114개다</td>
+</tr>
+<tr>
+<td>2.0판 정정</td>
+<td>2026. 10. 13.</td>
+<td>이용 허락 문구를 고쳤다(권리가 있는 범위, 법적 조건·기술적 조치에 의한 추가 제한 금지, 요약의 지위, 제3자 자료 제외). 인터랙티브 그림의 코드는 CC BY-NC 4.0에서 PolyForm Noncommercial 1.0.0으로 바꾸고 상업적 이용은 따로 협의하기로 했다. 그 전에 받은 사본에는 종전 조건이 그대로 적용된다. 본문 내용은 바뀌지 않았다</td>
 </tr>
 </tbody>
 </table></div>
