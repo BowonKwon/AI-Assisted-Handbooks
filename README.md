@@ -39,7 +39,7 @@ Study handbooks compiled with generative AI.
 |---|---|---|---|---|
 | *Machines That Think, Act, and Revise: Reading Agentic AI Papers, from ReAct to LLM Wiki* | Korean | Study-group members and self-learners with basic statistics and programming | Computer science / AI | 1.0 (Oct 5, 2026) |
 | *AI Infrastructure and Semiconductors: A Seven-Session Self-Study Guide* | Korean | Learners with statistics, computing, or AI backgrounds | Semiconductors / computer architecture | 2.0 (Oct 8, 2026) |
-| *Holding the Reins: Building Agents with Claude Code and Codex* (hands-on companion to *Machines That Think, Act, and Revise*) | Korean | Study-group members and self-learners new to Claude Code or Codex | Computer science / AI | 1.0 (Oct 13, 2026) |
+| *Harness in Hand: Building AI Agents with Claude Code and Codex* (hands-on companion to *Machines That Think, Act, and Revise*) | Korean | Study-group members and self-learners new to Claude Code or Codex | Computer science / AI | 1.0 (Oct 13, 2026) |
 
 The handbooks have been checked against the original sources several times, but errors may remain. Please report any discrepancy with the originals via [Issues](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues); corrections are released with a new version number and date.
 
