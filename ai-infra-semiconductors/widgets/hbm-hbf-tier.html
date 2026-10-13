@@ -42,8 +42,8 @@ body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-s
 .wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
 header { display: grid; gap: 10px; }
 .eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
-h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
 p { margin: 0; max-width: 68ch; }
 .lede { color: var(--mut); }
 section { display: grid; gap: 16px; min-width: 0; }
@@ -195,7 +195,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   <div>값: HBF는 2026-08-04 OCP 공개 첫 표준 사양(SK하이닉스 발표 — 스택당 최대 512 GB, 세 등급 약 0.4~3.0 TB/s)과 SanDisk 1세대 제품 목표(2025년 7월 자료, 1.6 TB/s). HBM4는 JESD270-4(8 Gbps)와 삼성 양산 출하 발표(2026-02-12, 11.7 Gbps·최대 13 Gbps, 스택당 최대 3.3 TB/s, 12단 24~36 GB).</div>
   <div>식: 『AI 인프라와 반도체』 3회차 6절 「두 계층을 섞으면 — 단순 모형」.</div>
   <div>『AI 인프라와 반도체』 인터랙티브 그림 · 권보원 엮음</div>
-  <div>이용 허락: 이 페이지의 코드(HTML·자바스크립트)와 설명 글은 모두 CC BY-NC 4.0이다. © 2026 권보원(Bowon Kwon)</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)는 <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>, 설명 글은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">저장소 이슈</a>로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
 </footer>
 </div>
 

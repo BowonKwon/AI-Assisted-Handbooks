@@ -154,7 +154,11 @@ details>*:last-child{padding-bottom:10px}
 .printtoc{display:none}
 
 @media (max-width:1080px){
-  .layout{grid-template-columns:1fr}
+  .layout{grid-template-columns:minmax(0,1fr)}  /* 1fr 은 가장 넓은 내용보다 좁아지지 못해 휴대전화에서 가로 넘침(2026-10-13) */
+  :not(pre)>code{overflow-wrap:anywhere}         /* 긴 URL·설정 키 인라인 코드 */
+  .mb{overflow-x:auto;overflow-y:hidden}         /* 화면보다 넓은 블록 수식은 상자 안에서 가로 스크롤 */
+  main{overflow-wrap:break-word}                 /* 글자로 적은 긴 URL — 넘칠 때만 끊는다 */
+  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}  /* 긴 인라인 수식 */
   .rail{position:static;height:auto;border-right:0;
     border-bottom:1px solid var(--line);padding:18px}
   main{padding:32px 22px 80px}
@@ -1014,7 +1018,7 @@ details>*:last-child{padding-bottom:10px}
 <aside class="callout note">
 <p class="ctitle">먼저 알아 둘 것</p>
 <p>이 책은 엮은이가 생성형 AI(Claude)와 함께 만들었습니다. 장마다 원문과 대조하는 검증을 여러 차례 거쳤지만 틀린 서술이 남아 있을 수 있습니다. 수치와 인용은 원문으로 다시 확인해 주십시오. 이 책은 앞으로도 계속 고쳐 나가겠습니다. 지금 보시는 판과 날짜는 표지와 간기에 있습니다(1.0판 · 2026. 10. 5.).</p>
-<p>엮은이가 쓴 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 자유롭게 고쳐 쓰고 나눌 수 있습니다. 받은 사람에게 이 라이선스보다 좁은 조건을 덧붙여서는 안 됩니다. 원문에서 옮기거나 다시 그린 표·인용·그림은 각 원저작자의 권리를 따릅니다. 권리자께서 저장소 이슈로 알려 주시면 고치거나 빼겠습니다.</p>
+<p>이 책에서 엮은이에게 권리가 있는 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 자유롭게 고쳐 쓰고 나눌 수 있습니다. 받은 사람의 이용을 법적 조건이나 기술적 조치로 제한해서는 안 됩니다. 이 요약은 이해를 돕기 위한 것이고, 조건은 라이선스 원문을 따릅니다. 원문에서 옮기거나 다시 그린 표·인용·그림은 이 라이선스의 대상이 아니며 각 원저작자의 권리를 따릅니다. 권리자께서 저장소 이슈로 알려 주시면 고치거나 빼겠습니다.</p>
 </aside>
 <p>이 책은 「일요일은 AI」 스터디가 매주 한 시간씩 Agentic AI 논문을 읽기 위해 엮은 자습서입니다. 확률·통계·선형대수와 프로그래밍 기초가 있으면 읽기 편합니다. 자연어처리와 강화학습이 처음이거나 오랜만인 분은 0장(사전 자습)으로 먼저 복습하실 수 있습니다. 다른 모임에서 같은 방식으로 스터디를 하시거나 혼자 읽으셔도 좋습니다.</p>
 <h2 id="c0-1-한-회차는-어떻게-흘러가나">1. 한 회차는 어떻게 흘러가나</h2>
@@ -19297,7 +19301,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 </tr>
 <tr>
 <td>이용 허락</td>
-<td>엮은이가 쓴 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제). 원문에서 옮기거나 다시 그린 표·인용·그림은 각 원저작자의 권리를 따른다. 권리자가 알려 오면 고치거나 뺀다</td>
+<td>이 책에서 엮은이에게 권리가 있는 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제). 요약은 「이 책의 사용법」 첫 상자에 있고, 조건은 라이선스 원문을 따른다. 원문에서 옮기거나 다시 그린 표·인용·그림은 이 라이선스의 대상이 아니며 각 원저작자의 권리를 따른다. 권리자가 알려 오면 고치거나 뺀다</td>
 </tr>
 <tr>
 <td>구성</td>
