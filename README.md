@@ -7,7 +7,7 @@
 | 자료 | 대상 독자 | 분야 | 판 | 읽기 |
 |---|---|---|---|---|
 | **생각하고, 행동하고, 고쳐 쓰는 기계** — ReAct에서 LLM Wiki까지, Agentic AI 논문 읽기 | 확률·통계와 프로그래밍 기초가 있는 스터디 참가자, 혼자 읽는 독자 | 컴퓨터과학·AI | 1.0 (2026. 10. 5.) | [화면본](https://bowonkwon.github.io/AI-Assisted-Handbooks/agentic-ai-reading/) · [PDF](agentic-ai-reading/agentic-ai-reading-v1.0.pdf) · [소개](agentic-ai-reading/README.md) |
-| **AI 인프라와 반도체** — 통계·전산·AI 배경 학습자를 위한 일곱 회차 자습서 | 통계·전산·AI 배경 학습자 | 반도체·컴퓨터 구조 | 2.0 (2026. 10. 8.) | [화면본](https://bowonkwon.github.io/AI-Assisted-Handbooks/ai-infra-semiconductors/) · [PDF](ai-infra-semiconductors/ai-infra-semiconductors-v2.0.pdf) · [소개](ai-infra-semiconductors/README.md) |
+| **AI 인프라와 반도체** — 통계·전산·AI 배경 학습자를 위한 일곱 회차 자습서 | 통계·전산·AI 배경 학습자 | 반도체·컴퓨터 구조 | 2.0.1 (2026. 10. 22.) | [화면본](https://bowonkwon.github.io/AI-Assisted-Handbooks/ai-infra-semiconductors/) · [PDF](ai-infra-semiconductors/ai-infra-semiconductors-v2.0.1.pdf) · [소개](ai-infra-semiconductors/README.md) |
 | **고삐를 쥐고 기계에게 일을 맡기는 법** — Claude Code·Codex로 내 일을 대신할 에이전트 짓기(위 「생각하고, 행동하고, 고쳐 쓰는 기계」의 실전편) | Claude Code나 Codex를 처음 쓰는 스터디 참가자, 혼자 읽는 독자 | 컴퓨터과학·AI | 1.0 (2026. 10. 13.) | [화면본](https://bowonkwon.github.io/AI-Assisted-Handbooks/agentic-ai-practice/) · [PDF](agentic-ai-practice/agentic-ai-practice-v1.0.pdf) · [소개](agentic-ai-practice/README.md) |
 | **읽은 것이 사라지지 않는 서재** — 법률가를 위한 LLM 위키 자습서 | 법률가(법관·변호사·기업 법무·연구자), 혼자 읽는 독자 | 법학·AI 활용 | 2.0 (2026. 10. 13.) | [화면본](https://bowonkwon.github.io/AI-Assisted-Handbooks/llm-wiki/) · [PDF](llm-wiki/llm-wiki-v2.0.pdf) · [소개](llm-wiki/README.md) |
 
@@ -39,7 +39,7 @@ Study handbooks compiled with generative AI.
 | Handbook | Language | Readers | Field | Version |
 |---|---|---|---|---|
 | *Machines That Think, Act, and Revise: Reading Agentic AI Papers, from ReAct to LLM Wiki* | Korean | Study-group members and self-learners with basic statistics and programming | Computer science / AI | 1.0 (Oct 5, 2026) |
-| *AI Infrastructure and Semiconductors: A Seven-Session Self-Study Guide* | Korean | Learners with statistics, computing, or AI backgrounds | Semiconductors / computer architecture | 2.0 (Oct 8, 2026) |
+| *AI Infrastructure and Semiconductors: A Seven-Session Self-Study Guide* | Korean | Learners with statistics, computing, or AI backgrounds | Semiconductors / computer architecture | 2.0.1 (Oct 22, 2026) |
 | *Harness in Hand: Building AI Agents with Claude Code and Codex* (hands-on companion to *Machines That Think, Act, and Revise*) | Korean | Study-group members and self-learners new to Claude Code or Codex | Computer science / AI | 1.0 (Oct 13, 2026) |
 | *A Library That Remembers What You Read: Building an LLM Wiki — A Self-Study Guide for Lawyers* | Korean | Lawyers (judges, attorneys, in-house counsel, researchers) and self-learners | Law / applied AI | 2.0 (Oct 13, 2026) |
 
