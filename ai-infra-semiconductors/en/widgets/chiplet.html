@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chiplet Cost Calculator</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="chiplet";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl.wide { grid-column: 1 / -1; }
+.controls.two { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.inl { display: flex; align-items: center; gap: 12px; }
+.inl input[type=range] { flex: 1; min-width: 0; }
+.inl .seg button { padding: 3px 9px; font-size: 13px; }
+.readout.three { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); }
+.readout dd small.sub { display: block; font-size: 12.5px; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; white-space: nowrap; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; align-content: start; }
+.readout div[hidden] { display: none; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+.assume { font-size: 11.5px; color: var(--warn); font-family: var(--sans); border: 1px solid var(--warn); border-radius: 4px; padding: 0 4px; margin-left: 4px; vertical-align: 1px; }
+
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 13px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend i { display: inline-block; width: 14px; height: 3px; vertical-align: 4px; margin-right: 6px; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+table.rows { font-size: 13px; }
+table.rows th, table.rows td { padding: 4px 6px; }
+table.rows td { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+table.rows tr.sel td { background: var(--mark); font-weight: 700; }
+table.rows td.cost { color: var(--accent2); }
+.match { color: var(--ok); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 6, Section 6 · Exercise 1 · Session 4, Exercise 4</div>
+  <h1>How much cheaper when you split, how much survives when you stack</h1>
+  <p class="lede">What do you do when you need the performance of a large chip but cannot make one? Using the formulas in the text, this figure works out how many pieces to split 800 mm² of silicon into so that the systems from one wafer come out cheapest, and how far yield diverges between stacking whole wafers and stacking only good dies.</p>
+</header>
+
+<section aria-labelledby="s1" data-part="split">
+  <h2 id="s1">① Total cost by number of splits</h2>
+  <div class="formula standalone-only">A<sub>n</sub> = 8 × [1 + o(n−1)] / n cm²　·　GDPW(A) = (πd²/4)/A − πd/√(2A)　·　cost = W ÷ [GDPW · e<sup>−A<sub>n</sub>D<sub>0</sub></sup> ÷ n × a<sup>n−1</sup>]</div>
+  <div class="bench" id="figure-split">
+    <div class="controls two">
+      <div class="ctl wide"><div class="lab">Assumption</div>
+        <div class="seg" id="modeSeg">
+          <button type="button" data-v="s6" aria-pressed="true">Session 6, Exercise 1 (compounding overhead)</button>
+          <button type="button" data-v="s4" aria-pressed="false">Session 4, Exercise 4 (4 chiplets · 10% overhead · assembly 0.95)</button>
+        </div></div>
+      <div class="ctl"><label for="d0"><span>Defect density D<sub>0</sub> [/cm²]</span> <output id="d0Out"></output></label>
+        <div class="inl"><input type="range" id="d0" min="0.01" max="0.3" step="0.01" value="0.1">
+        <div class="seg" id="d0Seg"></div></div></div>
+      <div class="ctl"><label for="nS">Number of splits n <output id="nSOut"></output></label>
+        <input type="range" id="nS" min="1" max="16" step="1" value="4"></div>
+      <div class="ctl"><label for="ov"><span id="ovLab"></span> <output id="ovOut"></output></label>
+        <input type="range" id="ov" min="0" max="20" step="1" value="5"></div>
+      <div class="ctl"><label for="asm"><span id="asmLab"></span> <output id="asmOut"></output></label>
+        <input type="range" id="asm" min="0.9" max="1" step="0.005" value="0.99"></div>
+    </div>
+    <p class="note" id="modeNote" hidden></p>
+    <div>
+      <div class="chart" id="splitChart" role="img" aria-label="Cost per system versus number of splits"></div>
+      <div class="legend" style="margin-top:6px">
+        <span><i style="background:var(--accent2)"></i>Current D<sub>0</sub></span>
+        <span><i style="background:var(--mut);opacity:.6"></i>Other D<sub>0</sub> in the solution (same assumption)</span>
+        <span id="markLegend"></span>
+      </div>
+    </div>
+    <dl class="readout three">
+      <div><dt>Chiplet area (n = <span id="rN"></span>)</dt><dd id="rA"></dd></div>
+      <div class="big"><dt>Cost per system</dt><dd id="rC"></dd></div>
+      <div><dt>Saving vs. single die</dt><dd id="rS"></dd></div>
+      <div id="rSaBox" hidden><dt>Saving = ceiling on added cost</dt><dd id="rSa"></dd></div>
+      <div id="r14Box" hidden><dt>Single die (n = 1) vs. 4 chiplets (n = 4)</dt><dd id="r14"></dd></div>
+      <div id="rO4Box"><dt>Best of n = 1·2·4·8</dt><dd id="rO4"></dd></div>
+      <div id="rOallBox"><dt>Best over all n = 1–16</dt><dd id="rOall"></dd></div>
+    </dl>
+    <div class="tbl">
+      <table class="rows">
+        <thead><tr><th>n</th><th>Chiplet area</th><th>GDPW</th><th>Yield</th><th>Good dies</th><th>Systems/wafer</th><th>Assembly yield</th><th>Effective</th><th>Cost [W]</th></tr></thead>
+        <tbody id="splitRows"></tbody>
+      </table>
+    </div>
+  </div>
+  <p class="standalone-only">Cost is the silicon cost of one system, written as a multiple of W, the price of one wafer. The more defects there are, the more it pays to split finely. Split without limit, though, and interface overhead and assembly yield loss eat up the yield gain. The Session 4, Exercise 4 assumption adds 10% area to each chiplet and multiplies by an assembly yield of 0.95. The saving is then read as a ceiling that the added interposer and assembly cost must not exceed.</p>
+</section>
+
+<section aria-labelledby="s2" data-part="stack">
+  <h2 id="s2">② Wafer-to-wafer stacking (W2W) and die-to-wafer stacking (D2W)</h2>
+  <div class="formula standalone-only">Y<sub>W2W</sub> = y<sup>n</sup> × y<sub>bond</sub><sup>n−1</sup>　·　Y<sub>D2W</sub> ≈ y<sub>bond</sub><sup>n−1</sup> (with perfect screening)　·　ratio = D2W ÷ W2W</div>
+  <div class="bench" id="figure-stack">
+    <div class="controls">
+      <div class="ctl"><label for="yIn">Die yield y <output id="yOut"></output></label><input type="range" id="yIn" min="0.5" max="1" step="0.005" value="0.9"></div>
+      <div class="ctl"><label for="ybIn"><span>Yield of one bonding step y<sub>bond</sub></span> <output id="ybOut"></output></label><input type="range" id="ybIn" min="0.95" max="1" step="0.001" value="0.995"></div>
+      <div class="ctl"><label for="nT">Stack height n <output id="nTOut"></output></label><input type="range" id="nT" min="2" max="16" step="1" value="8"></div>
+    </div>
+    <dl class="readout">
+      <div><dt>W2W yield (n = <span id="tN"></span>)</dt><dd id="tW"></dd></div>
+      <div><dt>D2W yield</dt><dd id="tD"></dd></div>
+      <div class="big"><dt>D2W ÷ W2W</dt><dd id="tR"></dd></div>
+      <div><dt>Inputs</dt><dd style="font-size:14px" id="tIn"></dd></div>
+    </dl>
+    <div>
+      <div class="chart" id="stackChart" role="img" aria-label="W2W and D2W yield curves versus stack height"></div>
+      <div class="legend" style="margin-top:6px">
+        <span><i style="background:var(--accent)"></i>D2W y<sub>bond</sub><sup>n−1</sup></span>
+        <span><i style="background:var(--accent2)"></i>W2W y<sup>n</sup>y<sub>bond</sub><sup>n−1</sup></span>
+        <span>Large dots = n = 2·8·12·16 from the table in the text; numbers below = D2W ÷ W2W at that n</span>
+      </div>
+    </div>
+  </div>
+  <p class="standalone-only">W2W bonds two wafers in one step, which is productive, but it cannot pick the good dies. A defective die on the upper wafer lands right on top of a good die on the lower wafer. D2W cuts and tests the dies first and bonds only known good dies (KGD). With two layers the gap is around 20%; as layers are added it grows several times over.</p>
+</section>
+
+<section aria-labelledby="s3">
+  <details class="check">
+    <summary>Check against the solution tables (<span id="checkSum"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">Values from the two tables and the paragraph below them in Session 6, solution to Exercise 1, from Session 4, solution to Exercise 4, and from the table in Session 6, Section 6, recomputed with this figure's formulas. Solution values are rounded, so computed values are rounded to the digits the solution shows before comparing.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="check"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>The amount of added interposer and assembly cost is not included. The solution gives no figure either and reads the saving as a ceiling that cost must not exceed (Session 4, Exercise 4). With few defects, as at D<sub>0</sub> = 0.05, adding that cost can reverse the result.</li>
+    <li>The price of the die-to-die interface circuitry (PHY) enters only as area overhead. Session 6, Section 2 of the text notes that the PHY also consumes power, and that communication across dies is slower and more expensive than on-die communication.</li>
+    <li>The curve is flat near the optimum. At D<sub>0</sub> = 0.1, n = 4–6 all fall within 2% of the optimum.</li>
+    <li>Yield follows the Poisson model e<sup>−AD<sub>0</sub></sup>. When defects cluster, actual yield is higher than the Poisson prediction (Session 4, Section 5 and Exercise 3).</li>
+    <li>The GDPW approximation gives 1–5% fewer dies than a direct count for 100–800 mm² dies (Session 4, Section 5).</li>
+    <li>The D2W formula is an approximation that assumes perfect screening. In D2W, too, the value of the discarded bad dies stays on as cost. The yield loss does not disappear; it moves to before stacking.</li>
+    <li>y = 0.9 and y<sub>bond</sub> = 0.995 are assumed values from the text. The bonding yield is the same value as the example in Session 3, Section 5.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>Formulas: <i>AI Infrastructure and Semiconductors</i>, Session 6, Section 6 and solution to Exercise 1; Session 4, solutions to Exercises 2 and 4.</div>
+  <div><i>AI Infrastructure and Semiconductors</i> interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>, and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through the <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to agree terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.wafer || !D.wafer.d_mm) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>The shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  var DCM = D.wafer.d_mm / 10;          //
+  var ATOT = 8;                          //
+  var D0_PRESETS = [0.05, 0.1, 0.2];     //
+  var D0_PRESETS_S4 = [0.02, 0.1];       //
+  var PICKS = [1, 2, 4, 8];              //
+  var PICKS_S4 = [1, 4];                 //
+  function presetsFor(mode) { return mode === "s4" ? D0_PRESETS_S4 : D0_PRESETS; }
+  function picksFor(mode) { return mode === "s4" ? PICKS_S4 : PICKS; }
+  var STACK_PICKS = [2, 8, 12, 16];      //
+  //
+  var MODES = { s6: { ov: 5, asm: 0.99 }, s4: { ov: 10, asm: 0.95, n: 4 } };
+  var INIT = { mode: "s6", D0: 0.1, n: 4, ov: 5, asm: 0.99, y: 0.9, yb: 0.995, nt: 8 };
+  var state = JSON.parse(JSON.stringify(INIT));
+
+  //
+  function gdpw(A) { return Math.PI * DCM * DCM / 4 / A - Math.PI * DCM / Math.sqrt(2 * A); }
+  //
+  //
+  function split(n, D0, ovPct, asm, mode) {
+    var o = ovPct / 100, A, a;
+    if (mode === "s4") { A = n === 1 ? ATOT : ATOT * (1 + o) / n; a = n === 1 ? 1 : asm; }
+    else { A = ATOT * (1 + o * (n - 1)) / n; a = Math.pow(asm, n - 1); }
+    var G = gdpw(A), Y = Math.exp(-A * D0), good = G * Y, sys = good / n, eff = sys * a;
+    return { n: n, A: A, G: G, Y: Y, good: good, sys: sys, a: a, eff: eff, cost: 1 / eff };
+  }
+  function sweep(D0, ovPct, asm, mode) {
+    var all = [], best = null, best4 = null;
+    for (var n = 1; n <= 16; n++) {
+      var r = split(n, D0, ovPct, asm, mode); all.push(r);
+      if (!best || r.cost < best.cost) best = r;
+      if (PICKS.indexOf(n) >= 0 && (!best4 || r.cost < best4.cost)) best4 = r;
+    }
+    return { all: all, best: best, best4: best4, single: all[0] };
+  }
+  function saving(r, single) { return 1 - r.cost / single.cost; }
+  function stack(y, yb, n) { var w = Math.pow(y, n) * Math.pow(yb, n - 1), d = Math.pow(yb, n - 1); return { w2w: w, d2w: d, ratio: d / w }; }
+
+  function $(id) { return document.getElementById(id); }
+  function fx(x, d) { return x.toFixed(d); }
+  function pct(x, d) { return (x * 100).toFixed(d === undefined ? 1 : d) + "%"; }
+
+  //
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function niceStep(span, target) {
+    var raw = span / target, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+  }
+
+  //
+  var W = 720, H = 280, L = 66, R = 24, T = 18, Bm = 44;
+  function drawSplit(sw) {
+    var curves = [{ D0: state.D0, sw: sw, on: true }];
+    var s4 = state.mode === "s4", picks = picksFor(state.mode);
+    presetsFor(state.mode).forEach(function (d) { if (Math.abs(d - state.D0) > 1e-9) curves.push({ D0: d, sw: sweep(d, state.ov, state.asm, state.mode), on: false }); });
+    var ymax = 0;
+    curves.forEach(function (c) { c.sw.all.forEach(function (r) { ymax = Math.max(ymax, r.cost); }); });
+    var step = niceStep(ymax, 5); ymax = Math.ceil(ymax / step - 1e-9) * step;
+    function sx(n) { return L + (n - 1) / 15 * (W - L - R); }
+    function sy(c) { return H - Bm - c / ymax * (H - T - Bm); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    var dec = step < 0.01 ? 3 : 2;
+    for (var i = 0; i * step <= ymax + 1e-12; i++) {
+      var v = i * step;
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, i === 0 ? "0" : fx(v, dec)));
+    }
+    for (var n = 1; n <= 16; n++) {
+      if (picks.indexOf(n) >= 0 || n % 2 === 0) g.appendChild(el("line", { x1: sx(n), x2: sx(n), y1: T, y2: H - Bm, "stroke-opacity": picks.indexOf(n) >= 0 ? 1 : 0.4 }));
+      svg.appendChild(el("text", { x: sx(n), y: H - Bm + 16, "text-anchor": "middle", "class": "tick" }, String(n)));
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Number of splits n"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Cost per system [W]"));
+    svg.appendChild(el("line", { x1: sx(state.n), x2: sx(state.n), y1: T, y2: H - Bm, stroke: "var(--accent2)", "stroke-dasharray": "4 4", "stroke-opacity": 0.7 }));
+    curves.slice().reverse().forEach(function (c) {
+      var d = c.sw.all.map(function (r, k) { return (k ? "L" : "M") + sx(r.n).toFixed(1) + "," + sy(r.cost).toFixed(1); }).join(" ");
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: c.on ? "var(--accent2)" : "var(--mut)", "stroke-width": c.on ? 2.6 : 1.3, "stroke-opacity": c.on ? 1 : 0.55 }));
+      if (!c.on) {
+        //
+        var last = c.sw.all[15], above = last.cost > sw.all[15].cost;
+        svg.appendChild(el("text", { x: sx(16) - 4, y: sy(last.cost) + (above ? -7 : 15), "text-anchor": "end", "font-size": 11.5, fill: "var(--mut)" }, "D₀ " + c.D0));
+      }
+    });
+    picks.forEach(function (k) {
+      var r = sw.all[k - 1];
+      svg.appendChild(el("circle", { cx: sx(k), cy: sy(r.cost), r: 5, fill: "var(--card)", stroke: "var(--accent2)", "stroke-width": 2 }));
+    });
+    //
+    //
+    if (!s4) {
+      var b4 = sw.best4, ba = sw.best, base = H - Bm - 9;
+      var dx = sx(b4.n), dy = base;
+      svg.appendChild(el("path", { d: "M" + dx + "," + (dy - 5) + " L" + (dx + 5) + "," + dy + " L" + dx + "," + (dy + 5) + " L" + (dx - 5) + "," + dy + " Z", fill: "var(--accent)", stroke: "var(--card)", "stroke-width": 1.5 }));
+      var ax = sx(ba.n), ay = base - (ba.n === b4.n ? 13 : 0);
+      svg.appendChild(el("path", { d: "M" + ax + "," + (ay - 5) + " L" + (ax + 5) + "," + (ay + 4) + " L" + (ax - 5) + "," + (ay + 4) + " Z", fill: "var(--ok)", stroke: "var(--card)", "stroke-width": 1.5 }));
+    }
+    var cur = sw.all[state.n - 1], right = state.n <= 11;
+    svg.appendChild(el("circle", { cx: sx(state.n), cy: sy(cur.cost), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("text", { x: sx(state.n) + (right ? 10 : -10), y: sy(cur.cost) - 12, "text-anchor": right ? "start" : "end", "font-size": 13, "font-weight": 700, fill: "var(--accent2)" }, "n = " + state.n + " · " + fx(cur.cost, 5) + " W"));
+    $("splitChart").replaceChildren(svg);
+  }
+
+  function rowHtml(r, sel) {
+    return "<tr" + (sel ? " class='sel'" : "") + "><td>" + r.n + "</td><td>" + fx(r.A, 2) + " cm²</td><td>" + fx(r.G, 1) + "</td><td>" + fx(r.Y, 3) + "</td><td>" + fx(r.good, 1) +
+      "</td><td>" + fx(r.sys, 1) + "</td><td>" + fx(r.a, 3) + "</td><td>" + fx(r.eff, 1) + "</td><td class='cost'>" + fx(r.cost, 5) + "</td></tr>";
+  }
+
+  function updateSplit() {
+    var sw = sweep(state.D0, state.ov, state.asm, state.mode), cur = sw.all[state.n - 1], s4 = state.mode === "s4";
+    $("d0Out").textContent = fx(state.D0, 2);
+    $("nSOut").textContent = String(state.n);
+    $("ovOut").textContent = state.ov + "%";
+    $("asmOut").textContent = fx(state.asm, 3);
+    $("ovLab").textContent = s4 ? "Interface overhead (per chiplet)" : "Interface overhead (compounded per split)";
+    $("asmLab").textContent = s4 ? "Assembly yield (once overall)" : "Assembly yield (per added die)";
+    var presets = presetsFor(state.mode), seg = $("d0Seg");
+    if (seg.dataset.mode !== state.mode) {
+      seg.dataset.mode = state.mode;
+      seg.innerHTML = presets.map(function (d) { return "<button type='button' data-v='" + d + "' aria-pressed='false'>" + d + "</button>"; }).join("");
+    }
+    seg.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Math.abs(Number(b.dataset.v) - state.D0) < 1e-9)); });
+    $("modeSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === state.mode)); });
+    //
+    $("modeNote").hidden = !s4;
+    $("modeNote").textContent = s4
+      ? "Session 4, Exercise 4 assumption: each chiplet gets +" + state.ov + "% area (not compounded with the number of splits), and an assembly yield of " + fx(state.asm, 3) + " is applied once to the whole. Changing n applies the same assumption to that n. At n = 1 there is no overhead and no assembly. Cost = (n ÷ good dies) ÷ assembly yield."
+      : "";
+    $("rN").textContent = String(state.n);
+    $("rA").innerHTML = fx(cur.A, 2) + " <small>cm²</small>";
+    $("rC").innerHTML = fx(cur.cost, 5) + " <small>W</small>";
+    $("rS").textContent = pct(saving(cur, sw.single));
+    //
+    $("rSaBox").hidden = !s4; $("r14Box").hidden = !s4;
+    $("rO4Box").hidden = s4; $("rOallBox").hidden = s4;
+    $("rSa").innerHTML = fx(sw.single.cost - cur.cost, 5) + " <small>W</small>";
+    var c4 = sw.all[3];
+    $("r14").innerHTML = fx(sw.single.cost, 5) + " → " + fx(c4.cost, 5) + " <small>W</small><small class='sub'>saving " + fx(sw.single.cost - c4.cost, 5) + " W</small>";
+    $("rO4").innerHTML = "n = " + sw.best4.n + " <small class='sub'>" + fx(sw.best4.cost, 5) + " W<br>saving rate " + pct(saving(sw.best4, sw.single)) + "</small>";
+    $("rOall").innerHTML = "n = " + sw.best.n + " <small class='sub'>" + fx(sw.best.cost, 5) + " W<br>saving rate " + pct(saving(sw.best, sw.single)) + "</small>";
+    $("markLegend").textContent = s4
+      ? "Large dots = n = 1 (single die) and 4 (four chiplets), the pair the solution compares"
+      : "Large dots = n = 1·2·4·8 chosen in the exercise · ◆ on the x-axis = best of those four · ▲ = best over all n = 1–16";
+    var ns = picksFor(state.mode).slice(); if (ns.indexOf(state.n) < 0) { ns.push(state.n); ns.sort(function (a, b) { return a - b; }); }
+    $("splitRows").innerHTML = ns.map(function (n) { return rowHtml(sw.all[n - 1], n === state.n); }).join("");
+    drawSplit(sw);
+  }
+
+  //
+  var W2 = 720, H2 = 320, L2 = 56, R2 = 70, T2 = 16, B2 = 44;
+  function drawStack() {
+    function sx(n) { return L2 + (n - 2) / 14 * (W2 - L2 - R2); }
+    function sy(v) { return H2 - B2 - v * (H2 - T2 - B2); }
+    var svg = el("svg", { viewBox: "0 0 " + W2 + " " + H2 }), g = el("g", { "class": "grid" });
+    for (var i = 0; i <= 5; i++) {
+      var v = i * 0.2;
+      g.appendChild(el("line", { x1: L2, x2: W2 - R2, y1: sy(v), y2: sy(v) }));
+      svg.appendChild(el("text", { x: L2 - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, fx(v, 1)));
+    }
+    for (var n = 2; n <= 16; n += 2) {
+      g.appendChild(el("line", { x1: sx(n), x2: sx(n), y1: T2, y2: H2 - B2, "stroke-opacity": STACK_PICKS.indexOf(n) >= 0 ? 1 : 0.4 }));
+      svg.appendChild(el("text", { x: sx(n), y: H2 - B2 + 16, "text-anchor": "middle", "class": "tick" }, String(n)));
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W2 - R2, y: H2 - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Stack height n"));
+    svg.appendChild(el("text", { x: 14, y: T2 + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T2 + 4) + ")", "text-anchor": "end" }, "Stack yield"));
+    svg.appendChild(el("line", { x1: sx(state.nt), x2: sx(state.nt), y1: T2, y2: H2 - B2, stroke: "var(--accent2)", "stroke-dasharray": "4 4", "stroke-opacity": 0.7 }));
+    var dW = "", dD = "";
+    for (var k = 2; k <= 16; k++) {
+      var s = stack(state.y, state.yb, k);
+      dW += (k > 2 ? " L" : "M") + sx(k).toFixed(1) + "," + sy(s.w2w).toFixed(1);
+      dD += (k > 2 ? " L" : "M") + sx(k).toFixed(1) + "," + sy(s.d2w).toFixed(1);
+    }
+    svg.appendChild(el("path", { d: dD, fill: "none", stroke: "var(--accent)", "stroke-width": 2.4 }));
+    svg.appendChild(el("path", { d: dW, fill: "none", stroke: "var(--accent2)", "stroke-width": 2.4 }));
+    var e16 = stack(state.y, state.yb, 16);
+    svg.appendChild(el("text", { x: sx(16) + 8, y: sy(e16.d2w) + 4, "font-size": 12.5, "font-weight": 700, fill: "var(--accent)" }, "D2W"));
+    svg.appendChild(el("text", { x: sx(16) + 8, y: sy(e16.w2w) + 4, "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" }, "W2W"));
+    STACK_PICKS.forEach(function (m) {
+      var s = stack(state.y, state.yb, m);
+      svg.appendChild(el("circle", { cx: sx(m), cy: sy(s.d2w), r: 5, fill: "var(--card)", stroke: "var(--accent)", "stroke-width": 2 }));
+      svg.appendChild(el("circle", { cx: sx(m), cy: sy(s.w2w), r: 5, fill: "var(--card)", stroke: "var(--accent2)", "stroke-width": 2 }));
+      svg.appendChild(el("text", { x: sx(m), y: Math.min(sy(s.w2w) + 22, H2 - B2 - 6), "text-anchor": "middle", "font-size": 12, fill: "var(--mut)", "font-family": "var(--mono)" }, "×" + fx(s.ratio, 2)));
+    });
+    var c = stack(state.y, state.yb, state.nt), right = state.nt <= 12, tx = sx(state.nt) + (right ? 10 : -10), anc = right ? "start" : "end";
+    svg.appendChild(el("circle", { cx: sx(state.nt), cy: sy(c.d2w), r: 6.5, fill: "var(--accent)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("circle", { cx: sx(state.nt), cy: sy(c.w2w), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("text", { x: tx, y: sy(c.d2w) + 20, "text-anchor": anc, "font-size": 13, "font-weight": 700, fill: "var(--accent)" }, fx(c.d2w, 3)));
+    svg.appendChild(el("text", { x: tx, y: sy(c.w2w) - 10, "text-anchor": anc, "font-size": 13, "font-weight": 700, fill: "var(--accent2)" }, fx(c.w2w, 3)));
+    $("stackChart").replaceChildren(svg);
+  }
+  function updateStack() {
+    var c = stack(state.y, state.yb, state.nt);
+    var yAssume = Math.abs(state.y - INIT.y) < 1e-9, ybAssume = Math.abs(state.yb - INIT.yb) < 1e-9;
+    $("yOut").textContent = fx(state.y, 3);
+    $("ybOut").textContent = fx(state.yb, 3);
+    $("nTOut").textContent = String(state.nt);
+    $("tN").textContent = String(state.nt);
+    $("tW").textContent = fx(c.w2w, 3);
+    $("tD").textContent = fx(c.d2w, 3);
+    $("tR").innerHTML = fx(c.ratio, 2) + " <small>×</small>";
+    $("tIn").innerHTML = "y " + fx(state.y, 3) + (yAssume ? "<span class='assume'>assumed</span>" : "") + "<br>y<sub>bond</sub> " + fx(state.yb, 3) + (ybAssume ? "<span class='assume'>assumed</span>" : "");
+    drawStack();
+  }
+
+  //
+  //
+  //
+  function cmpOne(got, exp, dp) {
+    var g = Number(got.toFixed(dp)), unit = Math.pow(10, -dp);
+    return Math.abs(g - exp) < unit / 2 ? "match" : "miss";
+  }
+  function checkRows() {
+    var rows = [];
+    function add(name, items, unit) {
+      var st = "match", got = [], exp = [];
+      items.forEach(function (it) {
+        if (cmpOne(it[0], it[1], it[2]) === "miss") st = "miss";
+        got.push(it[0].toFixed(it[2])); exp.push(it[1].toFixed(it[2]));
+      });
+      //
+      function u(s) { return !unit ? s : unit.indexOf("{n}") >= 0 ? unit.replace("{n}", function () { return s; }) : s + unit; }
+      rows.push({ name: name, got: u(got.join(" · ")), expected: u(exp.join(" · ")), status: st });
+    }
+    function sw6(d0) { return sweep(d0, MODES.s6.ov, MODES.s6.asm, "s6"); }
+    var a = sw6(0.1), b = sw6(0.05), c = sw6(0.2);
+    function at(sw, key, exps, dp) {
+      return PICKS.map(function (n, i) { return [sw.all[n - 1][key], exps[i], dp]; });
+    }
+    add("Session 6, Exercise 1 · D₀ 0.1 · chiplet area n = 1·2·4·8", at(a, "A", [8.00, 4.20, 2.30, 1.35], 2), " cm²");
+    add("Same table · GDPW", at(a, "G", [64.8, 135.8, 263.4, 466.2], 1));
+    add("Same table · yield", at(a, "Y", [0.449, 0.657, 0.795, 0.874], 3));
+    add("Same table · good dies", at(a, "good", [29.1, 89.2, 209.3, 407.4], 1));
+    add("Same table · systems/wafer", at(a, "sys", [29.1, 44.6, 52.3, 50.9], 1));
+    add("Same table · assembly yield", at(a, "a", [1.000, 0.990, 0.970, 0.932], 3));
+    add("Same table · effective", at(a, "eff", [29.1, 44.2, 50.8, 47.5], 1));
+    add("Same table · cost", at(a, "cost", [0.03435, 0.02264, 0.01970, 0.02107], 5), " W");
+    add("Session 6, Exercise 1 · D₀ 0.05 · cost n = 1·2·4·8", at(b, "cost", [0.02302, 0.01836, 0.01756, 0.01969], 5), " W");
+    add("Session 6, Exercise 1 · D₀ 0.2 · cost n = 1·2·4·8", at(c, "cost", [0.07644, 0.03446, 0.02479, 0.02412], 5), " W");
+    add("Best n of the exercise's four values (D₀ 0.05·0.1·0.2)", [[b.best4.n, 4, 0], [a.best4.n, 4, 0], [c.best4.n, 8, 0]]);
+    add("Saving rate (D₀ 0.05·0.1·0.2)", [[saving(b.best4, b.single) * 100, 23.7, 1], [saving(a.best4, a.single) * 100, 42.6, 1], [saving(c.best4, c.single) * 100, 68.5, 1]], " %");
+    add("Best n over all integers 1–16 (D₀ 0.05·0.1·0.2)", [[b.best.n, 3, 0], [a.best.n, 4, 0], [c.best.n, 6, 0]]);
+    add("Overall best · D₀ 0.05 cost and saving rate", [[b.best.cost, 0.01754, 5], [saving(b.best, b.single) * 100, 23.8, 1]]);
+    add("Overall best · D₀ 0.2 cost and saving rate", [[c.best.cost, 0.02364, 5], [saving(c.best, c.single) * 100, 69.1, 1]]);
+    add("D₀ 0.1 · n = 5 cost", [[a.all[4].cost, 0.01971, 5]], " W");
+    //
+    var q = split(4, 0.1, MODES.s4.ov, MODES.s4.asm, "s4"), q1 = split(1, 0.1, MODES.s4.ov, MODES.s4.asm, "s4");
+    add("Session 4, Exercises 2 and 4 · single 800 mm² die cost", [[q1.cost, 0.03435, 5]], " W");
+    add("Session 4, Exercise 4 · chiplet GDPW, yield, good dies", [[q.G, 276.4, 1], [q.Y, 0.8025, 4], [q.good, 221.8, 1]]);
+    add("Session 4, Exercise 4 · cost of one and of four chiplets, ÷0.95", [[q.cost * q.a / 4, 0.004509, 6], [q.cost * q.a, 0.018035, 6], [q.cost, 0.018984, 6]], " W");
+    add("Session 4, Exercise 4 · saving at D₀ 0.1 (text)", [[q1.cost - q.cost, 0.01536, 5]], " W");
+    add("Session 4, Exercise 4 · saving as a share of wafer price", [[(q1.cost - q.cost) * 100, 1.5, 1]], " %");
+    add("Session 4, Exercise 4 · margin per system at a wafer price of USD 15,000", [[(q1.cost - q.cost) * 15000, 230, 0]], "USD {n}");
+    add("Session 4, Exercise 4 table · D₀ 0.1 single, chiplet, saving", [[q1.cost, 0.03435, 5], [q.cost, 0.01898, 5], [q1.cost - q.cost, 0.0154, 4]], " W");
+    var r1 = split(1, 0.02, MODES.s4.ov, MODES.s4.asm, "s4"), r4 = split(4, 0.02, MODES.s4.ov, MODES.s4.asm, "s4");
+    add("Session 4, Exercise 4 table · D₀ 0.02 single, chiplet, saving", [[r1.cost, 0.01811, 5], [r4.cost, 0.01592, 5], [r1.cost - r4.cost, 0.0022, 4]], " W");
+    add("Session 4, Exercise 4 table · D₀ 0.02 saving as a share of wafer price", [[(r1.cost - r4.cost) * 100, 0.22, 2]], " %");
+    function st(key, exps, dp) { return STACK_PICKS.map(function (n, i) { return [stack(0.9, 0.995, n)[key], exps[i], dp]; }); }
+    add("Session 6, Section 6 · W2W n = 2·8·12·16", st("w2w", [0.806, 0.416, 0.267, 0.172], 3));
+    add("Session 6, Section 6 · D2W n = 2·8·12·16", st("d2w", [0.995, 0.966, 0.946, 0.928], 3));
+    add("Session 6, Section 6 · D2W ÷ W2W n = 2·8·12·16", st("ratio", [1.23, 2.32, 3.54, 5.40], 2), " ×");
+    //
+    var i0 = sweep(INIT.D0, INIT.ov, INIT.asm, INIT.mode), ic = i0.all[INIT.n - 1];
+    add("Initial state (split) · D₀ 0.1, n 4 · chiplet area, cost, both best n, saving rate",
+      [[ic.A, 2.30, 2], [ic.cost, 0.01970, 5], [i0.best4.n, 4, 0], [i0.best.n, 4, 0], [saving(ic, i0.single) * 100, 42.6, 1]]);
+    var is = stack(INIT.y, INIT.yb, INIT.nt);
+    add("Initial state (stack) · y 0.9, y_bond 0.995, n 8 · W2W, D2W", [[is.w2w, 0.416, 3], [is.d2w, 0.966, 3]]);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + r.got + "</td><td class='num'>" + r.expected + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  //
+  function syncInputs() { $("d0").value = state.D0; $("nS").value = state.n; $("ov").value = state.ov; $("asm").value = state.asm; }
+  $("modeSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var m = MODES[b.dataset.v];
+    state.mode = b.dataset.v; state.ov = m.ov; state.asm = m.asm; if (m.n) state.n = m.n;
+    syncInputs(); updateSplit();
+  });
+  $("d0Seg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.D0 = Number(b.dataset.v); syncInputs(); updateSplit();
+  });
+  $("d0").addEventListener("input", function (e) { state.D0 = Math.round(Number(e.target.value) * 100) / 100; updateSplit(); });
+  $("nS").addEventListener("input", function (e) { state.n = Number(e.target.value); updateSplit(); });
+  $("ov").addEventListener("input", function (e) { state.ov = Number(e.target.value); updateSplit(); });
+  $("asm").addEventListener("input", function (e) { state.asm = Math.round(Number(e.target.value) * 1000) / 1000; updateSplit(); });
+  $("yIn").addEventListener("input", function (e) { state.y = Math.round(Number(e.target.value) * 1000) / 1000; updateStack(); });
+  $("ybIn").addEventListener("input", function (e) { state.yb = Math.round(Number(e.target.value) * 1000) / 1000; updateStack(); });
+  $("nT").addEventListener("input", function (e) { state.nt = Number(e.target.value); updateStack(); });
+
+  $("specLine").textContent = "Wafer diameter d = " + D.wafer.d_mm + " mm, πd²/4 = " + fx(Math.PI * DCM * DCM / 4, 1) + " cm², πd = " + fx(Math.PI * DCM, 2) +
+    " cm. Total silicon 800 mm². Cost is a multiple of W, the price of one wafer.";
+  syncInputs();
+  renderCheck();
+  updateSplit();
+  updateStack();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

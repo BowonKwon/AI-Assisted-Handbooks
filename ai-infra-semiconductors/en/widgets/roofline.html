@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roofline Workbench</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="roofline";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; font-family: var(--sans); font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 99px; border: 1.5px solid currentColor; }
+.pill.bw { color: var(--warn); } .pill.cp { color: var(--ok); }
+.meter { height: 6px; background: var(--soft); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+
+.sysnote { font-size: 13px; color: var(--mut); max-width: none; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); }
+.match { color: var(--ok); font-family: var(--sans); font-size: 12.5px; }
+.round { color: var(--mut); font-family: var(--sans); font-size: 12.5px; }
+.miss { color: var(--warn); font-family: var(--sans); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 2 · A roofline you move by hand</div>
+  <h1>Roofline Workbench</h1>
+  <p class="lede">This page lets you move one inequality from Session 2, Section 6 by hand. Change the batch size and precision, and see for yourself which side of the roof the workload lands on and what percentage of the chip it uses.</p>
+  <div class="formula">P<sub>attainable</sub>(I) = min( P<sub>peak</sub> , B × I )　·　I* = P<sub>peak</sub> / B</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">Plotting a workload on the roof</h2>
+  <div class="bench" id="figure">
+    <div class="chart" id="chart" role="img" aria-label="Roofline chart on log-log axes"></div>
+    <div class="controls">
+      <div class="ctl" style="grid-column: 1 / -1">
+        <div class="lab">Chip (BF16 dense)</div>
+        <div class="seg" id="chipSeg"></div>
+        <p class="sysnote" id="sysNote" hidden></p>
+      </div>
+      <div class="ctl">
+        <div class="lab">Phase</div>
+        <div class="seg" id="phaseSeg">
+          <button type="button" data-v="decode" aria-pressed="true">Decode</button>
+          <button type="button" data-v="prefill" aria-pressed="false">Prefill · training</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="tok"><span id="tokLabel">Batch B<sub>sz</sub></span> <output id="tokOut"></output></label>
+        <input type="range" id="tok" min="0" max="100" step="1" value="50">
+      </div>
+      <div class="ctl">
+        <div class="lab">Weight precision</div>
+        <div class="seg" id="precSeg">
+          <button type="button" data-v="2" aria-pressed="true">fp16</button>
+          <button type="button" data-v="1" aria-pressed="false">INT8</button>
+          <button type="button" data-v="0.5" aria-pressed="false">INT4</button>
+        </div>
+      </div>
+    </div>
+    <dl class="readout">
+      <div><dt>Arithmetic intensity I</dt><dd id="rI"></dd></div>
+      <div><dt>Ridge point I*</dt><dd id="rIs"></dd></div>
+      <div><dt>Attainable performance</dt><dd id="rP"></dd></div>
+      <div><dt>Compute-unit utilization ceiling</dt><dd id="rU"></dd><div class="meter"><i id="rUbar"></i></div></div>
+      <div><dt>Verdict</dt><dd id="rB"></dd></div>
+    </dl>
+  </div>
+  <p class="note" id="phaseNote"></p>
+</section>
+
+<section aria-labelledby="s2">
+  <h2 id="s2">Upper bound on decode speed</h2>
+  <p class="standalone-only">A rough estimate that restates the same inequality in tokens. The answer is the smaller of the bandwidth-side and compute-side bounds. Chip, precision and batch size are taken from the settings above.</p>
+  <div class="formula standalone-only">tokens/s ≲ min( N·B·η / (P·b) × B<sub>sz</sub> ,  N·P<sub>peak</sub> / (2P) )</div>
+  <div class="bench">
+    <div class="controls">
+      <div class="ctl">
+        <div class="lab">Model size P</div>
+        <div class="seg" id="modelSeg">
+          <button type="button" data-v="7" aria-pressed="false">7B</button>
+          <button type="button" data-v="70" aria-pressed="true">70B</button>
+          <button type="button" data-v="405" aria-pressed="false">405B</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="eta">Effective bandwidth utilization η <output id="etaOut"></output></label>
+        <input type="range" id="eta" min="40" max="100" step="5" value="100">
+      </div>
+      <div class="ctl">
+        <label for="extra">Number of chips N <output id="nOut"></output></label>
+        <input type="range" id="extra" min="0" max="15" step="1" value="0">
+      </div>
+    </div>
+    <dl class="readout">
+      <div><dt>Weight footprint</dt><dd id="dW"></dd></div>
+      <div><dt>Minimum chips for capacity</dt><dd id="dN"></dd></div>
+      <div><dt>Total bandwidth N·B·η</dt><dd id="dB"></dd></div>
+      <div><dt>tok/s per sequence</dt><dd id="dSeq"></dd></div>
+      <div><dt>Total tok/s</dt><dd id="dTot"></dd></div>
+      <div><dt>Binding bound</dt><dd id="dBound"></dd></div>
+    </dl>
+  </div>
+  <p class="note standalone-only">The chip-count slider sets how many chips to add beyond the capacity minimum. This calculation assumes the N chips split the weights and read them in parallel, so it adds bandwidth N times over; each extra chip raises the bandwidth-side bound in proportion (405B fp16 at batch 1: 11 chips 45 → 12 chips 50 tok/s). In practice, inter-chip communication keeps it from rising that much (see "What this chart does not say" below). At the minimum chip count, try 70B and 405B and check that, whatever the model size and precision, the batch-1 bound sits just above one chip's capacity ÷ bandwidth (about 42 tok/s for the H100). The η knob is there so you can enter the "60–80% bandwidth utilization" from the text.</p>
+
+  <details class="check">
+    <summary>Check against the solution tables (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">This compares the figure's calculations with the table and text of Session 2, Section 6 and the solutions to Exercises 1 and 2 (Exercise 2 uses H100 SXM, batch 1, η 100%). The "Solution" column holds the rounded values from the solution tables.</caption>
+        <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s3" class="standalone-only">
+  <h2 id="s3">What this chart does not say</h2>
+  <p>The roofline gives an <b>upper bound</b> that a long-running kernel cannot exceed. It is not a model that predicts actual speed. The limits listed in Session 2, Appendix B are repeated here.</p>
+  <ul class="limits">
+    <li>Time to first token. Only the steady state is covered.</li>
+    <li>The cache hierarchy. HBM, L2 and SRAM are collapsed into a single bandwidth B.</li>
+    <li>Inter-node communication. The tensor-parallel communication cost that comes with adding chips is left out.</li>
+    <li>Kernel launch and synchronization overhead, and clock throttling under power limits.</li>
+    <li>KV cache traffic. Decode is assumed to read only the weights. With long contexts, KV cache reads come on top, and the real arithmetic intensity is lower (Exercise 3).</li>
+    <li>Peak of low-precision compute units. Even if you pick INT8 or INT4, P<sub>peak</sub> stays at the BF16 dense value. This is the case where only the weights are read at low precision and the math runs in BF16. If the hardware supports doing the math at the same precision too, peak and arithmetic intensity both rise, and utilization ends up close to the fp16 case. The utilization column in Session 2, solution to Exercise 3 (I ≈ B<sub>sz</sub>) is an estimate of that kind and comes out lower than this page.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>Model: Williams, Waterman &amp; Patterson, “Roofline: An Insightful Visual Performance Model for Multicore Architectures,” <i>CACM</i> 52(4), 2009.</div>
+  <div><i>AI Infrastructure and Semiconductors</i>, Session 2 interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a> and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through a <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issue</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.chips) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>Shared constants (BOOK_DATA) not found. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  //
+  var CHIPS = D.chips.map(function (c) { return { id: c.id, name: c.name, label: c.label, P: c.P, B: c.B, cap: c.cap }; });
+  var NCHIP = CHIPS.length;  //
+  //
+  var B2 = D.chips.filter(function (c) { return c.id === "b200"; })[0], DGX = D.systems && D.systems.dgx_b200;
+  if (B2 && B2.sys && DGX) CHIPS.push({ id: "b200sys", name: "B200 system", label: B2.sys.label, P: B2.P, B: B2.sys.B, cap: B2.sys.cap, sys: true });
+  function btnName(c) { return c.id === "b200" && CHIPS.length > NCHIP ?c.name + " · chip spec" : c.sys ? "B200 · DGX system" : c.name; }
+  function chipById(id) { return CHIPS.filter(function (c) { return c.id === id; })[0]; }
+  var state = { chip: "h100", phase: "decode", t: 50, b: 2, model: 70, eta: 100, extra: 0 };
+
+  //
+  function ridge(c) { return c.P / c.B; }
+  //
+  function intensity(tokens, b) { return 2 * tokens / b; }
+  function attainable(c, I) { return Math.min(c.P, c.B * I); }
+  function minChips(c, Pbil, b) { return Math.max(1, Math.ceil(Pbil * b / c.cap - 1e-9)); }
+  function decode(c, Pbil, b, bsz, n, eta) {
+    var bytes = Pbil * 1e9 * b;
+    var bwTot = n * c.B * 1e12 * eta;
+    var bwBound = bwTot / bytes * bsz;
+    var cpBound = n * c.P * 1e12 / (2 * Pbil * 1e9);
+    var tot = Math.min(bwBound, cpBound);
+    return { bytes: bytes, bwTot: bwTot, tot: tot, seq: tot / bsz, bound: bwBound <= cpBound ? "bw" : "cp" };
+  }
+  function sliderToTokens(v, phase) {
+    //
+    var lo = phase === "decode" ? 0 : 6, hi = phase === "decode" ? 10 : 16;
+    return Math.round(Math.pow(2, lo + (hi - lo) * v / 100));
+  }
+
+  //
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d }); }
+  function fmtI(x) { return x < 10 ? fmt(x, 1) : fmt(x); }
+  function chip() { return chipById(state.chip); }
+  function precName(b) { return b === 2 ? "fp16" : b === 1 ? "INT8" : "INT4"; }
+
+  //
+  var W = 720, H = 430, L = 70, R = 24, T = 22, Bm = 52;
+  var X0 = 0, X1 = 4, Y0 = 0, Y1 = Math.log10(5000);
+  function sx(I) { return L + (Math.log10(I) - X0) / (X1 - X0) * (W - L - R); }
+  function sy(p) { return H - Bm - (Math.log10(p) - Y0) / (Y1 - Y0) * (H - T - Bm); }
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function drawChart() {
+    var host = document.getElementById("chart");
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H, xmlns: NS });
+    var g = el("g", { "class": "grid" });
+    [1, 10, 100, 1000, 10000].forEach(function (I) {
+      g.appendChild(el("line", { x1: sx(I), x2: sx(I), y1: T, y2: H - Bm }));
+      svg.appendChild(el("text", { x: sx(I), y: H - Bm + 18, "text-anchor": "middle", "class": "tick" }, fmt(I)));
+    });
+    [1, 10, 100, 1000].forEach(function (p) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(p), y2: sy(p) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(p) + 4, "text-anchor": "end", "class": "tick" }, fmt(p)));
+    });
+    svg.insertBefore(g, svg.firstChild);
+    svg.appendChild(el("text", { x: W - R, y: H - 10, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Arithmetic intensity I  [FLOP/byte, log]"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Attainable performance [TFLOP/s, log]"));
+
+    var c = chip();
+    //
+    CHIPS.forEach(function (k) {
+      //
+      if (k.sys && c.id !== k.id) return;
+      if (k.id === "b200" && c.sys) return;
+      var on = k.id === c.id, Is = ridge(k);
+      var d = "M" + sx(1) + "," + sy(k.B * 1) + " L" + sx(Is) + "," + sy(k.P) + " L" + sx(10000) + "," + sy(k.P);
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: on ? "var(--accent)" : "var(--mut)", "stroke-width": on ? 2.6 : 1.2, "stroke-opacity": on ? 1 : 0.45 }));
+      svg.appendChild(el("text", { x: W - R - 4, y: sy(k.P) - 6, "text-anchor": "end", "font-size": 12, "font-weight": on ? 700 : 400, opacity: on ? 1 : 0.55 }, k.name + " " + fmt(k.P) + " TFLOP/s"));
+    });
+    var Is = ridge(c);
+    svg.appendChild(el("line", { x1: sx(Is), x2: sx(Is), y1: sy(c.P), y2: H - Bm, stroke: "var(--accent)", "stroke-dasharray": "4 4", "stroke-opacity": 0.6 }));
+    svg.appendChild(el("circle", { cx: sx(Is), cy: sy(c.P), r: 4.5, fill: "var(--accent)" }));
+    svg.appendChild(el("text", { x: sx(Is) + 8, y: H - Bm - 8, "font-size": 12, fill: "var(--accent)" }, "I* ≈ " + fmt(Is)));
+
+    //
+    var tokens = sliderToTokens(state.t, state.phase);
+    var I = Math.min(10000, intensity(tokens, state.b));
+    var Pa = attainable(c, I);
+    svg.appendChild(el("line", { x1: sx(I), x2: sx(I), y1: sy(Pa), y2: H - Bm, stroke: "var(--accent2)", "stroke-opacity": 0.55 }));
+    svg.appendChild(el("circle", { cx: sx(I), cy: sy(Pa), r: 7, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    var lx = sx(I), anchor = lx > W * 0.7 ? "end" : "start", off = anchor === "end" ? -12 : 12;
+    svg.appendChild(el("text", { x: lx + off, y: sy(Pa) + 18, "text-anchor": anchor, "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" }, (state.phase === "decode" ? "Decode" : "Prefill") + " · " + fmt(Pa) + " TFLOP/s"));
+
+    host.replaceChildren(svg);
+  }
+
+  //
+  function setText(id, v) { document.getElementById(id).innerHTML = v; }
+  function update() {
+    var c = chip(), tokens = sliderToTokens(state.t, state.phase);
+    var I = intensity(tokens, state.b), Is = ridge(c), Pa = attainable(c, I), u = Pa / c.P;
+    document.getElementById("tokLabel").innerHTML = state.phase === "decode" ? "Batch B<sub>sz</sub>" : "Tokens per pass M";
+    setText("tokOut", fmt(tokens));
+    setText("rI", fmtI(I) + " <small>FLOP/byte</small>");
+    setText("rIs", fmt(Is) + " <small>FLOP/byte</small>");
+    setText("rP", fmt(Pa) + " <small>TFLOP/s</small>");
+    setText("rU", fmt(u * 100, u < 0.1 ? 1 : 0) + "%");
+    document.getElementById("rUbar").style.width = (u * 100) + "%";
+    setText("rB", I < Is ? '<span class="pill bw">memory-bound</span>' : '<span class="pill cp">compute-bound</span>');
+    var sn = document.getElementById("sysNote");
+    sn.hidden = !c.sys;
+    sn.textContent = c.sys ? c.label + ": datasheet total " + fmt(c.B * DGX.gpus) + " TB/s ÷ " + DGX.gpus + " = " + c.B.toFixed(1) +
+      " TB/s, " + fmt(DGX.mem_gb) + " GB ÷ " + DGX.gpus + " = " + fmt(c.cap) + " GB. Compute " + fmt(c.P) + " TFLOP/s is the chip value as is." : "";
+    setText("phaseNote", state.phase === "decode"
+      ? "Decode rereads all the weights from HBM for every token it produces. So I ≈ 2·B<sub>sz</sub>/b, which becomes I ≈ B<sub>sz</sub> in fp16. Raise the batch size to " + fmt(Math.ceil(Is * state.b / 2)) + " or more to reach the roof of the " + c.name + "."
+      : "Prefill and training process thousands to tens of thousands of tokens at once as matrix multiplications, so I ≈ M (fp16, activation traffic left out of the count). In most cases this clears the ridge point and lands in compute-bound territory.");
+
+    //
+    var bsz = state.phase === "decode" ? tokens : 1;
+    var nMin = minChips(c, state.model, state.b), n = nMin + state.extra;
+    var r = decode(c, state.model, state.b, bsz, n, state.eta / 100);
+    setText("etaOut", state.eta + "%");
+    setText("nOut", fmt(n) + " chips");
+    setText("dW", fmt(r.bytes / 1e9, 1) + " <small>GB</small>");
+    setText("dN", fmt(nMin) + " <small>chips (" + c.cap + "GB/chip)</small>");
+    setText("dB", fmt(r.bwTot / 1e12, 2) + " <small>TB/s</small>");
+    setText("dSeq", fmt(r.seq, r.seq < 10 ? 1 : 0));
+    setText("dTot", fmt(r.tot) + (state.phase === "decode" ? "" : " <small>(batch 1)</small>"));
+    setText("dBound", r.bound === "bw" ? '<span class="pill bw">bandwidth</span>' : '<span class="pill cp">compute</span>');
+
+    drawChart();
+  }
+
+  //
+  //
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected, ok, shown) { rows.push({ name: name, got: got, expected: expected, status: ok ? "match" : "miss", shown: shown }); }
+    var a = chipById("a100"), h = chipById("h100"), b = chipById("b200");
+    //
+    add("Section 6 table · H100 ridge point I*", Math.round(ridge(h)), 295, Math.round(ridge(h)) === 295);
+    add("Section 6 table · B200 ridge point I*", Math.round(ridge(b)), 292, Math.round(ridge(b)) === 292);
+    add("Exercise 1 · A100 ridge point I*", Math.round(ridge(a)), 153, Math.round(ridge(a)) === 153);
+    //
+    var u0 = attainable(h, intensity(sliderToTokens(50, "decode"), 2)) / h.P * 100;
+    add("Section 6 · batch " + sliderToTokens(50, "decode") + " decode utilization (initial state)", Math.round(u0 * 10) / 10, 11, Math.round(u0) === 11, fmt(u0, 1) + "%");
+    //
+    var book = [[7, 2, 239], [7, 1, 479], [7, 0.5, 957], [70, 2, 48], [70, 1, 48], [70, 0.5, 96], [405, 2, 45], [405, 1, 50], [405, 0.5, 50]];
+    var bookN = { "7-2": 1, "7-1": 1, "7-0.5": 1, "70-2": 2, "70-1": 1, "70-0.5": 1, "405-2": 11, "405-1": 6, "405-0.5": 3 };
+    book.forEach(function (row) {
+      var n = minChips(h, row[0], row[1]);
+      var v = decode(h, row[0], row[1], 1, n, 1).tot;
+      var en = bookN[row[0] + "-" + row[1]];
+      add("Exercise 2 · " + row[0] + "B " + precName(row[1]) + " · " + en + " chips, tok/s", Math.round(v * 10) / 10, row[2],
+        Math.round(v) === row[2] && n === en, n + " chips · " + fmt(v, 1));
+    });
+    //
+    var v8x2 = decode(h, 70, 1, 1, 2, 1).tot, v405x12 = decode(h, 405, 2, 1, 12, 1).tot;
+    add("Section 6 · 70B INT8 kept on 2 chips, tok/s", Math.round(v8x2 * 10) / 10, 96, Math.round(v8x2) === 96, "2 chips · " + fmt(v8x2, 1));
+    add("Exercise 2 insight 3 · 405B fp16 on 12 chips, tok/s", Math.round(v405x12 * 10) / 10, 50, Math.round(v405x12) === 50, "12 chips · " + fmt(v405x12, 1));
+    //
+    add("Section 6 · batch size at the compute-bound boundary (INT8 weights)", Math.round(ridge(h) / 2), 148, Math.round(ridge(h) / 2) === 148);
+    add("Section 6 · batch size at the compute-bound boundary (INT4 weights)", Math.round(ridge(h) * 0.5 / 2), 74, Math.round(ridge(h) * 0.5 / 2) === 74);
+    //
+    var bs = chipById("b200sys");
+    if (bs) add("Section 6 box · I* for the B200 system figures (8.0 TB/s)", Math.round(ridge(bs)), 281, Math.round(ridge(bs)) === 281);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding diff</span>", miss: "<span class='miss'>mismatch</span>" };
+    document.getElementById("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fmt(r.got, 1)) + "</td><td class='num'>" + fmt(r.expected, 1) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    document.getElementById("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  //
+  function seg(id, key, parse) {
+    var box = document.getElementById(id);
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      box.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      state[key] = parse(b.dataset.v);
+      if (key === "model") state.extra = 0, document.getElementById("extra").value = 0;
+      update();
+    });
+  }
+  var chipSeg = document.getElementById("chipSeg");
+  CHIPS.forEach(function (c) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.v = c.id; b.textContent = btnName(c);
+    b.setAttribute("aria-pressed", String(c.id === state.chip));
+    chipSeg.appendChild(b);
+  });
+  seg("chipSeg", "chip", String);
+  seg("phaseSeg", "phase", String);
+  seg("precSeg", "b", Number);
+  seg("modelSeg", "model", Number);
+  [["tok", "t"], ["eta", "eta"], ["extra", "extra"]].forEach(function (p) {
+    document.getElementById(p[0]).addEventListener("input", function (e) { state[p[1]] = Number(e.target.value); update(); });
+  });
+  document.getElementById("specLine").textContent = "Chip specs: NVIDIA published BF16 dense values (no sparsity). " +
+    CHIPS.slice(0, NCHIP).map(function (c) { return c.label + " " + fmt(c.P) + " TFLOP/s · " + c.B.toFixed(2).replace(/0$/, "") + " TB/s · " + c.cap + "GB"; }).join(", ") +
+    ". Follows the Session 2, Section 6 table and the solution to Exercise 1 in the text." +
+    (chipById("b200sys") ? " For the B200 the default is the chip value from the technical overview (" + B2.cap + " GB, " + B2.B + " TB/s). ‘B200 · DGX system’ uses per-GPU values: the DGX B200 datasheet total for " +
+      DGX.gpus + " chips, " + fmt(B2.sys.B * DGX.gpus) + " TB/s, and the " + fmt(DGX.mem_gb) + " GB in the user guide and datasheet, each divided by " + DGX.gpus + " (" +
+      B2.sys.B.toFixed(1) + " TB/s, " + B2.sys.cap + " GB). Compute " + fmt(B2.P) + " TFLOP/s is the chip value as is (Session 2, Section 6, ‘Capacity also differs between chip and system’)." : "");
+
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

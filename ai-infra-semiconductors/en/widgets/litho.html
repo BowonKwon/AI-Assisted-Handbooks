@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lithography calculator</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="litho";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --bad: #b0412e;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; }
+
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+input[type=range]:disabled { opacity: .45; }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; align-content: start; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+.tag { font-family: var(--sans); font-size: 11.5px; font-weight: 700; color: var(--bad); border: 1px solid currentColor; border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: 2px; }
+
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.mono { font-family: var(--mono) !important; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note.warnbox { color: var(--bad); background: transparent; border: 1px solid currentColor; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 5, Section 4 · Exercises 1–5</div>
+  <h1>Lithography calculator</h1>
+  <p class="lede">Four strands of lithography numbers, moved on one board: the linewidth and depth of focus set by the Rayleigh criterion, the photons that run short as the price of a shorter wavelength, the yield that multiplies in series over hundreds of steps, and the size of the field that reduction projection allows in a single exposure.</p>
+</header>
+
+
+<section aria-labelledby="s1" data-part="optics">
+  <h2 id="s1">① Resolution and depth of focus</h2>
+  <div class="formula standalone-only">CD = k₁ · λ / NA　·　DOF = k₂ · λ / NA²　·　back-calculation: k₁ = CD · NA / λ</div>
+  <div class="bench" id="figure-optics">
+    <div class="controls">
+      <div class="ctl"><div class="lab">Light source and optics (the three generations of Exercise 1)</div><div class="seg" id="genSeg"></div></div>
+      <div class="ctl"><div class="lab">How to set k₁</div>
+        <div class="seg" id="modeSeg">
+          <button type="button" data-v="k1" aria-pressed="true">Pick directly</button>
+          <button type="button" data-v="inv" aria-pressed="false">Back-calculate from tool spec</button>
+        </div></div>
+      <div class="ctl"><label for="na">Numerical aperture NA <output id="naOut"></output></label><input type="range" id="na" min="0.2" max="0.9" step="0.01" value="0.33"></div>
+      <div class="ctl"><label for="k1">Process factor k₁ <output id="k1Out"></output></label><input type="range" id="k1" min="0.25" max="0.5" step="0.005" value="0.3"></div>
+      <div class="ctl" id="invCtl" hidden>
+        <div class="lab">Resolution stated by the tool</div>
+        <div class="seg" id="devSeg">
+          <button type="button" data-v="exe" aria-pressed="false">EXE (High-NA) · 8 nm</button>
+          <button type="button" data-v="nxe" aria-pressed="false">NXE (0.33 NA) · 13 nm</button>
+        </div>
+        <label for="cdIn">Resolution CD <output id="cdInOut"></output></label>
+        <input type="range" id="cdIn" min="5" max="45" step="0.5" value="13">
+      </div>
+      <div class="ctl"><label for="k2">DOF factor k₂ <output id="k2Out"></output></label><input type="range" id="k2" min="0.3" max="1" step="0.05" value="0.5"></div>
+    </div>
+    <div class="chart" id="opticsChart" role="img" aria-label="Bars of CD and depth of focus for the three generations and the current setting"></div>
+    <dl class="readout">
+      <div class="big"><dt>CD at current setting</dt><dd id="oCD"></dd></div>
+      <div><dt>Resolution vs. ArF immersion</dt><dd id="oGain"></dd></div>
+      <div><dt>Relative DOF (ArF immersion = 1.00)</dt><dd id="oRel"></dd></div>
+      <div><dt>DOF = k₂λ/NA²</dt><dd id="oDOF"></dd></div>
+      <div><dt>DOF vs. EUV (NA 0.33)</dt><dd id="oVsEuv"></dd></div>
+    </dl>
+    <p class="note warnbox" id="k1Warn" role="status" hidden></p>
+  </div>
+  <p class="note standalone-only">EUV gains 14.3× from wavelength and loses 4.1× from NA, for a net gain of 3.5×. Because its NA is lower, its depth of focus is actually 17% more generous than that of ArF immersion. The real problem is High-NA. DOF shrinks to 0.36× that of EUV and 0.42× that of ArF immersion, about 22 nm. A 50 nm photoresist is already thicker than the DOF.</p>
+</section>
+
+
+<section aria-labelledby="s2" data-part="photon">
+  <h2 id="s2">② Same dose, fewer photons</h2>
+  <div class="formula standalone-only">E = hc/λ　·　E<sub>EUV</sub>/E<sub>ArF</sub> = 193/13.5　·　fluctuation ratio = √((193/13.5)/m)　·　t<sub>exp</sub> ∝ dose/source power</div>
+  <div class="bench" id="figure-photon">
+    <div class="controls">
+      <div class="ctl"><div class="lab">EUV dose multiple m (same dose as ArF = 1)</div>
+        <div class="seg" id="mSeg">
+          <button type="button" data-v="1" aria-pressed="false">Dose unchanged</button>
+          <button type="button" data-v="2" aria-pressed="false">2×</button>
+          <button type="button" data-v="R" aria-pressed="true">Same fluctuation (193/13.5)</button>
+        </div></div>
+      <div class="ctl"><label for="m">Dose multiple m <output id="mOut"></output></label><input type="range" id="m" min="1" max="20" step="any" value="14.296"></div>
+      <div class="ctl"><label for="p0">Reference source power <output id="p0Out"></output></label><input type="range" id="p0" min="100" max="1000" step="10" value="250"></div>
+    </div>
+    <div class="chart" id="dotChart" role="img" aria-label="Photon counts reaching the same area, compared"></div>
+    <div class="chart" id="sigChart" role="img" aria-label="Relative fluctuation curve vs. dose multiple"></div>
+    <div class="chart" id="powChart" role="img" aria-label="Bars of reference and required source power"></div>
+    <dl class="readout">
+      <div><dt>Photon energy EUV · ArF</dt><dd id="oEv"></dd></div>
+      <div><dt>Photon count (vs. ArF)</dt><dd id="oN"></dd></div>
+      <div class="big"><dt>Relative fluctuation (vs. ArF)</dt><dd id="oSig"></dd></div>
+      <div><dt>Exposure time (source power unchanged)</dt><dd id="oT"></dd></div>
+      <div class="big"><dt>Source power needed for the same exposure time</dt><dd id="oP"></dd></div>
+      <div><dt>Throughput <span class="tag">limit</span></dt><dd id="oThr"></dd></div>
+    </dl>
+  </div>
+  <p class="note standalone-only">"Limit" is the throughput when exposure time dominates the total. With a fixed time T₀ for wafer transfer and alignment, the drop is smaller, and how much smaller depends on how large T₀ is relative to the original exposure time (if T₀ equals the exposure time, throughput falls to 13%; if it is ten times as long, to 45%). So in practice the dose is not raised 14.3-fold to match the photon count. ASML rates EUV tool throughput at 30 mJ/cm² (NXE:3600D, 3800E) and 50 mJ/cm² (High-NA EXE:5000), and better resist sensitivity, design workarounds and metrology make up the rest.</p>
+</section>
+
+
+<section aria-labelledby="s3" data-part="steps">
+  <h2 id="s3">③ Multiplying 800 steps</h2>
+  <div class="formula standalone-only">Per-step yield y = Y<sup>1/n</sup>　·　allowed defect rate = 1 − y　·　inverse: line yield = y<sup>n</sup> ≈ e<sup>−(1−y)n</sup></div>
+  <div class="bench" id="figure-steps">
+    <div class="controls">
+      <div class="ctl"><label for="n">Process steps n <output id="nOut"></output></label><input type="range" id="n" min="100" max="2000" step="50" value="800"></div>
+      <div class="ctl"><label for="Y">Target line yield Y <output id="YOut"></output></label><input type="range" id="Y" min="0.5" max="0.99" step="0.01" value="0.9"></div>
+      <div class="ctl"><div class="lab">Inverse: per-step yield</div>
+        <div class="seg" id="ysSeg">
+          <button type="button" data-v="0.9999" aria-pressed="true">99.99%</button>
+          <button type="button" data-v="0.999" aria-pressed="false">99.9%</button>
+          <button type="button" data-v="0.99" aria-pressed="false">99%</button>
+        </div></div>
+    </div>
+    <div class="chart" id="stepChart" role="img" aria-label="Allowed defect rate and line yield vs. step count"></div>
+    <dl class="readout">
+      <div><dt>Per-step yield y</dt><dd id="oY1"></dd></div>
+      <div class="big"><dt>Allowed defect rate per step</dt><dd id="oPpm"></dd></div>
+      <div><dt id="oCmpLab"></dt><dd id="oCmp"></dd></div>
+      <div><dt id="oLineLab0"></dt><dd id="oLine0"></dd></div>
+      <div><dt id="oLineLab1"></dt><dd id="oLine1"></dd></div>
+      <div><dt id="oLineLab2"></dt><dd id="oLine2"></dd></div>
+    </dl>
+  </div>
+  <p class="note standalone-only">When the step count grows 1.5×, the allowed defect rate falls to 2/3. A per-step yield of 99% sounds excellent, yet after 800 steps almost nothing comes out. Hundreds of steps multiply in series, so each step must be perfect to the ppm, not "nearly perfect". A decision that adds steps (multi-patterning) adds yield risk on top of cost.</p>
+</section>
+
+
+<section aria-labelledby="s4" data-part="field">
+  <h2 id="s4">④ Reduction projection and the largest die</h2>
+  <div class="formula standalone-only">Wafer field = pattern area on mask (104 × 132 mm) ÷ reduction ratio　·　largest-die yield = e<sup>−A·D₀</sup></div>
+  <div class="bench" id="figure-field">
+    <div class="controls">
+      <div class="ctl"><div class="lab">Optics</div><div class="seg" id="optSeg"></div></div>
+      <div class="ctl"><label for="d0">Defect density D₀ <output id="d0Out"></output></label><input type="range" id="d0" min="0.02" max="0.5" step="0.01" value="0.1"></div>
+    </div>
+    <div class="chart" id="fieldChart" role="img" aria-label="Pattern area of a 6-inch mask and the wafer fields of the two optics, drawn to the same scale"></div>
+    <dl class="readout">
+      <div><dt id="oFldLab"></dt><dd id="oFld"></dd></div>
+      <div class="big"><dt>Field area = largest die</dt><dd id="oArea"></dd></div>
+      <div><dt>Largest-die yield · 0.33 NA (858 mm²)</dt><dd id="oYs"></dd></div>
+      <div><dt>Largest-die yield · High-NA (429 mm²)</dt><dd id="oYh"></dd></div>
+      <div><dt>Area at 50% yield A₅₀ = ln2/D₀</dt><dd id="oA50"></dd></div>
+    </dl>
+  </div>
+  <p class="note standalone-only">The field is halved so that the 6-inch mask can stay. The 104 × 132 mm area on the mask is unchanged; only the direction reduced 8× becomes 132 ÷ 8 = 16.5 mm. High-NA draws finer patterns but halves the area drawn in one exposure. An 800 mm²-class die cannot be printed in one High-NA field, so it needs stitching or chiplets.</p>
+</section>
+
+<section aria-labelledby="s5">
+  <details class="check">
+    <summary>Check against the solutions (<span id="checkSum"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">Values from Session 5, Section 4 and the solutions to Exercises 1–5, recomputed with this figure's formulas and rounded to the digits the solutions give. The "Initial state" rows read the figure's starting values, not the values you have moved.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="check"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s6" class="standalone-only">
+  <h2 id="s6">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>k₁ = 0.3 is near the practical floor for single exposure (theoretical floor about 0.25). Finer patterns are split over several exposures with multi-patterning. That goes around k₁ rather than lowering it.</li>
+    <li>k₂ is held the same for all three generations. This is the assumption of Exercise 2.</li>
+    <li>Throughput is not plotted. The text gives throughput = 1/(T₀ + t<sub>exp</sub>), but no value for the fixed time T₀. So only the exposure-time ratio and the required source power move, and throughput appears only as its limit when exposure time dominates everything (1/m), marked "limit".</li>
+    <li>Photon arrival is treated as a Poisson process (relative fluctuation 1/√N). Resist improvements that let one photon trigger more reactions (chemical amplification, metal-oxide resists) are left out. Dot counts in the photon figure show ratios only.</li>
+    <li>Line yield assumes total yield is the product of step yields. The inverse curve and readouts use the exact formula y<sup>n</sup>, as the table in the text does. The small-defect-rate approximation e<sup>−(1−y)n</sup> is noted in small type in the readout.</li>
+    <li>Largest-die yield uses the Poisson yield formula of Session 4. Stochastic defects add directly to this D₀. A mask defect repeats at the same spot in every field printed with that mask, so it behaves differently from random defects.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>Formulas and figures: "AI Infrastructure and Semiconductors", Session 5, Section 4 (Rayleigh criterion, reduction projection, the brutal physics of EUV, High-NA EUV) and the solutions to Exercises 1–5. The 250 W reference source power is the routine operating power (250 W or more) TSMC stated in 2019 when it announced its first EUV volume-production process.</div>
+  <div><i>AI Infrastructure and Semiconductors</i>, Session 5 interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>, and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to agree terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>Shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+
+  //
+  var GEN = [
+    { id: "arf", name: "ArF immersion", lam: 193, na: 1.35 },
+    { id: "euv", name: "EUV", lam: 13.5, na: 0.33 },
+    { id: "hna", name: "High-NA EUV", lam: 13.5, na: 0.55 }
+  ];
+  var DEV = { exe: { gen: "hna", cd: 8 }, nxe: { gen: "euv", cd: 13 } };  //
+  var R = 193 / 13.5;          //
+  var HC = 1240;               //
+  var MASK = { w: 104, h: 132, side: 6 * 25.4 };   //
+  var OPT = [
+    { id: "std", name: "0.33 NA · 4×·4×", short: "0.33 NA", mx: 4, my: 4 },
+    { id: "hna", name: "High-NA · 4×·8×", short: "High-NA", mx: 4, my: 8 }
+  ];
+  var YS = [0.9999, 0.999, 0.99];  //
+  var K1_MIN = 0.25;               //
+  //
+  var INIT = { gen: "euv", na: 0.33, k1: 0.3, k2: 0.5, mode: "k1", dev: "nxe", cdIn: 13,
+               m: R, p0: 250, n: 800, Y: 0.9, ys: 0.9999, opt: "hna", d0: 0.1 };
+  var st = {}; for (var key in INIT) st[key] = INIT[key];
+
+  //
+  function cd(k1, lam, na) { return k1 * lam / na; }
+  function lamNa2(lam, na) { return lam / (na * na); }
+  function k1From(cdv, na, lam) { return cdv * na / lam; }
+  function photon(m) { return { nRatio: m / R, sig: Math.sqrt(R / m), t: m, thrLimit: 1 / m }; }
+  function stepYield(Y, n) { return Math.pow(Y, 1 / n); }
+  function ppm(Y, n) { return (1 - stepYield(Y, n)) * 1e6; }
+  function lineYield(y, n) { return Math.pow(y, n); }               //
+  function lineYieldApprox(y, n) { return Math.exp(-(1 - y) * n); } //
+  function field(o) { return { w: MASK.w / o.mx, h: MASK.h / o.my }; }
+  function area(o) { var f = field(o); return f.w * f.h; }                    // mm²
+  function dieYield(aMm2, d0) { return Math.exp(-aMm2 / 100 * d0); }          // D₀ [/cm²]
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  function $(id) { return document.getElementById(id); }
+  function fx(x, d) { return x.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d }); }
+  function genBy(id) { return GEN.filter(function (g) { return g.id === id; })[0]; }
+  function optBy(id) { return OPT.filter(function (o) { return o.id === id; })[0]; }
+  function watts(w) { return w >= 1000 ? fx(w / 1000, 1) + " kW" : fmt(w) + " W"; }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var a in attrs) e.setAttribute(a, attrs[a]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  // ================= ① optics =================
+  function curK1() { var g = genBy(st.gen); return st.mode === "inv" ? k1From(st.cdIn, st.na, g.lam) : st.k1; }
+  function naRange(g) { return g.lam > 100 ? [0.5, 1.35] : [0.2, 0.9]; }
+  function setGen(id, na) {
+    st.gen = id; var g = genBy(id), r = naRange(g);
+    st.na = na === undefined ? g.na : na;
+    var s = $("na"); s.min = r[0]; s.max = r[1]; s.value = st.na;
+    $("genSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === id)); });
+    //
+    $("devSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+  }
+  function drawOptics() {
+    var g = genBy(st.gen), k1 = curK1();
+    var rows = GEN.map(function (x) { return { name: x.name, spec: "λ " + fmt(x.lam, 1) + " nm · NA " + fx(x.na, 2), cd: cd(k1, x.lam, x.na), dof: st.k2 * lamNa2(x.lam, x.na), cur: false, same: x.id === st.gen && Math.abs(x.na - st.na) < 1e-9 }; });
+    rows.push({ name: "Current setting", spec: "λ " + fmt(g.lam, 1) + " · NA " + fx(st.na, 2) + " · k₁ " + fx(k1, 3), cd: cd(k1, g.lam, st.na), dof: st.k2 * lamNa2(g.lam, st.na), cur: true });
+    var W = 720, top = 34, rh = 46, H = top + rows.length * rh + 6;
+    var cx0 = 200, cx1 = 444, dx0 = 474, dx1 = 716;
+    var cmax = Math.max.apply(null, rows.map(function (r) { return r.cd; })), dmax = Math.max.apply(null, rows.map(function (r) { return r.dof; }));
+    function cw(v) { return v / cmax * (cx1 - cx0 - 56); }
+    function dw(v) { return v / dmax * (dx1 - dx0 - 48); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    svg.appendChild(el("text", { x: cx0, y: 18, "font-size": 12.5, "font-weight": 700 }, "CD = k₁λ/NA [nm] · smaller is finer"));
+    svg.appendChild(el("text", { x: dx0, y: 18, "font-size": 12.5, "font-weight": 700 }, "DOF = k₂λ/NA² [nm] · k₂ " + fx(st.k2, 2)));
+    rows.forEach(function (r, i) {
+      var y = top + i * rh;
+      if (r.cur) svg.appendChild(el("line", { x1: 0, x2: W, y1: y - 4, y2: y - 4, stroke: "var(--line)" }));
+      svg.appendChild(el("text", { x: cx0 - 12, y: y + 15, "text-anchor": "end", "font-size": 13.5, "font-weight": r.cur || r.same ? 700 : 400, fill: r.cur ? "var(--accent2)" : "var(--fg)" }, r.name));
+      svg.appendChild(el("text", { x: cx0 - 12, y: y + 32, "text-anchor": "end", "class": "tick" }, r.spec));
+      var fill = r.cur ? "var(--accent2)" : "var(--accent)", op = r.cur ? 1 : (r.same ? 0.85 : 0.5);
+      svg.appendChild(el("rect", { x: cx0, y: y + 6, width: Math.max(1, cw(r.cd)), height: 22, rx: 3, fill: fill, "fill-opacity": op }));
+      svg.appendChild(el("text", { x: cx0 + cw(r.cd) + 6, y: y + 22, "font-size": 13, "class": "mono" }, fx(r.cd, 1)));
+      svg.appendChild(el("rect", { x: dx0, y: y + 6, width: Math.max(1, dw(r.dof)), height: 22, rx: 3, fill: fill, "fill-opacity": op }));
+      svg.appendChild(el("text", { x: dx0 + dw(r.dof) + 6, y: y + 22, "font-size": 13, "class": "mono" }, fmt(r.dof)));
+    });
+    $("opticsChart").replaceChildren(svg);
+  }
+  function updateOptics() {
+    var g = genBy(st.gen), k1 = curK1(), arf = GEN[0], euv = GEN[1];
+    var c = cd(k1, g.lam, st.na), rel = lamNa2(g.lam, st.na) / lamNa2(arf.lam, arf.na);
+    $("naOut").textContent = fx(st.na, 2);
+    $("k1Out").textContent = fx(k1, 3) + (st.mode === "inv" ? " (back-calculated)" : "");
+    $("k1").disabled = st.mode === "inv";
+    if (st.mode !== "inv") $("k1").value = st.k1;
+    $("invCtl").hidden = st.mode !== "inv";
+    $("cdInOut").textContent = fx(st.cdIn, 1) + " nm";
+    $("k2Out").textContent = fx(st.k2, 2);
+    $("oCD").innerHTML = fx(c, 1) + " <small>nm</small>";
+    $("oGain").innerHTML = fx(cd(k1, arf.lam, arf.na) / c, 2) + " <small>× finer</small>";
+    $("oRel").textContent = fx(rel, 2);
+    $("oDOF").innerHTML = fmt(st.k2 * lamNa2(g.lam, st.na)) + " <small>nm</small>";
+    $("oVsEuv").innerHTML = fx(lamNa2(g.lam, st.na) / lamNa2(euv.lam, euv.na), 2) + " <small>×</small>";
+    //
+    var below = st.mode === "inv" && k1 < K1_MIN - 1e-9;
+    $("k1Warn").hidden = !below;
+    if (below) $("k1Warn").textContent = "Back-calculated k₁ = " + fx(k1, 3) + " — below the theoretical floor (about 0.25 for single exposure). Finer patterns are split over several exposures with multi-patterning. That goes around k₁; it does not lower it.";
+    drawOptics();
+  }
+
+  // ================= ② photon =================
+  var DOT_ARF = 200, DOT_MAX = 320;   //
+  var dotPos = (function () { var r = mulberry32(20261008), p = []; for (var i = 0; i < 2 * DOT_MAX; i++) p.push(r()); return p; })();
+  function drawDots(m) {
+    var W = 720, H = 200, S = 150, ax = 70, ex = 420, y0 = 26;
+    var nE = Math.round(DOT_ARF * m / R), svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    [[ax, DOT_ARF, "var(--accent)", "ArF 193 nm · dose 1"], [ex, nE, "var(--accent2)", "EUV 13.5 nm · dose " + fx(m, 1) + "×"]].forEach(function (b, k) {
+      svg.appendChild(el("text", { x: b[0] + S / 2, y: 16, "text-anchor": "middle", "font-size": 13, "font-weight": 700 }, b[3]));
+      svg.appendChild(el("rect", { x: b[0], y: y0, width: S, height: S, fill: "none", stroke: "var(--mut)", "stroke-opacity": 0.5 }));
+      for (var i = 0; i < Math.min(b[1], DOT_MAX); i++) {
+        var j = (i + k * 97) % DOT_MAX;
+        svg.appendChild(el("circle", { cx: (b[0] + 4 + dotPos[2 * j] * (S - 8)).toFixed(1), cy: (y0 + 4 + dotPos[2 * j + 1] * (S - 8)).toFixed(1), r: 2.4, fill: b[2] }));
+      }
+    });
+    svg.appendChild(el("text", { x: ax + S + 16, y: y0 + S / 2 - 8, "font-size": 12.5, fill: "var(--mut)" }, "Energy per photon"));
+    svg.appendChild(el("text", { x: ax + S + 16, y: y0 + S / 2 + 10, "font-size": 12.5, fill: "var(--mut)" }, "193/13.5 = 14.3× →"));
+    svg.appendChild(el("text", { x: ex + S + 14, y: y0 + S / 2 - 8, "font-size": 12.5, "class": "mono" }, "Photons " + fmt(m / R * 100) + "%"));
+    svg.appendChild(el("text", { x: ex + S + 14, y: y0 + S / 2 + 10, "font-size": 12.5, "class": "mono" }, "Fluctuation " + fx(Math.sqrt(R / m), 2) + "×"));
+    svg.appendChild(el("text", { x: W / 2, y: H - 4, "text-anchor": "middle", "font-size": 11.5, fill: "var(--mut)" }, "Same area. One dot = one photon. Dot counts show ratios only (ArF drawn with " + DOT_ARF + " dots)."));
+    $("dotChart").replaceChildren(svg);
+  }
+  function drawSig(m) {
+    var W = 720, H = 220, L = 52, Rm = 140, T = 16, B = 38, LM = Math.log(20);
+    function sx(v) { return L + Math.log(v) / LM * (W - L - Rm); }
+    function sy(s) { return H - B - s / 4 * (H - T - B); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    [1, 2, 5, 10, 20].forEach(function (v) { g.appendChild(el("line", { x1: sx(v), x2: sx(v), y1: T, y2: H - B })); svg.appendChild(el("text", { x: sx(v), y: H - B + 17, "text-anchor": "middle", "class": "tick" }, v + "×")); });
+    [0, 1, 2, 3, 4].forEach(function (s) { g.appendChild(el("line", { x1: L, x2: W - Rm, y1: sy(s), y2: sy(s) })); svg.appendChild(el("text", { x: L - 8, y: sy(s) + 4, "text-anchor": "end", "class": "tick" }, s)); });
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - Rm, y: H - 4, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "EUV dose multiple m [log]"));
+    svg.appendChild(el("text", { x: 12, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 12 " + (T + 4) + ")", "text-anchor": "end" }, "Relative fluctuation (ArF = 1)"));
+    svg.appendChild(el("line", { x1: L, x2: W - Rm, y1: sy(1), y2: sy(1), stroke: "var(--accent)", "stroke-dasharray": "5 4" }));
+    svg.appendChild(el("text", { x: W - Rm + 6, y: sy(1) + 4, "font-size": 12, fill: "var(--accent)" }, "Same fluctuation as ArF"));
+    svg.appendChild(el("line", { x1: sx(R), x2: sx(R), y1: T, y2: H - B, stroke: "var(--accent)", "stroke-dasharray": "2 3" }));
+    svg.appendChild(el("text", { x: sx(R) + 5, y: T + 12, "font-size": 12, fill: "var(--accent)" }, "14.3×"));
+    var d = "";
+    for (var i = 0; i <= 120; i++) { var v = Math.exp(LM * i / 120); d += (i ? " L" : "M") + sx(v).toFixed(1) + "," + sy(Math.sqrt(R / v)).toFixed(1); }
+    svg.appendChild(el("path", { d: d, fill: "none", stroke: "var(--accent2)", "stroke-width": 2.4 }));
+    svg.appendChild(el("text", { x: sx(1) + 12, y: sy(Math.sqrt(R)) + 4, "font-size": 12, fill: "var(--accent2)", "font-weight": 700 }, "√(14.3/m) · 3.78× at m = 1"));
+    svg.appendChild(el("circle", { cx: sx(m), cy: sy(Math.sqrt(R / m)), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    $("sigChart").replaceChildren(svg);
+  }
+  function drawPow(m, p0) {
+    var W = 720, H = 104, L = 210, Rm = 80, need = p0 * m, max = Math.max(need, p0) * 1.02;
+    function sx(w) { return L + w / max * (W - L - Rm); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    [[p0, "Reference source power", 6, "var(--accent)"], [need, "Power for same exposure time", 40, "var(--accent2)"]].forEach(function (r) {
+      svg.appendChild(el("text", { x: L - 10, y: r[2] + 17, "text-anchor": "end", "font-size": 13 }, r[1]));
+      svg.appendChild(el("rect", { x: L, y: r[2], width: Math.max(1, sx(r[0]) - L), height: 24, rx: 3, fill: r[3] }));
+      svg.appendChild(el("text", { x: sx(r[0]) + 6, y: r[2] + 17, "font-size": 13, "class": "mono" }, watts(r[0])));
+    });
+    svg.appendChild(el("text", { x: L, y: H - 8, "font-size": 12, fill: "var(--mut)" }, "Same power: exposure time grows " + fx(m, 1) + "×. Same time: power must rise " + fx(m, 1) + "×."));
+    $("powChart").replaceChildren(svg);
+  }
+  function setM(m) {
+    st.m = m; $("m").value = m;
+    $("mSeg").querySelectorAll("button").forEach(function (b) { var v = b.dataset.v === "R" ? R : Number(b.dataset.v); b.setAttribute("aria-pressed", String(Math.abs(v - m) < 1e-9)); });
+  }
+  function updatePhoton() {
+    var p = photon(st.m);
+    $("mOut").textContent = fx(st.m, 1) + "×";
+    $("p0Out").textContent = fmt(st.p0) + " W";
+    $("oEv").innerHTML = fmt(HC / 13.5) + " · " + fx(HC / 193, 1) + " <small>eV</small>";
+    $("oN").innerHTML = fmt(p.nRatio * 100) + "<small>%</small>";
+    $("oSig").innerHTML = fx(p.sig, 2) + " <small>×</small>";
+    $("oT").innerHTML = fx(p.t, 1) + " <small>×</small>";
+    $("oP").textContent = watts(st.p0 * st.m);
+    $("oThr").innerHTML = fmt(p.thrLimit * 100) + "<small>% (1/" + fx(st.m, 1) + ")</small>";
+    drawDots(st.m); drawSig(st.m); drawPow(st.m, st.p0);
+  }
+
+  // ================= ③ steps =================
+  function drawSteps() {
+    var W = 720, H = 300, T = 30, B = 42, svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    function panel(x0, x1) { return { sx: function (n) { return x0 + (n - 100) / 1900 * (x1 - x0); }, x0: x0, x1: x1 }; }
+    //
+    var A = panel(56, 330);
+    function ay(v) { return H - B - Math.log10(Math.max(1, Math.min(1e4, v))) / 4 * (H - T - B); }
+    var g = el("g", { "class": "grid" });
+    [100, 500, 1000, 1500, 2000].forEach(function (n) { g.appendChild(el("line", { x1: A.sx(n), x2: A.sx(n), y1: T, y2: H - B })); svg.appendChild(el("text", { x: A.sx(n), y: H - B + 17, "text-anchor": "middle", "class": "tick" }, fmt(n))); });
+    [1, 10, 100, 1000, 10000].forEach(function (v) { g.appendChild(el("line", { x1: A.x0, x2: A.x1, y1: ay(v), y2: ay(v) })); svg.appendChild(el("text", { x: A.x0 - 6, y: ay(v) + 4, "text-anchor": "end", "class": "tick" }, fmt(v))); });
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: A.x0, y: 16, "font-size": 12.5, "font-weight": 700 }, "Allowed defect rate per step [ppm, log] · target " + fmt(st.Y * 100) + "%"));
+    var d = "";
+    for (var n = 100; n <= 2000; n += 25) d += (n === 100 ? "M" : " L") + A.sx(n).toFixed(1) + "," + ay(ppm(st.Y, n)).toFixed(1);
+    svg.appendChild(el("path", { d: d, fill: "none", stroke: "var(--accent2)", "stroke-width": 2.4 }));
+    [800, 1200].forEach(function (n, i) {
+      var v = ppm(st.Y, n);
+      svg.appendChild(el("circle", { cx: A.sx(n), cy: ay(v), r: 4, fill: "var(--card)", stroke: "var(--accent)", "stroke-width": 2 }));
+      //
+      //
+      //
+      svg.appendChild(el("text", { x: A.sx(n) + (i ? 7 : 10), y: ay(v) + (i ? -10 : 26), "text-anchor": i ? "start" : "end", "font-size": 12, fill: "var(--accent)" }, fmt(n) + " steps, " + fx(v, 1) + " ppm"));
+    });
+    svg.appendChild(el("circle", { cx: A.sx(st.n), cy: ay(ppm(st.Y, st.n)), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("text", { x: A.x1, y: H - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Steps n"));
+    //
+    var Bp = panel(410, 650);
+    function by(v) { return H - B - v * (H - T - B); }
+    var g2 = el("g", { "class": "grid" });
+    [100, 500, 1000, 1500, 2000].forEach(function (n) { g2.appendChild(el("line", { x1: Bp.sx(n), x2: Bp.sx(n), y1: T, y2: H - B })); svg.appendChild(el("text", { x: Bp.sx(n), y: H - B + 17, "text-anchor": "middle", "class": "tick" }, fmt(n))); });
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (v) { g2.appendChild(el("line", { x1: Bp.x0, x2: Bp.x1, y1: by(v), y2: by(v) })); svg.appendChild(el("text", { x: Bp.x0 - 6, y: by(v) + 4, "text-anchor": "end", "class": "tick" }, (v * 100) + "%")); });
+    svg.appendChild(g2);
+    var ttl = el("text", { x: Bp.x0, y: 16, "font-size": 12.5, "font-weight": 700 }, "Inverse: line yield y");
+    ttl.appendChild(el("tspan", { dy: -5, "font-size": 9.5 }, "n"));   //
+    svg.appendChild(ttl);
+    [800, 1200].forEach(function (n) { svg.appendChild(el("line", { x1: Bp.sx(n), x2: Bp.sx(n), y1: T, y2: H - B, stroke: "var(--accent)", "stroke-dasharray": "3 3", "stroke-opacity": 0.7 })); });
+    YS.forEach(function (y) {
+      var on = Math.abs(y - st.ys) < 1e-12, dd = "";
+      for (var n2 = 100; n2 <= 2000; n2 += 20) dd += (n2 === 100 ? "M" : " L") + Bp.sx(n2).toFixed(1) + "," + by(lineYield(y, n2)).toFixed(1);
+      svg.appendChild(el("path", { d: dd, fill: "none", stroke: on ? "var(--accent2)" : "var(--mut)", "stroke-width": on ? 2.6 : 1.3, "stroke-opacity": on ? 1 : 0.7, "stroke-dasharray": on ? "" : "4 3" }));
+      var end = lineYield(y, 2000);
+      svg.appendChild(el("text", { x: Bp.x1 + 6, y: by(end) + (y === 0.99 ? 6 : 4), "font-size": 12, fill: on ? "var(--accent2)" : "var(--mut)", "font-weight": on ? 700 : 400 }, fmt(y * 100, 2) + "%"));
+    });
+    svg.appendChild(el("circle", { cx: Bp.sx(st.n), cy: by(lineYield(st.ys, st.n)), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("text", { x: Bp.x1, y: H - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Steps n"));
+    $("stepChart").replaceChildren(svg);
+  }
+  function updateSteps() {
+    var y = stepYield(st.Y, st.n), cmpN = st.n === 1200 ? 800 : 1200;
+    $("nOut").textContent = fmt(st.n) + " steps";
+    $("YOut").textContent = fmt(st.Y * 100) + "%";
+    $("oY1").textContent = fx(y, 7);
+    $("oPpm").innerHTML = fx(ppm(st.Y, st.n), 1) + " <small>ppm</small>";
+    $("oCmpLab").textContent = "Compare: " + fmt(cmpN) + " steps, same target";
+    $("oCmp").innerHTML = fx(ppm(st.Y, cmpN), 1) + " <small>ppm</small>";
+    YS.forEach(function (s, i) {
+      var v = lineYield(s, st.n) * 100, e = lineYieldApprox(s, st.n) * 100;
+      $("oLineLab" + i).textContent = "Line yield · per step " + fmt(s * 100, 2) + "%";
+      //
+      $("oLine" + i).innerHTML = fx(v, v < 1 ? 2 : 1) + "<small>%</small> <small class='standalone-only'>(approx. e^−(1−y)n gives " + fx(e, e < 1 ? 3 : 1) + "%)</small>";
+    });
+    drawSteps();
+  }
+
+  // ================= ④ field =================
+  function drawField() {
+    var W = 720, H = 330, s = 1.75, mx = 16, my = 34, M = MASK.side * s;
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), sel = optBy(st.opt);
+    svg.appendChild(el("text", { x: mx, y: 18, "font-size": 12.5, "font-weight": 700 }, "Mask (reticle) · 6 inches per side = 152.4 mm"));
+    svg.appendChild(el("rect", { x: mx, y: my, width: M, height: M, rx: 3, fill: "var(--soft)", stroke: "var(--mut)" }));
+    var pw = MASK.w * s, ph = MASK.h * s, px = mx + (M - pw) / 2, py = my + (M - ph) / 2;
+    svg.appendChild(el("rect", { x: px, y: py, width: pw, height: ph, fill: "var(--accent)", "fill-opacity": 0.18, stroke: "var(--accent)", "stroke-width": 1.5 }));
+    svg.appendChild(el("text", { x: px + pw / 2, y: py + ph / 2 - 4, "text-anchor": "middle", "font-size": 13, "font-weight": 700, fill: "var(--accent)" }, "Pattern area"));
+    svg.appendChild(el("text", { x: px + pw / 2, y: py + ph / 2 + 14, "text-anchor": "middle", "font-size": 12.5, "class": "mono" }, "104 × 132 mm"));
+    svg.appendChild(el("text", { x: px + pw / 2, y: py - 5, "text-anchor": "middle", "class": "tick" }, "104"));
+    svg.appendChild(el("text", { x: px + pw + 4, y: py + ph / 2 + 4, "class": "tick" }, "132"));
+    //
+    var ax0 = mx + M + 14, ax1 = ax0 + 90, ay = my + M / 2;
+    svg.appendChild(el("line", { x1: ax0, x2: ax1, y1: ay, y2: ay, stroke: "var(--accent2)", "stroke-width": 2 }));
+    svg.appendChild(el("path", { d: "M" + ax1 + "," + (ay - 5) + " L" + (ax1 + 9) + "," + ay + " L" + ax1 + "," + (ay + 5) + " Z", fill: "var(--accent2)" }));
+    svg.appendChild(el("text", { x: (ax0 + ax1) / 2, y: ay - 10, "text-anchor": "middle", "font-size": 12.5, fill: "var(--accent2)", "font-weight": 700 }, "Width ÷" + sel.mx + " · height ÷" + sel.my));
+    svg.appendChild(el("text", { x: (ax0 + ax1) / 2, y: ay + 20, "text-anchor": "middle", "font-size": 11.5, fill: "var(--mut)" }, sel.short));
+    //
+    var fx0 = ax1 + 30;
+    svg.appendChild(el("text", { x: fx0, y: 18, "font-size": 12.5, "font-weight": 700 }, "Field on wafer (same scale as mask)"));
+    OPT.forEach(function (o, i) {
+      var f = field(o), on = o.id === st.opt, y = my + 14 + i * 140, wpx = f.w * s, hpx = f.h * s;
+      svg.appendChild(el("rect", { x: fx0, y: y, width: wpx, height: hpx, fill: on ? "var(--accent2)" : "var(--mut)", "fill-opacity": on ? 0.35 : 0.15, stroke: on ? "var(--accent2)" : "var(--mut)", "stroke-width": on ? 2 : 1 }));
+      var tx = fx0 + wpx + 14;
+      svg.appendChild(el("text", { x: tx, y: y + 12, "font-size": 13, "font-weight": on ? 700 : 400, fill: on ? "var(--accent2)" : "var(--fg)" }, o.name));
+      svg.appendChild(el("text", { x: tx, y: y + 31, "font-size": 12.5, "class": "mono" }, fmt(f.w, 1) + " × " + fmt(f.h, 1) + " mm = " + fmt(area(o)) + " mm²"));
+      svg.appendChild(el("text", { x: tx, y: y + 50, "font-size": 12.5, fill: "var(--mut)" }, "Largest-die yield " + fx(dieYield(area(o), st.d0) * 100, 1) + "% (D₀ = " + fx(st.d0, 2) + ")"));
+      if (o.my === 8) svg.appendChild(el("text", { x: tx, y: y + 69, "font-size": 11.5, fill: "var(--mut)" }, "8× direction: 132 ÷ 8 = 16.5 mm"));
+    });
+    svg.appendChild(el("text", { x: W - 4, y: H - 6, "text-anchor": "end", "font-size": 11.5, fill: "var(--mut)" }, "The 104 × 132 mm area on the mask is the same for both optics. Only the reduction ratio differs."));
+    $("fieldChart").replaceChildren(svg);
+  }
+  function updateField() {
+    var o = optBy(st.opt), f = field(o);
+    $("d0Out").textContent = fx(st.d0, 2) + " /cm²";
+    $("oFldLab").textContent = "Field · " + o.name;
+    $("oFld").innerHTML = fmt(f.w, 1) + " × " + fmt(f.h, 1) + " <small>mm</small>";
+    $("oArea").innerHTML = fmt(area(o)) + " <small>mm²</small>";
+    $("oYs").textContent = fx(dieYield(area(OPT[0]), st.d0) * 100, 1) + "%";
+    $("oYh").textContent = fx(dieYield(area(OPT[1]), st.d0) * 100, 1) + "%";
+    $("oA50").innerHTML = fmt(Math.LN2 / st.d0 * 100) + " <small>mm²</small>";
+    drawField();
+  }
+
+  //
+  //
+  //
+  function checkRows() {
+    var rows = [];
+    function multi(name, vals, exp, dig, unit) {
+      var ok = vals.every(function (v, i) { return Number(v.toFixed(dig[i])) === exp[i]; });
+      var got = vals.map(function (v, i) { return fx(v, dig[i]); }).join(" · "), ex = exp.map(function (v, i) { return fx(v, dig[i]); }).join(" · ");
+      rows.push({ name: name, got: got + (unit || ""), expected: ex + (unit || ""), status: ok ? "match" : "miss" });
+    }
+    var cds = GEN.map(function (g) { return cd(0.3, g.lam, g.na); });
+    multi("Exercise 1 · CD for ArF immersion, EUV, High-NA (k₁ 0.3)", cds, [42.9, 12.3, 7.4], [1, 1, 1], " nm");
+    multi("Exercise 1 · improvement ratio (a)→(b), (b)→(c)", [cds[0] / cds[1], cds[1] / cds[2]], [3.49, 1.67], [2, 2], " ×");
+    multi("Exercise 1 · back-calculated k₁, EXE 8 nm and NXE 13 nm", [k1From(DEV.exe.cd, genBy(DEV.exe.gen).na, 13.5), k1From(DEV.nxe.cd, genBy(DEV.nxe.gen).na, 13.5)], [0.326, 0.318], [3, 3]);
+    var q = GEN.map(function (g) { return lamNa2(g.lam, g.na); });
+    multi("Exercise 2 · λ/NA²", q, [105.9, 124.0, 44.6], [1, 1, 1]);
+    multi("Exercise 2 · relative DOF", q.map(function (v) { return v / q[0]; }), [1.00, 1.17, 0.42], [2, 2, 2]);
+    multi("Exercise 2 · DOF (k₂ 0.5)", q.map(function (v) { return 0.5 * v; }), [53, 62, 22], [0, 0, 0], " nm");
+    multi("Section 4 · High-NA/EUV DOF", [q[2] / q[1]], [0.36], [2], " ×");
+    multi("Exercise 3 · photon energy ratio", [R], [14.3], [1]);
+    multi("Exercise 3 · photon energy, EUV and ArF (hc ≈ 1,240 eV·nm)", [HC / 13.5, HC / 193], [92, 6.4], [0, 1], " eV");
+    multi("Exercise 3 · photon count at same dose (vs. ArF)", [photon(1).nRatio * 100], [7], [0], " %");
+    multi("Exercise 3 · relative fluctuation", [photon(1).sig], [3.78], [2], " ×");
+    //
+    var lo = 1, hi = 100; for (var i = 0; i < 80; i++) { var mid = (lo + hi) / 2; if (photon(mid).sig > 1) lo = mid; else hi = mid; }
+    multi("Exercise 3 · dose needed for the same fluctuation", [lo], [14.3], [1], " ×");
+    multi("Exercise 3 · source power needed for the same exposure time (250 W reference)", [250 * lo / 1000], [3.6], [1], " kW");
+    multi("Exercise 4 · 800 steps, 90%: step yield, allowed defects (ppm)", [stepYield(0.9, 800), ppm(0.9, 800)], [0.9998683, 131.7], [7, 1]);
+    multi("Exercise 4 · 1,200 steps, 90%: step yield, allowed defects (ppm)", [stepYield(0.9, 1200), ppm(0.9, 1200)], [0.9999122, 87.8], [7, 1]);
+    multi("Exercise 4 · inverse table, 800 steps, 99.99%, 99.9%, 99%", YS.map(function (y) { return lineYield(y, 800) * 100; }), [92.3, 44.9, 0.03], [1, 1, 2], " %");
+    multi("Exercise 4 · inverse table, 1,200 steps, 99.99%, 99.9%", [lineYield(0.9999, 1200) * 100, lineYield(0.999, 1200) * 100], [88.7, 30.1], [1, 1], " %");
+    //
+    multi("Section 4 · area on mask (26×33 × 4 = constant), 6 inches", [26 * 4, 33 * 4, MASK.side], [MASK.w === 104 ? 104 : -1, MASK.h === 132 ? 132 : -1, 152.4], [0, 0, 1], " mm");
+    multi("Section 4 · High-NA field in the 8× direction", [field(OPT[1]).h], [16.5], [1], " mm");
+    multi("Exercise 5 · largest die area", [area(OPT[0]), area(OPT[1])], [858, 429], [0, 0], " mm²");
+    multi("Exercise 5 · largest-die yield (D₀ 0.1)", [dieYield(area(OPT[0]), 0.1) * 100, dieYield(area(OPT[1]), 0.1) * 100], [42.4, 65.1], [1, 1], " %");
+    //
+    var ig = genBy(INIT.gen), ik1 = INIT.mode === "inv" ? k1From(INIT.cdIn, INIT.na, ig.lam) : INIT.k1;
+    multi("Initial state (optics) · EUV CD, relative DOF, DOF", [cd(ik1, ig.lam, INIT.na), lamNa2(ig.lam, INIT.na) / q[0], INIT.k2 * lamNa2(ig.lam, INIT.na)], [12.3, 1.17, 62], [1, 2, 0]);
+    var ip = photon(INIT.m);
+    multi("Initial state (photon) · fluctuation ratio, exposure-time ratio, required source power (kW)", [ip.sig, ip.t, INIT.p0 * INIT.m / 1000], [1.00, 14.3, 3.6], [2, 1, 1]);
+    multi("Initial state (steps) · " + fmt(INIT.n) + " steps, " + fmt(INIT.Y * 100) + "% target, allowed defects", [ppm(INIT.Y, INIT.n)], [131.7], [1], " ppm");
+    var io = optBy(INIT.opt);
+    multi("Initial state (field) · " + io.short + " field area, both largest-die yields", [area(io), dieYield(area(OPT[0]), INIT.d0) * 100, dieYield(area(OPT[1]), INIT.d0) * 100], [429, 42.4, 65.1], [0, 1, 1]);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding diff</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + r.got + "</td><td class='num'>" + r.expected + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length, round = rows.filter(function (r) { return r.status === "round"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : "") + (round ? " · rounding diffs " + round : "") + (!miss && !round ? " · all match" : "");
+  }
+
+  //
+  function segClick(id, fn) {
+    $(id).addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      this.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      fn(b.dataset.v);
+    });
+  }
+  function applyDev(id) {
+    st.dev = id; var d = DEV[id]; setGen(d.gen); st.cdIn = d.cd; $("cdIn").value = d.cd;
+    $("devSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === id)); });
+  }
+  GEN.forEach(function (g) {
+    var b = document.createElement("button"); b.type = "button"; b.dataset.v = g.id;
+    b.textContent = g.name + " · " + fmt(g.lam, 1) + " nm"; $("genSeg").appendChild(b);
+  });
+  OPT.forEach(function (o) {
+    var b = document.createElement("button"); b.type = "button"; b.dataset.v = o.id;
+    b.textContent = o.name; b.setAttribute("aria-pressed", String(o.id === st.opt)); $("optSeg").appendChild(b);
+  });
+  segClick("genSeg", function (v) { setGen(v); updateOptics(); });
+  segClick("modeSeg", function (v) { st.mode = v; if (v === "inv") applyDev(st.gen === "hna" ? "exe" : "nxe"); updateOptics(); });
+  segClick("devSeg", function (v) { applyDev(v); updateOptics(); });
+  $("na").addEventListener("input", function (e) { st.na = Number(e.target.value); updateOptics(); });
+  $("k1").addEventListener("input", function (e) { st.k1 = Number(e.target.value); updateOptics(); });
+  $("cdIn").addEventListener("input", function (e) { st.cdIn = Number(e.target.value); $("devSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", "false"); }); updateOptics(); });
+  $("k2").addEventListener("input", function (e) { st.k2 = Number(e.target.value); updateOptics(); });
+
+  segClick("mSeg", function (v) { setM(v === "R" ? R : Number(v)); updatePhoton(); });
+  $("m").addEventListener("input", function (e) { setM(Number(e.target.value)); updatePhoton(); });
+  $("p0").addEventListener("input", function (e) { st.p0 = Number(e.target.value); updatePhoton(); });
+
+  $("n").addEventListener("input", function (e) { st.n = Number(e.target.value); updateSteps(); });
+  $("Y").addEventListener("input", function (e) { st.Y = Number(e.target.value); updateSteps(); });
+  segClick("ysSeg", function (v) { st.ys = Number(v); updateSteps(); });
+
+  segClick("optSeg", function (v) { st.opt = v; updateField(); });
+  $("d0").addEventListener("input", function (e) { st.d0 = Number(e.target.value); updateField(); });
+
+  setGen(INIT.gen, INIT.na); setM(INIT.m);
+  renderCheck(); updateOptics(); updatePhoton(); updateSteps(); updateField();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

@@ -244,7 +244,10 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
   function fix(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d, minimumFractionDigits: d }); }
   function kwS(v) { return Math.abs(v * 1000 - Math.round(v * 1000)) > 1e-6 ? fix(v, 4) : fix(v, 3); }
-  function usd(x) { return fmt(Math.round(x)) + "달러"; }
+  function tpl(s, o) { return s.replace(/\{(\w+)\}/g, function (m, k) { return k in o ? String(o[k]) : m; }); }   // 단위·어순을 문자열 쪽에 두어 언어마다 바꿀 수 있게(2026-10-22)
+  function usd(x) { return tpl("{n}달러", { n: fmt(Math.round(x)) }); }
+  function usdSmall(x) { return tpl("{n}<small>달러</small>", { n: fmt(x) }); }
+  function eok(v) { return tpl("{n}억 달러", { n: fmt(v, 2), m: fmt(Math.round(v * 100)) }); }   // m: 백만 달러 단위
   function nShow(n) { return n >= 1000 ? Math.round(n / 10) * 10 : Math.round(n); }   // 본문처럼 천 대 이상은 십의 자리
   function eq(n) { return Math.abs(nShow(n) - n) < 1e-6 ? "= " : "≈ "; }   // 나누어떨어지면 본문처럼 「=」
   function nText(n) { return isFinite(n) ? eq(n) + fmt(nShow(n)) + "대" : "없음"; }
@@ -341,7 +344,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     svg.appendChild(el("line", { x1: sx(0), y1: sy(0), x2: sx(xmax), y2: sy(gEnd), stroke: "var(--accent)", "stroke-width": 2.4 }));
     svg.appendChild(el("line", { x1: sx(0), y1: sy(r.nre), x2: sx(xmax), y2: sy(aEnd), stroke: "var(--accent2)", "stroke-width": 2.4 }));
     svg.appendChild(el("circle", { cx: sx(0), cy: sy(r.nre), r: 3.5, fill: "var(--accent2)" }));
-    svg.appendChild(el("text", { x: sx(0) + 8, y: sy(r.nre) + 17, "font-size": 11.5, fill: "var(--accent2)" }, "C_NRE " + fmt(r.nre / 1e8, 2) + "억 달러"));
+    svg.appendChild(el("text", { x: sx(0) + 8, y: sy(r.nre) + 17, "font-size": 11.5, fill: "var(--accent2)" }, "C_NRE " + eok(r.nre / 1e8)));
     // 범례는 왼쪽 위(두 직선이 지나지 않는 자리)에 둔다
     [["GPU 총비용  N × (c_G + o_G)", "var(--accent)", T + 14], ["ASIC 총비용  C_NRE + N × (c_A + o_A)", "var(--accent2)", T + 32]].forEach(function (lg) {
       svg.appendChild(el("line", { x1: L + 10, x2: L + 30, y1: lg[2] - 4, y2: lg[2] - 4, stroke: lg[1], "stroke-width": 2.6 }));
@@ -428,7 +431,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   // ---- 조작부 ----
   var MFR = "<em class='tag mfr'>제조사 최대값</em>", ASM = "<em class='tag'>가정값</em>", OWN = "<em class='tag own'>직접 넣은 값</em>";
   var CTL2 = [
-    { k: "nre", lab: "개발비 C<sub>NRE</sub>", tag: ASM, min: 0.1, max: 5, step: 0.1, out: function (v) { return fmt(v, 2) + "억 달러"; } },
+    { k: "nre", lab: "개발비 C<sub>NRE</sub>", tag: ASM, min: 0.1, max: 5, step: 0.1, out: eok },
     { k: "cA", lab: "ASIC 단가 c<sub>A</sub>", tag: ASM, min: 500, max: 30000, step: 100, out: usd },
     { k: "cG", lab: "GPU 단가 c<sub>G</sub>", tag: ASM, min: 5000, max: 60000, step: 500, out: usd },
     { k: "gkw", lab: "GPU 전력", tag: function (s) { return which(s.gkw, KW.gChip, KW.gSrv) ? MFR : OWN; }, min: 0.1, max: 2.5, step: 0.005, out: function (v) { return kwS(v) + " kW"; } },
@@ -439,7 +442,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     { k: "yrs", lab: "기간", tag: ASM, min: 1, max: 6, step: 1, out: function (v) { return fmt(v) + "년"; } }
   ];
   var CTL4 = [
-    { k: "nre", lab: "개발비 C<sub>NRE</sub>", tag: ASM, min: 0.1, max: 5, step: 0.1, out: function (v) { return fmt(v, 2) + "억 달러"; } },
+    { k: "nre", lab: "개발비 C<sub>NRE</sub>", tag: ASM, min: 0.1, max: 5, step: 0.1, out: eok },
     { k: "cA", lab: "ASIC 단가 c<sub>A</sub>", tag: ASM, min: 500, max: 30000, step: 100, out: usd },
     { k: "cG", lab: "GPU 단가 c<sub>G</sub>", tag: ASM, min: 5000, max: 60000, step: 500, out: usd },
     { k: "oA", lab: "ASIC 전력비 o<sub>A</sub>", tag: ASM, min: 0, max: 20000, step: 100, out: usd },
@@ -470,9 +473,9 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     syncCtl(CTL2, s2, "c2-");
     var r = calc2(s2), bd = boundary(s2);
     $("bdSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === bd)); });
-    $("r2oG").innerHTML = fmt(Math.round(r.oG)) + "<small>달러</small>";
-    $("r2oA").innerHTML = fmt(Math.round(r.oA)) + "<small>달러</small>";
-    $("r2den").innerHTML = fmt(Math.round(r.den)) + "<small>달러</small>";
+    $("r2oG").innerHTML = usdSmall(Math.round(r.oG));
+    $("r2oA").innerHTML = usdSmall(Math.round(r.oA));
+    $("r2den").innerHTML = usdSmall(Math.round(r.den));
     $("r2share").textContent = share(r);
     $("r2n").innerHTML = nHtml(r.n);
     var m = $("msg2"), lead, warn = false;
@@ -483,7 +486,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     else lead = "장당 전력을 직접 넣었다(GPU " + kwS(s2.gkw) + " kW, ASIC " + kwS(s2.akw) + " kW).";
     var tail;
     if (!(r.den > 0)) { warn = true; tail = " <b>분모가 0 이하다 — ASIC이 단위당 더 비싸 언제나 손해다.</b> 손익분기 물량은 없다."; }
-    else tail = " 분모 " + usd(r.den) + " 가운데 전력비 차이는 " + usd(r.op) + "(" + share(r) + ")이고, " +
+    else tail = " 분모 " + usd(r.den) + " 가운데 전력비 차이는 " + tpl("{v}({p})이고, ", { v: usd(r.op), p: share(r) }) +
       (Math.abs(r.acq) >= Math.abs(r.op) ? "지배하는 것은 취득원가 차이 " + usd(r.acq) + "다." : "이 값에서는 운영비 차이가 취득원가 차이(" + usd(r.acq) + ")보다 크다.");
     m.className = "note" + (warn ? " warn" : "");
     m.innerHTML = lead + tail;
@@ -492,9 +495,9 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   function update4() {
     syncCtl(CTL4, s4, "c4-");
     var r = calc4(s4), b = isFinite(r.n) ? bandOf(r.n) : null, m = $("msg4");
-    $("r4g").innerHTML = fmt(r.cG + r.oG) + "<small>달러</small>";
-    $("r4a").innerHTML = fmt(r.cA + r.oA) + "<small>달러</small>";
-    $("r4den").innerHTML = fmt(r.den) + "<small>달러</small>";
+    $("r4g").innerHTML = usdSmall(r.cG + r.oG);
+    $("r4a").innerHTML = usdSmall(r.cA + r.oA);
+    $("r4den").innerHTML = usdSmall(r.den);
     $("r4n").innerHTML = nHtml(r.n);
     if (!(r.den > 0)) { m.className = "note warn"; m.innerHTML = "<b>분모가 0 이하다 — ASIC이 단위당 더 비싸 언제나 손해다.</b> 손익분기 물량은 없다."; }
     else {

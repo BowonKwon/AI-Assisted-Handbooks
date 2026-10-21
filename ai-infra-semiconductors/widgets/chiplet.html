@@ -453,7 +453,9 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
         if (cmpOne(it[0], it[1], it[2]) === "miss") st = "miss";
         got.push(it[0].toFixed(it[2])); exp.push(it[1].toFixed(it[2]));
       });
-      rows.push({ name: name, got: got.join(" · ") + (unit || ""), expected: exp.join(" · ") + (unit || ""), status: st });
+      // unit 에 {n} 이 있으면 값이 그 자리에 들어간다(언어마다 단위 어순이 달라서, 2026-10-22)
+      function u(s) { return !unit ? s : unit.indexOf("{n}") >= 0 ? unit.replace("{n}", function () { return s; }) : s + unit; }
+      rows.push({ name: name, got: u(got.join(" · ")), expected: u(exp.join(" · ")), status: st });
     }
     function sw6(d0) { return sweep(d0, MODES.s6.ov, MODES.s6.asm, "s6"); }
     var a = sw6(0.1), b = sw6(0.05), c = sw6(0.2);
@@ -483,7 +485,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     add("4회차 실습 4 · 칩렛 하나·네 개 원가, ÷0.95", [[q.cost * q.a / 4, 0.004509, 6], [q.cost * q.a, 0.018035, 6], [q.cost, 0.018984, 6]], " W");
     add("4회차 실습 4 · 절감액 D₀ 0.1 (본문)", [[q1.cost - q.cost, 0.01536, 5]], " W");
     add("4회차 실습 4 · 절감액의 웨이퍼값 대비 비율", [[(q1.cost - q.cost) * 100, 1.5, 1]], " %");
-    add("4회차 실습 4 · 웨이퍼 15,000달러일 때 시스템당 여유", [[(q1.cost - q.cost) * 15000, 230, 0]], " 달러");
+    add("4회차 실습 4 · 웨이퍼 15,000달러일 때 시스템당 여유", [[(q1.cost - q.cost) * 15000, 230, 0]], "{n} 달러");
     add("4회차 실습 4 표 · D₀ 0.1 단일·칩렛·절감액", [[q1.cost, 0.03435, 5], [q.cost, 0.01898, 5], [q1.cost - q.cost, 0.0154, 4]], " W");
     var r1 = split(1, 0.02, MODES.s4.ov, MODES.s4.asm, "s4"), r4 = split(4, 0.02, MODES.s4.ov, MODES.s4.asm, "s4");
     add("4회차 실습 4 표 · D₀ 0.02 단일·칩렛·절감액", [[r1.cost, 0.01811, 5], [r4.cost, 0.01592, 5], [r1.cost - r4.cost, 0.0022, 4]], " W");

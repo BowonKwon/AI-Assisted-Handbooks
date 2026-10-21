@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Systolic array heartbeat</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="systolic";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --pe-on: #2f4b8f; --pe-on-fg: #ffffff;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --pe-on: #3c5ba8; --pe-on-fg: #ffffff; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --pe-on: #3c5ba8; --pe-on-fg: #ffffff; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.stage-wrap { overflow-x: auto; }
+.stage { display: grid; grid-template-columns: auto auto; gap: 10px 12px; width: max-content; margin: 0 auto; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.wlabel { grid-column: 2; font-family: var(--sans); font-size: 12.5px; color: var(--mut); text-align: center; }
+.queue { display: grid; gap: 6px; }
+.qrow { display: flex; justify-content: flex-end; align-items: center; gap: 4px; height: 64px; }
+.qcell { width: 30px; height: 30px; display: grid; place-items: center; font-size: 13px; border-radius: 5px; background: var(--soft); color: var(--fg); }
+.qcell.ghost { background: transparent; }
+.qlab { font-family: var(--sans); font-size: 12px; color: var(--mut); width: 34px; text-align: right; }
+.grid { display: grid; gap: 6px; }
+.pe { width: 64px; height: 64px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg); position: relative; display: grid; place-items: center; transition: background .18s, color .18s; }
+.pe .w { position: absolute; top: 3px; left: 5px; font-size: 10.5px; color: var(--mut); }
+.pe .x { position: absolute; top: 3px; right: 5px; font-size: 10.5px; color: var(--accent2); font-weight: 500; }
+.pe .ps { font-size: 15px; font-weight: 500; }
+.pe.on { background: var(--pe-on); color: var(--pe-on-fg); border-color: var(--pe-on); }
+.pe.on .w, .pe.on .x { color: var(--pe-on-fg); opacity: .85; }
+.pe.off { background: repeating-linear-gradient(135deg, var(--line) 0 2px, transparent 2px 7px); border-style: dashed; }
+.pe.off .w { display: none; }
+.outrow { display: grid; gap: 6px; }
+.out { width: 64px; min-height: 30px; text-align: center; font-size: 12.5px; color: var(--mut); display: grid; gap: 2px; align-content: start; }
+.out b { color: var(--accent2); font-weight: 500; font-size: 13.5px; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 6px 14px; border-radius: 7px; cursor: pointer; }
+.btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.clock { font-family: var(--mono); font-size: 14px; color: var(--mut); margin-left: auto; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+.meter { height: 6px; background: var(--soft); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+
+.mats { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; font-family: var(--mono); font-size: 13.5px; }
+.mat { display: grid; gap: 4px; }
+.mat .cap { font-family: var(--sans); font-size: 12.5px; color: var(--mut); }
+.mat table { border-collapse: collapse; }
+.mat td { padding: 2px 7px; text-align: right; border: 1px solid var(--line); min-width: 28px; }
+.ok { color: var(--ok); font-family: var(--sans); font-size: 13px; font-weight: 700; }
+.bad { color: var(--warn); font-family: var(--sans); font-size: 13px; font-weight: 700; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table.big { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.big th, table.big td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+table.big th:first-child, table.big td:first-child { text-align: left; }
+table.big th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+table.big td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+@media (prefers-reduced-motion: reduce) { .pe { transition: none; } }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 2, Section 4 · a matrix multiply, one beat at a time</div>
+  <h1>Systolic array heartbeat</h1>
+  <p class="lede">The weights are preloaded into the processing elements (PEs), and the activations are pushed in from the left one beat at a time, on a diagonal. Partial sums flow from top to bottom and become results at the bottom edge. Change the token count M and count how many PEs work on each beat.</p>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">Streaming Y = X · W through the array</h2>
+  <div class="bench" id="figure">
+    <div class="stage-wrap"><div class="stage" id="stage"></div></div>
+    <div class="transport">
+      <button type="button" class="btn primary" id="play">Play</button>
+      <button type="button" class="btn" id="step">One beat</button>
+      <button type="button" class="btn" id="reset">Reset</button>
+      <span class="clock" id="clock"></span>
+    </div>
+    <dl class="readout">
+      <div><dt>PEs working this beat</dt><dd id="rNow"></dd><div class="meter"><i id="rNowBar"></i></div></div>
+      <div><dt>Multiply-accumulates so far</dt><dd id="rMac"></dd></div>
+      <div class="big"><dt>Overall utilization (run to the end)</dt><dd id="rUtil"></dd></div>
+      <div><dt>Reuse</dt><dd id="rReuse" style="font-size:14px;font-family:var(--sans)"></dd></div>
+    </dl>
+    <div class="controls">
+      <div class="ctl"><div class="lab">View</div>
+        <div class="seg" id="presetSeg">
+          <button type="button" data-v="prefill" aria-pressed="false">Prefill (M=8)</button>
+          <button type="button" data-v="decode" aria-pressed="true">Decode (M=1)</button>
+          <button type="button" data-v="small" aria-pressed="false">Small matrix</button>
+        </div></div>
+      <div class="ctl"><label for="mIn">Token count M (rows of X) <output id="mOut"></output></label><input type="range" id="mIn" min="1" max="8" step="1" value="1"></div>
+      <div class="ctl"><label for="kIn">K (columns of X · rows of W) <output id="kOut"></output></label><input type="range" id="kIn" min="1" max="4" step="1" value="4"></div>
+      <div class="ctl"><label for="nIn">N (columns of W) <output id="nOut"></output></label><input type="range" id="nIn" min="1" max="4" step="1" value="4"></div>
+      <div class="ctl"><label for="spd">Speed <output id="spdOut"></output></label><input type="range" id="spd" min="1" max="5" step="1" value="2"></div>
+    </div>
+  </div>
+  <p class="note" id="msg"></p>
+</section>
+
+<section aria-labelledby="s2">
+  <h2 id="s2">Check</h2>
+  <p class="standalone-only">Checks whether the array output equals the product worked by hand. In each cell, the small text at top left is the weight w held in that PE, at top right the activation x passing through now, and in the center the partial sum after that PE.</p>
+  <div class="bench"><div class="mats" id="mats"></div></div>
+  <details class="check">
+    <summary>Check against the text (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table class="big">
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">In all three views, checks that the array output equals X·W worked by hand, and that the active PEs and cumulative MACs at the initial state (fourth beat) and the utilization at TPU v1 size match the text and figure of Session 2, Section 4.</caption>
+        <thead><tr><th>Item</th><th>Computed</th><th>Expected</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s3" class="standalone-only">
+  <h2 id="s3">Scaled to TPU v1 size</h2>
+  <p id="scaleIntro"></p>
+  <div class="tbl"><table class="big">
+    <thead><tr><th>Token count M</th><th>Beats M+K+N−2</th><th>Multiply-accumulates</th><th>Utilization</th></tr></thead>
+    <tbody id="scale"></tbody>
+  </table></div>
+  <p class="note">With M = 1 (batch-1 decode), most beats go to filling and draining. In prefill, with thousands of tokens, that cost is buried and utilization climbs to nearly 90%. This counts in beats what Section 4 of the text says: "with small batches or long, thin matrices (decode!), utilization drops sharply."</p>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this toy simplifies</h2>
+  <ul class="limits">
+    <li>Only one tile is streamed. Real chips feed the next tile right behind it, overlapping fill and drain time. Even so, with a small M each weight is used only M times and then discarded, so the gain is small.</li>
+    <li>The time to load weights into the PEs is not counted.</li>
+    <li>Only one dataflow, weight-stationary, is shown. Others exist, such as output-stationary.</li>
+    <li>The values are small integers chosen for easy checking. The real TPU v1 does 8-bit integer multiply-accumulate.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>TPU v1's 256 × 256 = 65,536 8-bit MAC array: Jouppi et al., “In-Datacenter Performance Analysis of a Tensor Processing Unit,” ISCA 2017. Follows Session 2, Section 4 of the text.</div>
+  <div><i>AI Infrastructure and Semiconductors</i>, Session 2 interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>, and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to agree terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.tpu_v1) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>Shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  var BIG = D.tpu_v1.array;  // 256
+  var ARR = 4;                //
+  var PRESETS = { prefill: { M: 8, K: 4, N: 4 }, decode: { M: 1, K: 4, N: 4 }, small: { M: 8, K: 2, N: 2 } };
+  var st = { M: 1, K: 4, N: 4, t: -1, timer: null, speed: 2 };
+
+  //
+  function xVal(m, k) { return ((m * 3 + k * 2) % 5) + 1; }
+  function wVal(k, n) { return ((k + n * 2) % 3) + 1; }
+  function cycles(M, K, N) { return M + K + N - 2; }
+  //
+  function tokenAt(t, k, n, M) { var m = t - k - n; return m >= 0 && m < M ? m : -1; }
+  //
+  function psum(m, k, n) { var s = 0; for (var i = 0; i <= k; i++) s += xVal(m, i) * wVal(i, n); return s; }
+  function yVal(m, n, K) { return psum(m, K - 1, n); }
+  function direct(m, n, K) { var s = 0; for (var k = 0; k < K; k++) s += xVal(m, k) * wVal(k, n); return s; }
+  function macsUpTo(t, M, K, N) {
+    var c = 0;
+    for (var tt = 0; tt <= t; tt++) for (var k = 0; k < K; k++) for (var n = 0; n < N; n++) if (tokenAt(tt, k, n, M) >= 0) c++;
+    return c;
+  }
+  function activeAt(t, M, K, N) {
+    var c = 0;
+    for (var k = 0; k < K; k++) for (var n = 0; n < N; n++) if (tokenAt(t, k, n, M) >= 0) c++;
+    return c;
+  }
+  function util(M, K, N, arr) { return M * K * N / (cycles(M, K, N) * arr * arr); }
+  //
+  function arrayMatches(M, K, N) {
+    var T = cycles(M, K, N), seen = 0;
+    for (var m = 0; m < M; m++) for (var n = 0; n < N; n++) {
+      if (m + K - 1 + n > T - 1) return false;       //
+      if (yVal(m, n, K) !== direct(m, n, K)) return false;
+      seen++;
+    }
+    return seen === M * N && macsUpTo(T - 1, M, K, N) === M * K * N;
+  }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d }); }
+
+  function render() {
+    var M = st.M, K = st.K, N = st.N, t = st.t, T = cycles(M, K, N);
+    var h = '<div></div><div class="wlabel">Weights W[k][n] sit in the PEs · partial sums flow ↓</div>';
+    //
+    //
+    var slots = M + K - 1;
+    h += '<div class="queue">';
+    for (var k = 0; k < ARR; k++) {
+      h += '<div class="qrow">';
+      if (k < K) {
+        var cells = [];
+        for (var j = slots - 1; j >= 0; j--) {
+          var m = t + 1 + j - k;
+          cells.push(m >= 0 && m < M ? '<span class="qcell" title="x[' + m + '][' + k + ']">' + xVal(m, k) + "</span>" : '<span class="qcell ghost"></span>');
+        }
+        h += cells.join("") + '<span class="qlab">→ k' + k + "</span>";
+      }
+      h += "</div>";
+    }
+    h += "</div>";
+    //
+    h += '<div class="grid" style="grid-template-columns:repeat(' + ARR + ',64px)">';
+    var now = 0;
+    for (k = 0; k < ARR; k++) for (var n = 0; n < ARR; n++) {
+      if (k >= K || n >= N) { h += '<div class="pe off" title="Unused PE"></div>'; continue; }
+      var mm = t >= 0 ? tokenAt(t, k, n, M) : -1, on = mm >= 0;
+      if (on) now++;
+      h += '<div class="pe' + (on ? " on" : "") + '"><span class="w">w' + wVal(k, n) + "</span>" +
+        (on ? '<span class="x">x' + xVal(mm, k) + '</span><span class="ps">' + psum(mm, k, n) + "</span>" : "") + "</div>";
+    }
+    h += "</div>";
+    //
+    h += '<div></div><div class="outrow" style="grid-template-columns:repeat(' + ARR + ',64px)">';
+    for (n = 0; n < ARR; n++) {
+      h += '<div class="out">';
+      if (n < N) {
+        var got = [];
+        for (m = 0; m < M; m++) if (m + K - 1 + n <= t) got.push("<b>" + yVal(m, n, K) + "</b>");
+        h += got.length ? got.join("") : "↓";
+      }
+      h += "</div>";
+    }
+    h += "</div>";
+    $("stage").innerHTML = h;
+
+    var macs = t >= 0 ? macsUpTo(t, M, K, N) : 0, u = util(M, K, N, ARR);
+    $("clock").textContent = "Beat " + Math.max(0, t + 1) + " / " + T;
+    $("rNow").innerHTML = now + " <small>/ " + ARR * ARR + "</small>";
+    $("rNowBar").style.width = (now / (ARR * ARR) * 100) + "%";
+    $("rMac").innerHTML = macs + " <small>/ " + M * K * N + "</small>";
+    $("rUtil").textContent = fmt(u * 100, 1) + "%";
+    $("rReuse").innerHTML = "each x used " + N + " times, each w " + M + " times";
+    $("mOut").textContent = M; $("kOut").textContent = K; $("nOut").textContent = N;
+    $("step").disabled = t >= T - 1;
+    if (t >= T - 1) stop();
+
+    var msg;
+    if (M === 1) msg = "With only one token, each weight is used once and that is all. While the activations pass once along the diagonal, most PEs sit idle. This is what batch-1 decode looks like on the array.";
+    else if (K < ARR || N < ARR) msg = "The matrix is smaller than the array, so the hatched PEs stay idle to the end. This is the case in the text: ‘when the matrix size does not fit the array dimensions, the edge PEs sit idle.’";
+    else msg = "As tokens keep arriving, the grid is nearly full in the middle beats. The fill and drain beats at either end are what cut utilization. Raising M shrinks their share.";
+    $("msg").textContent = msg;
+  }
+
+  function renderMats() {
+    var M = st.M, K = st.K, N = st.N;
+    function tbl(rows, cols, f) {
+      var s = "<table>";
+      for (var i = 0; i < rows; i++) { s += "<tr>"; for (var j = 0; j < cols; j++) s += "<td>" + f(i, j) + "</td>"; s += "</tr>"; }
+      return s + "</table>";
+    }
+    var ok = arrayMatches(M, K, N);
+    $("mats").innerHTML =
+      '<div class="mat"><span class="cap">X (' + M + "×" + K + ")</span>" + tbl(M, K, xVal) + "</div>" +
+      '<div class="mat"><span class="cap">W (' + K + "×" + N + ")</span>" + tbl(K, N, wVal) + "</div>" +
+      '<div class="mat"><span class="cap">X·W by hand</span>' + tbl(M, N, function (i, j) { return direct(i, j, K); }) + "</div>" +
+      '<div class="mat"><span class="cap">Array output</span>' + tbl(M, N, function (i, j) { return yVal(i, j, K); }) + "</div>" +
+      '<div class="mat"><span class="cap">Comparison</span>' + (ok ? '<span class="ok">all match</span>' : '<span class="bad">mismatch</span>') + "</div>";
+  }
+
+  function renderScale() {
+    $("scaleIntro").textContent = "The same count, applied unchanged to a " + BIG + " × " + BIG + " array (" + fmt(BIG * BIG) + " MACs, TPU v1). This is the utilization for streaming one tile with K = N = " + BIG + " once.";
+    $("scale").innerHTML = [1, 8, 32, 256, 1024, 4096].map(function (M) {
+      var T = cycles(M, BIG, BIG), mac = M * BIG * BIG;
+      return "<tr><td class='num'>" + fmt(M) + "</td><td class='num'>" + fmt(T) + "</td><td class='num'>" + fmt(mac) + "</td><td class='num'>" + fmt(util(M, BIG, BIG, BIG) * 100, 1) + "%</td></tr>";
+    }).join("");
+  }
+
+  //
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected, ok) { rows.push({ name: name, got: got, expected: expected, status: ok ? "match" : "miss" }); }
+    Object.keys(PRESETS).forEach(function (k) {
+      var p = PRESETS[k], ok = arrayMatches(p.M, p.K, p.N);
+      add("Check · " + k + " (M " + p.M + ", K " + p.K + ", N " + p.N + ") array output = X·W", ok ? "match" : "mismatch", "match", ok);
+    });
+    add("Section 4 · TPU v1 MAC count " + BIG + " × " + BIG, BIG * BIG, 65536, BIG * BIG === 65536);
+    var d = PRESETS.decode;
+    add("Initial state · decode beats M+K+N−2", cycles(d.M, d.K, d.N), 7, cycles(d.M, d.K, d.N) === 7);
+    //
+    var act = activeAt(3, d.M, d.K, d.N), mac3 = macsUpTo(3, d.M, d.K, d.N);
+    add("Initial state · active PEs at fourth beat", act, 4, act === 4);
+    add("Initial state · cumulative MACs through fourth beat", mac3, 10, mac3 === 10);
+    //
+    var u1 = util(1, BIG, BIG, BIG) * 100, u4096 = util(4096, BIG, BIG, BIG) * 100;
+    add("Section 4 · TPU v1 size, M = 1, average utilization (%)", Math.round(u1 * 10) / 10, 0.2, Math.round(u1 * 10) / 10 === 0.2);
+    add("Section 4 · TPU v1 size, M = 4,096, average utilization (%)", Math.round(u4096), 89, Math.round(u4096) === 89);
+    return rows;
+  }
+  window.__selftest = checkRows;
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding diff</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (typeof r.got === "number" ? fmt(r.got, 1) : r.got) + "</td><td class='num'>" +
+        (typeof r.expected === "number" ? fmt(r.expected, 1) : r.expected) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  function stop() { if (st.timer) { clearInterval(st.timer); st.timer = null; } $("play").textContent = "Play"; }
+  function tick() { if (st.t < cycles(st.M, st.K, st.N) - 1) { st.t++; render(); } else stop(); }
+  function speedMs() { return [0, 1400, 900, 600, 350, 180][st.speed]; }
+  function play() {
+    if (st.timer) { stop(); return; }
+    if (st.t >= cycles(st.M, st.K, st.N) - 1) st.t = -1;
+    $("play").textContent = "Pause";
+    tick();
+    st.timer = setInterval(tick, speedMs());
+  }
+  function resetTo(p) {
+    stop();
+    if (p) { st.M = p.M; st.K = p.K; st.N = p.N; $("mIn").value = p.M; $("kIn").value = p.K; $("nIn").value = p.N; }
+    st.t = -1; render(); renderMats();
+  }
+
+  $("play").addEventListener("click", play);
+  $("step").addEventListener("click", function () { stop(); tick(); });
+  $("reset").addEventListener("click", function () { resetTo(null); });
+  $("presetSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    this.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    resetTo(PRESETS[b.dataset.v]);
+  });
+  [["mIn", "M"], ["kIn", "K"], ["nIn", "N"]].forEach(function (p) {
+    $(p[0]).addEventListener("input", function (e) {
+      st[p[1]] = Number(e.target.value);
+      $("presetSeg").querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+      resetTo(null);
+    });
+  });
+  $("spd").addEventListener("input", function (e) {
+    st.speed = Number(e.target.value); $("spdOut").textContent = "×" + st.speed;
+    if (st.timer) { clearInterval(st.timer); st.timer = setInterval(tick, speedMs()); }
+  });
+  $("spdOut").textContent = "×" + st.speed;
+
+  renderScale();
+  renderCheck();
+  //
+  resetTo(PRESETS.decode);
+  st.t = 3; render();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Data Center Calculator</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="datacenter";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --bad: #b0412e;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+h3 { margin: 0; font-size: 14.5px; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 22px; }
+@media (max-width: 620px) { .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ctl.s3, .ctl.s2 { grid-column: 1 / -1; } }
+.ctl { display: grid; gap: 5px; min-width: 0; align-content: start; }
+.ctl.s2 { grid-column: span 2; } .ctl.s3 { grid-column: 1 / -1; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; white-space: nowrap; }
+.ctl .hint { font-size: 12px; color: var(--mut); line-height: 1.5; }
+.ctl.off { opacity: .45; }
+input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 5px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { font: inherit; font-size: 13px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 4px 11px; border-radius: 7px; cursor: pointer; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.tag { display: inline-block; font-size: 11px; line-height: 1.4; padding: 0 6px; border-radius: 9px; border: 1px solid var(--line); color: var(--mut); font-weight: 400; white-space: nowrap; vertical-align: 1px; }
+.tag.mfr { border-color: var(--accent); color: var(--accent); }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px 12px; border-top: 1px solid var(--line); padding-top: 12px; margin: 0; }
+.readout div { display: grid; gap: 1px; min-width: 0; align-content: start; }
+.readout dt { font-size: 12.5px; color: var(--mut); line-height: 1.45; }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 22px; color: var(--accent2); font-weight: 500; }
+
+.lanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+/**/
+.mdot { position: relative; display: inline-block; line-height: 1; }
+.mdot::after { content: ""; position: absolute; left: 50%; top: -0.08em; width: 0.17em; height: 0.17em; margin-left: -0.085em; border-radius: 50%; background: currentColor; }
+.lanes > .col { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.lane { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 6px; min-width: 0; align-content: start; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 1px 10px; font-size: 13.5px; margin: 0; line-height: 1.55; }
+.kv dt { color: var(--mut); }
+.kv dd { margin: 0; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kv dd.hl { color: var(--accent2); font-weight: 500; }
+.kv small { color: var(--mut); font-size: 11.5px; }
+table.mini { font-size: 13.5px; }
+table.mini th, table.mini td { padding: 2px 6px; }
+
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.grid line { stroke: var(--line); }
+
+.share { display: flex; height: 26px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--bg); font-size: 12.5px; font-family: var(--mono); }
+.share span { display: flex; align-items: center; justify-content: center; height: 100%; min-width: 0; overflow: hidden; white-space: nowrap; color: var(--bg); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; color: var(--mut); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 8px 12px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 7, Exercises 1–6</div>
+  <h1>AI Data Center Calculator</h1>
+  <p class="lede">Step by step, this page works out whether a rack's heat leaves by air or by water, how many times power is cut on its way from the grid to the chip, what PUE fails to measure, why rack distribution voltage is going up, how much electricity and memory 10,000 accelerators consume, and how the cost of one million tokens splits between power and capital.</p>
+</header>
+
+
+<section aria-labelledby="h-cool" data-part="cooling">
+  <h2 id="h-cool">① Air vs. liquid cooling: what carries a rack's heat away</h2>
+  <div class="formula standalone-only">ṁ = Q / (c<sub>p</sub> ΔT)　·　V̇ = ṁ / ρ　·　air velocity = V̇ / rack face area　·　1 m³/s = 2,118.88 CFM　·　pipe velocity = V̇<sub>water</sub> / (π d² / 4)</div>
+  <div class="bench" id="figure-cooling">
+    <div class="controls">
+      <div class="ctl"><label for="cP">Rack power <output id="cPOut"></output></label><input type="range" id="cP" min="10" max="200" step="5"></div>
+      <div class="ctl"><label for="cDa">Air ΔT <output id="cDaOut"></output></label><input type="range" id="cDa" min="5" max="25" step="1"></div>
+      <div class="ctl"><div class="lab">Air density ρ (kg/m³)</div>
+        <div class="seg" id="cRho"><button type="button" data-v="1.18">1.18</button><button type="button" data-v="1.2">1.2</button></div>
+        <div class="hint">1.18 Exercise 1 · 1.2 Section 3 quick exercise</div></div>
+      <div class="ctl"><label for="cDw">Water ΔT <output id="cDwOut"></output></label><input type="range" id="cDw" min="3" max="20" step="1"></div>
+      <div class="ctl"><label for="cA"><span>Rack face area <span class="tag">assumed</span></span> <output id="cAOut"></output></label><input type="range" id="cA" min="0.6" max="2.4" step="0.1"></div>
+      <div class="ctl"><label for="cD"><span>Pipe diameter <span class="tag">assumed</span></span> <output id="cDOut"></output></label><input type="range" id="cD" min="15" max="80" step="1">
+        <div class="btns"><button type="button" class="btn" data-d="40">40 mm</button><button type="button" class="btn" data-d="25">25 mm</button></div></div>
+    </div>
+    <div class="btns" style="font-size:12.5px;color:var(--mut)"><button type="button" class="btn" id="cReset">Reset to worked example</button><span>Specific heat fixed at 1,005 (air) and 4,186 (water) J/(kg·K)</span></div>
+    <div class="chart" id="cChart" role="img" aria-label="Air-cooling airflow required at each rack power"></div>
+    <div class="chart" id="cGauge" role="img" aria-label="Air velocity and pipe velocity"></div>
+    <dl class="readout">
+      <div><dt>Air mass flow</dt><dd id="oCma"></dd></div>
+      <div><dt>Air volume flow</dt><dd id="oCva"></dd></div>
+      <div><dt>Per minute</dt><dd id="oCmin"></dd></div>
+      <div><dt>CFM</dt><dd id="oCcfm"></dd></div>
+      <div class="big"><dt>Air velocity at rack face</dt><dd id="oCvel"></dd></div>
+      <div><dt>Water mass flow ≈ L/s</dt><dd id="oCmw"></dd></div>
+      <div class="big"><dt>Water flow</dt><dd id="oClm"></dd></div>
+      <div><dt>Volume flow ratio (air ÷ water)</dt><dd id="oCratio"></dd></div>
+      <div><dt>Pipe velocity</dt><dd id="oCpipe"></dd></div>
+    </dl>
+  </div>
+  <p class="standalone-only">The air-cooling limit depends on how air is supplied (raised-floor tiles, hot-aisle containment, or in-row coolers) and on the allowed temperature rise, so sources disagree. The figure therefore does not draw the limit as a single line. It shades the text's reading, "floor-tile supply alone tops out at roughly 30 kW per rack," as a soft band, and draws two numbers from the 2021 ASHRAE TC 9.9 white paper as reference lines. Reaching 40–50 kW takes supplementary cooling, such as the in-row coolers or rear-door heat exchangers the same paper names as alternatives.</p>
+  <details class="check">
+    <summary>Check against the solutions (<span id="sum-cooling"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Solution" column gives the values from the solution to Exercise 1 in Session 7, Self-study appendix A, and from Section 3 (the quick exercise and the air-cooling limit paragraph). Computed values are rounded to the digits the solution reports before comparison.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="chk-cooling"></tbody>
+    </table></div>
+  </details>
+</section>
+
+
+<section aria-labelledby="h-chain" data-part="chain">
+  <h2 id="h-chain">② Power chain: losses multiply at every stage</h2>
+  <div class="formula standalone-only">Overall efficiency = Π η<sub>i</sub>　·　grid input = P<sub>chip</sub> / Π η<sub>i</sub>　·　stage loss = stage input × (1 − η<sub>i</sub>)　·　heat in rack = P<sub>chip</sub> / (η<sub>PSU</sub> η<sub>VRM</sub>)</div>
+  <div class="bench" id="figure-chain">
+    <div class="controls">
+      <div class="ctl"><label for="e0">Transformer η <output id="e0Out"></output></label><input type="range" id="e0" min="80" max="100" step="0.5"></div>
+      <div class="ctl"><label for="e1">UPS η <output id="e1Out"></output></label><input type="range" id="e1" min="80" max="100" step="0.5"></div>
+      <div class="ctl"><label for="e2">PDU η <output id="e2Out"></output></label><input type="range" id="e2" min="80" max="100" step="0.5"></div>
+      <div class="ctl"><label for="e3">PSU η <output id="e3Out"></output></label><input type="range" id="e3" min="80" max="100" step="0.5"></div>
+      <div class="ctl"><label for="e4">VRM η <output id="e4Out"></output></label><input type="range" id="e4" min="80" max="100" step="0.5"></div>
+      <div class="ctl"><label for="eP">Power delivered to the chips <output id="ePOut"></output></label><input type="range" id="eP" min="0.1" max="5" step="0.1"></div>
+    </div>
+    <div class="btns"><button type="button" class="btn" id="eReset">Reset to worked example</button><button type="button" class="btn" id="e97">All 97%</button></div>
+    <div class="chart" id="eChart" role="img" aria-label="Cumulative efficiency and loss at each stage"></div>
+    <dl class="readout">
+      <div class="big"><dt>Overall efficiency</dt><dd id="oEtot"></dd></div>
+      <div><dt>Grid input</dt><dd id="oEin"></dd></div>
+      <div><dt>Total loss (all heat)</dt><dd id="oEloss"></dd></div>
+      <div><dt>Heat to remove inside the rack</dt><dd id="oErack"></dd></div>
+      <div><dt>Extra rack heat relative to chip power</dt><dd id="oEextra"></dd></div>
+    </dl>
+    <p class="note" id="eMsg"></p>
+  </div>
+  <p class="standalone-only">Every watt of loss turns into heat that must be cooled again. Better distribution efficiency therefore pays twice: it cuts the electricity bill and cuts the cooling load by the same amount. The heat load of the whole facility equals its grid input. All the power that comes in leaves as heat.</p>
+  <details class="check">
+    <summary>Check against the solutions (<span id="sum-chain"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Solution" column gives the values from the solution to Exercise 2 in Session 7, Self-study appendix A (overall efficiency, loss table, design implication), and from Section 2, "Losses multiply at each stage." Computed values are rounded to the digits the solution reports before comparison.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="chk-chain"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<!-- ③ PUE -->
+<section aria-labelledby="h-pue" data-part="pue">
+  <h2 id="h-pue">③ The PUE trap: same work, worse metric</h2>
+  <div class="formula standalone-only">PUE = (IT + cooling + distribution) / IT　·　overhead = fixed part + variable part × (IT<sub>after</sub> / IT<sub>before</sub>)</div>
+  <div class="bench" id="figure-pue">
+    <div class="controls">
+      <div class="ctl"><label for="pIt">Original IT <output id="pItOut"></output></label><input type="range" id="pIt" min="2" max="30" step="0.5"></div>
+      <div class="ctl"><label for="pIt2">More efficient IT (same work) <output id="pIt2Out"></output></label><input type="range" id="pIt2" min="1" max="30" step="0.5"></div>
+      <div class="ctl"><div class="lab">Overhead</div>
+        <div class="seg" id="pMode"><button type="button" data-v="fixed">With fixed load</button><button type="button" data-v="prop">Fully proportional</button></div></div>
+      <div class="ctl" id="pCfC"><label for="pCf"><span>Cooling, fixed part <span class="tag">assumed</span></span> <output id="pCfOut"></output></label><input type="range" id="pCf" min="0" max="5" step="0.1"></div>
+      <div class="ctl"><label for="pCv"><span>Cooling, variable part <span class="tag">assumed</span></span> <output id="pCvOut"></output></label><input type="range" id="pCv" min="0" max="10" step="0.1"></div>
+      <div class="ctl"><div class="btns"><button type="button" class="btn" id="pReset">Reset to worked example</button></div></div>
+      <div class="ctl" id="pDfC"><label for="pDf"><span>Distribution, fixed part <span class="tag">assumed</span></span> <output id="pDfOut"></output></label><input type="range" id="pDf" min="0" max="2" step="0.05"></div>
+      <div class="ctl"><label for="pDv"><span>Distribution, variable part <span class="tag">assumed</span></span> <output id="pDvOut"></output></label><input type="range" id="pDv" min="0" max="3" step="0.05"></div>
+    </div>
+    <div class="chart" id="pChart" role="img" aria-label="Power breakdown and PUE before and after the efficiency gain"></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>IT</span><span><i style="background:var(--accent2)"></i>Cooling</span><span><i style="background:var(--mut)"></i>Distribution</span><span id="pModeNote"></span></div>
+    <dl class="readout">
+      <div><dt>PUE before</dt><dd id="oPb"></dd></div>
+      <div class="big"><dt>PUE after</dt><dd id="oPa"></dd></div>
+      <div><dt>Total power</dt><dd id="oPtot"></dd></div>
+      <div><dt>Total power reduction</dt><dd id="oPcut"></dd></div>
+    </dl>
+    <p class="note" id="pMsg"></p>
+  </div>
+  <p class="standalone-only">The denominator of PUE is IT power. Make IT more efficient and the denominator shrinks, so the metric gets worse. PUE does not just ignore IT efficiency; it penalizes improving it. It also contains no measure of work done, so at the same PUE a facility producing ten times the tokens looks no different from one that does not.</p>
+  <details class="check">
+    <summary>Check against the solutions (<span id="sum-pue"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Solution" column gives the values from the solution to Exercise 3 in Session 7, Self-study appendix A, and its table. Computed values are rounded to the digits the solution reports before comparison.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="chk-pue"></tbody>
+    </table></div>
+  </details>
+</section>
+
+
+<section aria-labelledby="h-busv" data-part="busv">
+  <h2 id="h-busv">④ Rack distribution voltage: 54 V and 800 V</h2>
+  <div class="formula standalone-only">I = P / V　·　same conductor: I²R loss ratio = (I<sub>1</sub> / I<sub>2</sub>)² = (V<sub>2</sub> / V<sub>1</sub>)²</div>
+  <div class="bench" id="figure-busv">
+    <div class="controls">
+      <div class="ctl"><label for="bP">Rack IT power <output id="bPOut"></output></label><input type="range" id="bP" min="0.05" max="2" step="0.05"></div>
+      <div class="ctl"><label for="bV1"><span>Low voltage V<sub>1</sub></span> <output id="bV1Out"></output></label><input type="range" id="bV1" min="24" max="400" step="1">
+        <div class="seg" id="bV1s"><button type="button" data-v="54">54 V</button><button type="button" data-v="48">48 V</button></div>
+        <div class="hint"><span style="white-space:nowrap">54&nbsp;V is</span> the rack bus voltage in NVIDIA documents; <span style="white-space:nowrap">48&nbsp;V is</span> the OCP Open Rack V3 nominal value</div></div>
+      <div class="ctl"><label for="bV2"><span>High voltage V<sub>2</sub></span> <output id="bV2Out"></output></label><input type="range" id="bV2" min="400" max="1500" step="10">
+        <div class="seg" id="bV2s"><button type="button" data-v="800">800 V</button></div>
+        <div class="hint">800&nbsp;V DC, which NVIDIA says it will move to from 2027</div></div>
+    </div>
+    <div class="btns"><button type="button" class="btn" id="bReset">Reset to worked example</button></div>
+    <div class="chart" id="bChart" role="img" aria-label="Current at the two voltages and the conductor cross-section giving equal loss"></div>
+    <dl class="readout">
+      <div><dt id="oBI1l">V₁ current</dt><dd id="oBI1"></dd></div>
+      <div><dt id="oBI2l">V₂ current</dt><dd id="oBI2"></dd></div>
+      <div><dt>Current ratio</dt><dd id="oBr"></dd></div>
+      <div class="big"><dt>I²R loss ratio (same conductor)</dt><dd id="oBl"></dd></div>
+    </dl>
+    <p class="note" id="bMsg"></p>
+  </div>
+  <p class="standalone-only">In a May 2025 technical blog post, NVIDIA judged that 48 V-class rack distribution hits its limit once a rack passes 200 kW, and said it would move from 2027 to 800 V DC distribution supporting IT racks of 1 MW and more. According to the same post, feeding a single 1 MW rack at 54 V would take up to 200 kg of copper busbar alone. The post also claims up to 5% better end-to-end power efficiency and up to 30% lower total cost of ownership. These are NVIDIA's claims, not independently verified values. Real designs use a different conductor size at each voltage, so the factor of 219 is a comparison that holds only "if the same conductor were used."</p>
+  <details class="check">
+    <summary>Check against the solutions (<span id="sum-busv"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Solution" column gives the values from the end of the solution to Exercise 4 in Session 7, Self-study appendix A ("doing the same calculation at rack level"). This figure covers rack distribution only, so the chip IR drop in the first part of Exercise 4 (0.1 V, 0.9 V, 50 W) is not checked. Computed values are rounded to the digits the solution reports before comparison.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="chk-busv"></tbody>
+    </table></div>
+  </details>
+</section>
+
+
+<section aria-labelledby="h-scale" data-part="scale">
+  <h2 id="h-scale">⑤ Power and memory of a 10,000-accelerator cluster</h2>
+  <div class="formula standalone-only">IT = accelerators × kW per chip × (1 + overhead), or (accelerators ÷ 8) × system kW　·　facility = IT × PUE　·　annual = facility × 8,760 h × utilization　·　required flow = facility power / (c<sub>p</sub> ΔT)</div>
+  <div class="bench" id="figure-scale">
+    <div class="controls">
+      <div class="ctl"><label for="sN">Accelerators <output id="sNOut"></output></label><input type="range" id="sN" min="500" max="50000" step="500"></div>
+      <div class="ctl s2"><div class="lab">IT power boundary</div>
+        <div class="seg" id="sB"><button type="button" data-v="ex">Exercise assumption</button><button type="button" data-v="b200">DGX B200 max</button><button type="button" data-v="b300">DGX B300 about 14 kW</button></div></div>
+      <div class="ctl" id="sKwC"><label for="sKw"><span>kW per chip <span class="tag">assumed</span></span> <output id="sKwOut"></output></label><input type="range" id="sKw" min="0.3" max="2" step="0.1"></div>
+      <div class="ctl" id="sAuxC"><label for="sAux"><span>Overhead ratio <span class="tag">assumed</span></span> <output id="sAuxOut"></output></label><input type="range" id="sAux" min="0" max="60" step="5"></div>
+      <div class="ctl"><div class="lab"><span>Utilization <span class="tag">90% is assumed</span></span></div>
+        <div class="btns"><div class="seg" id="sU"><button type="button" data-v="1">100%</button><button type="button" data-v="0.9">90%</button></div><button type="button" class="btn" id="sReset">Reset to worked example</button></div></div>
+      <div class="ctl s3"><div class="lab">PUE</div>
+        <div class="seg" id="sPue"><button type="button" data-v="1.2">1.2 · exercise assumption</button><button type="button" data-v="1.54">1.54 · Uptime 2025</button><button type="button" data-v="1.48">1.48 · built around 2020 or later</button><button type="button" data-v="1.09">1.09 · Google 2025</button></div>
+        <div class="hint">1.54 is the weighted average across facilities responding to the Uptime 2025 survey, 1.48 is the average in the same survey for facilities built around 2020 or later, and 1.09 is Google's trailing twelve-month average. One is a weighted average of survey answers; the other is a measurement inside a boundary one company set for itself. Sample and boundary both differ.</div></div>
+      <div class="ctl s2"><div class="lab">Memory per chip</div>
+        <div class="seg" id="sM"><button type="button" data-v="chip">192 GB · chip spec</button><button type="button" data-v="sys">180 GB · DGX B200 system</button><button type="button" data-v="b300">DGX B300 8 chips 2.1 TB</button></div></div>
+      <div class="ctl"><label for="sH"><span>Annual kWh per household <span class="tag">assumed</span></span> <output id="sHOut"></output></label><input type="range" id="sH" min="1000" max="6000" step="100"></div>
+      <div class="ctl"><label for="sCf">Plant capacity factor <output id="sCfOut"></output></label><input type="range" id="sCf" min="0.3" max="1" step="0.01"></div>
+      <div class="ctl"><label for="sW"><span>Cold-water flow <span class="tag">assumed</span></span> <output id="sWOut"></output></label><input type="range" id="sW" min="0.1" max="3" step="0.1"></div>
+      <div class="ctl"><label for="sDt"><span>Cold-water ΔT <span class="tag">assumed</span></span> <output id="sDtOut"></output></label><input type="range" id="sDt" min="1" max="15" step="1"></div>
+    </div>
+    <div class="chart" id="sChart" role="img" aria-label="IT power under each boundary and facility power under the current one"></div>
+    <div class="lanes">
+      <div class="col">
+        <div class="lane"><h3>Power</h3><dl class="kv" id="sPow"></dl></div>
+        <div class="lane"><h3>Water-source cooling (Q = <span class="mdot">m</span> c<sub>p</sub> ΔT)</h3><dl class="kv" id="sWat"></dl></div>
+      </div>
+      <div class="col">
+        <div class="lane"><h3>HBM</h3><dl class="kv" id="sMem"></dl></div>
+        <div class="lane"><h3>Rack layout <small style="font-weight:400;color:var(--mut)">(4 m² per rack)</small></h3>
+          <table class="mini"><thead><tr><th></th><th>8 per rack</th><th>72 per rack</th></tr></thead><tbody id="sRack"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+  <p class="standalone-only">"1 kW per accelerator + 30% overhead" is an assumption for practice. The DGX boundaries use the vendor-stated maximum system power, so no 30% overhead is added, and they come out above the assumed 13 MW. If the water stays cold and steady all year, chiller load falls. In exchange come intake and discharge permits and the ecological effect of warmer discharge water.</p>
+  <details class="check">
+    <summary>Check against the solutions (<span id="sum-scale"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Solution" column gives the values from the solution to Exercise 5 in Session 7, Self-study appendix A ((a)–(d), "comparing with real systems," and the paragraph applying Session 3 Exercise 1), the water-source cooling paragraph of Section 3, pitfall 2 of Section 4, and the first paragraph of Section 6. Computed values are rounded to the digits the solution reports before comparison.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="chk-scale"></tbody>
+    </table></div>
+  </details>
+</section>
+
+
+<section aria-labelledby="h-cost" data-part="cost">
+  <h2 id="h-cost">⑥ Power cost and capital cost per million tokens</h2>
+  <div class="formula standalone-only">tok/s ≲ B / model bytes × B<sub>sz</sub> × η　·　power cost = node power × PUE × time × electricity price　·　capital cost = node price / (years × 8,760 × utilization) × time</div>
+  <div class="bench" id="figure-cost">
+    <div class="controls">
+      <div class="ctl"><label for="kB">Node bandwidth <output id="kBOut"></output></label><input type="range" id="kB" min="5" max="80" step="0.1"></div>
+      <div class="ctl"><label for="kM">Model bytes <output id="kMOut"></output></label><input type="range" id="kM" min="10" max="200" step="5"></div>
+      <div class="ctl"><label for="kE"><span>Bandwidth utilization η <span class="tag">assumed</span></span> <output id="kEOut"></output></label><input type="range" id="kE" min="0.2" max="1" step="0.05"></div>
+      <div class="ctl"><label for="kZ"><span>Batch B<sub>sz</sub></span> <output id="kZOut"></output></label><input type="range" id="kZ" min="1" max="256" step="1">
+        <div class="seg" id="kZs"><button type="button" data-v="1">1</button><button type="button" data-v="8">8</button><button type="button" data-v="32">32</button></div></div>
+      <div class="ctl s2"><div class="lab">Node power</div>
+        <div class="seg" id="kW"><button type="button" data-v="6.4">6.4 kW · assumed</button><button type="button" data-v="sys" id="kWsys"></button></div></div>
+      <div class="ctl"><label for="kPue"><span>PUE <span class="tag">assumed</span></span> <output id="kPueOut"></output></label><input type="range" id="kPue" min="1" max="2" step="0.01"></div>
+      <div class="ctl"><label for="kC"><span>Electricity price <span class="tag">assumed</span></span> <output id="kCOut"></output></label><input type="range" id="kC" min="0.02" max="0.3" step="0.01"></div>
+      <div class="ctl"><label for="kN"><span>Node price <span class="tag">assumed</span></span> <output id="kNOut"></output></label><input type="range" id="kN" min="50000" max="600000" step="10000"></div>
+      <div class="ctl"><label for="kY"><span>Depreciation period <span class="tag">assumed</span></span> <output id="kYOut"></output></label><input type="range" id="kY" min="1" max="6" step="1"></div>
+      <div class="ctl"><label for="kU"><span>Utilization <span class="tag">assumed</span></span> <output id="kUOut"></output></label><input type="range" id="kU" min="0.1" max="1" step="0.05">
+        <div class="seg" id="kUs"><button type="button" data-v="0.8">0.8</button><button type="button" data-v="0.5">0.5</button></div></div>
+      <div class="ctl"><div class="btns"><button type="button" class="btn" id="kReset">Reset to worked example</button></div></div>
+    </div>
+    <div class="chart" id="kChart" role="img" aria-label="Power cost and capital cost per million tokens by batch size"></div>
+    <div>
+      <div class="share" id="kShare" role="img" aria-label="Cost shares"></div>
+      <div class="legend" style="margin-top:6px"><span><i style="background:var(--accent)"></i>Power</span><span><i style="background:var(--accent2)"></i>Capital (depreciation)</span><span id="kShareTxt"></span></div>
+    </div>
+    <dl class="readout">
+      <div><dt>Effective throughput</dt><dd id="oKt"></dd></div>
+      <div><dt>Time for 1M tokens</dt><dd id="oKs"></dd></div>
+      <div><dt>Energy (facility level)</dt><dd id="oKe"></dd></div>
+      <div class="big"><dt>Power cost</dt><dd id="oKec"></dd></div>
+      <div class="big"><dt>Capital cost</dt><dd id="oKcc"></dd></div>
+      <div><dt>Capital ÷ power</dt><dd id="oKr"></dd></div>
+      <div><dt>Capital cost per calendar hour</dt><dd id="oKcal"></dd></div>
+      <div><dt>Per operating hour (÷ utilization)</dt><dd id="oKh"></dd></div>
+    </dl>
+  </div>
+  <p class="standalone-only">The dominant cost is a fixed cost per hour, so utilization is cost. Who bears that risk is set by contract. A customer renting GPU cloud capacity on a take-or-pay commitment pays for the committed capacity whether it is used or not. The cost of idle GPUs then falls on the customer, not the provider. Power works as a constraint rather than a cost. Without a grid connection, accelerators can be bought but not installed.</p>
+  <details class="check">
+    <summary>Check against the solutions (<span id="sum-cost"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Solution" column gives the values from the solution to Exercise 6 in Session 7, Self-study appendix A (setup paragraph, table by batch size, share table, conclusion 1). Computed values are rounded to the digits the solution reports before comparison.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="chk-cost"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="h-lim" class="standalone-only">
+  <h2 id="h-lim">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>Fan power scales with the cube of airflow, and fan noise roughly with the fifth to sixth power of air velocity. The text states only the proportionality, so this figure does not put numbers on the effect.</li>
+    <li>Even with direct-to-chip liquid cooling, components other than the chip still need air cooling.</li>
+    <li>DGX system power is the maximum the vendor states for the system boundary. That is why it exceeds the assumed 13 MW.</li>
+    <li>PUE 1.54 is the weighted average across facilities responding to the Uptime 2025 survey, 1.48 is the average in the same survey for facilities built around 2020 or later, and 1.09 is Google's measurement inside a boundary it set for itself. Before subtracting two values with different samples and boundaries and reading the gap as an efficiency difference, check those differences first.</li>
+    <li>Throughput is the Session 2 decode upper bound multiplied by bandwidth utilization. Real service cost adds labor, networking, storage, unused capacity and safety margin, and API prices add margin and recovery of development cost. This calculation gives a floor, not a price.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>Formulas and figures: <i>AI Infrastructure and Semiconductors</i>, Session 7, Sections 2, 3, 4 and 6, and the solutions to Exercises 1–6.</div>
+  <div><i>AI Infrastructure and Semiconductors</i>, Session 7 interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>, and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through a <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issue</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.chips || !D.systems || !D.systems.dgx_h100 || !D.systems.dgx_b200 || !D.systems.dgx_b300) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>The shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  function chipById(id) { return D.chips.filter(function (c) { return c.id === id; })[0]; }
+  var H100 = chipById("h100"), B200 = chipById("b200"), SYS = D.systems;
+
+  //
+  var CP_AIR = 1005, CP_W = 4186, RHO_W = 1000;     //
+  var CFM_PER_M3S = 60 / Math.pow(0.3048, 3);        //
+  var ASHRAE_RACK = 5000, ASHRAE_TILE = 1900;        //
+  var HOURS = 8760, STACKS = 8, LAYERS = 8, DIE_Y = 0.95, RACK_M2 = 4;  //
+  var HPG_UNITS = 63, HPG_GPUS = 504;               //
+
+  //
+  var INIT = {
+    cooling: { P: 120, dTa: 15, rho: 1.18, dTw: 10, area: 1.2, dmm: 40 },
+    chain: { e0: 99, e1: 96, e2: 99, e3: 94, e4: 90, P: 1 },
+    pue: { it: 10, it2: 8, cf: 1, cv: 2, df: 0.2, dv: 0.8, mode: "fixed" },
+    busv: { P: 1, V1: 54, V2: 800 },
+    scale: { n: 10000, bound: "ex", kw: 1, aux: 30, pue: 1.2, util: 1, home: 3000, cf: 0.9, mem: "chip", flow: 1, dT: 5 },
+    cost: { bw: Math.round(8 * H100.B * 100) / 100, model: 70, eta: 0.6, bsz: 32, kw: 6.4, pue: 1.2, price: 0.08, node: 250000, years: 3, util: 0.8 }
+  };
+  function clone(o) { var r = {}; for (var k in o) r[k] = o[k]; return r; }
+  var S = {}; Object.keys(INIT).forEach(function (k) { S[k] = clone(INIT[k]); });
+
+  //
+  function cooling(s) {
+    var Q = s.P * 1000, ma = Q / (CP_AIR * s.dTa), Va = ma / s.rho, mw = Q / (CP_W * s.dTw), Vw = mw / RHO_W, d = s.dmm / 1000;
+    return { ma: ma, Va: Va, Vmin: Va * 60, cfm: Va * CFM_PER_M3S, vel: Va / s.area, mw: mw, Lmin: mw * 60, Vw: Vw, ratio: Va / Vw, pipe: Vw / (Math.PI * d * d / 4) };
+  }
+  function cfmFor(P_kW, dTa, rho) { return P_kW * 1000 / (CP_AIR * dTa) / rho * CFM_PER_M3S; }
+  function chain(etaPct, P) {
+    var eta = etaPct.map(function (e) { return e / 100; }), cum = [1];
+    eta.forEach(function (e, i) { cum.push(cum[i] * e); });
+    var input = P / cum[5], losses = eta.map(function (e, i) { return input * cum[i] * (1 - e) * 1000; }); // kW
+    var rack = P / (eta[3] * eta[4]);
+    return { cum: cum, total: cum[5], input: input, loss: (input - P) * 1000, losses: losses, rack: rack, extra: rack / P - 1 };
+  }
+  function etas(s) { return [s.e0, s.e1, s.e2, s.e3, s.e4]; }
+  function pue(s, mode) {
+    var prop = (mode || s.mode) === "prop";       //
+    var cf = prop ? 0 : s.cf, cv = prop ? s.cf + s.cv : s.cv, df = prop ? 0 : s.df, dv = prop ? s.df + s.dv : s.dv, k = s.it2 / s.it;
+    var b = { it: s.it, c: cf + cv, d: df + dv }, a = { it: s.it2, c: cf + cv * k, d: df + dv * k };
+    [a, b].forEach(function (x) { x.tot = x.it + x.c + x.d; x.pue = x.tot / x.it; });
+    return { b: b, a: a, cut: 1 - a.tot / b.tot };
+  }
+  function busv(s) { var I1 = s.P * 1e6 / s.V1, I2 = s.P * 1e6 / s.V2; return { I1: I1, I2: I2, ratio: I1 / I2, loss: Math.pow(I1 / I2, 2) }; }
+  function sysOf(b) { return b === "b300" ? SYS.dgx_b300 : SYS.dgx_b200; }
+  function itFor(s, bound) {
+    if (bound === "ex") return s.n * s.kw * (1 + s.aux / 100) / 1000;            // MW
+    var sy = sysOf(bound); return Math.ceil(s.n / sy.gpus) * sy.kw / 1000;          //
+  }
+  function memPer(m) { return m === "chip" ? B200.cap : m === "sys" ? B200.sys.cap : SYS.dgx_b300.mem_gb / SYS.dgx_b300.gpus; }
+  function scale(s) {
+    var it = itFor(s, s.bound), fac = it * s.pue, mwh = fac * HOURS * s.util, plantGWh = 1 * s.cf * HOURS;  //
+    var stacks = s.n * STACKS, ys = Math.pow(DIE_Y, LAYERS), r8 = Math.ceil(s.n / 8), r72 = Math.ceil(s.n / 72);
+    return {
+      it: it, fac: fac, mwh: mwh, gwh: mwh / 1000, homes: mwh * 1000 / s.home, plantTWh: plantGWh / 1000, plantShare: mwh / 1000 / plantGWh,
+      pb: s.n * memPer(s.mem) / 1e6, stacks: stacks, dies: stacks * LAYERS, ys: ys, tries: stacks / ys,
+      r8: r8, r72: r72, rp8: it * 1000 / r8, rp72: it * 1000 / r72, a8: r8 * RACK_M2, a72: r72 * RACK_M2,
+      carry: s.flow * RHO_W * CP_W * s.dT / 1e6, need: fac * 1e6 / (CP_W * s.dT)
+    };
+  }
+  function nodeKw(s) { return s.kw === "sys" ? SYS.dgx_h100.kw : s.kw; }
+  function cost(s, bsz) {
+    var coefT = s.bw * 1e12 / (s.model * 1e9), coefE = coefT * s.eta, tps = coefE * bsz, sec = 1e6 / tps, h = sec / 3600;
+    var kWh = nodeKw(s) * s.pue * h, elec = kWh * s.price, capCal = s.node / (s.years * HOURS), capH = capCal / s.util, cap = capH * h;
+    return { coefT: coefT, coefE: coefE, tps: tps, sec: sec, h: h, kWh: kWh, elec: elec, capCal: capCal, capH: capH, cap: cap, share: elec / (elec + cap), ratio: cap / elec };
+  }
+
+  //
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { d = d || 0; return x.toLocaleString("ko-KR", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function pct(x, d) { return fmt(x * 100, d === undefined ? 1 : d) + "%"; }
+  function u(s) { return " <small>" + s + "</small>"; }
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (text !== undefined) e.textContent = text; return e; }
+  function svgOf(W, H) { return el("svg", { viewBox: "0 0 " + W + " " + H }); }
+  function txt(svg, x, y, s, o) { var a = { x: x, y: y, "font-size": 12 }; for (var k in o || {}) a[k] = o[k]; svg.appendChild(el("text", a, s)); }
+  function niceCeil(x) { var p = Math.pow(10, Math.floor(Math.log10(x))), m = x / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p; }
+  //
+  function gauges(id, rows) {
+    var W = 720, rowH = 50, H = rows.length * rowH + 4, L = 210, R = 24, svg = svgOf(W, H);
+    rows.forEach(function (r, i) {
+      var y = i * rowH + 12, max = r.max;
+      function sx(v) { return L + Math.min(v, max) / max * (W - L - R); }
+      txt(svg, 0, y + 10, r.label, { "font-size": 13 });
+      txt(svg, L - 12, y + 10, r.value, { "text-anchor": "end", "font-size": 13.5, "font-family": "var(--mono)", fill: "var(--accent2)", "font-weight": 500 });
+      svg.appendChild(el("rect", { x: L, y: y, width: W - L - R, height: 12, rx: 3, fill: "var(--soft)" }));
+      if (r.band) {
+        svg.appendChild(el("rect", { x: sx(r.band[0]), y: y - 3, width: sx(r.band[1]) - sx(r.band[0]), height: 18, fill: "var(--ok)", "fill-opacity": 0.28 }));
+        txt(svg, (sx(r.band[0]) + sx(r.band[1])) / 2, y + 32, r.bandLabel, { "text-anchor": "middle", "font-size": 11.5, fill: "var(--ok)" });
+      }
+      txt(svg, L, y + 32, "0", { "class": "tick" });
+      txt(svg, W - R, y + 32, fmt(max) + " " + r.unit, { "class": "tick", "text-anchor": "end" });
+      var x = sx(r.v);
+      svg.appendChild(el("rect", { x: L, y: y + 3, width: Math.max(1, x - L), height: 6, rx: 2, fill: "var(--accent2)" }));
+      svg.appendChild(el("circle", { cx: x, cy: y + 6, r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    });
+    $(id).replaceChildren(svg);
+  }
+
+  //
+  var syncs = {};
+  function syncPart(p) { (syncs[p] || []).forEach(function (f) { f(); }); }
+  function slider(p, id, key, show, cb) {
+    var inp = $(id), out = $(id + "Out");
+    function sync() { inp.value = S[p][key]; if (out) out.textContent = show(S[p][key]); }
+    inp.addEventListener("input", function () { S[p][key] = Number(inp.value); syncPart(p); cb(); });
+    (syncs[p] = syncs[p] || []).push(sync);
+  }
+  function seg(p, id, key, cb) {
+    var box = $(id);
+    function val(v) { return isNaN(Number(v)) ? v : Number(v); }
+    function sync() { box.querySelectorAll("button").forEach(function (b) { var v = val(b.dataset.v), c = S[p][key]; b.setAttribute("aria-pressed", String(typeof v === "number" && typeof c === "number" ? Math.abs(v - c) < 1e-9 : v === c)); }); }
+    box.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; S[p][key] = val(b.dataset.v); syncPart(p); cb(); });
+    (syncs[p] = syncs[p] || []).push(sync);
+  }
+  function reset(p, cb) { S[p] = clone(INIT[p]); syncPart(p); cb(); }
+
+  // =========== ① cooling ===========
+  function drawCool(s, r) {
+    var W = 720, H = 290, L = 80, R = 18, T = 30, B = 42, pMax = 200, yTop = niceCeil(cfmFor(pMax, s.dTa, s.rho));
+    function sx(p) { return L + p / pMax * (W - L - R); }
+    function sy(c) { return H - B - c / yTop * (H - T - B); }
+    var svg = svgOf(W, H), defs = el("defs", {}), gr = el("linearGradient", { id: "dc-band", x1: 0, x2: 1, y1: 0, y2: 0 });
+    [[0, 0], [0.5, 0.32], [1, 0]].forEach(function (st) { gr.appendChild(el("stop", { offset: st[0], "stop-color": "var(--ok)", "stop-opacity": st[1] })); });
+    defs.appendChild(gr); svg.appendChild(defs);
+    var g = el("g", { "class": "grid" });
+    for (var p = 0; p <= pMax; p += 25) { g.appendChild(el("line", { x1: sx(p), x2: sx(p), y1: T, y2: H - B })); txt(svg, sx(p), H - B + 17, fmt(p), { "class": "tick", "text-anchor": "middle" }); }
+    for (var i = 0; i <= 5; i++) { var c = yTop * i / 5; g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(c), y2: sy(c) })); txt(svg, L - 8, sy(c) + 4, fmt(c), { "class": "tick", "text-anchor": "end" }); }
+    svg.appendChild(g);
+    //
+    svg.appendChild(el("rect", { x: sx(18), y: T, width: sx(42) - sx(18), height: H - T - B, fill: "url(#dc-band)" }));
+    txt(svg, sx(18), T - 10, "Floor-tile supply alone: roughly 30 kW (varies with conditions)", { fill: "var(--ok)", "font-size": 12 });
+    [[ASHRAE_RACK, "5,000 CFM — the most a 40–50 kW rack can draw (ASHRAE TC 9.9)", -6], [ASHRAE_TILE, "1,900 CFM — one top-performing floor tile", 15]].forEach(function (a) {
+      svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(a[0]), y2: sy(a[0]), stroke: "var(--accent)", "stroke-dasharray": "5 4", "stroke-width": 1.3 }));
+      txt(svg, W - R - 4, sy(a[0]) + a[2], a[1], { "text-anchor": "end", fill: "var(--accent)", "font-size": 11.5 });
+    });
+    svg.appendChild(el("line", { x1: sx(0), y1: sy(0), x2: sx(pMax), y2: sy(cfmFor(pMax, s.dTa, s.rho)), stroke: "var(--accent2)", "stroke-width": 2.4 }));
+    var x = sx(s.P), y = sy(r.cfm), right = x > 330;
+    svg.appendChild(el("circle", { cx: x, cy: y, r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    txt(svg, x + (right ? -12 : 12), y - 8, fmt(s.P) + " kW → " + fmt(r.cfm) + " CFM", { "text-anchor": right ? "end" : "start", "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" });
+    txt(svg, W - R, H - 6, "Rack power [kW]", { "text-anchor": "end", "font-size": 12.5, opacity: 0.8 });
+    txt(svg, 12, T + 4, "Required airflow [CFM]", { "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" });
+    $("cChart").replaceChildren(svg);
+  }
+  function updCool() {
+    var s = S.cooling, r = cooling(s);
+    $("oCma").innerHTML = fmt(r.ma, 2) + u("kg/s");
+    $("oCva").innerHTML = fmt(r.Va, 2) + u("m³/s");
+    $("oCmin").innerHTML = fmt(r.Vmin) + u("m³/min");
+    $("oCcfm").innerHTML = fmt(r.cfm) + u("ft³/min");
+    $("oCvel").innerHTML = fmt(r.vel, 1) + u("m/s");
+    $("oCmw").innerHTML = fmt(r.mw, 3) + u("kg/s");
+    $("oClm").innerHTML = fmt(r.Lmin) + u("L/min");
+    $("oCratio").innerHTML = "about " + fmt(r.ratio) + u("×");
+    $("oCpipe").innerHTML = fmt(r.pipe, 1) + u("m/s · " + s.dmm + " mm");
+    drawCool(s, r);
+    gauges("cGauge", [
+      { label: "Air velocity at rack face", value: fmt(r.vel, 1) + " m/s", v: r.vel, max: Math.max(8, Math.ceil(r.vel * 1.15)), unit: "m/s" },
+      { label: "Pipe velocity (diameter " + s.dmm + " mm)", value: fmt(r.pipe, 1) + " m/s", v: r.pipe, max: Math.max(8, Math.ceil(r.pipe * 1.15)), band: [1, 3], bandLabel: "recommended 1–3 m/s", unit: "m/s" }
+    ]);
+  }
+  slider("cooling", "cP", "P", function (v) { return fmt(v) + " kW"; }, updCool);
+  slider("cooling", "cDa", "dTa", function (v) { return fmt(v) + " K"; }, updCool);
+  seg("cooling", "cRho", "rho", updCool);
+  slider("cooling", "cDw", "dTw", function (v) { return fmt(v) + " K"; }, updCool);
+  slider("cooling", "cA", "area", function (v) { return fmt(v, 1) + " m²"; }, updCool);
+  slider("cooling", "cD", "dmm", function (v) { return fmt(v) + " mm"; }, updCool);
+  document.querySelectorAll("#figure-cooling [data-d]").forEach(function (b) { b.addEventListener("click", function () { S.cooling.dmm = Number(b.dataset.d); syncPart("cooling"); updCool(); }); });
+  $("cReset").addEventListener("click", function () { reset("cooling", updCool); });
+
+  // =========== ② chain ===========
+  var STAGES = [["Transformer", "Electrical room", "var(--mut)"], ["UPS", "Electrical room", "var(--mut)"], ["PDU", "Around the data hall", "var(--accent)"], ["PSU", "In the rack", "var(--accent2)"], ["VRM", "On the board, next to the chip", "var(--bad)"]];
+  function drawChain(r) {
+    var W = 720, H = 350, L = 56, R = 20, svg = svgOf(W, H), xs = [];
+    for (var i = 0; i < 6; i++) xs.push(L + 34 + i * (W - L - R - 68) / 5);
+    var lo = Math.min(0.7, Math.floor((r.total - 0.05) * 10) / 10), T = 26, Bt = 140;
+    function sy(v) { return Bt - (v - lo) / (1 - lo) * (Bt - T); }
+    var g = el("g", { "class": "grid" });
+    for (var k = 0; lo + k * 0.1 <= 1.0001; k++) { var v = lo + k * 0.1; g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) })); txt(svg, L - 8, sy(v) + 4, fmt(v * 100) + "%", { "class": "tick", "text-anchor": "end" }); }
+    svg.appendChild(g);
+    var d = "";
+    r.cum.forEach(function (c, j) { d += (j ? " H" + xs[j].toFixed(1) + " V" : "M" + xs[0].toFixed(1) + ",") + sy(c).toFixed(1); });
+    svg.appendChild(el("path", { d: d, fill: "none", stroke: "var(--accent)", "stroke-width": 2.2 }));
+    var names = ["Grid", "After transformer", "After UPS", "After PDU", "After PSU", "After VRM = chip"];
+    r.cum.forEach(function (c, j) {
+      svg.appendChild(el("circle", { cx: xs[j], cy: sy(c), r: 4.5, fill: j === 5 ? "var(--accent2)" : "var(--accent)" }));
+      //
+      txt(svg, xs[j] + (j === 5 ? -8 : 8), sy(c) + 17, j === 0 ? "100%" : fmt(c * 100, 2) + "%", { "text-anchor": j === 5 ? "end" : "start", "font-size": 12, "font-family": "var(--mono)", "font-weight": j === 5 ? 700 : 400, fill: j === 5 ? "var(--accent2)" : "var(--fg)" });
+      txt(svg, xs[j], Bt + 18, names[j], { "text-anchor": "middle", "font-size": 12, fill: "var(--mut)" });
+    });
+    txt(svg, 14, T + 2, "Cumulative efficiency", { "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 2) + ")", "text-anchor": "end" });
+    //
+    var top = 190, base = 292, mx = Math.max.apply(null, r.losses.concat([1]));
+    txt(svg, 0, top - 14, "Loss at each stage [kW] and where the heat appears", { "font-size": 12.5, opacity: 0.8 });
+    svg.appendChild(el("line", { x1: L, x2: W - R, y1: base, y2: base, stroke: "var(--line)" }));
+    r.losses.forEach(function (lv, j) {
+      var cx = (xs[j] + xs[j + 1]) / 2, h = lv / mx * (base - top - 16);
+      svg.appendChild(el("rect", { x: cx - 22, y: base - h, width: 44, height: Math.max(1, h), rx: 2, fill: STAGES[j][2] }));
+      txt(svg, cx, base - h - 6, fmt(lv, 1), { "text-anchor": "middle", "font-size": 12.5, "font-family": "var(--mono)" });
+      txt(svg, cx, base + 17, STAGES[j][0] + " " + fmt(etas(S.chain)[j], 1) + "%", { "text-anchor": "middle", "font-size": 12 });
+      txt(svg, cx, base + 33, STAGES[j][1], { "text-anchor": "middle", "font-size": 11.5, fill: STAGES[j][2], "font-weight": 700 });
+    });
+    $("eChart").replaceChildren(svg);
+  }
+  function updChain() {
+    var s = S.chain, r = chain(etas(s), s.P), inRack = r.losses[3] + r.losses[4];
+    $("oEtot").textContent = fmt(r.total, 3);
+    $("oEin").innerHTML = fmt(r.input, 3) + u("MW");
+    $("oEloss").innerHTML = fmt(r.loss) + u("kW");
+    $("oErack").innerHTML = fmt(r.rack, 3) + u("MW");
+    $("oEextra").textContent = pct(r.extra, 0);
+    $("eMsg").textContent = "All " + fmt(r.loss) + " kW of loss becomes heat. The PSU and VRM part, " + fmt(inRack, 1) + " kW, is released inside the rack, so the heat to remove from the rack is not the chip power of " + fmt(s.P, 1) + " MW but " + fmt(r.rack, 3) + " MW.";
+    drawChain(r);
+  }
+  ["e0", "e1", "e2", "e3", "e4"].forEach(function (k) { slider("chain", k, k, function (v) { return fmt(v, 1) + "%"; }, updChain); });
+  slider("chain", "eP", "P", function (v) { return fmt(v, 1) + " MW"; }, updChain);
+  $("eReset").addEventListener("click", function () { reset("chain", updChain); });
+  $("e97").addEventListener("click", function () { ["e0", "e1", "e2", "e3", "e4"].forEach(function (k) { S.chain[k] = 97; }); syncPart("chain"); updChain(); });
+
+  // =========== ③ pue ===========
+  function drawPue(r) {
+    var W = 720, H = 300, T = 50, B = 40, svg = svgOf(W, H), mx = Math.max(r.b.tot, r.a.tot) * 1.04;
+    function hh(v) { return v / mx * (H - T - B); }
+    [[r.b, 150, "Before"], [r.a, 440, S.pue.mode === "prop" ? "After (fully proportional)" : "After (with fixed load)"]].forEach(function (c, j) {
+      var x = c[1], y = H - B, w = 150;
+      [["it", "var(--accent)", "IT"], ["c", "var(--accent2)", "Cooling"], ["d", "var(--mut)", "Distribution"]].forEach(function (sg) {
+        var h = hh(c[0][sg[0]]); y -= h;
+        svg.appendChild(el("rect", { x: x, y: y, width: w, height: Math.max(0, h), fill: sg[1], stroke: "var(--card)", "stroke-width": 1 }));
+        if (h >= 15) txt(svg, x + w / 2, y + h / 2 + 4.5, sg[2] + " " + fmt(c[0][sg[0]], sg[0] === "it" ? 1 : 2), { "text-anchor": "middle", "font-size": 12.5, fill: "var(--bg)", "font-family": "var(--mono)" });
+      });
+      txt(svg, x + w / 2, y - 26, "PUE " + fmt(c[0].pue, 2), { "text-anchor": "middle", "font-size": 17, "font-weight": 700, "font-family": "var(--mono)", fill: j ? "var(--accent2)" : "var(--fg)" });
+      txt(svg, x + w / 2, y - 8, "Total " + fmt(c[0].tot, 2) + " MW", { "text-anchor": "middle", "font-size": 12.5, "font-family": "var(--mono)", fill: "var(--mut)" });
+      txt(svg, x + w / 2, H - B + 20, c[2], { "text-anchor": "middle", "font-size": 13 });
+    });
+    var ay = H - B - hh(r.a.it) / 2;
+    svg.appendChild(el("path", { d: "M318," + ay + " H428 M420," + (ay - 6) + " L428," + ay + " L420," + (ay + 6), fill: "none", stroke: "var(--mut)", "stroke-width": 1.6 }));
+    txt(svg, 373, ay - 10, "Same work", { "text-anchor": "middle", "font-size": 12.5, fill: "var(--mut)" });
+    txt(svg, 373, ay + 20, "Total power −" + pct(r.cut, 0), { "text-anchor": "middle", "font-size": 12.5, "font-family": "var(--mono)" });
+    svg.appendChild(el("line", { x1: 110, x2: 630, y1: H - B, y2: H - B, stroke: "var(--line)" }));
+    $("pChart").replaceChildren(svg);
+  }
+  function updPue() {
+    var s = S.pue;
+    if (s.it2 > s.it) { s.it2 = s.it; syncPart("pue"); }
+    var r = pue(s), prop = s.mode === "prop";
+    $("pCfC").classList.toggle("off", prop); $("pDfC").classList.toggle("off", prop);
+    $("pCf").disabled = prop; $("pDf").disabled = prop;
+    $("pModeNote").textContent = prop ? "Fully proportional: all overhead scales with IT (fixed part 0)" : "";
+    $("oPb").textContent = fmt(r.b.pue, 2);
+    $("oPa").textContent = fmt(r.a.pue, 2);
+    $("oPtot").innerHTML = fmt(r.b.tot, 2) + " → " + fmt(r.a.tot, 2) + u("MW");
+    $("oPcut").textContent = pct(r.cut, 0);
+    var dp = Math.round(r.a.pue * 100) - Math.round(r.b.pue * 100);
+    //
+    $("pMsg").textContent = "Same work, yet total power fell by " + pct(r.cut, 0) + ". PUE " + (dp > 0 ? "got worse " : dp < 0 ? "improved " : "did not change ") + "(" + fmt(r.b.pue, 2) + " → " + fmt(r.a.pue, 2) + ").";
+    drawPue(r);
+  }
+  slider("pue", "pIt", "it", function (v) { return fmt(v, 1) + " MW"; }, updPue);
+  slider("pue", "pIt2", "it2", function (v) { return fmt(v, 1) + " MW"; }, updPue);
+  seg("pue", "pMode", "mode", updPue);
+  slider("pue", "pCf", "cf", function (v) { return fmt(v, 1) + " MW"; }, updPue);
+  slider("pue", "pCv", "cv", function (v) { return fmt(v, 1) + " MW"; }, updPue);
+  slider("pue", "pDf", "df", function (v) { return fmt(v, 2) + " MW"; }, updPue);
+  slider("pue", "pDv", "dv", function (v) { return fmt(v, 2) + " MW"; }, updPue);
+  $("pReset").addEventListener("click", function () { reset("pue", updPue); });
+
+  // =========== ④ busv ===========
+  function drawBus(s, r) {
+    var W = 720, H = 300, L = 92, R = 110, svg = svgOf(W, H), mx = Math.max(r.I1, r.I2);
+    function bw(v) { return v / mx * (W - L - R); }
+    txt(svg, 0, 14, "Current to deliver the same " + fmt(s.P, 2) + " MW", { "font-size": 12.5, opacity: 0.8 });
+    [[s.V1, r.I1, 28, "var(--accent2)"], [s.V2, r.I2, 62, "var(--accent)"]].forEach(function (b) {
+      txt(svg, L - 10, b[2] + 16, fmt(b[0]) + " V", { "text-anchor": "end", "font-size": 13.5, "font-family": "var(--mono)" });
+      svg.appendChild(el("rect", { x: L, y: b[2], width: Math.max(1, bw(b[1])), height: 24, rx: 3, fill: b[3] }));
+      txt(svg, L + bw(b[1]) + 8, b[2] + 16, fmt(b[1]) + " A", { "font-size": 13, "font-family": "var(--mono)" });
+    });
+    //
+    //
+    var big = 140, small = Math.max(2, big / Math.sqrt(r.loss)), base = 284, x0 = 60, x1 = x0 + big + 50, tx = Math.max(400, x1 + small + 60);
+    txt(svg, 0, 124, "Conductor cross-section needed for equal loss (same length)", { "font-size": 12.5, opacity: 0.8 });
+    svg.appendChild(el("rect", { x: x0, y: base - big, width: big, height: big, fill: "var(--accent2)", "fill-opacity": 0.85 }));
+    svg.appendChild(el("rect", { x: x1, y: base - small, width: small, height: small, fill: "var(--accent)" }));
+    txt(svg, x0 + big / 2, base - big / 2 + 5, fmt(s.V1) + " V", { "text-anchor": "middle", "font-size": 14, fill: "var(--bg)", "font-family": "var(--mono)", "font-weight": 700 });
+    txt(svg, x1 + small + 8, base - 2, fmt(s.V2) + " V", { "font-size": 13, "font-family": "var(--mono)" });
+    txt(svg, tx, base - 90, "Area ratio ≈ " + fmt(r.loss) + "×", { "font-size": 18, "font-weight": 700, fill: "var(--accent2)", "font-family": "var(--mono)" });
+    txt(svg, tx, base - 64, "Current ratio " + fmt(r.ratio, 1) + "× → I²R ratio " + fmt(r.loss) + "×", { "font-size": 12.5 });
+    txt(svg, tx, base - 44, "With the same conductor, the loss differs by that factor.", { "font-size": 12.5, fill: "var(--mut)" });
+    $("bChart").replaceChildren(svg);
+  }
+  function updBus() {
+    var s = S.busv, r = busv(s);
+    $("oBI1l").textContent = fmt(s.V1) + " V current"; $("oBI2l").textContent = fmt(s.V2) + " V current";
+    $("oBI1").innerHTML = fmt(r.I1) + u("A");
+    $("oBI2").innerHTML = fmt(r.I2) + u("A");
+    $("oBr").innerHTML = fmt(r.ratio, 1) + u("×");
+    $("oBl").innerHTML = fmt(r.loss) + u("×");
+    $("bMsg").textContent = "At equal length, the " + fmt(s.V1) + " V conductor needs about " + fmt(r.loss) + "× the cross-section for its loss to match the " + fmt(s.V2) + " V case.";
+    drawBus(s, r);
+  }
+  slider("busv", "bP", "P", function (v) { return fmt(v, 2) + " MW"; }, updBus);
+  slider("busv", "bV1", "V1", function (v) { return fmt(v) + " V"; }, updBus);
+  slider("busv", "bV2", "V2", function (v) { return fmt(v) + " V"; }, updBus);
+  seg("busv", "bV1s", "V1", updBus); seg("busv", "bV2s", "V2", updBus);
+  $("bReset").addEventListener("click", function () { reset("busv", updBus); });
+
+  // =========== ⑤ scale ===========
+  function boundLabel(b, s) {
+    if (b === "ex") return "Exercise assumption " + fmt(s.kw, 1) + " kW + overhead " + fmt(s.aux) + "%";
+    var sy = sysOf(b); return sy.label + " " + (b === "b300" ? "about " : "max ") + fmt(sy.kw, sy.kw % 1 ? 1 : 0) + " kW ÷ " + sy.gpus + " chips";
+  }
+  function drawScale(s, r) {
+    var rows = ["ex", "b200", "b300"].map(function (b) { return { b: b, label: boundLabel(b, s), it: itFor(s, b) }; });
+    rows.push({ b: "hpg", label: "UF HiPerGator — " + SYS.dgx_b200.label + " " + HPG_UNITS + " systems (" + HPG_GPUS + " chips)", it: HPG_UNITS * SYS.dgx_b200.kw / 1000 });
+    var W = 720, rowH = 30, T = 24, H = T + rows.length * rowH + 24, L = 252, R = 16, svg = svgOf(W, H);
+    var mx = niceCeil(Math.max(r.fac * 1.35, rows[0].it, rows[1].it, rows[2].it) * 1.08);  //
+    function sx(v) { return L + v / mx * (W - L - R); }
+    txt(svg, 0, 14, "IT power of " + fmt(s.n) + " accelerators [MW]. The selected boundary extends to facility power (× PUE " + fmt(s.pue, 2) + ")", { "font-size": 12.5, opacity: 0.8 });
+    var g = el("g", { "class": "grid" });
+    for (var i = 0; i <= 5; i++) { var v = mx * i / 5; g.appendChild(el("line", { x1: sx(v), x2: sx(v), y1: T, y2: T + rows.length * rowH })); txt(svg, sx(v), H - 6, fmt(v, mx < 5 ? 1 : 0), { "class": "tick", "text-anchor": "middle" }); }
+    svg.appendChild(g);
+    rows.forEach(function (row, j) {
+      var y = T + j * rowH + 4, on = row.b === s.bound, hpg = row.b === "hpg";
+      txt(svg, L - 10, y + 15, row.label, { "text-anchor": "end", "font-size": 12, fill: on ? "var(--fg)" : "var(--mut)", "font-weight": on ? 700 : 400 });
+      if (on) svg.appendChild(el("rect", { x: L, y: y, width: Math.max(1, sx(r.fac) - L), height: 22, rx: 3, fill: "var(--accent2)", "fill-opacity": 0.28 }));
+      svg.appendChild(el("rect", { x: L, y: y, width: Math.max(1.5, sx(row.it) - L), height: 22, rx: 3, fill: on ? "var(--accent2)" : hpg ? "var(--accent)" : "var(--mut)", "fill-opacity": on ? 1 : 0.7 }));
+      var lab = on ? "IT " + fmt(row.it, 2) + " → facility " + fmt(r.fac, 2) : fmt(row.it, 2);
+      var endX = on ? sx(r.fac) : sx(row.it), inside = endX + 8 + lab.length * 7.2 > W - R;
+      txt(svg, inside ? endX - 6 : endX + 6, y + 15, lab, { "text-anchor": inside ? "end" : "start", "font-size": 12, "font-family": "var(--mono)", fill: inside && !on ? "var(--bg)" : "var(--fg)", "font-weight": on ? 700 : 400 });
+    });
+    $("sChart").replaceChildren(svg);
+  }
+  function kv(id, rows) { $(id).innerHTML = rows.map(function (x) { return x[1] === null ? "<dt style='grid-column:1/-1'>" + x[0] + "</dt>" : "<dt>" + x[0] + "</dt><dd" + (x[2] ? " class='hl'" : "") + ">" + x[1] + "</dd>"; }).join(""); }
+  function updScale() {
+    var s = S.scale, r = scale(s), ex = s.bound === "ex", gb = memPer(s.mem);
+    $("sKwC").classList.toggle("off", !ex); $("sAuxC").classList.toggle("off", !ex); $("sKw").disabled = !ex; $("sAux").disabled = !ex;
+    drawScale(s, r);
+    kv("sPow", [
+      ["IT " + (ex ? "<span class='tag'>assumed</span>" : "<span class='tag mfr'>vendor max</span>"), fmt(r.it, 2) + u("MW")],
+      ["Facility (× PUE " + fmt(s.pue, 2) + ")", fmt(r.fac, 2) + u("MW"), true],
+      ["Annual (utilization " + pct(s.util, 0) + ")", fmt(r.mwh) + u("MWh")],
+      ["", "≈ " + fmt(r.gwh) + u("GWh")],
+      ["Households (at " + fmt(s.home) + " kWh)", "about " + fmt(r.homes)],
+      ["1 GW plant at capacity factor " + fmt(s.cf, 2) + ", one year", fmt(r.plantTWh, 1) + u("TWh")],
+      ["Share taken by this facility <small>(computed)</small>", pct(r.plantShare, 2)]
+    ]);
+    //
+    kv("sMem", [["Total at " + fmt(gb, gb % 1 ? 1 : 0) + " GB per chip", fmt(r.pb, 3) + u("PB"), true]].concat(s.mem === "chip" ? [
+      ["Stacks (" + STACKS + " per chip)", fmt(r.stacks)],
+      ["DRAM dies (" + LAYERS + "-high stacks)", fmt(r.dies)],
+      ["Stack yield (die " + DIE_Y + ", no KGD)", pct(r.ys, 1)],
+      ["Stacks to attempt", "about " + fmt(r.tries)]
+    ] : [
+      ["Stacks, dies, stack yield, attempts", "—"],
+      ["<small>— the text counts these only for the 192 GB case (8 stacks, 8-high)</small>", null]
+    ]));
+    $("sRack").innerHTML = "<tr><td>Racks</td><td class='num'>" + fmt(r.r8) + "</td><td class='num'>" + fmt(r.r72) + "</td></tr>" +
+      "<tr><td>Rack power (IT ÷ racks)</td><td class='num'>" + fmt(r.rp8, 1) + " kW</td><td class='num'>" + fmt(r.rp72, 1) + " kW</td></tr>" +
+      "<tr><td>White space</td><td class='num'>" + fmt(r.a8) + " m²</td><td class='num'>" + fmt(r.a72) + " m²</td></tr>";
+    kv("sWat", [
+      ["Cold water " + fmt(s.flow, 1) + " m³/s ≈ " + fmt(s.flow * RHO_W) + " kg/s, " + fmt(s.dT) + " K", fmt(r.carry, 1) + u("MW"), true],
+      ["Facility heat " + fmt(r.fac, 2) + " MW at ΔT " + fmt(s.dT) + " K needs", fmt(r.need) + u("kg/s")]
+    ]);
+  }
+  slider("scale", "sN", "n", function (v) { return fmt(v) + " chips"; }, updScale);
+  seg("scale", "sB", "bound", updScale);
+  slider("scale", "sKw", "kw", function (v) { return fmt(v, 1) + " kW"; }, updScale);
+  slider("scale", "sAux", "aux", function (v) { return fmt(v) + "%"; }, updScale);
+  seg("scale", "sU", "util", updScale);
+  seg("scale", "sPue", "pue", updScale);
+  seg("scale", "sM", "mem", updScale);
+  slider("scale", "sH", "home", function (v) { return fmt(v) + " kWh"; }, updScale);
+  slider("scale", "sCf", "cf", function (v) { return fmt(v, 2); }, updScale);
+  slider("scale", "sW", "flow", function (v) { return fmt(v, 1) + " m³/s"; }, updScale);
+  slider("scale", "sDt", "dT", function (v) { return fmt(v) + " K"; }, updScale);
+  $("sReset").addEventListener("click", function () { reset("scale", updScale); });
+
+  // =========== ⑥ cost ===========
+  function money(x) { return "$" + fmt(x, x >= 100 ? 0 : x >= 1 ? 2 : 3); }
+  function drawCost(s) {
+    var W = 720, H = 290, L = 70, R = 70, T = 16, B = 42, svg = svgOf(W, H), lo = Infinity, hi = 0, bmax = 256;
+    [1, bmax].forEach(function (b) { var c = cost(s, b); lo = Math.min(lo, c.elec, c.cap); hi = Math.max(hi, c.elec, c.cap); });
+    var y0 = Math.floor(Math.log10(lo)), y1 = Math.ceil(Math.log10(hi));
+    if (y1 - y0 < 2) y1 = y0 + 2;
+    function sx(b) { return L + Math.log2(b) / Math.log2(bmax) * (W - L - R); }
+    function sy(v) { return H - B - (Math.log10(v) - y0) / (y1 - y0) * (H - T - B); }
+    var g = el("g", { "class": "grid" });
+    [1, 2, 4, 8, 16, 32, 64, 128, 256].forEach(function (b) { g.appendChild(el("line", { x1: sx(b), x2: sx(b), y1: T, y2: H - B })); txt(svg, sx(b), H - B + 17, b, { "class": "tick", "text-anchor": "middle" }); });
+    for (var e = y0; e <= y1; e++) { var v = Math.pow(10, e); g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) })); txt(svg, L - 8, sy(v) + 4, "$" + (e < 0 ? v.toFixed(-e) : fmt(v)), { "class": "tick", "text-anchor": "end" }); }
+    svg.appendChild(g);
+    var cur = cost(s, s.bsz);
+    svg.appendChild(el("line", { x1: sx(s.bsz), x2: sx(s.bsz), y1: T, y2: H - B, stroke: "var(--mut)", "stroke-dasharray": "4 3" }));
+    [["cap", "Capital cost", "var(--accent2)"], ["elec", "Power", "var(--accent)"]].forEach(function (k) {
+      var d = "";
+      for (var lg = 0; lg <= 8.0001; lg += 0.125) { var c = cost(s, Math.pow(2, lg)); d += (lg ? " L" : "M") + sx(Math.pow(2, lg)).toFixed(1) + "," + sy(c[k[0]]).toFixed(1); }
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: k[2], "stroke-width": 2.4 }));
+      txt(svg, W - R + 6, sy(cost(s, bmax)[k[0]]) + 4, k[1], { "font-size": 12.5, fill: k[2], "font-weight": 700 });
+      svg.appendChild(el("circle", { cx: sx(s.bsz), cy: sy(cur[k[0]]), r: 6, fill: k[2], stroke: "var(--card)", "stroke-width": 2 }));
+      var right = sx(s.bsz) < W - R - 150;
+      txt(svg, sx(s.bsz) + (right ? 10 : -10), sy(cur[k[0]]) - 10, money(cur[k[0]]), { "text-anchor": right ? "start" : "end", "font-size": 13, "font-family": "var(--mono)", fill: k[2], "font-weight": 700 });
+    });
+    txt(svg, sx(s.bsz), T + 12, " batch " + s.bsz, { "font-size": 12, fill: "var(--mut)" });
+    txt(svg, W - R, H - 6, "Batch B_sz [log]", { "text-anchor": "end", "font-size": 12.5, opacity: 0.8 });
+    txt(svg, 14, T + 4, "Per million tokens [log]", { "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" });
+    $("kChart").replaceChildren(svg);
+  }
+  function updCost() {
+    var s = S.cost, r = cost(s, s.bsz);
+    $("oKt").innerHTML = fmt(r.tps) + u("tok/s");
+    $("oKs").innerHTML = fmt(r.sec) + u("s") + " (" + fmt(r.h, r.h < 0.1 ? 3 : 2) + u("h") + ")";
+    $("oKe").innerHTML = fmt(r.kWh, 3) + u("kWh");
+    $("oKec").textContent = money(r.elec);
+    $("oKcc").textContent = money(r.cap);
+    $("oKr").innerHTML = fmt(r.ratio, 1) + u("×");
+    $("oKcal").innerHTML = "$" + fmt(r.capCal, 2) + u("/h");
+    $("oKh").innerHTML = "$" + fmt(r.capH, 2) + u("/h");
+    var e = r.share * 100;
+    $("kShare").innerHTML = '<span style="width:' + e + '%;background:var(--accent)">' + (e >= 6 ? fmt(e, 1) + "%" : "") + '</span><span style="width:' + (100 - e) + '%;background:var(--accent2)">' + (e <= 94 ? fmt(100 - e, 1) + "%" : "") + "</span>";
+    $("kShareTxt").textContent = "Share: power " + fmt(e, 1) + "% · capital " + fmt(100 - e, 1) + "% (batch " + s.bsz + ")";
+    drawCost(s);
+  }
+  $("kWsys").textContent = SYS.dgx_h100.label + " max " + fmt(SYS.dgx_h100.kw, 1) + " kW · vendor max";
+  slider("cost", "kB", "bw", function (v) { return fmt(v, 1) + " TB/s"; }, updCost);
+  slider("cost", "kM", "model", function (v) { return fmt(v) + " GB"; }, updCost);
+  slider("cost", "kE", "eta", function (v) { return fmt(v, 2); }, updCost);
+  slider("cost", "kZ", "bsz", function (v) { return fmt(v); }, updCost);
+  seg("cost", "kZs", "bsz", updCost);
+  seg("cost", "kW", "kw", updCost);
+  slider("cost", "kPue", "pue", function (v) { return fmt(v, 2); }, updCost);
+  slider("cost", "kC", "price", function (v) { return "$" + fmt(v, 2) + "/kWh"; }, updCost);
+  slider("cost", "kN", "node", function (v) { return "$" + fmt(v); }, updCost);
+  slider("cost", "kY", "years", function (v) { return fmt(v) + " yr"; }, updCost);
+  slider("cost", "kU", "util", function (v) { return fmt(v, 2); }, updCost);
+  seg("cost", "kUs", "util", updCost);
+  $("kReset").addEventListener("click", function () { reset("cost", updCost); });
+
+  //
+  //
+  function rnd(x, d) { var p = Math.pow(10, d); return Math.round(x * p + 1e-9) / p; }
+  function checkRows() {
+    var rows = [];
+    function add(part, name, v, e, d) {
+      var g = rnd(v, d), ok = Math.abs(g - e) <= 1e-9 * Math.max(1, Math.abs(e));
+      rows.push({ part: part, name: name, got: g, expected: e, status: ok ? "match" : "miss", shown: fmt(v, d >= 0 ? Math.min(d + 1, 6) : 0), bookShown: fmt(e, Math.max(d, 0)) });
+    }
+    function with_(o, ch) { var x = clone(o); for (var k in ch) x[k] = ch[k]; return x; }
+    //
+    var c1 = cooling(INIT.cooling), c25 = cooling(with_(INIT.cooling, { dmm: 25 })), cs = cooling(with_(INIT.cooling, { P: 30, rho: 1.2 }));
+    add("cooling", "Exercise 1 (a) · air ṁ (kg/s)", c1.ma, 7.96, 2);
+    add("cooling", "Exercise 1 (a) · V̇ (m³/s)", c1.Va, 6.75, 2);
+    add("cooling", "Exercise 1 (a) · per minute (m³/min)", c1.Vmin, 405, 0);
+    add("cooling", "Exercise 1 (a) · CFM (nearest 100)", c1.cfm, 14300, -2);
+    add("cooling", "Exercise 1 (a) · air velocity (m/s)", c1.vel, 5.6, 1);
+    add("cooling", "Exercise 1 (b) · water ṁ (kg/s)", c1.mw, 2.867, 3);
+    add("cooling", "Exercise 1 (b) · water (L/min)", c1.Lmin, 172, 0);
+    add("cooling", "Exercise 1 comparison table · water (m³/s)", c1.Vw, 0.00287, 5);
+    add("cooling", "Exercise 1 comparison table · volume flow ratio (nearest 10)", c1.ratio, 2350, -1);
+    add("cooling", "Exercise 1 · 40 mm pipe velocity (m/s)", c1.pipe, 2.3, 1);
+    add("cooling", "Exercise 1 · 25 mm pipe velocity (m/s)", c25.pipe, 5.8, 1);
+    add("cooling", "Section 3 quick exercise · 30 kW, ρ 1.2 (m³/s)", cs.Va, 1.66, 2);
+    add("cooling", "Section 3 quick exercise · CFM (nearest 100)", cs.cfm, 3500, -2);
+    add("cooling", "Section 3 air-cooling limit · 40 kW, ΔT 15, ρ 1.18 (CFM, nearest 10)", cfmFor(40, 15, 1.18), 4760, -1);
+    add("cooling", "Below Exercise 1 (a) · 5,000 ÷ 1,900 (×)", ASHRAE_RACK / ASHRAE_TILE, 2.6, 1);
+    add("cooling", "Introduction, below Exercise 1 (a) · 120 kW airflow ÷ 1,900 CFM tile (×)", c1.cfm / ASHRAE_TILE, 7.5, 1);
+    add("cooling", "Below Exercise 1 (a) · 120 kW airflow ÷ 5,000 CFM rack (×)", c1.cfm / ASHRAE_RACK, 2.9, 1);
+    add("cooling", "Initial state · air velocity (m/s)", cooling(INIT.cooling).vel, 5.6, 1);
+    //
+    var e1 = chain(etas(INIT.chain), 1), e94 = chain([99, 96, 99, 94, 94], 1);
+    add("chain", "Exercise 2 · cumulative, transformer + UPS", e1.cum[2], 0.9504, 4);
+    add("chain", "Exercise 2 · cumulative, PDU", e1.cum[3], 0.9409, 4);
+    add("chain", "Exercise 2 · cumulative, PSU", e1.cum[4], 0.8844, 4);
+    add("chain", "Exercise 2 · overall efficiency", e1.total, 0.7960, 4);
+    add("chain", "Exercise 2 · grid input (MW)", e1.input, 1.256, 3);
+    add("chain", "Exercise 2 · total loss (kW)", e1.loss, 256, 0);
+    //
+    [12.6, 49.7, 11.9, 70.9, 111.1].forEach(function (v, i) { add("chain", "Exercise 2 loss table · " + STAGES[i][0] + " loss (kW)", e1.losses[i], v, 1); });
+    add("chain", "Exercise 2 · heat in rack (MW)", e1.rack, 1.182, 3);
+    add("chain", "Exercise 2 · extra rack heat (%)", e1.extra * 100, 18, 0);
+    add("chain", "Design implication · VRM loss at 94% VRM (kW)", e94.losses[4], 64, 0);
+    add("chain", "Design implication · VRM loss reduction (kW)", e1.losses[4] - e94.losses[4], 47, 0);
+    add("chain", "Design implication · grid input (MW)", e94.input, 1.203, 3);
+    add("chain", "Design implication · grid input reduction (kW)", (e1.input - e94.input) * 1000, 53, 0);
+    add("chain", "Section 2 · all five stages at 97% (%)", chain([97, 97, 97, 97, 97], 1).total * 100, 86, 0);
+    add("chain", "Initial state · overall efficiency", chain(etas(INIT.chain), INIT.chain.P).total, 0.796, 3);
+    //
+    var pp = pue(INIT.pue, "prop"), pf = pue(INIT.pue, "fixed");
+    add("pue", "Exercise 3 · PUE before", pf.b.pue, 1.40, 2);
+    add("pue", "Exercise 3 · fully proportional cooling (MW)", pp.a.c, 2.4, 1);
+    add("pue", "Exercise 3 · fully proportional distribution (MW)", pp.a.d, 0.8, 1);
+    add("pue", "Exercise 3 · fully proportional total (MW)", pp.a.tot, 11.2, 1);
+    add("pue", "Exercise 3 · fully proportional PUE", pp.a.pue, 1.40, 2);
+    add("pue", "Exercise 3 table · fixed-load cooling (MW)", pf.a.c, 2.6, 1);
+    add("pue", "Exercise 3 table · fixed-load distribution (MW)", pf.a.d, 0.84, 2);
+    add("pue", "Exercise 3 table · fixed-load total (MW)", pf.a.tot, 11.44, 2);
+    add("pue", "Exercise 3 table · fixed-load PUE", pf.a.pue, 1.43, 2);
+    add("pue", "Exercise 3 · total power reduction, fully proportional (%)", pp.cut * 100, 20, 0);
+    add("pue", "Exercise 3 · total power reduction, fixed load (%)", pf.cut * 100, 18, 0);
+    add("pue", "Initial state · fixed-load PUE", pue(INIT.pue).a.pue, 1.43, 2);
+    //
+    var bv = busv(INIT.busv);
+    add("busv", "Exercise 4 · 54 V current (A)", bv.I1, 18519, 0);
+    add("busv", "Exercise 4 · 54 V current (kA)", bv.I1 / 1000, 18.5, 1);
+    add("busv", "Exercise 4 · 800 V current (A)", bv.I2, 1250, 0);
+    add("busv", "Exercise 4 · current ratio (×)", bv.ratio, 14.8, 1);
+    add("busv", "Exercise 4 · I²R ratio (×)", bv.loss, 219, 0);
+    add("busv", "Initial state · I²R ratio (×)", busv(INIT.busv).loss, 219, 0);
+    //
+    var s0 = INIT.scale, r0 = scale(s0);
+    add("scale", "Exercise 5 (a) · IT (MW)", r0.it, 13, 0);
+    add("scale", "Comparing with real systems · 1,250 DGX B200 (MW)", itFor(s0, "b200"), 17.875, 3);
+    add("scale", "Comparing with real systems · DGX B300 (MW)", itFor(s0, "b300"), 17.5, 1);
+    add("scale", "Comparing with real systems · HiPerGator (MW)", HPG_UNITS * SYS.dgx_b200.kw / 1000, 0.90, 2);
+    add("scale", "Comparing with real systems · 10,000 ÷ 504 (×)", s0.n / HPG_GPUS, 19.8, 1);
+    add("scale", "Exercise 5 (b) · facility (MW)", r0.fac, 15.6, 1);
+    add("scale", "Exercise 5 (b) · annual (MWh)", r0.mwh, 136656, 0);
+    add("scale", "Exercise 5 (b) · annual (GWh)", r0.gwh, 137, 0);
+    add("scale", "Exercise 5 (b) · 90% utilization (GWh)", scale(with_(s0, { util: 0.9 })).gwh, 123, 0);
+    add("scale", "Exercise 5 (b) · households (nearest 100)", r0.homes, 45600, -2);
+    add("scale", "Section 4 pitfall 2 · facility at PUE 1.54 (MW)", scale(with_(s0, { pue: 1.54 })).fac, 20.02, 2);
+    add("scale", "Section 4 pitfall 2 · facility at PUE 1.09 (MW)", scale(with_(s0, { pue: 1.09 })).fac, 14.17, 2);
+    add("scale", "Exercise 5 (c) · total at 192 GB (PB)", r0.pb, 1.92, 2);
+    add("scale", "Exercise 5 (c) · stacks", r0.stacks, 80000, 0);
+    add("scale", "Exercise 5 (c) · DRAM dies", r0.dies, 640000, 0);
+    add("scale", "Below Exercise 5 (c) · total at 180 GB (PB)", scale(with_(s0, { mem: "sys" })).pb, 1.80, 2);
+    add("scale", "Below Exercise 5 (c) · DGX B300 total (PB)", scale(with_(s0, { mem: "b300" })).pb, 2.625, 3);
+    add("scale", "Session 3 Exercise 1 applied · 8-high stack yield (%)", r0.ys * 100, 66, 0);
+    add("scale", "Session 3 Exercise 1 applied · stacks to attempt (nearest 1,000)", r0.tries, 121000, -3);
+    add("scale", "Exercise 5 (d) · racks, 8 per rack", r0.r8, 1250, 0);
+    add("scale", "Exercise 5 (d) · racks, 72 per rack", r0.r72, 139, 0);
+    add("scale", "Exercise 5 (d) · rack power, 8 per rack (kW)", r0.rp8, 10.4, 1);
+    add("scale", "Exercise 5 (d) · rack power, 72 per rack (kW)", r0.rp72, 94, 0);
+    add("scale", "Exercise 5 (d) · white space, 8 per rack (m², nearest 10)", r0.a8, 5000, -1);
+    add("scale", "Exercise 5 (d) · white space, 72 per rack (m², nearest 10)", r0.a72, 560, -1);
+    add("scale", "Section 6 · 1 GW × capacity factor 0.9, one year (TWh)", r0.plantTWh, 7.9, 1);
+    add("scale", "Section 3 water-source cooling · 1 m³/s, 5 K (MW)", r0.carry, 20.9, 1);
+    add("scale", "Section 3 water-source cooling · 15.6 MW at 5 K (kg/s)", r0.need, 745, 0);
+    add("scale", "Initial state · facility (MW)", scale(INIT.scale).fac, 15.6, 1);
+    //
+    var k0 = INIT.cost, b1 = cost(k0, 1), b8 = cost(k0, 8), b32 = cost(k0, 32);
+    add("cost", "Exercise 6 · theoretical coefficient (× B_sz)", b1.coefT, 383, 0);
+    add("cost", "Exercise 6 · effective coefficient (× B_sz)", b1.coefE, 230, 0);
+    add("cost", "Batch 1 · throughput (tok/s)", b1.tps, 230, 0);
+    add("cost", "Batch 1 · time (s)", b1.sec, 4353, 0);
+    add("cost", "Batch 1 · time (h)", b1.h, 1.21, 2);
+    add("cost", "Batch 1 · energy (kWh)", b1.kWh, 9.29, 2);
+    add("cost", "Batch 1 · power cost (USD)", b1.elec, 0.743, 3);
+    add("cost", "Batch 8 · throughput (tok/s, nearest 10)", b8.tps, 1840, -1);
+    add("cost", "Batch 8 · time (s)", b8.sec, 544, 0);
+    add("cost", "Batch 8 · energy (kWh)", b8.kWh, 1.16, 2);
+    add("cost", "Batch 8 · power cost (USD)", b8.elec, 0.093, 3);
+    add("cost", "Batch 32 · throughput (tok/s, nearest 10)", b32.tps, 7350, -1);
+    add("cost", "Batch 32 · time (s)", b32.sec, 136, 0);
+    add("cost", "Batch 32 · time (h)", b32.h, 0.038, 3);
+    add("cost", "Batch 32 · energy (kWh)", b32.kWh, 0.290, 3);
+    add("cost", "Batch 32 · power cost (USD)", b32.elec, 0.023, 3);
+    add("cost", "Batch 1 ÷ batch 32 power cost (×)", b1.elec / b32.elec, 32, 0);
+    add("cost", "Capital cost · per operating hour (USD)", b32.capH, 11.9, 1);
+    add("cost", "Capital cost · batch 32 (USD)", b32.cap, 0.45, 2);
+    add("cost", "Share · power (%)", b32.share * 100, 4.9, 1);
+    add("cost", "Share · capital (%)", (1 - b32.share) * 100, 95.1, 1);
+    add("cost", "Capital ÷ power (about 20×, nearest 10)", b32.ratio, 20, -1);
+    add("cost", "Conclusion 1 · per calendar hour (USD)", b32.capCal, 9.51, 2);
+    add("cost", "Conclusion 1 · utilization 0.5 (USD/h)", cost(with_(k0, { util: 0.5 }), 32).capH, 19.0, 1);
+    add("cost", "Setup paragraph · 10.2 ÷ 6.4 (×)", SYS.dgx_h100.kw / k0.kw, 1.6, 1);
+    add("cost", "Initial state · capital share (%)", (1 - cost(INIT.cost, INIT.cost.bsz).share) * 100, 95.1, 1);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.part + " · " + r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding diff</span>", miss: "<span class='miss'>mismatch</span>" };
+    ["cooling", "chain", "pue", "busv", "scale", "cost"].forEach(function (p) {
+      var rs = rows.filter(function (r) { return r.part === p; });
+      $("chk-" + p).innerHTML = rs.map(function (r) {
+        return "<tr><td>" + r.name + "</td><td class='num'>" + r.shown + "</td><td class='num'>" + r.bookShown + "</td><td>" + tag[r.status] + "</td></tr>";
+      }).join("");
+      var miss = rs.filter(function (r) { return r.status === "miss"; }).length;
+      $("sum-" + p).textContent = rs.length + " rows" + (miss ? " · mismatches: " + miss : " · all match");
+    });
+  }
+
+  $("specLine").textContent = "Shared constants: " + H100.label + " bandwidth " + H100.B + " TB/s (8-chip node " + fmt(8 * H100.B, 1) + " TB/s), " + B200.label + " chip spec " + B200.cap + " GB, " +
+    B200.sys.label + " " + B200.sys.cap + " GB, " + [SYS.dgx_h100, SYS.dgx_b200, SYS.dgx_b300].map(function (x) { return x.label + " " + (x === SYS.dgx_b300 ? "about " : "") + fmt(x.kw, x.kw % 1 ? 1 : 0) + " kW" + (x.mem_gb ? "·" + fmt(x.mem_gb) + " GB" : ""); }).join(", ") +
+    ". System power is the vendor-stated maximum.";
+  ["cooling", "chain", "pue", "busv", "scale", "cost"].forEach(syncPart);
+  renderCheck();
+  updCool(); updChain(); updPue(); updBus(); updScale(); updCost();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

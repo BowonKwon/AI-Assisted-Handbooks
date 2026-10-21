@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HBM design calculator</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="hbm";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --bad: #b0412e;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.figs { display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.btn { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 5px 12px; border-radius: 7px; cursor: pointer; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.presets button { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 4px 11px; border-radius: 7px; cursor: pointer; }
+.presets button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.presetline { font-size: 13.5px; background: var(--soft); padding: 8px 12px; border-radius: 6px; max-width: none; }
+
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.lane { border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.lane h3 { margin: 0; font-size: 15px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.lane h3 span { font-family: var(--mono); font-weight: 500; font-size: 13px; color: var(--mut); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; margin: 0; }
+.kv dt { color: var(--mut); }
+.kv dd { margin: 0; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.kv dd.hl { color: var(--accent2); font-size: 17px; font-weight: 500; }
+.regime { font-family: var(--sans); font-size: 12.5px; font-weight: 700; }
+.regime.hot { color: var(--bad); } .regime.cool { color: var(--ok); } .regime.mid { color: var(--mut); }
+
+.powerchart svg, .chart svg { display: block; width: 100%; height: auto; }
+.chart { overflow-x: auto; }
+.chart svg { min-width: 480px; }
+.powerchart text, .chart text { fill: var(--fg); font-family: var(--sans); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.grid line { stroke: var(--line); }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+
+.stacks { display: flex; flex-wrap: wrap; gap: 5px 4px; align-items: flex-end; }
+.stk { display: flex; flex-direction: column-reverse; gap: 1px; padding: 1px; border-radius: 2px; }
+.stk.fail { outline: 1.5px solid var(--bad); outline-offset: 0; }
+.die { width: 9px; height: 3px; border-radius: 1px; background: var(--accent); }
+.die.bad { background: var(--bad); }
+.die.waste { background: transparent; box-shadow: inset 0 0 0 1px var(--accent); opacity: .7; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); align-items: center; }
+.legend i { display: inline-block; width: 14px; height: 5px; border-radius: 1px; margin-right: 6px; vertical-align: 2px; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+.round { color: var(--mut); font-size: 12.5px; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 3 · Exercises 1 and 2</div>
+  <h1>HBM design calculator</h1>
+  <p class="lede">Two reasons HBM has the shape it has today, checked with numbers. One is power. HBM builds its bandwidth from a great many slow pins rather than a few fast ones. The other is yield. The higher you stack dies, the more good dies get thrown away along with the bad.</p>
+</header>
+
+<section aria-labelledby="s1" data-part="bw">
+  <h2 id="s1">① Wide and slow, or narrow and fast</h2>
+  <div class="formula standalone-only">B = bus width × per-pin data rate　·　power = (B × 8) × pJ/bit × number of stacks</div>
+  <div class="bench" id="figure-bw">
+    <div class="controls">
+      <div class="ctl" style="grid-column: 1 / -1"><div class="lab">Product presets</div><div class="presets" id="presetBox"></div></div>
+      <div class="ctl"><label for="tgt">Target bandwidth per stack <output id="tgtOut"></output></label><input type="range" id="tgt" min="0.5" max="4" step="0.25" value="4"></div>
+      <div class="ctl"><label for="stk">Stacks per accelerator <output id="stkOut"></output></label><input type="range" id="stk" min="1" max="8" step="1" value="8"></div>
+    </div>
+    <p class="presetline" id="presetLine" hidden></p>
+    <div class="two">
+      <div class="lane">
+        <h3>(a) Narrow and fast <span id="aWidth"></span></h3>
+        <dl class="kv">
+          <dt>Required per-pin data rate</dt><dd class="hl" id="aRate"></dd>
+          <dt></dt><dd><span class="regime" id="aReg"></span></dd>
+          <dt><label for="aPj">pJ/bit</label></dt><dd id="aPjOut"></dd>
+        </dl>
+        <input type="range" id="aPj" min="0.25" max="6" step="0.25" value="3" aria-label="Energy per bit for (a)">
+        <dl class="kv"><dt>One stack</dt><dd id="aOne"></dd><dt>One accelerator</dt><dd class="hl" id="aAll"></dd></dl>
+      </div>
+      <div class="lane">
+        <h3>(b) Wide and slow <span id="bWidth"></span></h3>
+        <dl class="kv">
+          <dt>Required per-pin data rate</dt><dd class="hl" id="bRate"></dd>
+          <dt></dt><dd><span class="regime" id="bReg"></span></dd>
+          <dt><label for="bPj">pJ/bit</label></dt><dd id="bPjOut"></dd>
+        </dl>
+        <input type="range" id="bPj" min="0.25" max="6" step="0.25" value="0.75" aria-label="Energy per bit for (b)">
+        <dl class="kv"><dt>One stack</dt><dd id="bOne"></dd><dt>One accelerator</dt><dd class="hl" id="bAll"></dd></dl>
+      </div>
+    </div>
+    <div class="powerchart" id="pchart" role="img" aria-label="Memory power comparison bars"></div>
+  </div>
+  <p class="note standalone-only">The starting pJ/bit values come from the rough sense of scale that Exercise 2 in the text gives for 4 TB/s. For (a) it is 3, the value the solution uses in its worked calculation (the low end of the 3–5 range); for (b) it is the middle of the 0.5–1 range. Changing the target bandwidth changes the pin speed, so you have to move pJ/bit yourself. This page does not turn the relation between pin speed and pJ/bit into a formula. The text has no such formula, and real values differ by circuit and process.</p>
+  <p class="note standalone-only">The product presets set the target bandwidth per stack from the Section 4 table of specifications by generation, the list below it, and route ① in Section 3. Bandwidth is computed as pin speed times interface width. The standard column is what the pin speed set by the JEDEC standard can deliver; volume-production HBM4 has gone past the standard pin speed. The HBM4E sample press release does not state the interface width, so, as in the text, it is taken as 2,048 bits, the same as HBM4. GDDR7 is a value for one device, not a stack (JESD239, up to 192 GB/s per device), so it leaves the target bandwidth unchanged. SPHBM4 (JESD330-4), which mixes the two routes, uses the same DRAM die as HBM4 but cuts the data signals from 2,048 to 512 and reaches the same total bandwidth through 4:1 serialization. With fewer pins it can sit on an ordinary organic substrate instead of a silicon interposer. The press release does not say what that costs in pJ/bit, so it is left out of this figure.</p>
+</section>
+
+<section aria-labelledby="s2" data-part="yield">
+  <h2 id="s2">② The higher the stack, the more good dies go out with the bad</h2>
+  <div class="formula standalone-only">Y<sub>stack</sub> = y<sup>n</sup> × y<sub>bond</sub><sup>n−1</sup>　·　good dies discarded = n·y − n·Y<sub>stack</sub> (expected value per stack)</div>
+  <div class="figs" id="figure-yield">
+    <div class="bench">
+      <div class="controls">
+        <div class="ctl"><label for="yIn">Die yield y <output id="yOut"></output></label><input type="range" id="yIn" min="0.9" max="0.999" step="0.001" value="0.95"></div>
+        <div class="ctl"><label for="nIn">Stack height n <output id="nOut"></output></label><input type="range" id="nIn" min="2" max="16" step="1" value="12"></div>
+        <div class="ctl"><label for="bIn"><span>Bond yield y<sub>bond</sub></span> <output id="bOut"></output></label><input type="range" id="bIn" min="0.99" max="1" step="0.0005" value="1"></div>
+        <div class="ctl"><div class="lab">Screening before stacking (KGD)</div>
+          <div class="seg" id="kgdSeg">
+            <button type="button" data-v="0" aria-pressed="true">None</button>
+            <button type="button" data-v="1" aria-pressed="false">Perfect screening</button>
+          </div></div>
+      </div>
+      <dl class="readout">
+        <div class="big"><dt>Stack yield</dt><dd id="oY"></dd></div>
+        <div><dt>Good dies in one failed stack</dt><dd id="oCond"></dd></div>
+        <div><dt>Completed per 1,000 stacks</dt><dd id="oDone"></dd></div>
+        <div><dt>Good dies discarded</dt><dd id="oWaste"></dd></div>
+        <div><dt>Share of good dies wasted</dt><dd id="oPct"></dd></div>
+      </dl>
+      <div>
+        <div class="stacks" id="stacks" role="img" aria-label="100 randomly drawn stacks"></div>
+        <div class="legend" style="margin-top:10px">
+          <span><i style="background:var(--accent)"></i>Good die</span>
+          <span><i style="background:var(--bad)"></i>Bad die</span>
+          <span><i style="box-shadow:inset 0 0 0 1px var(--accent)"></i>Good die discarded with a failed stack</span>
+          <span>Red border = failed stack</span>
+          <button type="button" class="btn" id="redraw">Redraw</button>
+        </div>
+      </div>
+      <p class="note" id="sampleNote"></p>
+    </div>
+    <div class="bench"><div class="chart" id="ychart" role="img" aria-label="Stack yield curves by stack height"></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="s3">
+  <details class="check">
+    <summary>Check against the solution tables (<span id="checkSum"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">Values from the Session 3, Section 5 numerical examples and the solution tables for Exercises 1 and 2, recomputed with the formulas of this figure. Solution values are rounded. "Rounding diff" marks cases where the solution multiplied rounded intermediate values (e.g. 0.961 × 0.985) and so differs from the exact value in the last digit.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="check"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>The pJ/bit figures are a range the text explicitly qualifies as "a rough sense of scale". They are not vendor measurements.</li>
+    <li>The yield formula treats die defects as independent. Real defects tend to cluster on the wafer.</li>
+    <li>"Perfect screening" is the extreme case in which KGD testing misses no defect at all. The cost of the test itself and its miss rate are not included.</li>
+    <li>The effect of repairing defects with redundancy circuits is assumed to be already included in the die yield y.</li>
+    <li>Actual pin speeds and stack bandwidths for each HBM generation vary by vendor and product. In the Section 4 generation table of the text, the HBM2E and HBM3 values and the HBM3E row are rough ranges; HBM4 and HBM4E are manufacturer announcements.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div><i>AI Infrastructure and Semiconductors</i>, Session 3 interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a> and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through the <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.hbm_bus_bits) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>The shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  var NARROW = D.hbm_bus_bits.narrow, WIDE = D.hbm_bus_bits.wide;  // 1,024 / 2,048 bit
+  //
+  var INIT = { tgt: 4, stk: 8, aPj: 3, bPj: 0.75, y: 0.95, n: 12, yb: 1, kgd: 0 };
+  var st = { tgt: INIT.tgt, stk: INIT.stk, aPj: INIT.aPj, bPj: INIT.bPj, y: INIT.y, n: INIT.n, yb: INIT.yb, kgd: INIT.kgd, seed: 7, preset: "none" };
+
+  //
+  var HBM4_STD_PIN = 8;                        //
+  var PRESETS = [
+    { id: "hbm3e", label: "HBM3E", pin: 9.6, width: NARROW, book: "about 1.2 TB/s", src: "Section 4 table, HBM3E row; comparison value in the Samsung HBM4 press release" },
+    { id: "hbm4std", label: "HBM4 standard (JEDEC)", pin: HBM4_STD_PIN, width: WIDE, book: "up to about 2 TB/s", src: "Section 4 table, standard column; JESD270-4" },
+    { id: "hbm4", label: "HBM4 volume", pin: 11.7, width: WIDE, book: "about 3.0 TB/s", src: "Section 4 list; Samsung volume shipments, 2026-02-12" },
+    { id: "hbm4max", label: "HBM4 volume max", pin: 13, width: WIDE, book: "about 3.3 TB/s; press release: ‘up to 3.3 TB/s per stack’", src: "Section 4 list; Samsung, 2026-02-12" },
+    { id: "hbm4e", label: "HBM4E sample", pin: 14, width: WIDE, book: "about 3.6 TB/s", src: "Section 4 list; Samsung sample shipments, 2026-05-29 · 2,048 bits is an assumption in the text" }
+  ];
+  var GDDR7 = { id: "gddr7", label: "GDDR7 (device)", pin: 48, width: 32 };  //
+  function presetById(id) { return PRESETS.filter(function (p) { return p.id === id; })[0]; }
+
+  //
+  function pinRate(tbps, width) { return tbps * 1e12 * 8 / width / 1e9; }           // Gbps
+  function stackPower(tbps, pj) { return tbps * 1e12 * 8 * pj * 1e-12; }              // W
+  function presetBW(pinGbps, width) { return pinGbps * 1e9 * width / 8 / 1e12; }     //
+  function stackYield(y, n, yb, kgd) { return (kgd ? 1 : Math.pow(y, n)) * Math.pow(yb, n - 1); }
+  function waste(y, n, yb, kgd) {
+    var Y = stackYield(y, n, yb, kgd);
+    var good = kgd ? n : n * y;              //
+    var w = good - n * Y;                    //
+    return { Y: Y, good: good, waste: w, cond: Y < 1 ? w / (1 - Y) : 0, pct: good > 0 ? w / good : 0 };
+  }
+  function rng(seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: d === undefined ? 0 : Math.min(d, 1) }); }
+  function pctS(x, d) { return fmt(x * 100, d === undefined ? 1 : d) + "%"; }
+  function fmtN(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d }); }
+
+  //
+  function regime(rate) {
+    if (rate >= 25) return ['hot', 'near the ‘30 Gbps-class high-speed SerDes’ point in the text'];
+    if (rate <= 16) return ['cool', 'near the ‘15 Gbps-class wide parallel’ point in the text'];
+    return ['mid', 'between the two reference points in the text'];
+  }
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function drawPower(aW, bW) {
+    var W = 720, H = 150, L = 130, R = 30, max = Math.max(1300, aW, bW) * 1.05;
+    function sx(w) { return L + w / max * (W - L - R); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    svg.appendChild(el("rect", { x: sx(700), y: 8, width: sx(1000) - sx(700), height: 100, fill: "var(--accent2)", "fill-opacity": 0.12 }));
+    svg.appendChild(el("text", { x: (sx(700) + sx(1000)) / 2, y: 22, "text-anchor": "middle", "font-size": 11.5, fill: "var(--accent2)" }, "Accelerator itself: 700–1,000 W"));
+    [[aW, "(a) " + fmt(NARROW) + " bit", 34], [bW, "(b) " + fmt(WIDE) + " bit", 70]].forEach(function (r) {
+      svg.appendChild(el("text", { x: L - 10, y: r[2] + 15, "text-anchor": "end", "font-size": 13 }, r[1]));
+      svg.appendChild(el("rect", { x: L, y: r[2], width: Math.max(1, sx(r[0]) - L), height: 22, rx: 3, fill: r[2] === 34 ? "var(--bad)" : "var(--accent)" }));
+      svg.appendChild(el("text", { x: sx(r[0]) + 6, y: r[2] + 15, "font-size": 12.5, "font-family": "var(--mono)" }, fmt(r[0]) + " W"));
+    });
+    for (var w = 0; w <= max; w += 250) {
+      svg.appendChild(el("line", { x1: sx(w), x2: sx(w), y1: 104, y2: 110, stroke: "var(--mut)" }));
+      svg.appendChild(el("text", { x: sx(w), y: 126, "text-anchor": "middle", "class": "tick" }, fmt(w)));
+    }
+    svg.appendChild(el("text", { x: W - R, y: 145, "text-anchor": "end", "font-size": 12, opacity: 0.8 }, "Memory interface power [W], one accelerator"));
+    $("pchart").replaceChildren(svg);
+  }
+  function updateBW() {
+    $("tgtOut").textContent = fmt(st.tgt, 2) + " TB/s";
+    $("stkOut").textContent = st.stk + " stacks";
+    var lanes = [["a", NARROW, st.aPj], ["b", WIDE, st.bPj]], out = [];
+    lanes.forEach(function (l) {
+      var rate = pinRate(st.tgt, l[1]), one = stackPower(st.tgt, l[2]), all = one * st.stk, rg = regime(rate);
+      $(l[0] + "Width").textContent = fmt(l[1]) + " bit";
+      $(l[0] + "Rate").textContent = fmt(rate, 2) + " Gbps";
+      $(l[0] + "Reg").className = "regime " + rg[0]; $(l[0] + "Reg").textContent = rg[1];
+      $(l[0] + "PjOut").textContent = fmt(l[2], 2);
+      $(l[0] + "One").textContent = fmt(one, 1) + " W";
+      $(l[0] + "All").textContent = fmt(all) + " W";
+      out.push(all);
+    });
+    drawPower(out[0], out[1]);
+    updatePresetLine();
+  }
+  function updatePresetLine() {
+    var line = $("presetLine"), p = presetById(st.preset), t;
+    if (p) {
+      t = "Product: " + p.label + " · pin " + (p.id === "hbm3e" ? "up to " : "") + fmtN(p.pin, 1) + " Gbps × " + fmt(p.width) + " bits = " + fmtN(presetBW(p.pin, p.width), 3) +
+        " TB/s (text: " + p.book + ". " + p.src + ")";
+      if (p.id === "hbm4std" || p.id === "hbm4" || p.id === "hbm4max") t +=" The standard column value of about 2 TB/s assumes JEDEC " + HBM4_STD_PIN + " Gbps; volume-production parts have gone past the standard pin speed.";
+      t += " Presets change only the pin speed. Move pJ/bit yourself below.";
+    } else if (st.preset === GDDR7.id) {
+      var g = presetBW(GDDR7.pin, GDDR7.width), n = Math.ceil(st.tgt / g - 1e-9);
+      t = "One GDDR7 device: up to " + fmtN(g * 1000) + " GB/s (pin " + GDDR7.pin + " Gbps × " + GDDR7.width + " bits). By calculation, reaching the current target of " + fmt(st.tgt, 2) +
+        " TB/s takes " + n + " devices; the HBM4 standard pin speed is " + HBM4_STD_PIN + " Gbps, and the GDDR7 pin runs " + fmtN(GDDR7.pin / HBM4_STD_PIN, 1) + " times as fast.";
+    }
+    line.hidden = !t;
+    line.textContent = t || "";
+  }
+  function markPresets() {
+    $("presetBox").querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.v === st.preset)); });
+  }
+  function setPreset(id) {
+    st.preset = id;
+    var p = presetById(id);
+    if (p) { st.tgt = presetBW(p.pin, p.width); $("tgt").value = st.tgt; }  //
+    markPresets(); updateBW();
+  }
+
+  //
+  function drawStacks() {
+    var r = rng(st.seed * 97 + st.n * 13 + Math.round(st.y * 1000) + Math.round(st.yb * 10000) + st.kgd * 7);
+    var h = "", fails = 0;
+    for (var s = 0; s < 100; s++) {
+      var dies = [], anyBad = false;
+      for (var d = 0; d < st.n; d++) { var ok = st.kgd ? true : r() < st.y; dies.push(ok); if (!ok) anyBad = true; }
+      var bondFail = false;
+      for (var b = 0; b < st.n - 1; b++) if (r() >= st.yb) bondFail = true;
+      var fail = anyBad || bondFail;
+      if (fail) fails++;
+      h += '<div class="stk' + (fail ? " fail" : "") + '">' + dies.map(function (ok) {
+        return '<span class="die' + (!ok ? " bad" : fail ? " waste" : "") + '"></span>';
+      }).join("") + "</div>";
+    }
+    $("stacks").innerHTML = h;
+    $("sampleNote").textContent = "Failed stacks in this sample of 100: " + fails + " (expected " + fmt((1 - stackYield(st.y, st.n, st.yb, st.kgd)) * 100, 1) + "). The hollow cells inside red borders are good dies thrown away along with the failed stack. Press ‘Redraw’ to see the sampling variation.";
+  }
+  function drawYieldChart() {
+    var W = 720, H = 300, L = 56, R = 110, T = 18, Bm = 46;
+    function sx(n) { return L + (n - 2) / 14 * (W - L - R); }
+    function sy(y) { return H - Bm - y * (H - T - Bm); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    [2, 4, 8, 12, 16].forEach(function (n) {
+      g.appendChild(el("line", { x1: sx(n), x2: sx(n), y1: T, y2: H - Bm }));
+      svg.appendChild(el("text", { x: sx(n), y: H - Bm + 18, "text-anchor": "middle", "class": "tick" }, n));
+    });
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (y) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(y), y2: sy(y) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(y) + 4, "text-anchor": "end", "class": "tick" }, (y * 100) + "%"));
+    });
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 8, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Stack height n"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Stack yield"));
+    //
+    var series = [[0.95, false], [0.98, false], [0.995, false]].filter(function (s) { return Math.abs(s[0] - st.y) > 1e-9; });
+    series.push([st.y, true]);
+    series.forEach(function (s) {
+      var d = "";
+      for (var n = 2; n <= 16; n++) d += (n === 2 ? "M" : " L") + sx(n).toFixed(1) + "," + sy(stackYield(s[0], n, st.yb, st.kgd)).toFixed(1);
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: s[1] ? "var(--accent2)" : "var(--mut)", "stroke-width": s[1] ? 2.6 : 1.2, "stroke-opacity": s[1] ? 1 : 0.6, "stroke-dasharray": s[1] ? "" : "4 3" }));
+      svg.appendChild(el("text", { x: sx(16) + 6, y: sy(stackYield(s[0], 16, st.yb, st.kgd)) + 4, "font-size": 12, fill: s[1] ? "var(--accent2)" : "var(--mut)", "font-weight": s[1] ? 700 : 400 }, (s[1] ? "now " : "") + "y = " + s[0]));
+    });
+    svg.appendChild(el("circle", { cx: sx(st.n), cy: sy(stackYield(st.y, st.n, st.yb, st.kgd)), r: 6, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    $("ychart").replaceChildren(svg);
+  }
+  function updateYield() {
+    $("yOut").textContent = st.y.toFixed(3); $("nOut").textContent = st.n + "-high"; $("bOut").textContent = st.yb.toFixed(4);
+    var w = waste(st.y, st.n, st.yb, st.kgd);
+    $("oY").textContent = pctS(w.Y);
+    $("oCond").innerHTML = w.Y < 1 ? fmt(w.cond, 1) + " <small>/ " + st.n + " dies</small>" : "—";
+    $("oDone").textContent = fmt(w.Y * 1000) + " stacks";
+    $("oWaste").innerHTML = fmt(w.waste * 1000) + " <small>/ total good " + fmt(w.good * 1000) + "</small>";
+    $("oPct").textContent = pctS(w.pct);
+    drawStacks(); drawYieldChart();
+  }
+
+  //
+  //
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected, st, shown, bookShown) { rows.push({ name: name, got: got, expected: expected, status: st === true ? "match" : st === "round" ? "round" : "miss", shown: shown, bookShown: bookShown }); }
+    function near(v, b, exactTol, roundTol) { var d = Math.abs(v - b); return d <= exactTol ? true : d <= roundTol ? "round" : false; }
+    //
+    var a = pinRate(4, NARROW), b = pinRate(4, WIDE);
+    add("Exercise 2 · " + fmt(NARROW) + " bits: pin speed (Gbps)", Math.round(a * 100) / 100, 31.25, Math.abs(a - 31.25) < 0.005);
+    add("Exercise 2 · " + fmt(WIDE) + " bits: pin speed (Gbps)", Math.round(b * 100) / 100, 15.6, Math.round(b * 10) / 10 === 15.6);
+    add("Exercise 2 · 4 TB/s × 3 pJ/bit (W)", Math.round(stackPower(4, 3)), 96, Math.round(stackPower(4, 3)) === 96);
+    add("Exercise 2 · 4 TB/s × 0.5 pJ/bit (W)", Math.round(stackPower(4, 0.5)), 16, Math.round(stackPower(4, 0.5)) === 16);
+    add("Exercise 2 · 4 TB/s × 1 pJ/bit (W)", Math.round(stackPower(4, 1)), 32, Math.round(stackPower(4, 1)) === 32);
+    //
+    var a8 = stackPower(INIT.tgt, INIT.aPj) * INIT.stk, b8 = stackPower(INIT.tgt, INIT.bPj) * INIT.stk;
+    add("Exercise 2 conclusion · (a) initial state, 8 stacks (W, 96 W × 8)", Math.round(a8), 768, Math.round(a8) === 768);
+    add("Exercise 2 conclusion · (b) initial state, 8 stacks (W, within the range of about 130–260 W)", Math.round(b8), 192, Math.round(b8) === 192 && b8 >= 128 && b8 <= 256, fmt(b8), "within 130–260");
+    //
+    var book1 = { "0.95": [66.3, 54.0, 44.0], "0.98": [85.1, 78.5, 72.4], "0.995": [96.1, 94.2, 92.3] };
+    Object.keys(book1).forEach(function (y) {
+      [8, 12, 16].forEach(function (n, i) {
+        var v = Math.round(stackYield(Number(y), n, 1, 0) * 1000) / 10;
+        add("Exercise 1 · y = " + y + ", " + n + "-high stack yield (%)", v, book1[y][i], v === book1[y][i], fmt(v, 1), fmt(book1[y][i], 1));
+      });
+    });
+    var w = waste(0.95, 12, 1, 0);
+    add("Exercise 1 · good dies in a failed stack (y 0.95, 12-high)", Math.round(w.cond * 10) / 10, 10.7, Math.round(w.cond * 10) / 10 === 10.7);
+    add("Exercise 1 · good dies discarded per 1,000 stacks", Math.round(w.waste * 10000) / 10, 4915.7, near(w.waste * 1000, 4915.7, 0.05, 1.5), fmt(w.waste * 1000, 1), "4,915.7");
+    add("Exercise 1 · waste share (%)", Math.round(w.pct * 100), 43, Math.round(w.pct * 100) === 43);
+    //
+    var bookC = { "0.95": [6.8, 10.7, 14.6], "0.98": [6.9, 10.9, 14.8], "0.995": [7.0, 11.0, 15.0] };
+    var bookW = { "0.95": [2293, 4916, 8158], "0.98": [1034, 2343, 4099], "0.995": [274, 641, 1153] };
+    Object.keys(bookC).forEach(function (y) {
+      [8, 12, 16].forEach(function (n, i) {
+        var q = waste(Number(y), n, 1, 0), c = Math.round(q.cond * 10) / 10, k = Math.round(q.waste * 1000);
+        add("Exercise 1 table · y = " + y + ", " + n + "-high, good dies in a failed stack", c, bookC[y][i], c === bookC[y][i], fmt(c, 1), fmt(bookC[y][i], 1));
+        add("Exercise 1 table · y = " + y + ", " + n + "-high, good dies discarded per 1,000 stacks", k, bookW[y][i], k === bookW[y][i], fmt(q.waste * 1000, 1), fmt(bookW[y][i]));
+      });
+    });
+    //
+    var book5 = { 4: 0.946, 8: 0.891, 12: 0.839, 16: 0.790 };
+    Object.keys(book5).forEach(function (n) {
+      var v = stackYield(0.99, Number(n), 0.995, 0);
+      add("Section 5 · y 0.99, bond 0.995, " + n + "-high stack yield", Math.round(v * 10000) / 10000, book5[n], near(v, book5[n], 0.0005, 0.0015), v.toFixed(4), book5[n].toFixed(3));
+    });
+    //
+    var book4 = { hbm3e: [1.2, 1, "about 1.2"], hbm4std: [2, 0, "up to about 2"], hbm4: [3.0, 1, "about 3.0"], hbm4max: [3.3, 1, "about 3.3"], hbm4e: [3.6, 1, "about 3.6"] };
+    PRESETS.forEach(function (p) {
+      var v = presetBW(p.pin, p.width), e = book4[p.id], k = Math.pow(10, e[1]), r = Math.round(v * k) / k;
+      add("Section 4 · " + p.label + " " + fmtN(p.pin, 1) + " Gbps × " + fmt(p.width) + " bits (TB/s)", r, e[0], r === e[0], fmtN(v, 4), e[2]);
+    });
+    var g7 = presetBW(GDDR7.pin, GDDR7.width) * 1000;
+    add("Section 3, route ① · GDDR7 " + GDDR7.pin + " Gbps × " + GDDR7.width + " bits (GB/s)", Math.round(g7), 192, Math.round(g7) === 192, fmtN(g7, 2), "192");
+    var ratio = GDDR7.pin / HBM4_STD_PIN;
+    add("Section 3, route ① · GDDR7 pin ÷ HBM4 standard pin (×)", Math.round(ratio), 6, Math.round(ratio) === 6, fmtN(ratio, 2), "6");
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>Match</span>", round: "<span class='round'>Rounding diff</span>", miss: "<span class='miss'>Mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fmt(r.got, 2)) + "</td><td class='num'>" + (r.bookShown || fmt(r.expected, 2)) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length, round = rows.filter(function (r) { return r.status === "round"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : "") + (round ? " · rounding diffs " + round : "") + (!miss && !round ? " · all match" : "");
+  }
+
+  //
+  function bind(id, key, fn) { $(id).addEventListener("input", function (e) { st[key] = Number(e.target.value); fn(); }); }
+  //
+  $("tgt").addEventListener("input", function (e) {
+    st.tgt = Number(e.target.value);
+    if (presetById(st.preset)) { st.preset = "none"; markPresets(); }
+    updateBW();
+  });
+  [["none", "Custom"]].concat(PRESETS.map(function (p) { return [p.id, p.label]; }), [[GDDR7.id, GDDR7.label]]).forEach(function (o) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.v = o[0]; b.textContent = o[1];
+    $("presetBox").appendChild(b);
+  });
+  markPresets();
+  $("presetBox").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) setPreset(b.dataset.v); });
+  bind("stk", "stk", updateBW); bind("aPj", "aPj", updateBW); bind("bPj", "bPj", updateBW);
+  bind("yIn", "y", updateYield); bind("nIn", "n", updateYield); bind("bIn", "yb", updateYield);
+  $("kgdSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    this.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    st.kgd = Number(b.dataset.v); updateYield();
+  });
+  $("redraw").addEventListener("click", function () { st.seed++; drawStacks(); });
+  $("specLine").textContent = "Formulas and figures: ‘AI Infrastructure and Semiconductors’, Session 3, Sections 3, 4 and 5, and the solutions to Exercises 1 and 2 (product presets follow the Section 4 specifications by generation). HBM bus widths (up to HBM3: " + fmt(NARROW) +
+    " bits; HBM4: " + fmt(WIDE) + " bits) follow Session 3, Section 3 of the text.";
+
+  renderCheck(); updateBW(); updateYield();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

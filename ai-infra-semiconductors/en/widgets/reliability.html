@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arrhenius Acceleration Factor</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="reliability";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.grid line.minor { stroke-opacity: .5; }
+.tick { font-size: 13px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend svg { vertical-align: -2px; margin-right: 6px; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 6, Section 7 · Package reliability</div>
+  <h1>How many years is 1,000 hours?</h1>
+  <p class="lede">Failures accelerated by temperature are usually converted from test time to service time with the Arrhenius equation. Under the same conditions, changing E<sub>a</sub> alone swings the conclusion a lot.</p>
+  <div class="formula">AF = exp[ (E<sub>a</sub> / k) · (1/T<sub>use</sub> − 1/T<sub>stress</sub>) ]　·　k = 8.617×10<sup>−5</sup> eV/K　·　T = °C + 273.15　·　equivalent years = test hours × AF / 8,760</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">Equivalent service life by activation energy</h2>
+  <div class="bench" id="figure">
+    <div class="controls">
+      <div class="ctl">
+        <label for="ea"><span>Apparent activation energy E<sub>a</sub></span> <output id="eaOut"></output></label>
+        <input type="range" id="ea" min="0.5" max="0.9" step="0.01" value="0.7">
+        <div class="seg" id="eaSeg">
+          <button type="button" data-v="0.5" aria-pressed="false">0.5 eV</button>
+          <button type="button" data-v="0.7" aria-pressed="true">0.7 eV</button>
+          <button type="button" data-v="0.9" aria-pressed="false">0.9 eV</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <div class="lab">Conditions</div>
+        <div class="seg" id="presetSeg">
+          <button type="button" data-v="htol" aria-pressed="true">HTOL · 125 °C · 1,000 h</button>
+          <button type="button" data-v="example" aria-pressed="true">Example in the text</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="ts"><span>Test temperature T<sub>stress</sub></span> <output id="tsOut"></output></label>
+        <input type="range" id="ts" min="85" max="175" step="1" value="125">
+      </div>
+      <div class="ctl">
+        <label for="tu"><span>Use temperature T<sub>use</sub></span> <output id="tuOut"></output></label>
+        <input type="range" id="tu" min="25" max="105" step="1" value="55">
+      </div>
+      <div class="ctl">
+        <label for="hr">Test time <output id="hrOut"></output></label>
+        <input type="range" id="hr" min="24" max="3000" step="1" value="1000">
+      </div>
+    </div>
+    <dl class="readout">
+      <div><dt>Absolute temperature, test → use [K]</dt><dd id="oK" style="font-size:16px"></dd></div>
+      <div><dt>Acceleration factor AF</dt><dd id="oAF"></dd></div>
+      <div><dt>Equivalent service hours</dt><dd id="oH"></dd></div>
+      <div class="big"><dt>Equivalent years</dt><dd id="oY"></dd></div>
+    </dl>
+    <div class="chart" id="chart" role="img" aria-label="Equivalent-years curve by activation energy, log axis"></div>
+    <div class="legend" id="legend"></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>Check against the text (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">Test 125 °C, use 55 °C, 1,000 hours, 1 year = 8,760 hours. The "Text" column holds the values from the Arrhenius paragraph and E<sub>a</sub> table of Session 6, Section 7, and from misconception 9 in Section 10.</caption>
+        <thead><tr><th>Item</th><th>Computed</th><th>Text</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>E<sub>a</sub> differs from one failure mechanism to another. That is why a single test cannot tell you "this chip will last 9 years."</li>
+    <li>JESD47I also cautions that this period may be shorter than actual use requirements and depends on the failure mechanism and the use environment, and it says long-term wear-out mechanisms should be covered by wafer-level reliability data.</li>
+    <li>The equation applies to temperature-accelerated failures. JEDEC JEP122 collects the acceleration models for each failure mechanism.</li>
+    <li>JESD47I, in a note to Table 1, uses the same conditions (0.7 eV, 125 °C → 55 °C) as an example and gives an acceleration factor of 78.6, about 9 years. The last digits differ because of constants and rounding.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>Formula: <i>AI Infrastructure and Semiconductors</i>, Session 6, Section 7, "Package reliability: how much heat and moisture can it take?" Test conditions: HTOL in Table 1 of JEDEC JESD47I (July 2012 edition).</div>
+  <div><i>AI Infrastructure and Semiconductors</i> interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a> and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through a <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issue</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>Shared constants (BOOK_DATA) not found. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  //
+  var K_B = 8.617e-5;          //
+  var C2K = 273.15;            // °C → K
+  var H_PER_YEAR = 8760;       //
+  var EXAMPLE = { ea: 0.7, ts: 125, tu: 55, hr: 1000 };   //
+  var TABLE_EA = [0.5, 0.7, 0.9];                          //
+  var state = { ea: EXAMPLE.ea, ts: EXAMPLE.ts, tu: EXAMPLE.tu, hr: EXAMPLE.hr };
+  var INIT = { ea: state.ea, ts: state.ts, tu: state.tu, hr: state.hr };
+
+  //
+  function af(ea, tsC, tuC) { return Math.exp(ea / K_B * (1 / (tuC + C2K) - 1 / (tsC + C2K))); }
+  function equiv(ea, tsC, tuC, hr) { var a = af(ea, tsC, tuC), h = hr * a; return { af: a, hours: h, years: h / H_PER_YEAR }; }
+
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
+  function sig3(x) { return x.toLocaleString("ko-KR", { maximumSignificantDigits: 3 }); }
+  function fmtAF(a) { return a < 1000 ? fmt(a, 1) : sig3(a); }
+  function $(id) { return document.getElementById(id); }
+  function isExample() { return state.ea === EXAMPLE.ea && state.ts === EXAMPLE.ts && state.tu === EXAMPLE.tu && state.hr === EXAMPLE.hr; }
+  function sameCond() { return state.ts === EXAMPLE.ts && state.tu === EXAMPLE.tu && state.hr === EXAMPLE.hr; }
+
+  //
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (tag === "text" && attrs.fill) e.style.fill = attrs.fill;   //
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  var W = 720, H = 300, L = 64, R = 92, T = 22, Bm = 48;
+  var EA0 = 0.5, EA1 = 0.9;
+  function sx(ea) { return L + (ea - EA0) / (EA1 - EA0) * (W - L - R); }
+  function curve(tsC, tuC, hr) {
+    var pts = [];
+    for (var i = 0; i <= 80; i++) { var ea = EA0 + (EA1 - EA0) * i / 80; pts.push([ea, equiv(ea, tsC, tuC, hr).years]); }
+    return pts;
+  }
+  function drawChart() {
+    var cur = curve(state.ts, state.tu, state.hr), base = curve(EXAMPLE.ts, EXAMPLE.tu, EXAMPLE.hr), same = sameCond();
+    var ys = cur.map(function (p) { return p[1]; }).concat(base.map(function (p) { return p[1]; }));
+    var lo = Math.floor(Math.log10(Math.min.apply(null, ys))), hi = Math.ceil(Math.log10(Math.max.apply(null, ys)));
+    if (hi - lo < 2) { hi = lo + 2; }
+    function sy(y) { return H - Bm - (Math.log10(y) - lo) / (hi - lo) * (H - T - Bm); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    for (var x = 5; x <= 9; x++) {
+      var ea = x / 10;
+      g.appendChild(el("line", { x1: sx(ea), x2: sx(ea), y1: T, y2: H - Bm }));
+      svg.appendChild(el("text", { x: sx(ea), y: H - Bm + 18, "text-anchor": "middle", "class": "tick" }, ea.toFixed(1)));
+    }
+    for (var e = lo; e <= hi; e++) {
+      var v = Math.pow(10, e);
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, v < 1 ? String(Number(v.toPrecision(1))) : fmt(v)));
+      if (e < hi) [2, 5].forEach(function (m) { g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(m * v), y2: sy(m * v), "class": "minor" })); });
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 10, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Apparent activation energy Eₐ [eV]"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Equivalent service life [years, log]"));
+
+    function path(pts) { return pts.map(function (p, i) { return (i ? "L" : "M") + sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1); }).join(" "); }
+    if (!same) svg.appendChild(el("path", { d: path(base), fill: "none", stroke: "var(--mut)", "stroke-width": 1.4, "stroke-dasharray": "5 4", "stroke-opacity": 0.8 }));
+    svg.appendChild(el("path", { d: path(cur), fill: "none", stroke: "var(--accent2)", "stroke-width": 2.6 }));
+
+    //
+    TABLE_EA.forEach(function (ea, i) {
+      var y = equiv(ea, EXAMPLE.ts, EXAMPLE.tu, EXAMPLE.hr).years;
+      svg.appendChild(el("circle", { cx: sx(ea), cy: sy(y), r: 7, fill: "var(--card)", stroke: "var(--accent)", "stroke-width": 2 }));
+      var anchor = i === 0 ? "start" : i === 2 ? "end" : "middle", dx = i === 0 ? -2 : i === 2 ? 2 : 0;
+      svg.appendChild(el("text", { x: sx(ea) + dx, y: sy(y) - 13, "text-anchor": anchor, "font-size": 12.5, "font-weight": 600, fill: "var(--accent)" }, sig3(y) + " yr"));
+    });
+
+    //
+    var yA = cur[0][1], yB = cur[cur.length - 1][1], bx = W - R + 14;
+    if (!same) {
+      svg.appendChild(el("text", { x: sx(EA0) + 4, y: sy(yA) + 20, "font-size": 12, fill: "var(--accent2)" }, sig3(yA) + " yr"));
+      svg.appendChild(el("text", { x: sx(EA1) - 4, y: sy(yB) + 20, "text-anchor": "end", "font-size": 12, fill: "var(--accent2)" }, sig3(yB) + " yr"));
+    }
+    svg.appendChild(el("path", { d: "M" + (bx - 5) + "," + sy(yB).toFixed(1) + " H" + bx + " V" + sy(yA).toFixed(1) + " H" + (bx - 5), fill: "none", stroke: "var(--accent2)", "stroke-width": 1.4 }));
+    var mid = (sy(yA) + sy(yB)) / 2;
+    svg.appendChild(el("text", { x: bx + 6, y: mid - 2, "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" }, "×" + fmt(yB / yA, 1)));
+    svg.appendChild(el("text", { x: bx + 6, y: mid + 14, "font-size": 11.5, fill: "var(--mut)" }, "0.5→0.9 eV"));
+
+    //
+    var now = equiv(state.ea, state.ts, state.tu, state.hr).years;
+    svg.appendChild(el("circle", { cx: sx(state.ea), cy: sy(now), r: 5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 1.5 }));
+    var nAnchor = state.ea < 0.56 ? "start" : state.ea > 0.84 ? "end" : "middle";
+    svg.appendChild(el("text", { x: sx(state.ea), y: sy(now) + 24, "text-anchor": nAnchor, "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" }, "Now " + sig3(now) + " yr"));
+    $("chart").replaceChildren(svg);
+
+    var ring = "<svg width='14' height='14' viewBox='0 0 14 14'><circle cx='7' cy='7' r='5' fill='none' stroke='var(--accent)' stroke-width='2'/></svg>";
+    var dot = "<svg width='14' height='14' viewBox='0 0 14 14'><circle cx='7' cy='7' r='5' fill='var(--accent2)'/></svg>";
+    var solid = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--accent2)' stroke-width='2.6'/></svg>";
+    var dash = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--mut)' stroke-width='1.4' stroke-dasharray='5 4'/></svg>";
+    $("legend").innerHTML = "<span>" + solid + "Current conditions (" + state.ts + " °C → " + state.tu + " °C, " + fmt(state.hr) + " h)</span>" +
+      (same ? "" : "<span>" + dash + "Example conditions in the text</span>") +
+      "<span>" + ring + "E<sub>a</sub> table in the text (125 °C → 55 °C, 1,000 h)</span><span>" + dot + "Current E<sub>a</sub></span>";
+    return { yA: yA, yB: yB };
+  }
+
+  function syncButtons() {
+    $("eaSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Math.abs(Number(b.dataset.v) - state.ea) < 1e-9)); });
+    var htol = state.ts === 125 && state.hr === 1000;
+    $("presetSeg").querySelector("[data-v=htol]").setAttribute("aria-pressed", String(htol));
+    $("presetSeg").querySelector("[data-v=example]").setAttribute("aria-pressed", String(isExample()));
+    $("ea").value = state.ea; $("ts").value = state.ts; $("tu").value = state.tu; $("hr").value = state.hr;
+  }
+
+  function update() {
+    var r = equiv(state.ea, state.ts, state.tu, state.hr);
+    $("eaOut").textContent = state.ea.toFixed(2) + " eV";
+    $("tsOut").textContent = state.ts + " °C";
+    $("tuOut").textContent = state.tu + " °C";
+    $("hrOut").textContent = fmt(state.hr) + " h";
+    $("oK").innerHTML = fmt(state.ts + C2K, 2) + " → " + fmt(state.tu + C2K, 2);
+    $("oAF").textContent = fmtAF(r.af);
+    $("oH").innerHTML = "about " + sig3(r.hours) + " <small>h</small>";
+    $("oY").innerHTML = "about " + sig3(r.years) + " <small>years</small>";
+    syncButtons();
+    var ends = drawChart(), msg;
+    if (state.tu >= state.ts) {
+      msg = "If the use temperature is not lower than the test temperature, 1/T<sub>use</sub> − 1/T<sub>stress</sub> ≤ 0, so AF ≤ 1. A test that is no harsher than service conditions does not stretch time.";
+    } else {
+      msg = "The same test (" + state.ts + " °C → " + state.tu + " °C, " + fmt(state.hr) + " h) comes to <b>about " + sig3(ends.yA) + " years</b> with E<sub>a</sub> = 0.5 eV and <b>about " + sig3(ends.yB) +
+        " years</b> with 0.9 eV (" + fmt(ends.yB / ends.yA, 1) + "×). At the current E<sub>a</sub> of " + state.ea.toFixed(2) + " eV, AF is " + fmtAF(r.af) + ", about " + sig3(r.years) + " years.";
+    }
+    $("msg").innerHTML = msg;
+  }
+
+  //
+  //
+  //
+  function checkRows() {
+    var rows = [];
+    function rnd(x, d) { if (d < 0) { var q = Math.pow(10, -d); return Math.round(x / q) * q; } var m = Math.pow(10, d); return Math.round(x * m) / m; }
+    function add(name, got, expected, d, shown) {
+      var g = rnd(got, d);
+      rows.push({ name: name, got: g, expected: expected, status: g === expected ? "match" : "miss", shown: shown, d: Math.max(d, 0) });
+    }
+    var ex = EXAMPLE;
+    add("Worked example · absolute temperature, test (K)", ex.ts + C2K, 398.15, 2);
+    add("Worked example · absolute temperature, use (K)", ex.tu + C2K, 328.15, 2);
+    var t = TABLE_EA.map(function (ea) { return equiv(ea, ex.ts, ex.tu, ex.hr); });
+    add("Eₐ table · 0.5 eV · AF", t[0].af, 22.4, 1);
+    add("Eₐ table · 0.5 eV · equivalent years", t[0].years, 2.56, 2);
+    add("Eₐ table · 0.7 eV · AF", t[1].af, 77.7, 1);
+    add("Eₐ table · 0.7 eV · equivalent years", t[1].years, 8.87, 2);
+    add("Eₐ table · 0.9 eV · AF", t[2].af, 269.3, 1);
+    add("Eₐ table · 0.9 eV · equivalent years", t[2].years, 30.7, 1);
+    add("Worked example · 0.7 eV · equivalent service hours (h)", t[1].hours, 77700, -2);   //
+    add("Section 10, misconception 9 · 0.5 eV · equivalent years", t[0].years, 2.6, 1);
+    add("Section 10, misconception 9 · 0.9 eV · equivalent years", t[2].years, 31, 0);
+    //
+    var i0 = equiv(INIT.ea, INIT.ts, INIT.tu, INIT.hr);
+    var initSame = INIT.ea === 0.7 && INIT.ts === 125 && INIT.tu === 55 && INIT.hr === 1000;
+    var g0 = rnd(i0.af, 1);
+    rows.push({ name: "Initial state · AF (0.7 eV, 125→55 °C, 1,000 h)", got: g0, expected: 77.7, status: initSame && g0 === 77.7 ? "match" : "miss",
+      shown: initSame ? undefined : "Conditions differ · " + fmt(g0, 1), d: 1 });
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding diff</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fmt(r.got, r.d)) + "</td><td class='num'>" + fmt(r.expected, r.d) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  //
+  $("eaSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    state.ea = Number(b.dataset.v); update();
+  });
+  $("presetSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.v === "htol") { state.ts = 125; state.hr = 1000; }
+    else { state.ea = EXAMPLE.ea; state.ts = EXAMPLE.ts; state.tu = EXAMPLE.tu; state.hr = EXAMPLE.hr; }
+    update();
+  });
+  $("ea").addEventListener("input", function (e) { state.ea = Math.round(Number(e.target.value) * 100) / 100; update(); });
+  $("ts").addEventListener("input", function (e) { state.ts = Number(e.target.value); update(); });
+  $("tu").addEventListener("input", function (e) { state.tu = Number(e.target.value); update(); });
+  $("hr").addEventListener("input", function (e) { state.hr = Number(e.target.value); update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>
