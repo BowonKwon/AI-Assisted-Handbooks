@@ -1147,7 +1147,7 @@ figure.widget figcaption b,figure.widget-still figcaption b{color:var(--fg)}
 <rect x="2" y="4" width="716" height="126" rx="8" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-opacity="0.45"/>
 <text x="22" y="31" font-size="14.5" fill="currentColor" font-weight="700">[3층] 장비·소재·EDA</text>
 <text x="30" y="56" font-size="12.5" fill="currentColor" fill-opacity="0.82">ASML(노광) · AMAT·Lam(식각·증착) · TEL · KLA(계측)</text>
-<text x="30" y="75" font-size="12.5" fill="currentColor" fill-opacity="0.82">Synopsys·Cadence(EDA) · ARM(IP)</text>
+<text x="30" y="75" font-size="12.5" fill="currentColor" fill-opacity="0.82">Synopsys·Cadence(EDA) · Arm(IP)</text>
 <text x="30" y="94" font-size="12.5" fill="currentColor" fill-opacity="0.82">신에츠·SUMCO(웨이퍼) · JSR·TOK(포토레지스트)</text>
 <text x="30" y="118" font-size="12.5" fill="currentColor" font-weight="600">→ 특징: 물량은 작지만 대체 불가능 — 병목의 실제 위치</text>
 <line x1="360" y1="138" x2="360" y2="170" stroke="currentColor" stroke-opacity="0.55" marker-end="url(#ahvc)"/>
@@ -1301,7 +1301,7 @@ figure.widget figcaption b,figure.widget-still figcaption b{color:var(--fg)}
 </tr>
 <tr>
 <td>CPU IP</td>
-<td>ARM (라이선스 구조)</td>
+<td>Arm (라이선스 구조)</td>
 </tr>
 <tr>
 <td>고순도 웨이퍼·포토레지스트</td>
@@ -5268,12 +5268,12 @@ HBM이 비싼 이유는 수율이 곱해지기 때문이고(12단 적층 = 다�
 <p>HBM은 대역폭에 최적화되어 있지만 용량은 비싸다(다이당 24~32Gb 수준). 반면 NAND는 밀도가 압도적으로 높다. <strong class="lng">"NAND를 HBM처럼 적층하고 광폭 버스를 붙이면 어떨까"</strong> 가 HBF의 발상이다.</p>
 <h3 id="c3-현황과-사양">현황과 사양</h3>
 <ul>
-<li>2025년 8월 6일, <strong class="lng">SanDisk와 SK하이닉스가 HBF 표준화 협력(양해각서)을 발표했다.</strong></li>
+<li>2025년 8월 6일, <strong class="lng">Sandisk와 SK하이닉스가 HBF 표준화 협력(양해각서)을 발표했다.</strong></li>
 <li>2026년 2월 25일, 양사가 <strong class="lng">OCP(Open Compute Project) 내 전용 워크스트림</strong>으로 표준화 작업을 착수했다.</li>
 <li>2026년 8월 4일, 양사가 <strong class="lng">첫 HBF 표준 사양을 OCP로 공개했다</strong>(SK하이닉스 발표). 8단·16단 두 구성으로 스택당 최대 512 GB, 대역폭은 세 등급(Grade 1~3)으로 약 0.4~3.0 TB/s, 프로세서와의 연결은 칩렛 연결 표준인 UCIe다. Google과 Tenstorrent가 컨소시엄에 참여했다. 중간 등급의 값은 공개 자료에서 확인하지 못했다.</li>
-<li>이보다 앞선 SanDisk의 1세대 제품 목표(2025년 7월 자료)는 <strong class="lng">다이당 256Gb(기가비트), 16단 스택 512GB, 읽기 대역폭 1.6 TB/s였고,</strong> HBM4와 비슷한 풋프린트·전력 프로파일·스택 높이를 지향했다. 256Gb는 32GB이므로 16단이면 512GB가 된다. 1.6 TB/s는 위 표준의 등급 범위 안에 있는 한 제품의 목표치다.</li>
-<li>일정: SanDisk는 2025년 8월에 2026년 하반기 첫 HBF 샘플, 2027년 초 HBF 탑재 AI 추론 장치 샘플을 목표로 제시했다. 2026년 8월 투자자의 날 발표 자료(<a href="https://investor.sandisk.com/static-files/cf296cec-371c-4773-9280-7e591e9cf026">SanDisk Investor Day 2026, HBF 발표 PDF</a>)는 첫 HBF 메모리 다이의 테이프아웃과 2027년 첫 HBF 추론 제품 샘플을 로드맵으로 제시했고, 2026년 하반기 메모리 샘플 목표는 다시 적지 않았다.</li>
-<li>기술 기반: SanDisk의 BiCS NAND와 CBA(CMOS directly Bonded to Array, CMOS 회로 웨이퍼를 셀 어레이 웨이퍼에 직접 붙이는 구조) + SK하이닉스의 HBM 패키징·3D 적층 역량.</li>
+<li>이보다 앞선 Sandisk의 1세대 제품 목표(2025년 7월 자료)는 <strong class="lng">다이당 256Gb(기가비트), 16단 스택 512GB, 읽기 대역폭 1.6 TB/s였고,</strong> HBM4와 비슷한 풋프린트·전력 프로파일·스택 높이를 지향했다. 256Gb는 32GB이므로 16단이면 512GB가 된다. 1.6 TB/s는 위 표준의 등급 범위 안에 있는 한 제품의 목표치다.</li>
+<li>일정: Sandisk는 2025년 8월에 2026년 하반기 첫 HBF 샘플, 2027년 초 HBF 탑재 AI 추론 장치 샘플을 목표로 제시했다. 2026년 8월 투자자의 날 발표 자료(<a href="https://investor.sandisk.com/static-files/cf296cec-371c-4773-9280-7e591e9cf026">Sandisk Investor Day 2026, HBF 발표 PDF</a>)는 첫 HBF 메모리 다이의 테이프아웃과 2027년 첫 HBF 추론 제품 샘플을 로드맵으로 제시했고, 2026년 하반기 메모리 샘플 목표는 다시 적지 않았다.</li>
+<li>기술 기반: Sandisk의 BiCS NAND와 CBA(CMOS directly Bonded to Array, CMOS 회로 웨이퍼를 셀 어레이 웨이퍼에 직접 붙이는 구조) + SK하이닉스의 HBM 패키징·3D 적층 역량.</li>
 </ul>
 <h3 id="c3-거래의-구조--무엇을-주고-무엇을-받나">거래의 구조 — 무엇을 주고 무엇을 받나</h3>
 <div class="tw"><table>
@@ -5821,7 +5821,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <li><strong>DRAM 연구:</strong> <a href="https://people.inf.ethz.ch/omutlu/">Onur Mutlu 교수(ETH Zürich) 홈페이지</a>와 <a href="https://safari.ethz.ch/">SAFARI 연구실</a>의 강의 자료와 논문 — DRAM 지연시간, 리프레시, PIM에 관한 가장 체계적인 자료군이며 강의 영상이 공개되어 있다. <strong class="lng">DRAM을 더 깊이 보려는 독자에게 권한다</strong></li>
 <li><strong>HBM 표준:</strong> <a href="https://www.jedec.org/standards-documents/docs/jesd235a">JEDEC JESD235(HBM)</a>, <a href="https://www.jedec.org/standards-documents/docs/jesd270-4">JEDEC JESD270-4(HBM4)</a> — 표준 문서 자체(2026년 10월 현재 HBM4 표준 페이지는 개정판 JESD270-4A를 싣고 있다). 요약본은 Rambus·Synopsys의 기술 블로그가 접근성이 좋다</li>
 <li><strong>신호 속도 쪽 표준:</strong> <a href="https://www.jedec.org/standards-documents/docs/jesd239">JEDEC JESD239(GDDR7)</a> — PAM3로 핀 속도를 올린 길 ①의 현재 모습</li>
-<li><strong>HBF:</strong> <a href="https://www.sandisk.com/company/newsroom/press-releases/2025/2025-08-06-sandisk-to-collaborate-with-sk-hynix-to-drive-standardization-of-high-bandwidth-flash-memory-technology">SanDisk·SK하이닉스 표준화 협력 보도자료(2025-08-06)</a>, <a href="https://news.skhynix.com/en/hbf-at-fms-2026/">SK하이닉스 HBF 첫 표준 사양 공개(2026-08-04)</a>, <a href="https://spectrum.ieee.org/high-bandwidth-flash">IEEE Spectrum 「High Bandwidth Flash Unlocks Massive Model Storage」(2026-07-14)</a>, OCP 워크스트림 문서</li>
+<li><strong>HBF:</strong> <a href="https://www.sandisk.com/company/newsroom/press-releases/2025/2025-08-06-sandisk-to-collaborate-with-sk-hynix-to-drive-standardization-of-high-bandwidth-flash-memory-technology">Sandisk·SK하이닉스 표준화 협력 보도자료(2025-08-06)</a>, <a href="https://news.skhynix.com/en/hbf-at-fms-2026/">SK하이닉스 HBF 첫 표준 사양 공개(2026-08-04)</a>, <a href="https://spectrum.ieee.org/high-bandwidth-flash">IEEE Spectrum 「High Bandwidth Flash Unlocks Massive Model Storage」(2026-07-14)</a>, OCP 워크스트림 문서</li>
 <li><strong>PIM:</strong> 삼성 HBM-PIM, SK하이닉스 AiM 관련 ISSCC/HotChips 발표 자료</li>
 <li><strong>국내 기술동향:</strong> <a href="https://doi.org/10.22648/ETRI.2026.J.410302">ETRI 전자통신동향분석 41권 3호 「AI 메모리 반도체 분야 주요 기술 및 시장 동향」</a></li>
 </ul>
@@ -7341,7 +7341,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <p><strong class="lng">검증 완료 (2026-08-02, 복수 출처 대조)</strong></p>
 <ul>
 <li>HBM4 = JEDEC JESD270-4, <strong>2025년 4월 공표</strong>. 인터페이스 2,048비트, 독립 채널 32개(채널당 의사채널 2개), 스택당 최대 약 2 TB/s, 4~16단, 다이 24Gb/32Gb, 32Gb 16단 시 큐브당 64GB, HBM3 컨트롤러 하위 호환, DRFM, 코어 전압 1.0/1.05V·VDDQ 0.7~0.9V — JEDEC 보도자료, TrendForce(2025-04-21), Tom's Hardware 대조</li>
-<li>HBF 표준화: SanDisk·SK하이닉스 협력 발표 <strong>2025년 8월 6일</strong>, OCP 워크스트림 착수 <strong>2026년 2월 25일</strong>. 목표 사양 다이당 256Gb / 16단 512GB / 읽기 약 1.6 TB/s, HBM4와 비슷한 풋프린트 지향. 첫 샘플 2026년 하반기 목표 — SanDisk·SK하이닉스 보도자료, IEEE Spectrum, Tom's Hardware 대조. 다이당 용량과 풋프린트 표현은 SanDisk HBF 팩트시트 원문(「256Gb per die」, 「closely matching」)으로 확인</li>
+<li>HBF 표준화: Sandisk·SK하이닉스 협력 발표 <strong>2025년 8월 6일</strong>, OCP 워크스트림 착수 <strong>2026년 2월 25일</strong>. 목표 사양 다이당 256Gb / 16단 512GB / 읽기 약 1.6 TB/s, HBM4와 비슷한 풋프린트 지향. 첫 샘플 2026년 하반기 목표 — Sandisk·SK하이닉스 보도자료, IEEE Spectrum, Tom's Hardware 대조. 다이당 용량과 풋프린트 표현은 Sandisk HBF 팩트시트 원문(「256Gb per die」, 「closely matching」)으로 확인</li>
 <li>HBM 3사 과점 구조와 매출 기준 선두 SK하이닉스(2026년 1분기 IDC 집계, 1회차 4절) — 검증 완료. 2·3위의 순서는 세대마다 바뀌어 적지 않는다</li>
 </ul>
 <p><strong class="lng">검증 완료 (2026-10-08, 1차 출처 원문 대조)</strong></p>
@@ -7349,7 +7349,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <li>HBM4 양산: <a href="https://news.skhynix.com/en/sk-hynix-completes-worlds-first-hbm4-development-and-readies-mass-production/">SK하이닉스 HBM4 개발 완료·양산 체제 구축(2025-09-12)</a> — 2,048 I/O, 10 Gbps 이상, 1b DRAM, Advanced MR-MUF. <a href="https://news.samsung.com/global/samsung-ships-industry-first-commercial-hbm4-with-ultimate-performance-for-ai-computing">삼성전자 HBM4 양산 출하(2026-02-12)</a> — 11.7 Gbps(최대 13 Gbps), 스택당 최대 3.3 TB/s, 12단 24~36GB, 1c DRAM·4nm 로직. <a href="https://news.samsung.com/global/samsung-electronics-begins-shipment-of-industry-first-hbm4e-samples">삼성전자 HBM4E 샘플 출하(2026-05-29)</a> — 14 Gbps(최대 16 Gbps), 스택당 최대 3.6 TB/s, 12단 48GB, 「Samsung Foundry's 4nm logic base die」</li>
 <li>HBM4 표준: <a href="https://www.jedec.org/news/pressreleases/jedec%C2%AE-and-industry-leaders-collaborate-release-jesd270-4-hbm4-standard-advancing">JEDEC JESD270-4 보도자료(2025-04-16)</a> — 8 Gb/s, 2,048비트, 최대 2 TB/s, 32채널·채널당 의사채널 2, VDDQ 0.7/0.75/0.8/0.9V·VDDC 1.0/1.05V, HBM3 컨트롤러 하위 호환, DRFM, 4·8·12·16단과 24Gb·32Gb 다이(32Gb 16단 64GB)</li>
 <li>NVIDIA Rubin: <a href="https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/">NVIDIA 기술 블로그 「Inside NVIDIA Rubin GPU Architecture」(2026-07-21)</a> — HBM4 최대 288GB, 12단 스택, 최대 22 TB/s(Blackwell 대비 2.8배). 스택 수는 글에 없어 본문의 8개는 역산 추정</li>
-<li>HBF: <a href="https://news.skhynix.com/en/hbf-at-fms-2026/">SK하이닉스 HBF 첫 표준 사양 공개(2026-08-04)</a> — OCP 공개, 8단·16단, 최대 512GB, 3등급 약 0.4~3.0 TB/s, UCIe, Google·Tenstorrent 참여. <a href="https://news.skhynix.com/en/fms-2026/">SK하이닉스 FMS 2026 정리(2026-08-07)</a> — HBM·DRAM·NAND(HBF)·SSD 계층, CXL 풀드 메모리 시연. <a href="https://www.sandisk.com/company/newsroom/press-releases/2025/2025-08-06-sandisk-to-collaborate-with-sk-hynix-to-drive-standardization-of-high-bandwidth-flash-memory-technology">SanDisk 표준화 협력 보도자료(2025-08-06)</a> — 2026년 하반기 첫 샘플·2027년 초 추론 장치 샘플 목표. <a href="https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/sandisk/collateral/company/Sandisk-HBF-Fact-Sheet.pdf">SanDisk HBF 팩트시트(2025-07)</a> — 1세대 읽기 1.6 TB/s, 다이당 256Gb, 16단 512GB, CBA = CMOS directly Bonded to Array</li>
+<li>HBF: <a href="https://news.skhynix.com/en/hbf-at-fms-2026/">SK하이닉스 HBF 첫 표준 사양 공개(2026-08-04)</a> — OCP 공개, 8단·16단, 최대 512GB, 3등급 약 0.4~3.0 TB/s, UCIe, Google·Tenstorrent 참여. <a href="https://news.skhynix.com/en/fms-2026/">SK하이닉스 FMS 2026 정리(2026-08-07)</a> — HBM·DRAM·NAND(HBF)·SSD 계층, CXL 풀드 메모리 시연. <a href="https://www.sandisk.com/company/newsroom/press-releases/2025/2025-08-06-sandisk-to-collaborate-with-sk-hynix-to-drive-standardization-of-high-bandwidth-flash-memory-technology">Sandisk 표준화 협력 보도자료(2025-08-06)</a> — 2026년 하반기 첫 샘플·2027년 초 추론 장치 샘플 목표. <a href="https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/sandisk/collateral/company/Sandisk-HBF-Fact-Sheet.pdf">Sandisk HBF 팩트시트(2025-07)</a> — 1세대 읽기 1.6 TB/s, 다이당 256Gb, 16단 512GB, CBA = CMOS directly Bonded to Array</li>
 <li>적층 공정: SK하이닉스 HBM4 보도자료(위) — Advanced MR-MUF. <a href="https://news.samsungsemiconductor.com/global/samsung-develops-industry-first-36gb-hbm3e-12h-dram/">삼성전자 HBM3E 12H 보도자료(2024-02-27)</a> — Advanced TC NCF</li>
 <li>SPHBM4: <a href="https://www.jedec.org/news/pressreleases/new-jedec%C2%AE-sphbm4-standard-enables-hbm4-class-bandwidth-organic-substrates">JEDEC JESD330-4 보도자료(2026-07-13)</a> — HBM4와 같은 DRAM 다이, 데이터 신호 512개·4:1 직렬화, 유기 기판 실장</li>
 <li>GDDR7: <a href="https://www.jedec.org/news/pressreleases/jedec-publishes-gddr7-graphics-memory-standard">JEDEC JESD239 보도자료(2024-03-05)</a> — 디바이스당 최대 192 GB/s, PAM3(2사이클에 3비트), 독립 채널 GDDR6 2개 → GDDR7 4개. 핀당 48 Gbps는 32비트로 나눈 계산값</li>
@@ -7360,7 +7360,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <p><strong class="lng">미확인 · 유보 (본문에서 단정하지 않음)</strong></p>
 <ul>
 <li><strong>HBF의 실측 성능</strong> — 2026년 10월 현재 양산 제품이 없다. 본문의 512GB·0.4~3.0 TB/s·1.6 TB/s는 전부 <strong>사양 범위·목표치</strong>이며 검증된 실측값이 아니다. 중간 등급(Grade 2)의 대역폭 값은 공개 자료에서 확인하지 못했다</li>
-<li><strong>HBF 샘플 일정</strong> — 2025년 8월 목표는 2026년 하반기 첫 샘플이었다. 2026년 8월 SanDisk 투자자의 날 자료는 첫 HBF 메모리 다이 테이프아웃과 2027년 첫 추론 제품 샘플만 제시했다(2026-10-08 확인). 메모리 샘플 출하 시점은 공식 발표 미확인</li>
+<li><strong>HBF 샘플 일정</strong> — 2025년 8월 목표는 2026년 하반기 첫 샘플이었다. 2026년 8월 Sandisk 투자자의 날 자료는 첫 HBF 메모리 다이 테이프아웃과 2027년 첫 추론 제품 샘플만 제시했다(2026-10-08 확인). 메모리 샘플 출하 시점은 공식 발표 미확인</li>
 <li><strong class="lng">HBM2E/HBM3/HBM3E의 정확한 스택 대역폭</strong> — 벤더·제품별로 핀 속도가 달라 표의 수치는 대략적 범위다. 정확한 값은 각 벤더 데이터시트 확인 필요</li>
 <li><strong class="lng">하이브리드 본딩의 HBM 양산 적용 시점</strong> — 2026년 10월 현재 양산 HBM에 썼다는 제조사 발표를 찾지 못했다. Micron의 적층 방식은 1차 자료로 확인하지 못했다</li>
 <li><strong class="lng">HBM4의 명령 버스 구조 변화</strong> — 명령 버스와 데이터 버스의 분리를 HBM4 변경점으로 드는 서술은 JEDEC 보도자료(2024-07 예고·2025-04 공표) 원문에서 확인되지 않아 4절 변경점 목록에 넣지 않았다. 표준 본문은 열람하지 못했다</li>
@@ -7607,7 +7607,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <tr>
 <td><strong>IP 벤더</strong></td>
 <td>설계 블록 라이선스</td>
-<td>ARM, Synopsys, Cadence, Imagination</td>
+<td>Arm, Synopsys, Cadence, Imagination</td>
 <td>로열티 모델</td>
 </tr>
 <tr>
@@ -14491,7 +14491,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <li><a href="https://semiconductor.samsung.com/kr/support/tools-resources/fabrication-process/eight-essential-semiconductor-fabrication-processes-part-2-oxidation-to-protect-the-wafer/">삼성전자 반도체, 「반도체 8대 공정 2탄, 웨이퍼 표면을 보호하는 산화공정」</a> — 2절 열산화(800~1,200 ℃, 건식·습식)</li>
 <li>Deal, B. E. &amp; Grove, A. S., "General Relationship for the Thermal Oxidation of Silicon", <em>J. Appl. Phys.</em> 36(12):3770–3778 (1965), <a href="https://doi.org/10.1063/1.1713945">doi:10.1063/1.1713945</a> — 2절 Deal–Grove 식(서지는 Crossref, 식·온도 범위는 초록으로 확인. 계수 표는 대조하지 않음)</li>
 <li><a href="https://svmi.com/wp-content/uploads/2020/09/SV025.pdf">Silicon Valley Microelectronics, 300 mm 웨이퍼 사양서 SV025</a> · <a href="https://svmi.com/wp-content/uploads/2020/09/SV027.pdf">SV027</a> — 2절 노치·지름·두께·가장자리 제외. 같은 공급사의 150 mm 이하 사양서(SV001~SV013)는 플랫, 200 mm 사양서(SV017~SV020)는 노치</li>
-<li><a href="https://www.euvlitho.com/2017/P22.pdf">van Schoot 외(ASML·Carl Zeiss), 「High-NA EUV lithography enabling Moore's law in the next decade」, EUVL Workshop, 2017-06-15</a> — 4절 축소 배율(0.33 NA 4×/4×, 0.55 NA 4×/8×), 필드 26×33 mm·26×16.5 mm, 6인치 마스크</li>
+<li><a href="https://www.euvlitho.com/2017/P22.pdf">van Schoot 외(ASML·ZEISS), 「High-NA EUV lithography enabling Moore's law in the next decade」, EUVL Workshop, 2017-06-15</a> — 4절 축소 배율(0.33 NA 4×/4×, 0.55 NA 4×/8×), 필드 26×33 mm·26×16.5 mm, 6인치 마스크</li>
 <li><a href="https://www.asml.com/en/company/stories/2024/5-things-high-na-euv">ASML, 「5 things you should know about High NA EUV lithography」(2024)</a> — 4절 아나모픽 광학의 이유, 필드 절반, EXE 해상도 8 nm</li>
 <li><a href="https://www.asml.com/en/products/euv-lithography-systems">ASML, EUV 리소그래피 시스템 페이지</a> — NXE 해상도 13 nm, 7·5·3 nm 노드 사용</li>
 <li><a href="https://www.asml.com/en/news/press-releases/2026/high-na-euv-reaches-new-readiness-milestone">ASML 보도자료(2026-07-15), 「High NA EUV reaches new readiness milestone with first high-volume Logic product」</a> · <a href="https://www.intc.com/news-events/press-releases/detail/1776/intel-reports-second-quarter-2026-financial-results">Intel 2026년 2분기 실적 보도자료(2026-07-23)</a> — 4절 High-NA 양산 적용 현황</li>
@@ -14503,7 +14503,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <p><strong>검증 상태</strong></p>
 <ul>
 <li>High-NA EUV 현황(4절) — 2026-10-08 재확인. Intel의 EXE:5200B 첫 인수 시험 통과와 2026년 7월 18A 특정 층 High-NA 양산 출하(ASML 보도자료 2026-07-15, Intel 2분기 실적 보도자료), SK하이닉스 M16 EXE:5200B 도입(2025-09-03 뉴스룸), imec EXE:5200 도입·2026년 4분기 검증 계획(2026-03-18 보도자료), Intel의 14A 생산 적용 계획(2024-04-18 뉴스룸). 「전 세계 설치 십수 대」「양산 적용 2027~2028년 전망」「TSMC A14·Samsung SF1.4가 대상 노드」 같은 서술은 1차 출처로 확인되지 않아 싣지 않았다</li>
-<li>축소 배율과 노광 필드(26×33 mm, High-NA 26×16.5 mm, 4×·4×8×) — ASML·Zeiss 2017 발표와 ASML 2024 글로 확인(2026-10-08). 마스크 위 영역 104×132 mm는 이 값에서 계산한 것</li>
+<li>축소 배율과 노광 필드(26×33 mm, High-NA 26×16.5 mm, 4×·4×8×) — ASML·ZEISS 2017 발표와 ASML 2024 글로 확인(2026-10-08). 마스크 위 영역 104×132 mm는 이 값에서 계산한 것</li>
 <li>EXE 해상도 8 nm, NXE 13 nm — ASML 공식 페이지 확인(2026-10-08). 실습 1의 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>k</mi><mn>1</mn></msub></mrow></math></span> 역산(0.326, 0.318)은 이 값으로 계산</li>
 <li>TSMC N7+(TSMC가 내세운 「업계 첫 상용 EUV 공정」, 2019년 2분기 양산), 광원 출력 일상 운영 250 W 이상 — TSMC 보도자료 원문 확인(2026-10-08). 삼성전자 7LPP EUV 웨이퍼 생산 시작은 삼성전자 보도자료(2018-10-18)로 확인</li>
 <li>IBM 구리 배선 1997-09-22 발표, 알루미늄 대비 저항 약 40% 낮음 — IBM 공식 연혁 페이지 확인(2026-10-08). W 플러그·배리어 메탈·일렉트로마이그레이션의 설명은 공정 교과서의 표준 내용</li>
