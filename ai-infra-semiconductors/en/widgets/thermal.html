@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thermal resistance calculator</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="thermal";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --bad: #b0412e; --grey: #8a919c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; --grey: #6f7783; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; --grey: #6f7783; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl.wide { grid-column: span 2; }
+@media (max-width: 520px) { .ctl.wide { grid-column: auto; } }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+input[type=range]:disabled { opacity: .4; }
+input[type=number] { font: inherit; font-family: var(--mono); font-size: 14px; width: 100%; box-sizing: border-box; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.tag { font-size: 12.5px; color: var(--mut); }
+.tag b { color: var(--accent2); font-weight: 700; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+.readout dd.over { color: var(--bad); }
+.readout dd.under { color: var(--ok); }
+
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.grid line { stroke: var(--line); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); align-items: center; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 6, Section 7 · Exercise 2 · Exercise 4</div>
+  <h1>Thermal resistance calculator</h1>
+  <p class="lede">Three of the heat-and-distance problems of Session 6, checked in numbers: the chain of thermal resistances out of the package, the energy per bit set by wire length, and the temperature difference between layers when chips are stacked. Thermal resistances add in series.</p>
+</header>
+
+
+<section aria-labelledby="s1" data-part="chain">
+  <h2 id="s1">① Heat leaving the package — a series chain</h2>
+  <div class="formula standalone-only">T<sub>j</sub> = T<sub>a</sub> + P · (θ<sub>JC</sub> + θ<sub>TIM</sub> + θ<sub>SA</sub>)　·　per-stage ΔT = P × θ</div>
+  <div class="bench" id="figure-chain">
+    <div class="controls">
+      <div class="ctl"><label for="cP">Power P <output id="cPOut"></output></label><input type="range" id="cP" min="0" max="2000" step="10" value="1000"></div>
+      <div class="ctl"><label for="cTa"><span>Ambient temperature T<sub>a</sub></span> <output id="cTaOut"></output></label><input type="range" id="cTa" min="0" max="60" step="1" value="35"></div>
+      <div class="ctl"><label for="cTmax"><span>T<sub>j,max</sub> (datasheet value)</span></label><input type="number" id="cTmax" min="0" max="300" step="1" placeholder="Empty (°C)"></div>
+      <div class="ctl"><label for="cJC"><span>θ<sub>JC</sub> junction–case</span> <output id="cJCOut"></output></label><input type="range" id="cJC" min="0" max="0.1" step="0.001" value="0.015"></div>
+      <div class="ctl"><label for="cTIM"><span>θ<sub>TIM</sub> case–heat sink</span> <output id="cTIMOut"></output></label><input type="range" id="cTIM" min="0" max="0.1" step="0.001" value="0.025"></div>
+      <div class="ctl"><label for="cSA"><span>θ<sub>SA</sub> heat sink–ambient</span> <output id="cSAOut"></output></label><input type="range" id="cSA" min="0" max="0.1" step="0.001" value="0.02"></div>
+    </div>
+    <p class="tag" id="cTag"></p>
+    <div class="chart" id="cChart" role="img" aria-label="Temperature bar stacking up from ambient to junction"></div>
+    <div class="legend">
+      <span><i style="background:var(--grey);opacity:.45"></i>Ambient temperature T<sub>a</sub></span>
+      <span><i style="background:var(--grey)"></i>θ<sub>SA</sub> heat sink–ambient</span>
+      <span><i style="background:var(--accent2)"></i>θ<sub>TIM</sub></span>
+      <span><i style="background:var(--accent)"></i>θ<sub>JC</sub> junction–case</span>
+    </div>
+    <dl class="readout">
+      <div><dt>Sum of θ</dt><dd id="cSum"></dd></div>
+      <div><dt>ΔT junction–case</dt><dd id="cdJC"></dd></div>
+      <div><dt>ΔT TIM</dt><dd id="cdTIM"></dd></div>
+      <div><dt>ΔT heat sink–ambient</dt><dd id="cdSA"></dd></div>
+      <div><dt>Total ΔT</dt><dd id="cdAll"></dd></div>
+      <div class="big"><dt>Junction temperature T<sub>j</sub></dt><dd id="cTj"></dd></div>
+      <div><dt>vs. T<sub>j,max</sub></dt><dd id="cMargin"></dd></div>
+    </dl>
+  </div>
+  <p class="note standalone-only">In a package with a heat sink, heat flows in turn from junction → case → TIM → heat sink (or cold plate) → ambient (air or coolant). The path is in series, so the resistances add. All starting values are the assumed values of the worked example in Section 7 of the text, not values of any particular product. T<sub>a</sub> can also be read as the coolant inlet temperature. The assumed values give the TIM the largest share in order to preview the point of Session 7, Section 3: the thin layer between chip and cold plate easily becomes the bottleneck of the whole chain. T<sub>j</sub> must stay below the maximum junction temperature T<sub>j,max</sub> set by each product's datasheet. The text gives no such number, so the field is left empty.</p>
+  <details class="check">
+    <summary>Check against the worked example in the text (<span id="checkSum-chain"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The worked example of Session 6, Section 7, "Viewing it as a series chain" (P = 1,000 W, T<sub>a</sub> = 35 °C, θ 0.015, 0.025, 0.020 K/W), recomputed with this figure's formulas.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Text</th><th></th></tr></thead>
+      <tbody id="check-chain"></tbody>
+    </table></div>
+  </details>
+</section>
+
+
+<section aria-labelledby="s2" data-part="wire">
+  <h2 id="s2">② Wire length and energy per bit</h2>
+  <div class="formula standalone-only">C ∝ length　→　E = ½CV² (same V), so energy ratio = length ratio　·　power = pJ/bit × bit/s</div>
+  <div class="bench" id="figure-wire">
+    <div class="controls">
+      <div class="ctl"><label for="wSub">Substrate wire length <output id="wSubOut"></output></label><input type="range" id="wSub" min="1" max="50" step="1" value="10"></div>
+      <div class="ctl"><label for="wTsv">TSV length <output id="wTsvOut"></output></label><input type="range" id="wTsv" min="10" max="200" step="5" value="50"></div>
+      <div class="ctl"><label for="wPj">Energy per bit, TSV side <output id="wPjOut"></output></label><input type="range" id="wPj" min="0.01" max="0.2" step="0.01" value="0.05"></div>
+      <div class="ctl wide"><div class="lab">Bit rate</div>
+        <div class="seg" id="wBrSeg">
+          <button type="button" data-v="tbit" aria-pressed="true">1 Tbit/s</button>
+          <button type="button" data-v="hbm" aria-pressed="false">One HBM stack, 4 TB/s</button>
+        </div></div>
+      <div class="ctl"><label for="wStk">Number of HBM stacks <output id="wStkOut"></output></label><input type="range" id="wStk" min="1" max="8" step="1" value="1"></div>
+    </div>
+    <div class="chart" id="wChart" role="img" aria-label="Length and power of the two paths compared"></div>
+    <dl class="readout">
+      <div class="big"><dt>Length ratio = energy ratio</dt><dd id="wRatio"></dd></div>
+      <div><dt>TSV side</dt><dd id="wPjT"></dd></div>
+      <div><dt>Substrate side</dt><dd id="wPjS"></dd></div>
+      <div><dt>Bit rate</dt><dd id="wBr"></dd></div>
+      <div><dt>Power · TSV</dt><dd id="wPT"></dd></div>
+      <div><dt>Power · substrate wiring</dt><dd id="wPS"></dd></div>
+      <div><dt>Difference</dt><dd id="wDiff"></dd></div>
+    </dl>
+  </div>
+  <p class="note standalone-only">If parasitic capacitance is taken as proportional to length, then by E = ½CV² at the same voltage the energy per bit differs by the length ratio too. The TSV-side 0.05 pJ/bit is the value set in the solution to Exercise 2. With one HBM stack at 4 TB/s = 3.2 × 10¹³ bit/s, eight stacks come to 12.8 W against 2,560 W. A single package draws power on the kilowatt scale, and this would spend 2.56 kW on memory wiring alone, so under this assumption the design does not work. If the distance cannot shrink, that bandwidth cannot be delivered within the power budget. Bandwidth → power → distance → packaging form one chain.</p>
+  <details class="check">
+    <summary>Check against the solutions (<span id="checkSum-wire"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The table in Session 6, solution to Exercise 2 (10 mm vs. 50 μm, TSV 0.05 pJ/bit), and values in the text, recomputed with this figure's formulas.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="check-wire"></tbody>
+    </table></div>
+  </details>
+</section>
+
+
+<section aria-labelledby="s3" data-part="stack">
+  <h2 id="s3">③ Temperature difference between stacked layers — silicon and interfaces</h2>
+  <div class="formula standalone-only">R = t / (kA), A = 1 mm²　·　ΔT of segment j = (j × power per layer) × (R<sub>Si</sub> + R<sub>interface</sub>),　j = 1 … number of layers</div>
+  <div class="bench" id="figure-stack">
+    <div class="controls">
+      <div class="ctl"><label for="sN">Number of layers <output id="sNOut"></output></label><input type="range" id="sN" min="1" max="8" step="1" value="4"></div>
+      <div class="ctl"><label for="sP">Power density per layer <output id="sPOut"></output></label><input type="range" id="sP" min="0.1" max="2" step="0.1" value="1"></div>
+      <div class="ctl"><div class="lab">Interface thermal resistance</div>
+        <div class="seg" id="sIfSeg">
+          <button type="button" data-v="1" aria-pressed="true">Included</button>
+          <button type="button" data-v="0" aria-pressed="false">Excluded</button>
+        </div></div>
+      <div class="ctl"><label for="sTsi">Silicon thickness <output id="sTsiOut"></output></label><input type="range" id="sTsi" min="10" max="200" step="5" value="50"></div>
+      <div class="ctl"><label for="sKsi">Silicon thermal conductivity <output id="sKsiOut"></output></label><input type="range" id="sKsi" min="50" max="200" step="5" value="150"></div>
+      <div class="ctl"><label for="sTif">Interface thickness <output id="sTifOut"></output></label><input type="range" id="sTif" min="1" max="50" step="1" value="20"></div>
+      <div class="ctl"><label for="sKif">Interface effective thermal conductivity <output id="sKifOut"></output></label><input type="range" id="sKif" min="0.5" max="10" step="0.5" value="3"></div>
+    </div>
+    <div class="chart" id="sChart" role="img" aria-label="Per-segment temperature-difference bars for the stacked layers"></div>
+    <div class="legend">
+      <span><i style="background:var(--accent)"></i>ΔT across silicon</span>
+      <span><i style="background:var(--accent2)"></i>ΔT across interfaces (bumps, underfill, adhesive)</span>
+    </div>
+    <dl class="readout">
+      <div class="big"><dt>Heat flux per footprint</dt><dd id="sFlux"></dd></div>
+      <div><dt>Silicon R (1 mm²)</dt><dd id="sRsi"></dd></div>
+      <div><dt>Interface R (1 mm²)</dt><dd id="sRif"></dd></div>
+      <div><dt>Silicon total</dt><dd id="sSumSi"></dd></div>
+      <div><dt>Interface total</dt><dd id="sSumIf"></dd></div>
+      <div><dt>Interface ÷ silicon</dt><dd id="sRatio"></dd></div>
+    </dl>
+  </div>
+  <p class="note standalone-only">Per 1 mm², with heat leaving only upward and every layer dissipating at the same power density (the assumption of the solution to Exercise 4). Heat from a lower layer must pass through every layer above it, so higher segments carry more heat. Silicon conducts heat very well: silicon alone gives only 3.3 K across 4 layers. The microbumps, underfill and adhesive between layers have an effective thermal conductivity of about 1–5 W/(m·K), around 1/50 of silicon, and these bonded interfaces are the bottleneck. There are as many interfaces as layers: one between each pair of layers, plus one joint between the top die and the heat-removal surface, all of the same material (four for 4 layers). "Excluded" is an idealization that sets the thermal resistance of every interface, up to the top joint, to zero. Hybrid bonding still leaves copper and dielectric bond faces, so this does not stand for the effect of an actual process change.</p>
+  <details class="check">
+    <summary>Check against the solutions (<span id="checkSum-stack"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The table in Session 6, solution to Exercise 4 (1 W/mm², silicon 50 μm at 150 W/(m·K), interface 20 μm at 3 W/(m·K)), and values in the text, recomputed with this figure's formulas.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="check-stack"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>Datasheet θJA, θJC and θJB are the difference between the junction temperature T<sub>j</sub> and a reference-point temperature, divided by power P (JEDEC JESD51 series). θJA is measured on a standard test board in still air or at a set airflow, so it changes when the board or the airflow changes. ψJT and ψJB, used to back out T<sub>j</sub> on a real board, have the same form as θ but are characterization parameters, not true thermal resistances. This page computes only the series chain of ①.</li>
+    <li>Higher temperature raises leakage current, and more leakage produces more heat: a positive feedback (Section 7). Here P and the power per layer are fixed values independent of temperature. The text gives no formula for that feedback.</li>
+    <li>The multiples in ② assume equal capacitance per unit length and equal voltage. Real wires differ in cross-section, insulator, parasitics and driver circuits, so this ratio does not come out as is. Substrate I/O often uses a larger voltage swing for signal integrity, which can widen the gap through the V² term. The text gives no voltage values, so voltage is not adjustable.</li>
+    <li>③ follows the assumptions of the solution to Exercise 4 as they are: per 1 mm², heat leaving only upward, the same power density in every layer. The starting interface effective thermal conductivity of 3 W/(m·K) is the value the solution picked from the range of about 1–5 given in the text.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>Formulas and figures: "AI Infrastructure and Semiconductors", Session 6, Section 7 ("Heat, the worst enemy of 3D"), and the solutions to Exercises 2 and 4.</div>
+  <div><i>AI Infrastructure and Semiconductors</i>, Session 6 interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>, and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to agree terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>Shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+
+  //
+  var INIT = {
+    chain: { P: 1000, Ta: 35, jc: 0.015, tim: 0.025, sa: 0.020, tmax: null },          //
+    wire: { sub: 10, tsv: 50, pj: 0.05, br: "tbit", stk: 1 },                            //
+    stack: { n: 4, p: 1, tsi: 50, ksi: 150, tif: 20, kif: 3, inc: 1 }                    //
+  };
+  var BR = { tbit: 1e12, hbm: 4e12 * 8 };   //
+  var st = JSON.parse(JSON.stringify(INIT));
+
+  //
+  function chain(c) {
+    var dJC = c.P * c.jc, dTIM = c.P * c.tim, dSA = c.P * c.sa, dAll = dJC + dTIM + dSA;
+    return { sum: c.jc + c.tim + c.sa, dJC: dJC, dTIM: dTIM, dSA: dSA, dAll: dAll,
+             Ts: c.Ta + dSA, Tc: c.Ta + dSA + dTIM, Tj: c.Ta + dAll };
+  }
+  function wire(w) {
+    var ratio = w.sub * 1000 / w.tsv;               //
+    var rate = w.br === "hbm" ? BR.hbm * w.stk : BR.tbit;
+    var pjS = w.pj * ratio;
+    return { ratio: ratio, pjT: w.pj, pjS: pjS, rate: rate, PT: w.pj * 1e-12 * rate, PS: pjS * 1e-12 * rate };
+  }
+  function stack(s) {
+    //
+    var Rsi = s.tsi / s.ksi, Rif = s.inc ? s.tif / s.kif : 0, segs = [], sSi = 0, sIf = 0;
+    for (var j = 1; j <= s.n; j++) {
+      var q = j * s.p;                               //
+      segs.push({ j: j, q: q, si: q * Rsi, ifc: q * Rif });
+      sSi += q * Rsi; sIf += q * Rif;
+    }
+    return { Rsi: Rsi, Rif: Rif, segs: segs, sumSi: sSi, sumIf: sIf, flux: s.n * s.p };
+  }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
+  function sig(x, n) {                               //
+    if (!isFinite(x)) return "—";
+    if (x === 0) return "0";
+    var p = Number(x.toPrecision(n)), d = Math.max(0, n - 1 - Math.floor(Math.log10(Math.abs(p))));
+    return p.toLocaleString("ko-KR", { maximumFractionDigits: Math.min(d, 6) });
+  }
+  var SUP = { "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹", "-": "⁻" };
+  function sup(n) { return String(n).split("").map(function (ch) { return SUP[ch]; }).join(""); }
+  function sci(x) {
+    var e = Math.floor(Math.log10(x)), m = Math.round(x / Math.pow(10, e) * 100) / 100;
+    if (m >= 10) { m /= 10; e++; }
+    return (m === 1 ? "" : fmt(m, 2) + " × ") + "10" + sup(e);
+  }
+  function sciHTML(x) {          //
+    var e = Math.floor(Math.log10(x)), m = Math.round(x / Math.pow(10, e) * 100) / 100;
+    if (m >= 10) { m /= 10; e++; }
+    return (m === 1 ? "" : fmt(m, 2) + " × ") + "10<sup>" + e + "</sup>";
+  }
+  function pct(x, tot) { return tot > 0 ? fmt(x / tot * 100, 1) + "%" : "—"; }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (Array.isArray(text)) {   //
+      var down = false;
+      text.forEach(function (t) {
+        var sub = Array.isArray(t), ts = document.createElementNS(NS, "tspan");
+        if (sub && !down) { ts.setAttribute("dy", "3"); ts.setAttribute("font-size", "0.75em"); down = true; }
+        else if (!sub && down) { ts.setAttribute("dy", "-3"); down = false; }
+        else if (sub) ts.setAttribute("font-size", "0.75em");
+        ts.textContent = sub ? t[0] : t;
+        e.appendChild(ts);
+      });
+    } else if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function niceStep(span, n) {
+    var raw = span / n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p;
+  }
+
+  //
+  function drawChain(r) {
+    var W = 720, H = 330, L = 58, R = 16, T = 22, Bm = 44;
+    var top = Math.max(r.Tj, st.chain.tmax || 0, st.chain.Ta + 10);
+    var step = niceStep(top, 6), yMax = Math.ceil(top * 1.08 / step) * step;
+    function sy(t) { return H - Bm - t / yMax * (H - T - Bm); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    for (var t = 0; t <= yMax + 1e-9; t += step) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(t), y2: sy(t) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(t) + 4, "text-anchor": "end", "class": "tick" }, fmt(t)));
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Temperature [°C]"));
+
+    var colW = (W - L - R) / 4, barW = 70;
+    var segs = [  //
+      { d: r.dSA, fill: "var(--grey)", name: "SA" },
+      { d: r.dTIM, fill: "var(--accent2)", name: "TIM" },
+      { d: r.dJC, fill: "var(--accent)", name: "JC" }
+    ];
+    var cols = [["Ambient", ["(air, coolant)"], st.chain.Ta], ["Heat sink", "", r.Ts], ["Case", "", r.Tc], ["Junction", ["T", ["j"]], r.Tj]];
+    var tops = [];
+    cols.forEach(function (c, i) {
+      var x = L + colW * i + 18;
+      svg.appendChild(el("rect", { x: x, y: sy(st.chain.Ta), width: barW, height: Math.max(0, sy(0) - sy(st.chain.Ta)), fill: "var(--grey)", "fill-opacity": 0.45 }));
+      var base = st.chain.Ta;
+      for (var k = 0; k < i; k++) {
+        var s = segs[k], y0 = sy(base), y1 = sy(base + s.d);
+        svg.appendChild(el("rect", { x: x, y: y1, width: barW, height: Math.max(0, y0 - y1), fill: s.fill, "fill-opacity": k === i - 1 ? 1 : 0.35 }));
+        base += s.d;
+      }
+      if (i > 0) {  //
+        var sNew = segs[i - 1], yMid = sy(base - sNew.d / 2);
+        svg.appendChild(el("text", { x: x + barW + 6, y: yMid - 2, "font-size": 12.5, "font-weight": 700, fill: sNew.fill }, ["θ", [sNew.name], " +" + sig(sNew.d, 3) + " K"]));
+        svg.appendChild(el("text", { x: x + barW + 6, y: yMid + 14, "font-size": 11.5, fill: "var(--mut)" }, "Share " + pct(sNew.d, r.dAll)));
+      }
+      svg.appendChild(el("text", { x: x + barW / 2, y: sy(c[2]) - 7, "text-anchor": "middle", "font-size": 13, "font-family": "var(--mono)", "font-weight": i === 3 ? 700 : 400 }, sig(c[2], 4) + " °C"));
+      svg.appendChild(el("text", { x: x + barW / 2, y: H - Bm + 18, "text-anchor": "middle", "font-size": 13, "font-weight": i === 3 ? 700 : 400 }, c[0]));
+      if (c[1]) svg.appendChild(el("text", { x: x + barW / 2, y: H - Bm + 34, "text-anchor": "middle", "font-size": 11.5, fill: "var(--mut)" }, c[1]));
+      tops.push([x, x + barW, sy(c[2])]);
+    });
+    for (var i = 0; i < 3; i++) {
+      svg.appendChild(el("line", { x1: tops[i][1], x2: tops[i + 1][0], y1: tops[i][2], y2: tops[i][2], stroke: "var(--mut)", "stroke-dasharray": "3 3" }));
+    }
+    var tm = st.chain.tmax;
+    if (tm !== null) {
+      var over = r.Tj > tm;
+      svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(tm), y2: sy(tm), stroke: over ? "var(--bad)" : "var(--ok)", "stroke-width": 1.8, "stroke-dasharray": "7 4" }));
+      svg.appendChild(el("text", { x: L + 6, y: sy(tm) - 6, "font-size": 12.5, "font-weight": 700, fill: over ? "var(--bad)" : "var(--ok)" }, ["T", ["j,max"], " (input) " + sig(tm, 4) + " °C"]));
+    }
+    $("cChart").replaceChildren(svg);
+  }
+  function updateChain() {
+    var c = st.chain, r = chain(c), I = INIT.chain;
+    $("cPOut").textContent = fmt(c.P) + " W";
+    $("cTaOut").textContent = fmt(c.Ta) + " °C";
+    $("cJCOut").textContent = c.jc.toFixed(3) + " K/W";
+    $("cTIMOut").textContent = c.tim.toFixed(3) + " K/W";
+    $("cSAOut").textContent = c.sa.toFixed(3) + " K/W";
+    var atInit = c.P === I.P && c.Ta === I.Ta && c.jc === I.jc && c.tim === I.tim && c.sa === I.sa;
+    $("cTag").innerHTML = atInit ? "Input: <b>assumed values</b> — the worked example in Section 7 of the text. Not values of any particular product." : "Input: values you changed";
+    $("cSum").innerHTML = r.sum.toFixed(3) + " <small>K/W</small>";
+    $("cdJC").innerHTML = sig(r.dJC, 3) + " <small>K · " + pct(r.dJC, r.dAll) + "</small>";
+    $("cdTIM").innerHTML = sig(r.dTIM, 3) + " <small>K · " + pct(r.dTIM, r.dAll) + "</small>";
+    $("cdSA").innerHTML = sig(r.dSA, 3) + " <small>K · " + pct(r.dSA, r.dAll) + "</small>";
+    $("cdAll").innerHTML = sig(r.dAll, 3) + " <small>K</small>";
+    $("cTj").textContent = sig(r.Tj, 4) + " °C";
+    var m = $("cMargin");
+    if (c.tmax === null) { m.className = ""; m.innerHTML = "— <small>enter a value</small>"; }
+    else if (r.Tj > c.tmax) { m.className = "over"; m.innerHTML = "Over by " + sig(r.Tj - c.tmax, 3) + " <small>K</small>"; }
+    else { m.className = "under"; m.innerHTML = "Margin " + sig(c.tmax - r.Tj, 3) + " <small>K</small>"; }
+    drawChain(r);
+  }
+
+  //
+  function drawWire(r) {
+    var W = 720, H = 236, L = 150, R = 86;
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    svg.appendChild(el("text", { x: 0, y: 14, "font-size": 12.5, fill: "var(--mut)" }, "Length — same scale"));
+    var full = W - L - R, wT = Math.max(1.5, full / r.ratio);
+    [["Substrate wiring " + sig(st.wire.sub, 3) + " mm", full, 24, "var(--accent2)"], ["TSV " + sig(st.wire.tsv, 3) + " μm", wT, 50, "var(--accent)"]].forEach(function (b) {
+      svg.appendChild(el("text", { x: L - 10, y: b[2] + 12, "text-anchor": "end", "font-size": 13 }, b[0]));
+      svg.appendChild(el("rect", { x: L, y: b[2] + 3, width: b[1], height: 12, rx: 2, fill: b[3] }));
+    });
+    svg.appendChild(el("text", { x: 0, y: 96, "font-size": 12.5, fill: "var(--mut)" }, "Power at that bit rate — log scale"));
+    var lo = Math.floor(Math.log10(Math.min(r.PT, r.PS))), hi = Math.ceil(Math.log10(Math.max(r.PT, r.PS)) + 1e-9);
+    if (hi - lo < 2) hi = lo + 2;
+    function sx(p) { return L + (Math.log10(p) - lo) / (hi - lo) * full; }
+    var g = el("g", { "class": "grid" });
+    for (var e = lo; e <= hi; e++) {
+      g.appendChild(el("line", { x1: sx(Math.pow(10, e)), x2: sx(Math.pow(10, e)), y1: 104, y2: 182 }));
+      var lab = e >= -3 && e <= 3 ? fmt(Math.pow(10, e), 3) : "10" + sup(e);
+      svg.appendChild(el("text", { x: sx(Math.pow(10, e)), y: 198, "text-anchor": "middle", "class": "tick" }, lab));
+    }
+    svg.appendChild(g);
+    [["TSV", r.PT, 112, "var(--accent)"], ["Substrate wiring", r.PS, 146, "var(--accent2)"]].forEach(function (b) {
+      svg.appendChild(el("text", { x: L - 10, y: b[2] + 16, "text-anchor": "end", "font-size": 13 }, b[0]));
+      svg.appendChild(el("rect", { x: L, y: b[2], width: Math.max(1.5, sx(b[1]) - L), height: 22, rx: 3, fill: b[3] }));
+      svg.appendChild(el("text", { x: sx(b[1]) + 6, y: b[2] + 16, "font-size": 12.5, "font-family": "var(--mono)" }, sig(b[1], 3) + " W"));
+    });
+    svg.appendChild(el("text", { x: W - R, y: 226, "text-anchor": "end", "font-size": 12, opacity: 0.8 }, "Power [W], bit rate " + sci(r.rate) + " bit/s"));
+    $("wChart").replaceChildren(svg);
+  }
+  function updateWire() {
+    var w = st.wire, r = wire(w);
+    $("wSubOut").textContent = sig(w.sub, 3) + " mm";
+    $("wTsvOut").textContent = sig(w.tsv, 3) + " μm";
+    $("wPjOut").textContent = sig(w.pj, 2) + " pJ/bit";
+    $("wStk").disabled = w.br !== "hbm";
+    $("wStkOut").textContent = w.br === "hbm" ? tpl("{n}", { n: w.stk }) : "— (1 Tbit/s)";
+    $("wRatio").textContent = sig(r.ratio, 3) + "×";
+    $("wPjT").innerHTML = sig(r.pjT, 3) + " <small>pJ/bit</small>";
+    $("wPjS").innerHTML = sig(r.pjS, 3) + " <small>pJ/bit</small>";
+    $("wBr").innerHTML = sciHTML(r.rate) + " <small>bit/s</small>";
+    $("wPT").innerHTML = sig(r.PT, 3) + " <small>W</small>";
+    $("wPS").innerHTML = sig(r.PS, 3) + " <small>W</small>";
+    $("wDiff").innerHTML = sig(r.PS - r.PT, 3) + " <small>W</small>";
+    drawWire(r);
+  }
+
+  function tpl(s, o) { return s.replace(/\{(\w+)\}/g, function (m, k) { return k in o ? String(o[k]) : m; }); }   //
+  //
+  function drawStack(r) {
+    var s = st.stack, rh = 36, T = 30, W = 720, H = T + 34 + s.n * rh + 14;
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    var dx = 12, dw = 120, labX = 150, barX = 330, barMax = 260, cumX = W - 6;
+    var maxSeg = s.n * s.p * (r.Rsi + r.Rif);
+    var cum = [], acc = 0;
+    for (var j = s.n; j >= 1; j--) { acc += r.segs[j - 1].si + r.segs[j - 1].ifc; cum[j] = acc; }
+    svg.appendChild(el("text", { x: labX, y: 14, "font-size": 12, fill: "var(--mut)" }, "Segment · heat flow"));
+    svg.appendChild(el("text", { x: barX, y: 14, "font-size": 12, fill: "var(--mut)" }, "Segment ΔT"));
+    svg.appendChild(el("text", { x: cumX, y: 14, "text-anchor": "end", "font-size": 12, fill: "var(--mut)" }, "Layer to heat-removal surface (cumulative)"));
+    svg.appendChild(el("rect", { x: dx, y: T - 8, width: dw, height: 22, rx: 2, fill: "var(--soft)", stroke: "var(--mut)", "stroke-dasharray": "3 2" }));
+    svg.appendChild(el("text", { x: dx + dw / 2, y: T + 7, "text-anchor": "middle", "font-size": 12 }, "Heat-removal surface ↑"));
+    for (var i = s.n; i >= 1; i--) {
+      var y = T + 34 + (s.n - i) * rh, seg = r.segs[i - 1];
+      if (s.inc) svg.appendChild(el("rect", { x: dx, y: y - 7, width: dw, height: 5, fill: "var(--accent2)" }));
+      svg.appendChild(el("rect", { x: dx, y: y, width: dw, height: rh - 12, rx: 2, fill: "var(--accent)", "fill-opacity": 0.22, stroke: "var(--accent)", "stroke-opacity": 0.5 }));
+      svg.appendChild(el("text", { x: dx + dw / 2, y: y + 16, "text-anchor": "middle", "font-size": 12.5 }, tpl("Layer {i} · ", { i: i }) + sig(s.p, 2) + " W"));
+      svg.appendChild(el("text", { x: labX, y: y + 16, "font-size": 12.5 }, tpl("Layer {i} → ", { i: i }) + (i === s.n ? "surface" : tpl("layer {j}", { j: i + 1 })) + " · " + sig(seg.q, 3) + " W"));
+      var wSi = maxSeg > 0 ? seg.si / maxSeg * barMax : 0, wIf = maxSeg > 0 ? seg.ifc / maxSeg * barMax : 0;
+      svg.appendChild(el("rect", { x: barX, y: y + 3, width: Math.max(1, wSi), height: rh - 18, fill: "var(--accent)" }));
+      if (wIf > 0) svg.appendChild(el("rect", { x: barX + wSi, y: y + 3, width: wIf, height: rh - 18, fill: "var(--accent2)" }));
+      svg.appendChild(el("text", { x: barX + Math.max(1, wSi) + wIf + 6, y: y + 16, "font-size": 12, "font-family": "var(--mono)" }, sig(seg.si + seg.ifc, 3) + " K"));
+      svg.appendChild(el("text", { x: cumX, y: y + 16, "text-anchor": "end", "font-size": 12.5, "font-family": "var(--mono)", "font-weight": i === 1 ? 700 : 400, fill: i === 1 ? "var(--accent2)" : "var(--fg)" }, "+" + sig(cum[i], 3) + " K"));
+    }
+    $("sChart").replaceChildren(svg);
+  }
+  function updateStack() {
+    var s = st.stack, r = stack(s);
+    $("sNOut").textContent = tpl("{n}", { n: s.n });
+    $("sPOut").textContent = sig(s.p, 2) + " W/mm²";
+    $("sTsiOut").textContent = s.tsi + " μm";
+    $("sKsiOut").textContent = s.ksi + " W/(m·K)";
+    $("sTifOut").textContent = s.tif + " μm";
+    $("sKifOut").textContent = sig(s.kif, 2) + " W/(m·K)";
+    $("sTif").disabled = !s.inc; $("sKif").disabled = !s.inc;
+    $("sFlux").innerHTML = sig(r.flux, 3) + " <small>W/mm² = " + sig(r.flux * 100, 3) + " W/cm²</small>";
+    $("sRsi").innerHTML = sig(r.Rsi, 3) + " <small>K/W</small>";
+    $("sRif").innerHTML = s.inc ? sig(r.Rif, 3) + " <small>K/W</small>" : "0 <small>(excluded)</small>";
+    $("sSumSi").innerHTML = sig(r.sumSi, 3) + " <small>K</small>";
+    $("sSumIf").innerHTML = sig(r.sumIf, 3) + " <small>K</small>";
+    $("sRatio").textContent = r.sumIf > 0 && r.sumSi > 0 ? sig(r.sumIf / r.sumSi, 3) + "×" : "—";
+    drawStack(r);
+  }
+
+  //
+  //
+  //
+  function checkRows() {
+    var rows = [];
+    function rd(x, d) { var f = Math.pow(10, d); return Math.round(x * f) / f; }
+    function add(part, name, got, expected, ok, shown, bookShown) {
+      rows.push({ part: part, name: name, got: got, expected: expected, status: ok ? "match" : "miss", shown: shown, bookShown: bookShown });
+    }
+    function dv(id) { return Number($(id).defaultValue); }
+    //
+    var c = chain(INIT.chain);
+    add("chain", "Section 7 · sum of θ (K/W)", rd(c.sum, 3), 0.060, rd(c.sum, 3) === 0.06, c.sum.toFixed(3), "0.060");
+    add("chain", "Section 7 · per-stage ΔT junction–case (K)", rd(c.dJC, 0), 15, rd(c.dJC, 0) === 15);
+    add("chain", "Section 7 · per-stage ΔT TIM (K)", rd(c.dTIM, 0), 25, rd(c.dTIM, 0) === 25);
+    add("chain", "Section 7 · per-stage ΔT heat sink–ambient (K)", rd(c.dSA, 0), 20, rd(c.dSA, 0) === 20);
+    add("chain", "Section 7 · total ΔT (K)", rd(c.dAll, 0), 60, rd(c.dAll, 0) === 60);
+    add("chain", "Section 7 · T_j (°C)", rd(c.Tj, 0), 95, rd(c.Tj, 0) === 95);
+    var c0 = chain({ P: dv("cP"), Ta: dv("cTa"), jc: dv("cJC"), tim: dv("cTIM"), sa: dv("cSA") });
+    add("chain", "Initial state (chain) · T_j, T_j,max field empty (°C)", rd(c0.Tj, 0), 95, rd(c0.Tj, 0) === 95 && $("cTmax").defaultValue === "" && INIT.chain.tmax === null);
+    //
+    var w = wire(INIT.wire);
+    add("wire", "Exercise 2 · length ratio = energy ratio (×)", rd(w.ratio, 0), 200, rd(w.ratio, 0) === 200);
+    add("wire", "Exercise 2 · power at 1 Tbit/s · TSV (W)", rd(w.PT, 2), 0.05, rd(w.PT, 2) === 0.05);
+    add("wire", "Exercise 2 · power at 1 Tbit/s · substrate (W)", rd(w.PS, 0), 10, rd(w.PS, 0) === 10);
+    add("wire", "Exercise 2 · substrate-side pJ/bit", rd(w.pjS, 0), 10, rd(w.pjS, 0) === 10);
+    var h1 = wire({ sub: 10, tsv: 50, pj: 0.05, br: "hbm", stk: 1 }), h8 = wire({ sub: 10, tsv: 50, pj: 0.05, br: "hbm", stk: 8 });
+    add("wire", "Exercise 2 · bit rate of one HBM stack (bit/s)", h1.rate, 3.2e13, rd(h1.rate / 1e13, 1) === 3.2, sci(h1.rate), "3.2 × 10¹³");
+    add("wire", "Exercise 2 · power for one stack · TSV (W)", rd(h1.PT, 1), 1.6, rd(h1.PT, 1) === 1.6);
+    add("wire", "Exercise 2 · power for one stack · substrate (W)", rd(h1.PS, 0), 320, rd(h1.PS, 0) === 320);
+    add("wire", "Exercise 2 · 8 stacks · TSV (W)", rd(h8.PT, 1), 12.8, rd(h8.PT, 1) === 12.8);
+    add("wire", "Exercise 2 · 8 stacks · substrate (W)", rd(h8.PS, 0), 2560, rd(h8.PS, 0) === 2560);
+    //
+    var tbitInit = document.querySelector('#wBrSeg button[data-v="tbit"]').getAttribute("aria-pressed") === "true" || st.wire.br !== "tbit";
+    var w0 = wire({ sub: dv("wSub"), tsv: dv("wTsv"), pj: dv("wPj"), br: INIT.wire.br, stk: dv("wStk") });
+    add("wire", "Initial state (wire) · energy ratio (×)", rd(w0.ratio, 0), 200, rd(w0.ratio, 0) === 200 && rd(w0.PT, 2) === 0.05 && rd(w0.PS, 0) === 10 && INIT.wire.br === "tbit" && tbitInit);
+    //
+    [1, 2, 4].forEach(function (n) {
+      var f = stack({ n: n, p: 1, tsi: 50, ksi: 150, tif: 20, kif: 3, inc: 1 }).flux;
+      add("stack", "Exercise 4 · heat flux, " + n + "-layer stack (W/mm²)", rd(f, 0), n, rd(f, 0) === n);
+    });
+    var s = stack(INIT.stack);
+    add("stack", "Exercise 4 · 4 W/mm² in W/cm²", rd(s.flux * 100, 0), 400, rd(s.flux * 100, 0) === 400);
+    add("stack", "Exercise 4 · silicon R, 1 mm² (K/W)", rd(s.Rsi, 3), 0.333, rd(s.Rsi, 3) === 0.333);
+    var book = [0.33, 0.67, 1.00, 1.33];
+    s.segs.forEach(function (g, i) {
+      add("stack", tpl("Exercise 4 · segment layer {a} → {b} ΔT (K)", { a: i + 1, b: i === 3 ? "surface" : tpl("layer {j}", { j: i + 2 }) }), rd(g.si, 2), book[i], rd(g.si, 2) === book[i], g.si.toFixed(2), book[i].toFixed(2));
+    });
+    add("stack", "Exercise 4 · silicon total (K)", rd(s.sumSi, 2), 3.33, rd(s.sumSi, 2) === 3.33);
+    add("stack", "Exercise 4 · interface R, 1 mm² (K/W)", rd(s.Rif, 2), 6.67, rd(s.Rif, 2) === 6.67);
+    add("stack", "Exercise 4 · interface total (K)", rd(s.sumIf, 1), 66.7, rd(s.sumIf, 1) === 66.7);
+    add("stack", "Exercise 4 · interface ÷ silicon (×)", rd(s.sumIf / s.sumSi, 0), 20, rd(s.sumIf / s.sumSi, 0) === 20);
+    var s0 = stack({ n: dv("sN"), p: dv("sP"), tsi: dv("sTsi"), ksi: dv("sKsi"), tif: dv("sTif"), kif: dv("sKif"), inc: INIT.stack.inc });
+    add("stack", "Initial state (stack) · silicon total (K)", rd(s0.sumSi, 2), 3.33, rd(s0.sumSi, 2) === 3.33);
+    add("stack", "Initial state (stack) · interface total (K)", rd(s0.sumIf, 1), 66.7, rd(s0.sumIf, 1) === 66.7);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var all = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding diff</span>", miss: "<span class='miss'>mismatch</span>" };
+    ["chain", "wire", "stack"].forEach(function (p) {
+      var rows = all.filter(function (r) { return r.part === p; });
+      $("check-" + p).innerHTML = rows.map(function (r) {
+        return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fmt(r.got, 3)) + "</td><td class='num'>" + (r.bookShown || fmt(r.expected, 3)) + "</td><td>" + tag[r.status] + "</td></tr>";
+      }).join("");
+      var miss = rows.filter(function (r) { return r.status === "miss"; }).length, round = rows.filter(function (r) { return r.status === "round"; }).length;
+      $("checkSum-" + p).textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : "") + (round ? " · rounding diffs " + round : "") + (!miss && !round ? " · all match" : "");
+    });
+  }
+
+  //
+  function bind(id, part, key, fn) { $(id).addEventListener("input", function (e) { st[part][key] = Number(e.target.value); fn(); }); }
+  bind("cP", "chain", "P", updateChain); bind("cTa", "chain", "Ta", updateChain);
+  bind("cJC", "chain", "jc", updateChain); bind("cTIM", "chain", "tim", updateChain); bind("cSA", "chain", "sa", updateChain);
+  $("cTmax").addEventListener("input", function (e) {
+    var raw = e.target.value.trim(), v = raw === "" ? null : Number(raw);
+    //
+    st.chain.tmax = v === null || !isFinite(v) ? null : Math.min(300, Math.max(0, v)); updateChain();
+  });
+  bind("wSub", "wire", "sub", updateWire); bind("wTsv", "wire", "tsv", updateWire); bind("wPj", "wire", "pj", updateWire); bind("wStk", "wire", "stk", updateWire);
+  $("wBrSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    this.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    st.wire.br = b.dataset.v; updateWire();
+  });
+  bind("sN", "stack", "n", updateStack); bind("sP", "stack", "p", updateStack);
+  bind("sTsi", "stack", "tsi", updateStack); bind("sKsi", "stack", "ksi", updateStack);
+  bind("sTif", "stack", "tif", updateStack); bind("sKif", "stack", "kif", updateStack);
+  $("sIfSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    this.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    st.stack.inc = Number(b.dataset.v); updateStack();
+  });
+
+  renderCheck(); updateChain(); updateWire(); updateStack();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

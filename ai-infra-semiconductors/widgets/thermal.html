@@ -443,7 +443,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     $("wTsvOut").textContent = sig(w.tsv, 3) + " μm";
     $("wPjOut").textContent = sig(w.pj, 2) + " pJ/bit";
     $("wStk").disabled = w.br !== "hbm";
-    $("wStkOut").textContent = w.br === "hbm" ? w.stk + "개" : "— (1 Tbit/s)";
+    $("wStkOut").textContent = w.br === "hbm" ? tpl("{n}개", { n: w.stk }) : "— (1 Tbit/s)";
     $("wRatio").textContent = sig(r.ratio, 3) + "배";
     $("wPjT").innerHTML = sig(r.pjT, 3) + " <small>pJ/bit</small>";
     $("wPjS").innerHTML = sig(r.pjS, 3) + " <small>pJ/bit</small>";
@@ -454,6 +454,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     drawWire(r);
   }
 
+  function tpl(s, o) { return s.replace(/\{(\w+)\}/g, function (m, k) { return k in o ? String(o[k]) : m; }); }   // 단위·어순을 문자열 쪽에 두어 언어마다 바꿀 수 있게(2026-10-22)
   // ---- ③ 적층 ----
   function drawStack(r) {
     var s = st.stack, rh = 36, T = 30, W = 720, H = T + 34 + s.n * rh + 14;
@@ -471,8 +472,8 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
       var y = T + 34 + (s.n - i) * rh, seg = r.segs[i - 1];
       if (s.inc) svg.appendChild(el("rect", { x: dx, y: y - 7, width: dw, height: 5, fill: "var(--accent2)" }));
       svg.appendChild(el("rect", { x: dx, y: y, width: dw, height: rh - 12, rx: 2, fill: "var(--accent)", "fill-opacity": 0.22, stroke: "var(--accent)", "stroke-opacity": 0.5 }));
-      svg.appendChild(el("text", { x: dx + dw / 2, y: y + 16, "text-anchor": "middle", "font-size": 12.5 }, i + "층 · " + sig(s.p, 2) + " W"));
-      svg.appendChild(el("text", { x: labX, y: y + 16, "font-size": 12.5 }, i + "층 → " + (i === s.n ? "방열면" : (i + 1) + "층") + " · " + sig(seg.q, 3) + " W"));
+      svg.appendChild(el("text", { x: dx + dw / 2, y: y + 16, "text-anchor": "middle", "font-size": 12.5 }, tpl("{i}층 · ", { i: i }) + sig(s.p, 2) + " W"));
+      svg.appendChild(el("text", { x: labX, y: y + 16, "font-size": 12.5 }, tpl("{i}층 → ", { i: i }) + (i === s.n ? "방열면" : tpl("{j}층", { j: i + 1 })) + " · " + sig(seg.q, 3) + " W"));
       var wSi = maxSeg > 0 ? seg.si / maxSeg * barMax : 0, wIf = maxSeg > 0 ? seg.ifc / maxSeg * barMax : 0;
       svg.appendChild(el("rect", { x: barX, y: y + 3, width: Math.max(1, wSi), height: rh - 18, fill: "var(--accent)" }));
       if (wIf > 0) svg.appendChild(el("rect", { x: barX + wSi, y: y + 3, width: wIf, height: rh - 18, fill: "var(--accent2)" }));
@@ -483,7 +484,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   }
   function updateStack() {
     var s = st.stack, r = stack(s);
-    $("sNOut").textContent = s.n + "층";
+    $("sNOut").textContent = tpl("{n}층", { n: s.n });
     $("sPOut").textContent = sig(s.p, 2) + " W/mm²";
     $("sTsiOut").textContent = s.tsi + " μm";
     $("sKsiOut").textContent = s.ksi + " W/(m·K)";
@@ -545,7 +546,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     add("stack", "실습 4 · 실리콘 R, 1 mm² (K/W)", rd(s.Rsi, 3), 0.333, rd(s.Rsi, 3) === 0.333);
     var book = [0.33, 0.67, 1.00, 1.33];
     s.segs.forEach(function (g, i) {
-      add("stack", "실습 4 · 구간 " + (i + 1) + "층 → " + (i === 3 ? "방열면" : (i + 2) + "층") + " ΔT (K)", rd(g.si, 2), book[i], rd(g.si, 2) === book[i], g.si.toFixed(2), book[i].toFixed(2));
+      add("stack", tpl("실습 4 · 구간 {a}층 → {b} ΔT (K)", { a: i + 1, b: i === 3 ? "방열면" : tpl("{j}층", { j: i + 2 }) }), rd(g.si, 2), book[i], rd(g.si, 2) === book[i], g.si.toFixed(2), book[i].toFixed(2));
     });
     add("stack", "실습 4 · 실리콘 합 (K)", rd(s.sumSi, 2), 3.33, rd(s.sumSi, 2) === 3.33);
     add("stack", "실습 4 · 계면 R, 1 mm² (K/W)", rd(s.Rif, 2), 6.67, rd(s.Rif, 2) === 6.67);

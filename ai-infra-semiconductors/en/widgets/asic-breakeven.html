@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASIC Break-Even Calculator</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="asic-breakeven";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --bad: #b0412e;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+
+.bar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.bar .lab { font-size: 13px; color: var(--mut); }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 20px; }
+.ctl { display: grid; gap: 2px; min-width: 0; }
+.ctl > label { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 6px; align-items: baseline; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; white-space: nowrap; }
+input[type=range] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
+.tag { font-style: normal; font-size: 10.5px; line-height: 1.4; color: var(--accent2); border: 1px solid currentColor; border-radius: 4px; padding: 0 3px; margin-left: 3px; white-space: nowrap; vertical-align: 1px; }
+.tag.mfr { color: var(--accent); }
+.tag.own { color: var(--mut); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 5px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.btn { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 4px 12px; border-radius: 7px; cursor: pointer; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.svgbox svg { display: block; width: 100%; height: auto; }
+.svgbox text { fill: var(--fg); font-family: var(--sans); }
+.svgbox .mono { font-family: var(--mono); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; border-top: 1px solid var(--line); padding-top: 12px; margin: 0; }
+.readout div { display: grid; gap: 1px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 23px; color: var(--accent2); font-weight: 500; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 8px 14px; border-radius: 6px; max-width: none; }
+.note.warn { color: var(--fg); border-left: 3px solid var(--bad); }
+.note.warn b { color: var(--bad); }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 2, Exercise 4 · Session 4, Exercise 5</div>
+  <h1>ASIC Break-Even Calculator</h1>
+  <p class="lede">Whether to build a custom chip or buy one is a decision you can quantify. Divide the development cost C<sub>NRE</sub> by the per-unit cost difference and you get the break-even volume N*. Session 2, Exercise 4 asks where power cost is measured (chip, server or facility) and recounts N*. Session 4, Exercise 5 computes N* separately from other assumed values and asks which kind of organization buys that volume.</p>
+  <div class="formula">N* = C<sub>NRE</sub> / [(c<sub>G</sub> + o<sub>G</sub>) − (c<sub>A</sub> + o<sub>A</sub>)]　·　o = kW per unit × PUE × 8,760 × years × utilization × electricity price</div>
+</header>
+
+<section aria-labelledby="s1" data-part="ch2">
+  <h2 id="s1">① Where is power measured: chip, server, facility</h2>
+  <div class="bench" id="figure-ch2">
+    <div class="bar">
+      <span class="lab">Power boundary</span>
+      <div class="seg" id="bdSeg">
+        <button type="button" data-v="chip" aria-pressed="true">Chip</button>
+        <button type="button" data-v="server" aria-pressed="false">Server (both)</button>
+        <button type="button" data-v="gpuonly" aria-pressed="false">Server (GPU only)</button>
+      </div>
+      <button type="button" class="btn" id="reset2">Back to the worked example</button>
+      <button type="button" class="btn" id="life2">Model lifetime 2 years</button>
+    </div>
+    <div class="svgbox" id="ladder" role="img" aria-label="Power boundary ladder: from chip to server, facility, energy over the period, and operating cost"></div>
+    <div class="controls" id="ctl2"></div>
+    <div class="svgbox" id="lines2" role="img" aria-label="Cumulative total cost lines for GPU and ASIC, and the break-even volume"></div>
+    <div class="svgbox" id="split2" role="img" aria-label="Bar splitting the denominator into acquisition-cost difference and operating-cost difference"></div>
+    <dl class="readout">
+      <div><dt>GPU operating cost o<sub>G</sub></dt><dd id="r2oG"></dd></div>
+      <div><dt>ASIC operating cost o<sub>A</sub></dt><dd id="r2oA"></dd></div>
+      <div><dt>Denominator</dt><dd id="r2den"></dd></div>
+      <div><dt>Power-cost difference within the denominator</dt><dd id="r2share"></dd></div>
+      <div class="big"><dt>Break-even volume N*</dt><dd id="r2n"></dd></div>
+    </dl>
+    <p class="note" id="msg2"></p>
+  </div>
+  <p class="standalone-only">Under the same assumptions N* stays at 3,400–3,600 units whichever boundary you count at. At the chip boundary the power-cost difference is USD 875 of a USD 27,875 denominator, only 3% (about 6% even at the server boundary). The acquisition-cost difference of USD 27,000 dominates. The common story, "companies build their own chips to save electricity," does not fit these numbers.</p>
+</section>
+
+<section aria-labelledby="s2" data-part="ch4">
+  <h2 id="s2">② Whose volume is N*?</h2>
+  <div class="bench" id="figure-ch4">
+    <div class="bar">
+      <span class="lab">The 3-year power cost o is entered as a value, not computed</span>
+      <button type="button" class="btn" id="reset4">Back to the worked example</button>
+    </div>
+    <div class="controls" id="ctl4"></div>
+    <div class="svgbox" id="lines4" role="img" aria-label="Cumulative total cost lines for GPU and ASIC, and the break-even volume"></div>
+    <div class="svgbox" id="bands4" role="img" aria-label="Three-year deployment bands by organization type, and where N* falls"></div>
+    <dl class="readout">
+      <div><dt>GPU per unit c<sub>G</sub> + o<sub>G</sub></dt><dd id="r4g"></dd></div>
+      <div><dt>ASIC per unit c<sub>A</sub> + o<sub>A</sub></dt><dd id="r4a"></dd></div>
+      <div><dt>Denominator</dt><dd id="r4den"></dd></div>
+      <div class="big"><dt>Break-even volume N*</dt><dd id="r4n"></dd></div>
+    </dl>
+    <p class="note" id="msg4"></p>
+  </div>
+  <p class="standalone-only">N* is only a necessary condition. The sufficient condition is that the workload is still alive two to three years later, when development ends, and only an organization that controls its own models can guarantee that. The 5,000-unit threshold is lower than one might expect: operators that are not hyperscalers but "nearly hyperscaler-sized" can consider custom silicon.</p>
+</section>
+
+<section aria-labelledby="s3">
+  <details class="check">
+    <summary>Check against the solutions (<span id="checkSum"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">Values from Session 2, solution to Exercise 4 (chip boundary, 2-year lifetime, server boundary, server boundary for the GPU only) and Session 4, solution to Exercise 5, recomputed with this figure's formulas. The "Solution" column holds the values printed in the solutions; computed values are rounded to the same digits for comparison.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="check"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>One ASIC is assumed to do the work of one GPU at the same throughput, latency and quality (1:1 substitution). If ASIC throughput is r times the GPU's, the same demand needs N/r ASICs, so the ASIC unit cost c<sub>A</sub> + o<sub>A</sub> must be divided by r for a like-for-like comparison.</li>
+    <li>Power values are ceilings. The 700 W of the H100 SXM is the most heat one chip can produce, not its average draw under load, and the 10.2 kW of the DGX H100 is also a maximum.</li>
+    <li>Unit prices, electricity price, PUE and utilization are assumed values for illustration. Only the chip and server power ceilings come from vendor specifications.</li>
+    <li>There is no basis for specifying an ASIC server, so at the server boundary the ASIC is scaled up by the same ratio as the GPU (1.275/0.7 ≈ 1.82×).</li>
+    <li>The time axis. A chip takes two to three years to develop, and model architectures change faster than that. The real constraint is this time, not N*. The actual decision variable is the probability that a design decision made two years ago fits today's model structure. This figure does not put a number on it.</li>
+    <li>Bargaining power. Having your own chip gives option value in price negotiations with commercial GPU vendors. This is not put in numbers either.</li>
+    <li>c<sub>A</sub> is the value computed in Session 4, Section 5 as cost per die + packaging + test. Here you enter it directly.</li>
+    <li>Session 4 calls o the present value of lifetime operating cost (mostly power) but gives no discount rate. This figure does not discount either.</li>
+    <li>The bands in ② redraw the Session 4, Exercise 5 table entries "tens of units", "hundreds to thousands", "tens of thousands" and "hundreds of thousands" as 10–99, 100–9,999, 10,000–99,999 and 100,000–999,999 units.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>Formulas: <i>AI Infrastructure and Semiconductors</i>, Session 2, Section 5 and solution to Exercise 4; Session 4, Section 6 and solution to Exercise 5.</div>
+  <div><i>AI Infrastructure and Semiconductors</i> interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>, and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through the <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to agree terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  var H100 = D && D.chips ? D.chips.filter(function (c) { return c.id === "h100"; })[0] : null;
+  if (!D || !H100 || !H100.tdp_kw || !D.systems || !D.systems.dgx_h100 || !D.systems.dgx_b200) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>The shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  var DGX = D.systems.dgx_h100, DGXB = D.systems.dgx_b200;
+  var HOURS = 8760;
+  //
+  //
+  var KW = { gChip: H100.tdp_kw, gSrv: DGX.kw / DGX.gpus, aChip: 0.3 };
+  KW.ratio = KW.gSrv / KW.gChip;
+  KW.aSrv = KW.aChip * KW.ratio;
+  var B200_PER = DGXB.kw / DGXB.gpus;   //
+
+  //
+  var INIT2 = { nre: 1, cA: 3000, cG: 30000, gkw: KW.gChip, akw: KW.aChip, pue: 1.3, util: 0.8, price: 0.08, yrs: 3 };  //
+  var INIT4 = { nre: 1.5, cA: 4000, cG: 30000, oA: 2000, oG: 6000 };                                                 //
+  var s2 = assign({}, INIT2), s4 = assign({}, INIT4);
+
+  //
+  function energy(kw, pue, util, yrs) { return kw * pue * HOURS * yrs * util; }                // kWh
+  function breakeven(nreUsd, cA, cG, oA, oG) {
+    var den = (cG + oG) - (cA + oA);
+    return { nre: nreUsd, cA: cA, cG: cG, oA: oA, oG: oG, den: den, acq: cG - cA, op: oG - oA, n: den > 0 ? nreUsd / den : NaN };
+  }
+  function calc2(s) {
+    var eG = energy(s.gkw, s.pue, s.util, s.yrs), eA = energy(s.akw, s.pue, s.util, s.yrs);
+    var r = breakeven(s.nre * 1e8, s.cA, s.cG, eA * s.price, eG * s.price);
+    r.eG = eG; r.eA = eA; return r;
+  }
+  function calc4(s) { return breakeven(s.nre * 1e8, s.cA, s.cG, s.oA, s.oG); }
+  function same(a, b) { return Math.abs(a - b) < 1e-9; }
+  function which(kw, chip, srv) { return same(kw, chip) ? "chip" : same(kw, srv) ? "server" : null; }
+  function boundary(s) {
+    var g = which(s.gkw, KW.gChip, KW.gSrv), a = which(s.akw, KW.aChip, KW.aSrv);
+    if (g === "chip" && a === "chip") return "chip";
+    if (g === "server" && a === "server") return "server";
+    if (g === "server" && a === "chip") return "gpuonly";
+    if (g === "chip" && a === "server") return "asiconly";
+    return null;
+  }
+  function assign(t, o) { for (var k in o) t[k] = o[k]; return t; }
+
+  //
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
+  function fix(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d, minimumFractionDigits: d }); }
+  function kwS(v) { return Math.abs(v * 1000 - Math.round(v * 1000)) > 1e-6 ? fix(v, 4) : fix(v, 3); }
+  function tpl(s, o) { return s.replace(/\{(\w+)\}/g, function (m, k) { return k in o ? String(o[k]) : m; }); }   //
+  function usd(x) { return tpl("USD {n}", { n: fmt(Math.round(x)) }); }
+  function usdSmall(x) { return tpl("<small>USD</small> {n}", { n: fmt(x) }); }
+  function eok(v) { return tpl("USD {m}M", { n: fmt(v, 2), m: fmt(Math.round(v * 100)) }); }   //
+  function nShow(n) { return n >= 1000 ? Math.round(n / 10) * 10 : Math.round(n); }   //
+  function eq(n) { return Math.abs(nShow(n) - n) < 1e-6 ? "= " : "≈ "; }   //
+  function nText(n) { return isFinite(n) ? eq(n) + fmt(nShow(n)) + " units" : "none"; }
+  function nHtml(n) {
+    if (!isFinite(n)) return "none <small>denominator ≤ 0</small>";
+    var sh = nShow(n);
+    return eq(n) + fmt(sh) + "<small> units</small>" + (Math.abs(sh - n) > 0.05 ? "<small style='display:block;font-size:11.5px'>quotient " + fmt(n, 1) + "</small>" : "");
+  }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function niceStep(range, n) {
+    var raw = range / n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+  }
+
+  //
+  function drawLadder(s, r) {
+    var W = 720, H = 172, L0 = 48, bw = 122, gap = 12, bh = 58;
+    function cx(i) { return L0 + i * (bw + gap); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    //
+    ["① Chip", "② Server (each)", "③ Facility (×PUE)", "④ Period energy", "⑤ Opex o"].forEach(function (h, i) {
+      svg.appendChild(el("text", { x: cx(i) + 4, y: 13, "font-size": 12, "font-weight": 700, fill: "var(--mut)" }, h));
+    });
+    var rows = [
+      { name: "GPU", y: 20, kw: s.gkw, chip: KW.gChip, srv: KW.gSrv, e: r.eG, o: r.oG,
+        chipNote: ["H100 max TDP (spec)", "vendor maximum"], srvNote: ["DGX H100 " + fmt(DGX.kw, 1) + " kW ÷ " + DGX.gpus, "vendor maximum"] },
+      { name: "ASIC", y: 86, kw: s.akw, chip: KW.aChip, srv: KW.aSrv, e: r.eA, o: r.oA,
+        chipNote: ["assumed value", ""], srvNote: [fmt(KW.aChip, 1) + " × " + fix(KW.gSrv, 3) + " ÷ " + fmt(KW.gChip, 1), "scaled like the GPU"] }
+    ];
+    rows.forEach(function (rw) {
+      var used = which(rw.kw, rw.chip, rw.srv);
+      svg.appendChild(el("text", { x: 4, y: rw.y + bh / 2 + 5, "font-size": 13.5, "font-weight": 700 }, rw.name));
+      var cells = [
+        [kwS(rw.chip) + " kW", rw.chipNote[0], rw.chipNote[1], used === "chip" ? "used" : "off"],
+        [kwS(rw.srv) + " kW", rw.srvNote[0], rw.srvNote[1], used === "server" ? "used" : "off"],
+        [fix(rw.kw * s.pue, 3) + " kW", (used === "chip" ? "chip " : used === "server" ? "server " : "custom ") + kwS(rw.kw) + " × " + fix(s.pue, 2), "PUE assumed", "calc"],
+        [fmt(Math.round(rw.e)) + " kWh", "× 8,760 h × " + fmt(s.yrs) + " yr", "× utilization " + fix(s.util, 2), "calc"],
+        [usd(rw.o), "× $" + fix(s.price, 2) + "/kWh", "electricity price assumed", "calc"]
+      ];
+      cells.forEach(function (c, i) {
+        var st = c[3], x = cx(i);
+        var box = { x: x, y: rw.y, width: bw, height: bh, rx: 6 };
+        if (st === "used") assign(box, { fill: "var(--mark)", stroke: "var(--accent2)", "stroke-width": 2 });
+        else if (st === "off") assign(box, { fill: "none", stroke: "var(--line)", "stroke-width": 1.2, "stroke-dasharray": "4 3" });
+        else assign(box, { fill: "var(--soft)", stroke: "var(--line)", "stroke-width": 1 });
+        svg.appendChild(el("rect", box));
+        var op = st === "off" ? 0.5 : 1;
+        svg.appendChild(el("text", { x: x + 8, y: rw.y + 20, "font-size": 14.5, "font-weight": st === "used" || i === 4 ? 700 : 500, "class": "mono", opacity: op,
+          fill: i === 4 ? "var(--accent2)" : "var(--fg)" }, c[0]));
+        if (c[1]) svg.appendChild(el("text", { x: x + 8, y: rw.y + 36, "font-size": 10.5, fill: "var(--mut)", opacity: op }, c[1]));
+        if (c[2]) svg.appendChild(el("text", { x: x + 8, y: rw.y + 50, "font-size": 10.5, opacity: op,
+          fill: /vendor/.test(c[2]) ? "var(--accent)" : /assum/.test(c[2]) ? "var(--accent2)" : "var(--mut)" }, c[2]));
+        if (i < 4) {
+          var ax = x + bw + 2, ay = rw.y + bh / 2;
+          svg.appendChild(el("path", { d: "M" + ax + "," + (ay - 5) + " L" + (ax + gap - 4) + "," + ay + " L" + ax + "," + (ay + 5) + " z", fill: "var(--mut)", "fill-opacity": i === 0 ? 0.4 : 0.8 }));
+        }
+      });
+    });
+    svg.appendChild(el("text", { x: cx(1) + 4, y: H - 6, "font-size": 11, fill: "var(--mut)" },
+      "Ref.: " + DGXB.label + " max about " + fmt(DGXB.kw, 1) + " kW ÷ " + DGXB.gpus + " ≈ per GPU " + fix(B200_PER, 2) + " kW (vendor max, not used)"));
+    $("ladder").replaceChildren(svg);
+  }
+
+  //
+  function drawLines(boxId, r) {
+    var W = 720, H = 236, L = 56, R = 14, T = 14, Bm = 36, pw = W - L - R, ph = H - T - Bm, CAP = 2e6;
+    var has = r.den > 0, n = r.n, xmax = 8000;
+    if (has && n * 1.3 > xmax) { var st0 = niceStep(n * 1.3, 4); xmax = Math.min(CAP, Math.ceil(n * 1.3 / st0) * st0); }
+    var uG = r.cG + r.oG, uA = r.cA + r.oA;
+    var gEnd = xmax * uG, aEnd = r.nre + xmax * uA, yTop = Math.max(gEnd, aEnd) * 1.14;
+    function sx(v) { return L + v / xmax * pw; }
+    function sy(v) { return T + ph - v / yTop * ph; }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    var xs = niceStep(xmax, 4);
+    for (var x = 0; x <= xmax + 1e-9; x += xs) {
+      g.appendChild(el("line", { x1: sx(x), x2: sx(x), y1: T, y2: T + ph }));
+      svg.appendChild(el("text", { x: sx(x), y: T + ph + 16, "text-anchor": x + xs > xmax + 1e-9 ? "end" : "middle", "class": "tick" }, fmt(x)));
+    }
+    var ys = niceStep(yTop / 1e8, 4);
+    for (var y = 0; y <= yTop / 1e8 + 1e-9; y += ys) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(y * 1e8), y2: sy(y * 1e8) }));
+      svg.appendChild(el("text", { x: L - 7, y: sy(y * 1e8) + 4, "text-anchor": "end", "class": "tick" }, fmt(y, 2)));
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 3, "text-anchor": "end", "font-size": 12, opacity: 0.8 }, "Volume N [units]"));
+    svg.appendChild(el("text", { x: 12, y: T + 2, "font-size": 12, opacity: 0.8, transform: "rotate(-90 12 " + (T + 2) + ")", "text-anchor": "end" }, "Cumulative total cost [USD 100 million]"));
+    svg.appendChild(el("line", { x1: sx(0), y1: sy(0), x2: sx(xmax), y2: sy(gEnd), stroke: "var(--accent)", "stroke-width": 2.4 }));
+    svg.appendChild(el("line", { x1: sx(0), y1: sy(r.nre), x2: sx(xmax), y2: sy(aEnd), stroke: "var(--accent2)", "stroke-width": 2.4 }));
+    svg.appendChild(el("circle", { cx: sx(0), cy: sy(r.nre), r: 3.5, fill: "var(--accent2)" }));
+    svg.appendChild(el("text", { x: sx(0) + 8, y: sy(r.nre) + 17, "font-size": 11.5, fill: "var(--accent2)" }, "C_NRE " + eok(r.nre / 1e8)));
+    //
+    [["GPU total cost  N × (c_G + o_G)", "var(--accent)", T + 14], ["ASIC total cost  C_NRE + N × (c_A + o_A)", "var(--accent2)", T + 32]].forEach(function (lg) {
+      svg.appendChild(el("line", { x1: L + 10, x2: L + 30, y1: lg[2] - 4, y2: lg[2] - 4, stroke: lg[1], "stroke-width": 2.6 }));
+      svg.appendChild(el("text", { x: L + 36, y: lg[2], "font-size": 12.5, "font-weight": 700, fill: lg[1] }, lg[0]));
+    });
+    if (!has) {
+      svg.appendChild(el("text", { x: L + pw / 2, y: T + ph / 2 + 30, "text-anchor": "middle", "font-size": 13.5, "font-weight": 700, fill: "var(--bad)" }, "The lines never cross: the ASIC costs more per unit and always loses"));
+    } else if (n > xmax) {
+      svg.appendChild(el("text", { x: W - R - 4, y: T + ph - 8, "text-anchor": "end", "font-size": 12.5, fill: "var(--bad)" }, "N* " + nText(n) + " — off the chart to the right"));
+    } else {
+      var cxp = sx(n), cyp = sy(n * uG);
+      svg.appendChild(el("line", { x1: cxp, x2: cxp, y1: T, y2: T + ph, stroke: "var(--fg)", "stroke-opacity": 0.45, "stroke-dasharray": "4 4" }));
+      svg.appendChild(el("circle", { cx: cxp, cy: cyp, r: 6, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+      var right = cxp < W - R - 150;
+      svg.appendChild(el("text", { x: right ? cxp + 10 : cxp - 10, y: cyp + 22, "text-anchor": right ? "start" : "end", "font-size": 14, "font-weight": 700, "class": "mono", fill: "var(--accent2)" }, "N* " + nText(n)));
+      if (cxp - L > 120) svg.appendChild(el("text", { x: cxp - 8, y: T + ph - 8, "text-anchor": "end", "font-size": 11.5, fill: "var(--mut)" }, "← buying GPUs is cheaper"));
+      if (W - R - cxp > 120) svg.appendChild(el("text", { x: cxp + 8, y: T + ph - 8, "font-size": 11.5, fill: "var(--mut)" }, "ASIC is cheaper →"));
+    }
+    $(boxId).replaceChildren(svg);
+  }
+
+  //
+  function drawSplit(r) {
+    var W = 720, H = 64, svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    if (!(r.den > 0)) {
+      svg.appendChild(el("text", { x: 0, y: 30, "font-size": 13.5, fill: "var(--bad)", "font-weight": 700 }, "Denominator " + usd(r.den) + " ≤ 0 — no break-even volume"));
+      $("split2").replaceChildren(svg); return;
+    }
+    var a = Math.abs(r.acq), o = Math.abs(r.op), tot = a + o || 1, wA = a / tot * W, wO = o / tot * W;
+    svg.appendChild(el("text", { x: 0, y: 13, "font-size": 12.5, "font-weight": 700 }, "Denominator " + usd(r.den) + " = acquisition-cost difference + operating-cost difference"));
+    function seg(x, w, v, color) {
+      var at = { x: x, y: 20, width: Math.max(w, 1), height: 18, fill: color };
+      if (v < 0) assign(at, { "fill-opacity": 0.25, stroke: "var(--bad)", "stroke-dasharray": "3 2" });
+      svg.appendChild(el("rect", at));
+    }
+    seg(0, wA, r.acq, "var(--accent)");
+    seg(wA, wO, r.op, "var(--accent2)");
+    function pc(v) { return fmt(v / r.den * 100) + "%"; }
+    svg.appendChild(el("text", { x: 0, y: 56, "font-size": 12, fill: "var(--accent)" }, "Acquisition-cost difference c_G − c_A  " + usd(r.acq) + " · " + pc(r.acq)));
+    svg.appendChild(el("text", { x: W, y: 56, "text-anchor": "end", "font-size": 12, fill: "var(--accent2)", "font-weight": 700 }, "Operating (power) cost difference o_G − o_A  " + usd(r.op) + " · " + pc(r.op)));
+    $("split2").replaceChildren(svg);
+  }
+
+  //
+  //
+  var BANDS = [
+    { name: "Firms & institutes", qty: "tens of units", lo: 10, hi: 99 },
+    { name: "In-house AI at large firms", qty: "hundreds to thousands · borderline", lo: 100, hi: 9999 },
+    { name: "Large AI labs", qty: "tens of thousands", lo: 10000, hi: 99999 },
+    { name: "Hyperscalers", qty: "hundreds of thousands", lo: 100000, hi: 999999 }
+  ];
+  function bandOf(n) { for (var i = 0; i < BANDS.length; i++) if (n >= BANDS[i].lo && n < BANDS[i].hi + 1) return BANDS[i]; return null; }
+  function drawBands(r) {
+    var W = 720, H = 120, L = 14, R = 14, pw = W - L - R, y0 = 24, bh = 56;
+    function sx(v) { return L + (Math.log10(v) - 1) / 5 * pw; }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), n = r.n, has = isFinite(n);
+    BANDS.forEach(function (b) {
+      var x1 = sx(b.lo), x2 = sx(b.hi + 1), st = !has ? "" : b.hi < n ? "below N*" : b.lo >= n ? "above N*" : "N* is in this band";
+      var over = has && b.lo >= n, inside = has && !over && b.hi >= n;
+      svg.appendChild(el("rect", { x: x1 + 1, y: y0, width: x2 - x1 - 2, height: bh, rx: 5,
+        fill: inside ? "var(--mark)" : over ? "var(--soft)" : "none", stroke: inside ? "var(--accent2)" : "var(--line)", "stroke-width": inside ? 1.6 : 1 }));
+      var mx = (x1 + x2) / 2;
+      svg.appendChild(el("text", { x: mx, y: y0 + 18, "text-anchor": "middle", "font-size": 12, "font-weight": 700 }, b.name));
+      svg.appendChild(el("text", { x: mx, y: y0 + 34, "text-anchor": "middle", "font-size": 11.5, fill: "var(--mut)" }, b.qty));
+      if (st) svg.appendChild(el("text", { x: mx, y: y0 + 49, "text-anchor": "middle", "font-size": 11, fill: inside ? "var(--accent2)" : over ? "var(--accent)" : "var(--mut)", "font-weight": inside ? 700 : 400 }, st));
+    });
+    [[10, "10"], [100, "100"], [1000, "1k"], [10000, "10k"], [100000, "100k"], [1000000, "1M"]].forEach(function (t) {
+      svg.appendChild(el("line", { x1: sx(t[0]), x2: sx(t[0]), y1: y0 + bh, y2: y0 + bh + 5, stroke: "var(--mut)" }));
+      svg.appendChild(el("text", { x: sx(t[0]), y: y0 + bh + 18, "text-anchor": t[0] === 10 ? "start" : t[0] === 1e6 ? "end" : "middle", "class": "tick" }, t[1]));
+    });
+    svg.appendChild(el("text", { x: W - R, y: H - 2, "text-anchor": "end", "font-size": 11.5, opacity: 0.8 }, "Three-year deployment by organization type [units, log]"));
+    if (has) {
+      var cl = Math.min(Math.max(n, 10), 1e6), x = sx(cl), lab = (n < 10 ? "◀ " : "") + "N* " + nText(n) + (n > 1e6 ? " ▶" : "");
+      svg.appendChild(el("line", { x1: x, x2: x, y1: 14, y2: y0 + bh + 4, stroke: "var(--accent2)", "stroke-width": 2.4 }));
+      svg.appendChild(el("path", { d: "M" + (x - 6) + ",8 L" + (x + 6) + ",8 L" + x + ",16 z", fill: "var(--accent2)" }));
+      var endSide = x > W - 160;
+      svg.appendChild(el("text", { x: endSide ? x - 10 : x + 10, y: 14, "text-anchor": endSide ? "end" : "start", "font-size": 12.5, "font-weight": 700, "class": "mono", fill: "var(--accent2)" }, lab));
+    } else {
+      svg.appendChild(el("text", { x: W / 2, y: 14, "text-anchor": "middle", "font-size": 12.5, fill: "var(--bad)", "font-weight": 700 }, "Denominator ≤ 0 — no break-even volume"));
+    }
+    $("bands4").replaceChildren(svg);
+  }
+
+  //
+  var MFR = "<em class='tag mfr'>vendor maximum</em>", ASM = "<em class='tag'>assumed value</em>", OWN = "<em class='tag own'>entered by hand</em>";
+  var CTL2 = [
+    { k: "nre", lab: "Development cost C<sub>NRE</sub>", tag: ASM, min: 0.1, max: 5, step: 0.1, out: eok },
+    { k: "cA", lab: "ASIC unit price c<sub>A</sub>", tag: ASM, min: 500, max: 30000, step: 100, out: usd },
+    { k: "cG", lab: "GPU unit price c<sub>G</sub>", tag: ASM, min: 5000, max: 60000, step: 500, out: usd },
+    { k: "gkw", lab: "GPU power", tag: function (s) { return which(s.gkw, KW.gChip, KW.gSrv) ? MFR : OWN; }, min: 0.1, max: 2.5, step: 0.005, out: function (v) { return kwS(v) + " kW"; } },
+    { k: "akw", lab: "ASIC power", tag: ASM, min: 0.05, max: 2.5, step: 0.005, out: function (v) { return kwS(v) + " kW"; } },
+    { k: "pue", lab: "PUE", tag: ASM, min: 1, max: 2, step: 0.01, out: function (v) { return fix(v, 2); } },
+    { k: "util", lab: "Utilization", tag: ASM, min: 0.1, max: 1, step: 0.05, out: function (v) { return fix(v, 2); } },
+    { k: "price", lab: "Electricity price", tag: ASM, min: 0.02, max: 0.3, step: 0.01, out: function (v) { return "$" + fix(v, 2) + "/kWh"; } },
+    { k: "yrs", lab: "Period", tag: ASM, min: 1, max: 6, step: 1, out: function (v) { return fmt(v) + " yr"; } }
+  ];
+  var CTL4 = [
+    { k: "nre", lab: "Development cost C<sub>NRE</sub>", tag: ASM, min: 0.1, max: 5, step: 0.1, out: eok },
+    { k: "cA", lab: "ASIC unit price c<sub>A</sub>", tag: ASM, min: 500, max: 30000, step: 100, out: usd },
+    { k: "cG", lab: "GPU unit price c<sub>G</sub>", tag: ASM, min: 5000, max: 60000, step: 500, out: usd },
+    { k: "oA", lab: "ASIC power cost o<sub>A</sub>", tag: ASM, min: 0, max: 20000, step: 100, out: usd },
+    { k: "oG", lab: "GPU power cost o<sub>G</sub>", tag: ASM, min: 0, max: 30000, step: 100, out: usd }
+  ];
+  function buildCtl(boxId, spec, st, pre, onChange) {
+    var box = $(boxId);
+    spec.forEach(function (c) {
+      var d = document.createElement("div"); d.className = "ctl";
+      d.innerHTML = "<label for='" + pre + c.k + "'><span>" + c.lab + "<span id='" + pre + c.k + "Tag'></span></span><output id='" + pre + c.k + "Out'></output></label>" +
+        "<input type='range' id='" + pre + c.k + "' min='" + c.min + "' max='" + c.max + "' step='" + c.step + "'>";
+      box.appendChild(d);
+      $(pre + c.k).addEventListener("input", function (e) { st[c.k] = Number(e.target.value); onChange(); });
+    });
+  }
+  //
+  function syncCtl(spec, st, pre) {
+    spec.forEach(function (c) {
+      var inp = $(pre + c.k);
+      if (Math.abs(Number(inp.value) - st[c.k]) > c.step / 2) inp.value = st[c.k];
+      $(pre + c.k + "Out").textContent = c.out(st[c.k]);
+      $(pre + c.k + "Tag").innerHTML = typeof c.tag === "function" ? c.tag(st) : c.tag;
+    });
+  }
+
+  function share(r) { return r.den > 0 ? fmt(r.op / r.den * 100) + "%" : "—"; }
+  function update2() {
+    syncCtl(CTL2, s2, "c2-");
+    var r = calc2(s2), bd = boundary(s2);
+    $("bdSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === bd)); });
+    $("r2oG").innerHTML = usdSmall(Math.round(r.oG));
+    $("r2oA").innerHTML = usdSmall(Math.round(r.oA));
+    $("r2den").innerHTML = usdSmall(Math.round(r.den));
+    $("r2share").textContent = share(r);
+    $("r2n").innerHTML = nHtml(r.n);
+    var m = $("msg2"), lead, warn = false;
+    if (bd === "chip") lead = "Chip boundary: the GPU at the H100 SXM max TDP (vendor value), the ASIC at an assumed 0.3 kW.";
+    else if (bd === "server") lead = "Server boundary: the ASIC is raised to the same boundary for comparison.";
+    else if (bd === "gpuonly") { warn = true; lead = "<b>Moving the boundary on one side only skews the comparison.</b> The GPU is counted at the server boundary (" + kwS(KW.gSrv) + " kW) but the ASIC stays at its chip value of " + kwS(KW.aChip) + " kW, so the denominator grows and N* tilts toward the ASIC."; }
+    else if (bd === "asiconly") { warn = true; lead = "<b>Moving the boundary on one side only skews the comparison.</b> The GPU is counted at the chip boundary, the ASIC at the server boundary."; }
+    else lead = "Per-unit power entered by hand (GPU " + kwS(s2.gkw) + " kW, ASIC " + kwS(s2.akw) + " kW).";
+    var tail;
+    if (!(r.den > 0)) { warn = true; tail = " <b>The denominator is zero or negative: the ASIC costs more per unit and always loses.</b> There is no break-even volume."; }
+    else tail = " Of the denominator of " + usd(r.den) + ", the power-cost difference is " + tpl("{v} ({p}), and ", { v: usd(r.op), p: share(r) }) +
+      (Math.abs(r.acq) >= Math.abs(r.op) ? "the acquisition-cost difference of " + usd(r.acq) + " dominates." : "with these values the operating-cost difference exceeds the acquisition-cost difference (" + usd(r.acq) + ").");
+    m.className = "note" + (warn ? " warn" : "");
+    m.innerHTML = lead + tail;
+    drawLadder(s2, r); drawLines("lines2", r); drawSplit(r);
+  }
+  function update4() {
+    syncCtl(CTL4, s4, "c4-");
+    var r = calc4(s4), b = isFinite(r.n) ? bandOf(r.n) : null, m = $("msg4");
+    $("r4g").innerHTML = usdSmall(r.cG + r.oG);
+    $("r4a").innerHTML = usdSmall(r.cA + r.oA);
+    $("r4den").innerHTML = usdSmall(r.den);
+    $("r4n").innerHTML = nHtml(r.n);
+    if (!(r.den > 0)) { m.className = "note warn"; m.innerHTML = "<b>The denominator is zero or negative: the ASIC costs more per unit and always loses.</b> There is no break-even volume."; }
+    else {
+      m.className = "note";
+      m.textContent = "N* " + nText(r.n) + (b ? " falls in the ‘" + b.name + " — " + b.qty + "’ band." : " falls outside all four bands in the table.") +
+        (b && b !== BANDS[BANDS.length - 1] ? " Organizations in the bands to its right deploy more than N* units over three years." : "");
+    }
+    drawLines("lines4", r); drawBands(r);
+  }
+
+  //
+  //
+  function rnd(x, d) { var p = Math.pow(10, d); return Math.round((x + (x >= 0 ? 1e-9 : -1e-9)) * p) / p; }
+  function shownD(x, d) { return d >= 0 ? fix(x, d) : fmt(x); }
+  function checkRows() {
+    var rows = [];
+    function add(name, raw, expected, d) {
+      var got = rnd(raw, d), ok = Math.abs(got - expected) < 1e-9;
+      rows.push({ name: name, got: got, expected: expected, status: ok ? "match" : "miss", shown: shownD(got, d), bookShown: shownD(expected, d) });
+    }
+    var base = { nre: 1, cA: 3000, cG: 30000, pue: 1.3, util: 0.8, price: 0.08, yrs: 3 };
+    var chip = calc2(assign(assign({}, base), { gkw: KW.gChip, akw: KW.aChip }));
+    var life2 = calc2(assign(assign({}, base), { gkw: KW.gChip, akw: KW.aChip, yrs: 2 }));
+    var srv = calc2(assign(assign({}, base), { gkw: KW.gSrv, akw: KW.aSrv }));
+    var gpo = calc2(assign(assign({}, base), { gkw: KW.gSrv, akw: KW.aChip }));
+    var c4 = calc4({ nre: 1.5, cA: 4000, cG: 30000, oA: 2000, oG: 6000 });
+    add("Session 2, Exercise 4 · chip · GPU energy (kWh)", chip.eG, 19132, 0);
+    add("Session 2, Exercise 4 · chip · o_G (USD)", chip.oG, 1531, 0);
+    add("Session 2, Exercise 4 · chip · ASIC energy (kWh)", chip.eA, 8199, 0);
+    add("Session 2, Exercise 4 · chip · o_A (USD)", chip.oA, 656, 0);
+    add("Session 2, Exercise 4 · chip · denominator (USD)", chip.den, 27875, 0);
+    add("Session 2, Exercise 4 · chip · N* (units, nearest ten)", chip.n, 3590, -1);
+    add("Session 2, Exercise 4 · 2-year lifetime · denominator (USD)", life2.den, 27583, 0);
+    add("Session 2, Exercise 4 · 2-year lifetime · N* (units, nearest ten)", life2.n, 3630, -1);
+    add("Session 2, Exercise 4 · chip · power-cost difference (USD)", chip.op, 875, 0);
+    add("Session 2, Exercise 4 · chip · power-cost difference share (%)", chip.op / chip.den * 100, 3, 0);
+    add("Server boundary · GPU per unit (kW)", KW.gSrv, 1.275, 3);
+    add("Server boundary · ratio to chip", KW.ratio, 1.82, 2);
+    add("Server boundary · ASIC per unit (kW)", KW.aSrv, 0.5464, 4);
+    add("Server boundary · GPU energy (kWh)", srv.eG, 34847, 0);
+    add("Server boundary · o_G (USD)", srv.oG, 2788, 0);
+    add("Server boundary · o_G relative to chip boundary (×)", srv.oG / chip.oG, 1.8, 1);
+    add("Server boundary · ASIC energy (kWh)", srv.eA, 14935, 0);
+    add("Server boundary · o_A (USD)", srv.oA, 1195, 0);
+    add("Server boundary · denominator (USD)", srv.den, 28593, 0);
+    add("Server boundary · N* (units, nearest ten)", srv.n, 3500, -1);
+    add("Server boundary · power-cost difference (USD)", srv.op, 1593, 0);
+    add("Server boundary · power-cost difference share (%)", srv.op / srv.den * 100, 6, 0);
+    add("Server (GPU only) · denominator (USD)", gpo.den, 29132, 0);
+    add("Server (GPU only) · N* (units, nearest ten)", gpo.n, 3430, -1);
+    add("Reference · DGX B200 per GPU (kW)", B200_PER, 1.79, 2);
+    add("Session 4, Exercise 5 · denominator (USD)", c4.den, 30000, 0);
+    add("Session 4, Exercise 5 · N* (units)", c4.n, 5000, 0);
+    add("Initial state (ch2, chip boundary) · N* (units, nearest ten)", calc2(INIT2).n, 3590, -1);
+    add("Initial state (ch4) · N* (units)", calc4(INIT4).n, 5000, 0);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding diff.</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + r.shown + "</td><td class='num'>" + r.bookShown + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  //
+  buildCtl("ctl2", CTL2, s2, "c2-", update2);
+  buildCtl("ctl4", CTL4, s4, "c4-", update4);
+  $("bdSeg").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var v = b.dataset.v;
+    s2.gkw = v === "chip" ? KW.gChip : KW.gSrv;
+    s2.akw = v === "server" ? KW.aSrv : KW.aChip;
+    update2();
+  });
+  $("reset2").addEventListener("click", function () { assign(s2, INIT2); update2(); });
+  $("life2").addEventListener("click", function () { assign(s2, INIT2); s2.yrs = 2; update2(); });
+  $("reset4").addEventListener("click", function () { assign(s4, INIT4); update4(); });
+  $("specLine").textContent = "Power ceilings (vendor maximum): H100 SXM max TDP " + fmt(KW.gChip * 1000) + " W, " + DGX.label + " max " + fmt(DGX.kw, 1) + " kW(GPU " + DGX.gpus + " units), " +
+    DGXB.label + " max about " + fmt(DGXB.kw, 1) + " kW(GPU " + DGXB.gpus + " units). Follows the ‘Where is power measured?’ table in Session 2, solution to Exercise 4. Unit prices, electricity price, PUE, utilization and ASIC power are this book’s assumed values.";
+  renderCheck(); update2(); update4();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KV Cache Budget</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="kv-cache";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.membar { display: flex; height: 54px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--bg); }
+.membar span { display: block; height: 100%; }
+.seg-w { background: var(--accent); }
+.seg-r { background: repeating-linear-gradient(135deg, var(--mut) 0 3px, transparent 3px 7px); opacity: .55; }
+.seg-k { background: var(--accent2); box-shadow: inset -1px 0 0 var(--card); }
+.seg-kc { background: var(--accent2); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; }
+.over { color: var(--warn); font-weight: 700; font-size: 14px; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13.5px; border: 0; background: transparent; color: var(--fg); padding: 6px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+
+.sysnote { font-size: 13px; color: var(--mut); max-width: none; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 2, Exercise 3 · Session 3, Exercise 3</div>
+  <h1>KV Cache Budget</h1>
+  <p class="lede">The weights and the KV cache share one accelerator's memory. The capacity left over sets the batch size, and the batch size sets the arithmetic intensity. Change the sequence length and the precision and watch how a capacity limit ends up holding down bandwidth efficiency as well.</p>
+  <div class="formula">KV/seq = 2 · L · S · d · b<sub>kv</sub>　·　B<sub>sz</sub> = ⌊(M − P·b − reserve) / KV⌋　·　tok/s ≲ B / (P·b) × B<sub>sz</sub></div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">How one accelerator's memory is divided</h2>
+  <div class="bench" id="figure">
+    <div>
+      <div class="membar" id="membar" role="img" aria-label="Memory capacity allocation bar"></div>
+      <div class="legend" style="margin-top:8px">
+        <span><i class="seg-w"></i>Weights</span>
+        <span><i class="seg-r"></i>Reserve (activations, fragmentation)</span>
+        <span><i class="seg-kc"></i>KV cache (one cell per sequence)</span>
+        <span><i style="background:var(--bg);border:1px solid var(--line)"></i>Unused</span>
+      </div>
+      <p class="over" id="overflow" hidden></p>
+    </div>
+    <div class="controls">
+      <div class="ctl" style="grid-column: 1 / -1"><div class="lab">Chip</div><div class="seg" id="chipSeg"></div><p class="sysnote" id="sysNote" hidden></p></div>
+      <div class="ctl"><div class="lab">Weight precision</div>
+        <div class="seg" id="wSeg">
+          <button type="button" data-v="2" aria-pressed="false">fp16</button>
+          <button type="button" data-v="1" aria-pressed="true">INT8</button>
+          <button type="button" data-v="0.5" aria-pressed="false">INT4</button>
+        </div></div>
+      <div class="ctl"><div class="lab">KV cache precision</div>
+        <div class="seg" id="kvSeg">
+          <button type="button" data-v="2" aria-pressed="true">fp16</button>
+          <button type="button" data-v="1" aria-pressed="false">INT8</button>
+        </div></div>
+      <div class="ctl"><div class="lab">Attention (number of KV heads)</div><div class="seg" id="attnSeg"></div></div>
+      <div class="ctl">
+        <label for="seq">Sequence length S <output id="seqOut"></output></label>
+        <input type="range" id="seq" min="9" max="17" step="0.25" value="12">
+      </div>
+      <div class="ctl">
+        <label for="res">Reserve ratio (share of total capacity) <output id="resOut"></output></label>
+        <input type="range" id="res" min="0" max="30" step="1" value="0">
+      </div>
+    </div>
+    <dl class="readout">
+      <div><dt>Weights</dt><dd id="oW"></dd></div>
+      <div><dt>KV / sequence</dt><dd id="oK"></dd></div>
+      <div><dt>Capacity available for KV</dt><dd id="oFree"></dd></div>
+      <div class="big"><dt>Max batch size</dt><dd id="oB"></dd></div>
+      <div><dt>Throughput ceiling</dt><dd id="oT"></dd></div>
+      <div><dt>Compute utilization ≈ B<sub>sz</sub>/I*</dt><dd id="oU"></dd></div>
+    </dl>
+  </div>
+  <p class="note" id="msg"></p>
+</section>
+
+<section aria-labelledby="s2">
+  <h2 id="s2">How fast the batch size shrinks as sequences grow</h2>
+  <p class="standalone-only">Max batch size for three weight precisions at the currently chosen chip, KV precision, attention and reserve ratio. The dashed line is the batch size needed to reach the roof (B<sub>sz</sub> ≈ I*).</p>
+  <div class="bench"><div class="chart" id="chart" role="img" aria-label="Max batch size versus sequence length"></div></div>
+  <details class="check">
+    <summary>Check against the solution tables (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">H100 80GB, S = 4,096, KV fp16, reserve 0%. The "Solution" column holds the rounded values from the solution tables of Session 2, Exercise 3 and Session 3, Exercise 3.</caption>
+        <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li id="modelNote"></li>
+    <li>Utilization is counted as B<sub>sz</sub> / I*(BF16). If computation also runs at the weight precision, the actual arithmetic intensity 2B<sub>sz</sub>/b and that precision's ridge point (2/b)·I* grow together, so their ratio equals this value (table in Session 2, solution to Exercise 3). If only the weights are read at low precision and computation runs in BF16, arithmetic intensity rises by a factor of 2/b and utilization comes out that much higher (this is the case the precision buttons on the roofline bench show).</li>
+    <li>The throughput ceiling counts only the bandwidth side. Once the batch size passes the ridge point the workload becomes compute-bound, so this formula overstates the ceiling. The page flags that case separately.</li>
+    <li>Traffic for reading the KV cache is left out. With long contexts the KV cache must also be read at every step, so real speed is lower.</li>
+    <li>Every sequence is assumed to fill up to the maximum length S. With schemes like PagedAttention that allocate only what is used, the average length is what counts.</li>
+    <li>Capacity is counted in decimal GB (10<sup>9</sup> bytes), as in the text.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>Formulas: <i>AI Infrastructure and Semiconductors</i>, Session 2, Exercise 3; Session 3, solution to Exercise 3.</div>
+  <div><i>AI Infrastructure and Semiconductors</i> interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a>, and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through the <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to agree terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.chips || !D.kv_model) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>The shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  var CHIPS = D.chips.map(function (c) { return { id: c.id, name: c.name, label: c.label, P: c.P, B: c.B, cap: c.cap }; });
+  var NCHIP = CHIPS.length;  //
+  //
+  var B2 = D.chips.filter(function (c) { return c.id === "b200"; })[0], DGX = D.systems && D.systems.dgx_b200;
+  if (B2 && B2.sys && DGX) CHIPS.push({ id: "b200sys", name: "B200 system", label: B2.sys.label, P: B2.P, B: B2.sys.B, cap: B2.sys.cap, sys: true });
+  function btnName(c) {
+    if (c.id === "b200" && CHIPS.length > NCHIP) return c.name + " · chip spec " + c.cap + "GB";
+    if (c.sys) return "B200 · DGX system " + c.cap + "GB";
+    return c.name + " · " + c.cap + "GB";
+  }
+  var MODEL = D.kv_model;  // { P: 70, L: 80, headDim: 128, kvHeadsGQA: 8, kvHeadsMHA: 64 }
+  var state = { chip: "h100", wb: 1, kvb: 2, kvHeads: MODEL.kvHeadsGQA, s: 12, res: 0 };
+
+  //
+  function kvPerSeq(S, kvHeads, kvb) { return 2 * MODEL.L * S * kvHeads * MODEL.headDim * kvb / 1e9; }
+  function budget(c, wb, S, kvHeads, kvb, resPct) {
+    var w = MODEL.P * wb, reserve = c.cap * resPct / 100, k = kvPerSeq(S, kvHeads, kvb);
+    var free = c.cap - w - reserve;
+    var bsz = free > 0 ? Math.floor(free / k + 1e-9) : 0;
+    var ridge = c.P / c.B;
+    var tps = bsz > 0 ? c.B * 1e12 / (MODEL.P * 1e9 * wb) * bsz : 0;
+    return { w: w, reserve: reserve, k: k, free: free, bsz: bsz, ridge: ridge, util: Math.min(1, bsz / ridge), tps: tps, fits: w + reserve <= c.cap };
+  }
+
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
+  function chipById(id) { return CHIPS.filter(function (c) { return c.id === id; })[0]; }
+  function chip() { return chipById(state.chip); }
+  function seqLen() { return Math.round(Math.pow(2, state.s)); }
+  function precName(b) { return b === 2 ? "fp16" : b === 1 ? "INT8" : "INT4"; }
+  function $(id) { return document.getElementById(id); }
+
+  function drawBar(c, r) {
+    var bar = $("membar"), html = "";
+    function pct(x) { return (Math.max(0, x) / c.cap * 100) + "%"; }
+    if (!r.fits) {
+      html = '<span class="seg-w" style="width:100%"></span>';
+      $("overflow").hidden = false;
+      $("overflow").textContent = "Weights " + fmt(r.w) + " GB do not fit in one " + c.name + " (" + c.cap + " GB). Lower the precision or split the model across chips.";
+    } else {
+      $("overflow").hidden = true;
+      html += '<span class="seg-w" style="width:' + pct(r.w) + '" title="weights ' + fmt(r.w, 1) + ' GB"></span>';
+      if (r.reserve > 0) html += '<span class="seg-r" style="width:' + pct(r.reserve) + '" title="reserve ' + fmt(r.reserve, 1) + ' GB"></span>';
+      if (r.bsz > 0 && r.bsz <= 160) {
+        for (var i = 0; i < r.bsz; i++) html += '<span class="seg-k" style="width:' + pct(r.k) + '"></span>';
+      } else if (r.bsz > 160) {
+        html += '<span class="seg-kc" style="width:' + pct(r.k * r.bsz) + '" title="KV ' + r.bsz + ' sequences"></span>';
+      }
+    }
+    bar.innerHTML = html;
+  }
+
+  //
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  var W = 720, H = 380, L = 64, R = 96, T = 20, Bm = 50;
+  function sx(lg2) { return L + (lg2 - 9) / 8 * (W - L - R); }
+  function sy(b) { return H - Bm - Math.log10(b) / 3 * (H - T - Bm); }
+  function drawChart() {
+    var c = chip(), svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    for (var e = 9; e <= 17; e += 2) {
+      g.appendChild(el("line", { x1: sx(e), x2: sx(e), y1: T, y2: H - Bm }));
+      var lab = Math.pow(2, e); lab = lab >= 1024 ? fmt(lab / 1024) + "K" : fmt(lab);
+      svg.appendChild(el("text", { x: sx(e), y: H - Bm + 18, "text-anchor": "middle", "class": "tick" }, lab));
+    }
+    [1, 10, 100, 1000].forEach(function (b) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(b), y2: sy(b) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(b) + 4, "text-anchor": "end", "class": "tick" }, fmt(b)));
+    });
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 10, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Sequence length S [tokens, log]"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Max batch size [log]"));
+
+    var ridge = c.P / c.B;
+    if (ridge <= 1000) {
+      svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(ridge), y2: sy(ridge), stroke: "var(--accent)", "stroke-dasharray": "5 4", "stroke-opacity": 0.7 }));
+      svg.appendChild(el("text", { x: W - R + 6, y: sy(ridge) + 4, "font-size": 12, fill: "var(--accent)" }, "I* ≈ " + fmt(ridge)));
+    }
+    [2, 1, 0.5].forEach(function (wb) {
+      var on = wb === state.wb, d = "", started = false;
+      for (var lg = 9; lg <= 17.0001; lg += 0.0625) {
+        var r = budget(c, wb, Math.pow(2, lg), state.kvHeads, state.kvb, state.res);
+        if (r.bsz >= 1) { d += (started ? " L" : "M") + sx(lg).toFixed(1) + "," + sy(Math.min(r.bsz, 1000)).toFixed(1); started = true; }
+        else started = false;
+      }
+      if (!d) return;
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: on ? "var(--accent2)" : "var(--mut)", "stroke-width": on ? 2.6 : 1.3, "stroke-opacity": on ? 1 : 0.6 }));
+      var first = budget(c, wb, 512, state.kvHeads, state.kvb, state.res);
+      if (first.bsz >= 1) svg.appendChild(el("text", { x: sx(9) + 4, y: sy(Math.min(first.bsz, 1000)) - 6, "font-size": 12, "font-weight": on ? 700 : 400, fill: on ? "var(--accent2)" : "var(--mut)" }, "Weights " + precName(wb)));
+    });
+    var cur = budget(c, state.wb, seqLen(), state.kvHeads, state.kvb, state.res);
+    if (cur.bsz >= 1) {
+      svg.appendChild(el("circle", { cx: sx(state.s), cy: sy(Math.min(cur.bsz, 1000)), r: 6.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    }
+    $("chart").replaceChildren(svg);
+  }
+
+  function update() {
+    var c = chip(), S = seqLen(), r = budget(c, state.wb, S, state.kvHeads, state.kvb, state.res);
+    $("seqOut").textContent = fmt(S);
+    $("resOut").textContent = state.res + "%";
+    $("oW").innerHTML = fmt(r.w, 1) + " <small>GB</small>";
+    $("oK").innerHTML = fmt(r.k, r.k < 10 ? 2 : 1) + " <small>GB</small>";
+    $("oFree").innerHTML = fmt(Math.max(0, r.free), 1) + " <small>GB</small>";
+    $("oB").textContent = fmt(r.bsz);
+    $("oT").innerHTML = fmt(r.tps) + " <small>tok/s</small>";
+    $("oU").textContent = r.bsz ? fmt(r.util * 100, r.util < 0.1 ? 1 : 0) + "%" : "—";
+    var msg;
+    if (!r.fits) msg = "The weights alone do not fit. That is why the Exercise 3 solution marks the fp16 row as ‘does not fit’.";
+    else if (r.bsz === 0) msg = "The weights fit, but not even one sequence worth of KV cache (" + fmt(r.k, 1) + " GB) is left. This is the MHA plus INT8 case the solution points out. Shorten the sequence, or shrink the KV cache with GQA or KV quantization.";
+    else if (r.bsz > r.ridge) msg = "The batch size (" + fmt(r.bsz) + ") is past the ridge point (" + fmt(r.ridge) + "). The workload is now compute-bound, so the throughput ceiling above is an overestimate. The real ceiling is set by compute.";
+    else msg = "The compute units sit idle " + fmt((1 - r.util) * 100) + "% of the time, waiting on memory. Reaching the roof takes a batch size of about " + fmt(r.ridge) + ", but memory capacity stops it at " + fmt(r.bsz) + ".";
+    $("msg").textContent = msg;
+    $("sysNote").hidden = !c.sys;
+    $("sysNote").textContent = c.sys ? c.label + ": datasheet total " + fmt(c.B * DGX.gpus) + " TB/s ÷ " + DGX.gpus + " = " + c.B.toFixed(1) +
+      " TB/s, " + fmt(DGX.mem_gb) + " GB ÷ " + DGX.gpus + " = " + fmt(c.cap) + " GB. Compute " + fmt(c.P) + " TFLOP/s kept at the chip value." : "";
+    drawBar(c, r);
+    drawChart();
+  }
+
+  //
+  //
+  function checkRows() {
+    var h = chipById("h100"), rows = [];
+    function add(name, got, expected, ok, shown) { rows.push({ name: name, got: got, expected: expected, status: ok ? "match" : "miss", shown: shown }); }
+    var g8 = budget(h, 1, 4096, MODEL.kvHeadsGQA, 2, 0);
+    var g4 = budget(h, 0.5, 4096, MODEL.kvHeadsGQA, 2, 0);
+    var m8 = budget(h, 1, 4096, MODEL.kvHeadsMHA, 2, 0);
+    function pct1(u) { return Math.round(u * 1000) / 10; }
+    add("Exercise 3 · GQA KV/sequence (GB)", Math.round(g8.k * 100) / 100, 1.34, Math.round(g8.k * 100) / 100 === 1.34);
+    add("Exercise 3 · GQA, INT8 weights max batch size (initial state)", g8.bsz, 7, g8.bsz === 7);
+    add("Exercise 3 · GQA, INT8 weights utilization (%)", pct1(g8.util), 2.4, pct1(g8.util) === 2.4);
+    add("Session 3, Exercise 3 · GQA, INT8 throughput ceiling (tok/s)", Math.round(g8.tps), 335, Math.round(g8.tps) === 335);
+    add("Exercise 3 · GQA, INT4 weights max batch size", g4.bsz, 33, g4.bsz === 33);
+    add("Exercise 3 · GQA, INT4 weights utilization (%)", pct1(g4.util), 11.2, pct1(g4.util) === 11.2);
+    add("Session 3, Exercise 3 · GQA, INT4 throughput ceiling (tok/s)", Math.round(g4.tps), 3159, Math.round(g4.tps) === 3159);
+    add("Exercise 3 · MHA KV/sequence (GB)", Math.round(m8.k * 10) / 10, 10.7, Math.round(m8.k * 10) / 10 === 10.7);
+    add("Exercise 3 · MHA, INT8 weights max batch size", m8.bsz, 0, m8.bsz === 0);
+    //
+    var bs = chipById("b200sys");
+    if (bs) add("Section 6 box · B200 system capacity (GB, per GPU of DGX B200)", bs.cap, 180, bs.cap === 180 && DGX.mem_gb / DGX.gpus === 180);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding diff.</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fmt(r.got, 2)) + "</td><td class='num'>" + fmt(r.expected, 2) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  function seg(id, key, parse) {
+    var box = $(id);
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      box.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      state[key] = parse(b.dataset.v); update();
+    });
+  }
+  function addBtn(box, v, text, on) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.v = v; b.textContent = text;
+    b.setAttribute("aria-pressed", String(on));
+    $(box).appendChild(b);
+  }
+  CHIPS.forEach(function (c) { addBtn("chipSeg", c.id, btnName(c), c.id === state.chip); });
+  addBtn("attnSeg", MODEL.kvHeadsGQA, "GQA · " + MODEL.kvHeadsGQA + " heads", true);
+  addBtn("attnSeg", MODEL.kvHeadsMHA, "MHA · " + MODEL.kvHeadsMHA + " heads", false);
+  seg("chipSeg", "chip", String); seg("wSeg", "wb", Number); seg("kvSeg", "kvb", Number); seg("attnSeg", "kvHeads", Number);
+  $("seq").addEventListener("input", function (e) { state.s = Number(e.target.value); update(); });
+  $("res").addEventListener("input", function (e) { state.res = Number(e.target.value); update(); });
+  $("modelNote").textContent = "The model is fixed to one " + MODEL.P + "B-class configuration from Exercise 3 in the text (L = " + MODEL.L + ", head dimension " + MODEL.headDim +
+    ", KV heads under GQA " + MODEL.kvHeadsGQA + "). Other models have different layer and KV-head counts, so their results differ.";
+  $("specLine").textContent = "Chip specs: NVIDIA published BF16 dense values. " +
+    CHIPS.slice(0, NCHIP).map(function (c) { return c.label + " " + c.B.toFixed(2).replace(/0$/, "") + " TB/s · " + c.cap + "GB · I* ≈ " + fmt(c.P / c.B); }).join(", ") +
+    ". Follows the table in Session 2, Section 6 and the solution to Exercise 1." +
+    (chipById("b200sys") ? " B200 defaults to the chip values in the technical overview (" + B2.cap + " GB, " + B2.B + " TB/s). ‘B200 · DGX system’ takes the DGX B200 datasheet total across " +
+      DGX.gpus + " GPUs, " + fmt(B2.sys.B * DGX.gpus) + " TB/s, and the " + fmt(DGX.mem_gb) + " GB from the user guide and datasheet, and divides both by " + DGX.gpus + " to get per-GPU values (" +
+      B2.sys.B.toFixed(1) + " TB/s, " + B2.sys.cap + " GB; Session 2, Section 6, ‘Capacity also differs between chip and system’)." : "");
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

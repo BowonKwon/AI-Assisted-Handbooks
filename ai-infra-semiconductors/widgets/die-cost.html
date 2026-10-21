@@ -344,6 +344,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
   }
   function rpois(rng, l) { var L = Math.exp(-l), k = 0, p = 1; do { k++; p *= rng(); } while (p > L && k < 1000); return k - 1; }
 
+  function tpl(s, o) { return s.replace(/\{(\w+)\}/g, function (m, k) { return k in o ? String(o[k]) : m; }); }   // 단위·어순을 문자열 쪽에 두어 언어마다 바꿀 수 있게(2026-10-22)
   function f(x, dg) { return x.toLocaleString("ko-KR", { minimumFractionDigits: dg, maximumFractionDigits: dg }); }
   function sgn(x, dg) { return (x < 0 ? "−" : "+") + f(Math.abs(x), dg); }
   function $(id) { return document.getElementById(id); }
@@ -393,7 +394,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     $("offxOut").textContent = st.fx + "/20 변";
     $("offyOut").textContent = st.fy + "/20 변";
     $("d0Out").textContent = f(st.d0, 2) + " /cm²";
-    $("wpOut").textContent = f(st.wp, 0) + "달러";
+    $("wpOut").textContent = tpl("{n}달러", { n: f(st.wp, 0) });
     $("oCnt").innerHTML = f(cnt, 0) + " <small>개</small>";
     $("oMean").innerHTML = f(S.mean, 1) + " <small>(" + S.min + "~" + S.max + ")</small>";
     $("oG2").innerHTML = f(g2, 1) + " <small>" + sgn((g2 / S.mean - 1) * 100, 1) + "%</small>";
@@ -401,7 +402,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
     $("oYlab").textContent = "수율 Y (" + modelName(st.alpha) + ")";
     $("oY").textContent = f(Y * 100, 1) + "%";
     $("oGood").textContent = f(good, 1);
-    $("oCost").innerHTML = f(cm, 5) + " W <small>≈ " + f(st.wp * cm, 0) + "달러 (W 가정값)</small>";
+    $("oCost").innerHTML = f(cm, 5) + " W <small>≈ " + tpl("{n}달러 (W 가정값)</small>", { n: f(st.wp * cm, 0) });
     $("oRatio").innerHTML = f(ratio, 1) + "배 <small>= 면적 " + f(A / 100, 1) + " × 수율 " + f(Y100 / Y, 2) + " × 가장자리 " + f(g100 / (g2 * A / 100), 2) + "</small>";
     $("oA50").innerHTML = f(a50(st.d0), 0) + " <small>mm²</small>";
     document.querySelectorAll("#areaSeg button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === A)); });

@@ -40,6 +40,7 @@ Study handbooks compiled with generative AI.
 |---|---|---|---|---|
 | *Machines That Think, Act, and Revise: Reading Agentic AI Papers, from ReAct to LLM Wiki* | Korean | Study-group members and self-learners with basic statistics and programming | Computer science / AI | 1.0 (Oct 5, 2026) |
 | *AI Infrastructure and Semiconductors: A Seven-Session Self-Study Guide* | Korean | Learners with statistics, computing, or AI backgrounds | Semiconductors / computer architecture | 2.0.1 (Oct 22, 2026) |
+| *AI Infrastructure and Semiconductors: A Self-Study Guide* (English edition of the above) — [read online](https://bowonkwon.github.io/AI-Assisted-Handbooks/ai-infra-semiconductors/en/) · [PDF](ai-infra-semiconductors/en/ai-infra-semiconductors-v2.0.1-en.pdf) | English | Learners with statistics, computing, or AI backgrounds | Semiconductors / computer architecture | 2.0.1-en (Oct 22, 2026) |
 | *Harness in Hand: Building AI Agents with Claude Code and Codex* (hands-on companion to *Machines That Think, Act, and Revise*) | Korean | Study-group members and self-learners new to Claude Code or Codex | Computer science / AI | 1.0 (Oct 13, 2026) |
 | *A Library That Remembers What You Read: Building an LLM Wiki — A Self-Study Guide for Lawyers* | Korean | Lawyers (judges, attorneys, in-house counsel, researchers) and self-learners | Law / applied AI | 2.0 (Oct 13, 2026) |
 

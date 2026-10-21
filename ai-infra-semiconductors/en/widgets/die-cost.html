@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wafer die cost calculator</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="die-cost";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c; --bad: #b0412e;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; --bad: #e07a66; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+h3 { font-size: 15px; margin: 0; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+.figs { display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 24px; }
+.ctl { display: grid; gap: 5px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; white-space: nowrap; }
+input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 4px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.mapwrap { display: grid; grid-template-columns: minmax(0, 330px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 620px) { .mapwrap { grid-template-columns: minmax(0, 1fr); } }
+.map svg { display: block; width: 100%; height: auto; max-width: 330px; margin: 0 auto; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px 14px; border-top: 1px solid var(--line); padding-top: 12px; margin: 0; }
+.readout.side { border-top: 0; padding-top: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.readout.three { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.readout.one { border-top: 0; padding-top: 0; grid-template-columns: minmax(0, 1fr); }
+.readout div { display: grid; gap: 1px; min-width: 0; }
+.readout .wide { grid-column: 1 / -1; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 23px; color: var(--accent2); font-weight: 500; }
+
+.row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.row > .chart { flex: 1 1 360px; min-width: 0; }
+.row > .aside { flex: 0 1 230px; min-width: 0; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text, .map text, .grids text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 11px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.grids { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.grids figure { margin: 0; display: grid; gap: 4px; }
+.grids svg { display: block; width: 100%; height: auto; }
+.grids figcaption { font-size: 12px; color: var(--mut); line-height: 1.4; }
+.grids figcaption b { font-family: var(--mono); color: var(--fg); font-weight: 500; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; color: var(--mut); align-items: center; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+.note { font-size: 13px; color: var(--mut); background: var(--mark); padding: 8px 12px; border-radius: 6px; max-width: none; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 4 · Exercises 1, 2 and 3</div>
+  <h1>Wafer die cost calculator</h1>
+  <p class="lede">The area is 8 times larger, but the cost is 20 times higher. A big chip loses twice: once on yield and once at the wafer edge. Lay dies out on a wafer and count them yourself, then change the defect density and how strongly defects cluster to see how the cost per die moves.</p>
+</header>
+
+<section aria-labelledby="s1" data-part="wafer">
+  <h2 id="s1">① Dies on the wafer and cost per die</h2>
+  <div class="formula standalone-only">GDPW ≈ (πd²/4)/A − πd/√(2A)　·　Y = e<sup>−AD₀</sup>　·　cost per die = W / (GDPW × Y)　·　A₅₀ = ln 2 / D₀</div>
+  <div class="bench" id="figure-wafer">
+    <div class="controls">
+      <div class="ctl">
+        <label for="area">Die area A (square) <output id="areaOut"></output></label>
+        <input type="range" id="area" min="50" max="858" step="1" value="800">
+        <div class="seg" id="areaSeg">
+          <button type="button" data-v="100" aria-pressed="false">100</button>
+          <button type="button" data-v="400" aria-pressed="false">400</button>
+          <button type="button" data-v="800" aria-pressed="true">800</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <div class="lab">Defect model (α for negative binomial)</div>
+        <div class="seg" id="modelSeg">
+          <button type="button" data-v="0" aria-pressed="true">Poisson</button>
+          <button type="button" data-v="5" aria-pressed="false">α 5</button>
+          <button type="button" data-v="2" aria-pressed="false">α 2</button>
+          <button type="button" data-v="1" aria-pressed="false">α 1</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="offx">Grid origin, horizontal offset <output id="offxOut"></output></label>
+        <input type="range" id="offx" min="0" max="19" step="1" value="0">
+      </div>
+      <div class="ctl">
+        <label for="offy">Grid origin, vertical offset <output id="offyOut"></output></label>
+        <input type="range" id="offy" min="0" max="19" step="1" value="0">
+      </div>
+      <div class="ctl">
+        <label for="d0">Defect density D₀ <output id="d0Out"></output></label>
+        <input type="range" id="d0" min="0.02" max="0.5" step="0.01" value="0.1">
+      </div>
+      <div class="ctl">
+        <label for="wp">Wafer price W (assumed value) <output id="wpOut"></output></label>
+        <input type="range" id="wp" min="1000" max="30000" step="500" value="15000">
+      </div>
+    </div>
+    <div class="mapwrap">
+      <div class="map" id="wmap" role="img" aria-label="Die grid and defect sample on the wafer"></div>
+      <dl class="readout side">
+        <div><dt>Count at this offset</dt><dd id="oCnt"></dd></div>
+        <div><dt>Mean over 400 offsets</dt><dd id="oMean"></dd></div>
+        <div><dt>√(2A) formula</dt><dd id="oG2"></dd></div>
+        <div><dt>√A formula</dt><dd id="oG1"></dd></div>
+        <div><dt id="oYlab">Yield Y</dt><dd id="oY"></dd></div>
+        <div><dt>Good dies = √(2A) formula × Y</dt><dd id="oGood"></dd></div>
+        <div class="big wide"><dt>Cost per die</dt><dd id="oCost"></dd></div>
+        <div class="wide"><dt>Cost relative to a 100 mm² die</dt><dd id="oRatio"></dd></div>
+        <div class="wide"><dt>A₅₀ = ln 2 / D₀ (Poisson yield 50%)</dt><dd id="oA50"></dd></div>
+      </dl>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--soft);box-shadow:inset 0 0 0 1px var(--accent)"></i>Counted die (all four corners inside the circle)</span>
+      <span><i style="background:var(--bad);opacity:.45"></i>Die hit by a defect</span>
+      <span><i style="box-shadow:inset 0 0 0 1px var(--mut);opacity:.6"></i>Die not counted</span>
+      <span><i style="background:var(--bad);border-radius:50%;width:7px;height:7px"></i>Defect</span>
+      <span>＋ wafer center · <span style="color:var(--accent2)">●</span> grid origin</span>
+    </div>
+    <p class="note" id="wNote"></p>
+  </div>
+  <p class="standalone-only">Where you place the grid also changes the count (66 vs. 71 dies at 800 mm²). Putting one die corner at the wafer center gives 648, 148 and 68 dies at 100, 400 and 800 mm², almost the same as the mean. The 20× cost at 8× the area is the product of three factors: 8× from area, 2.0× from yield and 1.2× from edge loss.</p>
+</section>
+
+<section aria-labelledby="s2" data-part="defect">
+  <h2 id="s2">② Where Poisson comes from, and what happens when defects cluster</h2>
+  <div class="formula standalone-only">(1 − λ/n)<sup>n</sup> → e<sup>−λ</sup> (n → ∞)　·　Y = (1 + AD₀/α)<sup>−α</sup>　·　Var(D) = D₀²/α</div>
+  <div class="figs" id="figure-defect">
+    <div class="bench">
+      <h3>(a) Splitting a die into n cells</h3>
+      <div class="controls">
+        <div class="ctl">
+          <label for="lam">Mean defects per die λ = AD₀ <output id="lamOut"></output></label>
+          <input type="range" id="lam" min="0.05" max="2" step="0.05" value="0.8">
+        </div>
+        <div class="ctl">
+          <label for="nlog">Number of cells n (log scale) <output id="nOut"></output></label>
+          <input type="range" id="nlog" min="0" max="3" step="0.01" value="1">
+        </div>
+      </div>
+      <div class="row">
+        <div class="chart" id="pchart" role="img" aria-label="Curve converging to e to the minus lambda as the number of cells grows"></div>
+        <dl class="readout one aside">
+          <div class="big"><dt>(1 − λ/n)<sup>n</sup></dt><dd id="oPart"></dd></div>
+          <div><dt>Limit e<sup>−λ</sup></dt><dd id="oLim"></dd></div>
+          <div><dt>Fraction of the limit</dt><dd id="oFrac"></dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="bench">
+      <h3>(b) Poisson vs. negative binomial at the same AD₀</h3>
+      <div class="controls">
+        <div class="ctl">
+          <label for="area2">Die area A <output id="area2Out"></output></label>
+          <input type="range" id="area2" min="50" max="858" step="1" value="800">
+        </div>
+        <div class="ctl">
+          <label for="d02">Defect density D₀ <output id="d02Out"></output></label>
+          <input type="range" id="d02" min="0.02" max="0.5" step="0.01" value="0.1">
+        </div>
+        <div class="ctl">
+          <label for="alpha">Clustering α <output id="alphaOut"></output></label>
+          <input type="range" id="alpha" min="0" max="9" step="1" value="3">
+        </div>
+      </div>
+      <dl class="readout three">
+        <div><dt>λ = AD₀</dt><dd id="oLam2"></dd></div>
+        <div><dt>Poisson yield</dt><dd id="oYP"></dd></div>
+        <div class="big"><dt id="oYNlab">Negative binomial yield</dt><dd id="oYN"></dd></div>
+        <div><dt>Difference</dt><dd id="oDiff"></dd></div>
+        <div><dt>Var(D) = D₀²/α</dt><dd id="oVar"></dd></div>
+        <div><dt>Standard deviation/mean = 1/√α</dt><dd id="oCv"></dd></div>
+      </dl>
+      <div class="row">
+        <div class="chart" id="ychart" role="img" aria-label="Poisson and negative binomial yield curves by die area"></div>
+        <div class="aside grids" id="grids"></div>
+      </div>
+      <p class="note" id="gNote"></p>
+    </div>
+  </div>
+  <p class="standalone-only">Splitting into just ten cells already gets you to 97% of the answer. The stronger the clustering (the smaller α), the higher the yield, even though the expected total number of defects is the same. With α = 1 the standard deviation of the defect density equals the mean; with α = 5 it is about 45% of the mean. Yield is a question of "how many dies are contaminated", not "how many defects there are".</p>
+</section>
+
+<section aria-labelledby="s3">
+  <details class="check">
+    <summary>Check against the solution tables (<span id="checkSum"></span>)</summary>
+    <div class="tbl"><table>
+      <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">Values from the Session 4, Section 0 table, Section 5, and the solutions to Exercises 1–3 in Self-study appendix A, recomputed with the formulas of this figure. Solution values are rounded. "Rounding diff" marks cases where the solution multiplied or divided by rounded intermediate values (yield 0.905, good dies 96.1 and 29.1) and so differs from the exact value in the last digit.</caption>
+      <thead><tr><th>Item</th><th>Computed</th><th>Solution</th><th></th></tr></thead>
+      <tbody id="check"></tbody>
+    </table></div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>Edge exclusion and scribe line width are set to 0. Real wafers have both, so a direct count would also come out lower than this.</li>
+    <li>Good dies and cost are computed as in the solution to Exercise 2, by multiplying the GDPW approximation (√(2A)) by the yield. For 100–800 mm² dies this formula gives 1–5% fewer dies than a direct count.</li>
+    <li>Strictly, the A in λ = AD₀ is the critical area, not the die area. Using the die area as is folds the effect of the critical area into the density, a simplification.</li>
+    <li>e<sup>−AD₀</sup> counts defects only. Parametric yield, the subject of speed and power binning, is not explained by this formula.</li>
+    <li>Cost per die is the silicon cost only. HBM, packaging and test come on top of it. The wafer price of USD 15,000 is an assumed value that the text introduces with "suppose".</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div id="specLine"></div>
+  <div>Formulas: <i>AI Infrastructure and Semiconductors</i>, Session 4, Section 0 ("This formula is an approximation too"), Section 5 (the economics of yield), and the solutions to Exercises 1–3 in Self-study appendix A. For a comparison of GDPW approximations, see de Vries (2005).</div>
+  <div><i>AI Infrastructure and Semiconductors</i>, Session 4 interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a> and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through the <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var DATA = window.BOOK_DATA;
+  if (!DATA || !DATA.wafer || !DATA.wafer.d_mm) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>The shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  var DMM = DATA.wafer.d_mm;   //
+  //
+  var INIT_W = { area: 800, fx: 0, fy: 0, d0: 0.1, wp: 15000, alpha: 0 };   //
+  var INIT_D = { lam: 0.8, n: 10, area: 800, d0: 0.1, alpha: 2 };
+  var ALPHAS = [0.5, 1, 1.5, 2, 3, 5, 10, 20, 50, 100];
+  var st = { area: INIT_W.area, fx: INIT_W.fx, fy: INIT_W.fy, d0: INIT_W.d0, wp: INIT_W.wp, alpha: INIT_W.alpha };
+  var sd = { lam: INIT_D.lam, nlog: Math.log10(INIT_D.n), area: INIT_D.area, d0: INIT_D.d0, ai: ALPHAS.indexOf(INIT_D.alpha) };
+
+  //
+  //
+  function walkDies(A, d, fx, fy, onFull, onPartial) {
+    var s = Math.sqrt(A), R = d / 2, R2 = R * R + 1e-9, ox = fx * s / 20, oy = fy * s / 20, n = 0;
+    var k0 = Math.floor((-R - ox) / s) - 1, k1 = Math.ceil((R - ox) / s) + 1;
+    var m0 = Math.floor((-R - oy) / s) - 1, m1 = Math.ceil((R - oy) / s) + 1;
+    for (var k = k0; k <= k1; k++) {
+      var x0 = ox + k * s, x1 = x0 + s, xf = Math.max(x0 * x0, x1 * x1);
+      var xn = x0 > 0 ? x0 * x0 : x1 < 0 ? x1 * x1 : 0;
+      for (var m = m0; m <= m1; m++) {
+        var y0 = oy + m * s, y1 = y0 + s, yf = Math.max(y0 * y0, y1 * y1);
+        if (xf + yf <= R2) { n++; if (onFull) onFull(x0, y0, s); }
+        else if (onPartial) {
+          var yn = y0 > 0 ? y0 * y0 : y1 < 0 ? y1 * y1 : 0;
+          if (xn + yn < R * R) onPartial(x0, y0, s);
+        }
+      }
+    }
+    return n;
+  }
+  function countDies(A, d, fx, fy) { return walkDies(A, d, fx, fy); }
+  var statCache = {};
+  function offsetStats(A, d) {          //
+    var key = A + "|" + d;
+    if (statCache[key]) return statCache[key];
+    var sum = 0, mn = Infinity, mx = -Infinity;
+    for (var i = 0; i < 20; i++) for (var j = 0; j < 20; j++) {
+      var c = countDies(A, d, i, j); sum += c; if (c < mn) mn = c; if (c > mx) mx = c;
+    }
+    return (statCache[key] = { mean: sum / 400, min: mn, max: mx });
+  }
+  function gdpw2(A, d) { return Math.PI * d * d / 4 / A - Math.PI * d / Math.sqrt(2 * A); }
+  function gdpw1(A, d) { return Math.PI * d * d / 4 / A - Math.PI * d / Math.sqrt(A); }
+  function yieldOf(A, d0, alpha) {      //
+    var lam = A / 100 * d0;
+    return alpha ? Math.pow(1 + lam / alpha, -alpha) : Math.exp(-lam);
+  }
+  function costMul(A, d, d0, alpha) { return 1 / (gdpw2(A, d) * yieldOf(A, d0, alpha)); }   //
+  function a50(d0) { return Math.LN2 / d0 * 100; }   // mm²
+  function partition(lam, n) { return Math.pow(1 - lam / n, n); }
+
+  //
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function rnorm(rng) { var u = 1 - rng(), v = rng(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function rgamma(rng, a) {             //
+    if (a < 1) return rgamma(rng, a + 1) * Math.pow(1 - rng(), 1 / a);
+    var dd = a - 1 / 3, c = 1 / Math.sqrt(9 * dd);
+    for (;;) {
+      var x, v; do { x = rnorm(rng); v = 1 + c * x; } while (v <= 0);
+      v = v * v * v; var u = 1 - rng();
+      if (u < 1 - 0.0331 * x * x * x * x || Math.log(u) < 0.5 * x * x + dd * (1 - v + Math.log(v))) return dd * v;
+    }
+  }
+  function rpois(rng, l) { var L = Math.exp(-l), k = 0, p = 1; do { k++; p *= rng(); } while (p > L && k < 1000); return k - 1; }
+
+  function tpl(s, o) { return s.replace(/\{(\w+)\}/g, function (m, k) { return k in o ? String(o[k]) : m; }); }   //
+  function f(x, dg) { return x.toLocaleString("ko-KR", { minimumFractionDigits: dg, maximumFractionDigits: dg }); }
+  function sgn(x, dg) { return (x < 0 ? "−" : "+") + f(Math.abs(x), dg); }
+  function $(id) { return document.getElementById(id); }
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function aName(a) { return f(a, a % 1 ? 1 : 0); }
+  function modelName(a) { return a ? "negative binomial α " + aName(a) : "Poisson"; }
+
+  //
+  function drawWafer() {
+    var A = st.area, s = Math.sqrt(A), R = DMM / 2, pad = 4;
+    var svg = el("svg", { viewBox: (-R - pad) + " " + (-R - pad) + " " + (2 * R + 2 * pad) + " " + (2 * R + 2 * pad) });
+    var clip = el("clipPath", { id: "wclip" }); clip.appendChild(el("circle", { cx: 0, cy: 0, r: R }));
+    var defs = el("defs", {}); defs.appendChild(clip); svg.appendChild(defs);
+    svg.appendChild(el("circle", { cx: 0, cy: 0, r: R, fill: "var(--bg)", stroke: "var(--mut)", "stroke-width": 0.8 }));
+    var gP = el("g", { fill: "none", stroke: "var(--mut)", "stroke-width": 0.4, "stroke-dasharray": "1.6 1.2", opacity: 0.55, "clip-path": "url(#wclip)" });
+    var gF = el("g", { "stroke-width": Math.min(0.6, s / 40) });
+    var gD = el("g", { fill: "var(--bad)", stroke: "var(--card)", "stroke-width": 0.3 });
+    var rng = mulberry32(20261008), clean = 0, total = 0;
+    walkDies(A, DMM, st.fx, st.fy, function (x0, y0, w) {
+      //
+      var dens = st.alpha ? st.d0 * rgamma(rng, st.alpha) / st.alpha : st.d0;
+      var k = rpois(rng, A / 100 * dens);
+      total++; if (k === 0) clean++;
+      gF.appendChild(el("rect", { x: x0, y: y0, width: w, height: w, fill: k ? "var(--bad)" : "var(--soft)", "fill-opacity": k ? 0.4 : 1, stroke: "var(--accent)" }));
+      for (var i = 0; i < k; i++) gD.appendChild(el("circle", { cx: x0 + rng() * w, cy: y0 + rng() * w, r: 1.5 }));
+    }, function (x0, y0, w) {
+      gP.appendChild(el("rect", { x: x0, y: y0, width: w, height: w }));
+    });
+    svg.appendChild(gP); svg.appendChild(gF); svg.appendChild(gD);
+    svg.appendChild(el("path", { d: "M-6,0H6M0,-6V6", stroke: "var(--fg)", "stroke-width": 1 }));
+    svg.appendChild(el("circle", { cx: st.fx * s / 20, cy: st.fy * s / 20, r: 2.4, fill: "var(--accent2)" }));
+    $("wmap").replaceChildren(svg);
+    return { clean: clean, total: total };
+  }
+
+  function updateWafer() {
+    var A = st.area, cnt = countDies(A, DMM, st.fx, st.fy), S = offsetStats(A, DMM);
+    var g2 = gdpw2(A, DMM), g1 = gdpw1(A, DMM), Y = yieldOf(A, st.d0, st.alpha), good = g2 * Y, cm = 1 / good;
+    var Y100 = yieldOf(100, st.d0, st.alpha), g100 = gdpw2(100, DMM), ratio = cm / costMul(100, DMM, st.d0, st.alpha);
+    $("areaOut").textContent = f(A, 0) + " mm²";
+    $("offxOut").textContent = st.fx + "/20 of a side";
+    $("offyOut").textContent = st.fy + "/20 of a side";
+    $("d0Out").textContent = f(st.d0, 2) + " /cm²";
+    $("wpOut").textContent = tpl("USD {n}", { n: f(st.wp, 0) });
+    $("oCnt").innerHTML = f(cnt, 0) + " <small>dies</small>";
+    $("oMean").innerHTML = f(S.mean, 1) + " <small>(" + S.min + "~" + S.max + ")</small>";
+    $("oG2").innerHTML = f(g2, 1) + " <small>" + sgn((g2 / S.mean - 1) * 100, 1) + "%</small>";
+    $("oG1").innerHTML = f(g1, 1) + " <small>" + sgn((g1 / S.mean - 1) * 100, 1) + "%</small>";
+    $("oYlab").textContent = "Yield Y (" + modelName(st.alpha) + ")";
+    $("oY").textContent = f(Y * 100, 1) + "%";
+    $("oGood").textContent = f(good, 1);
+    $("oCost").innerHTML = f(cm, 5) + " W <small>≈ " + tpl("USD {n} (W assumed)</small>", { n: f(st.wp * cm, 0) });
+    $("oRatio").innerHTML = f(ratio, 1) + "× <small>= area " + f(A / 100, 1) + " × yield " + f(Y100 / Y, 2) + " × edge " + f(g100 / (g2 * A / 100), 2) + "</small>";
+    $("oA50").innerHTML = f(a50(st.d0), 0) + " <small>mm²</small>";
+    document.querySelectorAll("#areaSeg button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === A)); });
+    var smp = drawWafer();
+    $("wNote").textContent = "The dots are one random defect sample with a fixed seed" +
+      (st.alpha ? " (for the negative binomial, the defect density was scattered die by die with a gamma distribution)" : "") +
+      ". In this sample, of " + smp.total + " dies, " + smp.clean + " have no defect. The yield, good dies and cost in the readout are computed from the formulas.";
+  }
+
+  //
+  function nNow() { return Math.max(Math.round(Math.pow(10, sd.nlog)), Math.ceil(sd.lam)); }   // p = λ/n ≤ 1
+  function drawPart() {
+    var W = 440, H = 230, L = 44, R = 26, T = 12, B = 34, lam = sd.lam, n = nNow(), lim = Math.exp(-lam);
+    function sx(lg) { return L + lg / 3 * (W - L - R); }
+    function sy(y) { return H - B - y * (H - T - B); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    svg.appendChild(g);
+    [0, 1, 2, 3].forEach(function (e) {
+      g.appendChild(el("line", { x1: sx(e), x2: sx(e), y1: T, y2: H - B }));
+      svg.appendChild(el("text", { x: sx(e), y: H - B + 16, "text-anchor": "middle", "class": "tick" }, f(Math.pow(10, e), 0)));
+    });
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (y) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(y), y2: sy(y) }));
+      svg.appendChild(el("text", { x: L - 6, y: sy(y) + 4, "text-anchor": "end", "class": "tick" }, f(y, 2)));
+    });
+    svg.appendChild(el("text", { x: W - R, y: H - 4, "text-anchor": "end", "font-size": 11.5, opacity: 0.8 }, "Cells n [log]"));
+    svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(lim), y2: sy(lim), stroke: "var(--accent)", "stroke-dasharray": "5 4" }));
+    var tl = el("text", { x: W - R - 4, y: sy(lim) - 7, "text-anchor": "end", "font-size": 12, fill: "var(--accent)" }, "e");
+    tl.appendChild(el("tspan", { dy: -5, "font-size": 9 }, "−λ"));
+    tl.appendChild(el("tspan", { dy: 5 }, " = " + f(lim, 4)));
+    svg.appendChild(tl);
+    var d = "", seen = {}, started = false;
+    for (var lg = 0; lg <= 3.0001; lg += 0.01) {
+      var k = Math.round(Math.pow(10, lg)); if (seen[k] || k < lam) continue; seen[k] = 1;
+      d += (started ? " L" : "M") + sx(Math.log10(k)).toFixed(1) + "," + sy(partition(lam, k)).toFixed(1); started = true;
+    }
+    svg.appendChild(el("path", { d: d, fill: "none", stroke: "var(--accent2)", "stroke-width": 2.2 }));
+    var cy = sy(partition(lam, n)), cx = sx(Math.log10(n));
+    svg.appendChild(el("circle", { cx: cx, cy: cy, r: 5.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.appendChild(el("text", { x: Math.min(cx + 8, W - R - 110), y: cy + 20, "font-size": 12, "font-weight": 700, fill: "var(--accent2)" }, "n = " + f(n, 0) + " → " + f(partition(lam, n), 4)));
+    $("pchart").replaceChildren(svg);
+  }
+  function updatePart() {
+    var n = nNow(), v = partition(sd.lam, n), lim = Math.exp(-sd.lam);
+    $("lamOut").textContent = f(sd.lam, 2);
+    $("nOut").textContent = f(n, 0);
+    $("oPart").textContent = f(v, 4);
+    $("oLim").textContent = f(lim, 4);
+    $("oFrac").textContent = f(v / lim * 100, 1) + "%";
+    drawPart();
+  }
+
+  //
+  function alphaNow() { return ALPHAS[sd.ai]; }
+  function drawYield() {
+    var W = 440, H = 250, L = 44, R = 62, T = 12, B = 34, a = alphaNow(), d0 = sd.d0;
+    function sx(A) { return L + (A - 50) / 808 * (W - L - R); }
+    function sy(y) { return H - B - y * (H - T - B); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    svg.appendChild(g);
+    [100, 200, 400, 600, 800].forEach(function (A) {
+      g.appendChild(el("line", { x1: sx(A), x2: sx(A), y1: T, y2: H - B }));
+      svg.appendChild(el("text", { x: sx(A), y: H - B + 16, "text-anchor": "middle", "class": "tick" }, f(A, 0)));
+    });
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (y) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(y), y2: sy(y) }));
+      svg.appendChild(el("text", { x: L - 6, y: sy(y) + 4, "text-anchor": "end", "class": "tick" }, f(y * 100, 0) + "%"));
+    });
+    svg.appendChild(el("text", { x: W - R, y: H - 4, "text-anchor": "end", "font-size": 11.5, opacity: 0.8 }, "Die area A [mm²]"));
+    var curves = [{ a: 0, name: "Poisson", col: "var(--accent)", w: 2.2 }];
+    [5, 2, 1].forEach(function (x) { curves.push({ a: x, name: "α " + x, col: x === a ? "var(--accent2)" : "var(--mut)", w: x === a ? 2.6 : 1.2 }); });
+    if ([5, 2, 1].indexOf(a) < 0) curves.push({ a: a, name: "α " + aName(a), col: "var(--accent2)", w: 2.6 });
+    var labels = [];
+    curves.forEach(function (c) {
+      var d = "";
+      for (var A = 50; A <= 858; A += 4) d += (A === 50 ? "M" : " L") + sx(A).toFixed(1) + "," + sy(yieldOf(A, d0, c.a)).toFixed(1);
+      d += " L" + sx(858).toFixed(1) + "," + sy(yieldOf(858, d0, c.a)).toFixed(1);
+      svg.appendChild(el("path", { d: d, fill: "none", stroke: c.col, "stroke-width": c.w, "stroke-opacity": c.w > 2 ? 1 : 0.75 }));
+      labels.push({ y: sy(yieldOf(858, d0, c.a)), t: c.name, col: c.col, b: c.w > 2 });
+    });
+    labels.sort(function (p, q) { return p.y - q.y; });
+    for (var i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 12) labels[i].y = labels[i - 1].y + 12;
+    labels.forEach(function (lb) { svg.appendChild(el("text", { x: sx(858) + 5, y: lb.y + 4, "font-size": 11.5, fill: lb.col, "font-weight": lb.b ? 700 : 400 }, lb.t)); });
+    var x = sx(sd.area);
+    svg.appendChild(el("line", { x1: x, x2: x, y1: T, y2: H - B, stroke: "var(--fg)", "stroke-opacity": 0.45, "stroke-dasharray": "3 3" }));
+    svg.appendChild(el("circle", { cx: x, cy: sy(yieldOf(sd.area, d0, 0)), r: 4.5, fill: "var(--accent)", stroke: "var(--card)", "stroke-width": 1.5 }));
+    svg.appendChild(el("circle", { cx: x, cy: sy(yieldOf(sd.area, d0, a)), r: 4.5, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 1.5 }));
+    $("ychart").replaceChildren(svg);
+  }
+  //
+  function drawGrids() {
+    //
+    var lam = sd.area / 100 * sd.d0, a = alphaNow(), M = Math.round(100 * lam), rng = mulberry32(41);
+    var hitsU = [], hitsG = [], i, w = [], cum = 0;
+    for (i = 0; i < 100; i++) { hitsU.push([]); hitsG.push([]); }
+    for (i = 0; i < M; i++) hitsU[Math.floor(rng() * 100)].push([rng(), rng()]);
+    for (i = 0; i < 100; i++) { cum += rgamma(rng, a); w.push(cum); }
+    for (i = 0; i < M; i++) {
+      var u = rng() * cum, j = 0; while (j < 99 && w[j] < u) j++;
+      hitsG[j].push([rng(), rng()]);
+    }
+    function grid(hits) {
+      var svg = el("svg", { viewBox: "0 0 101 101" }), clean = 0;
+      hits.forEach(function (h, k) {
+        var x = (k % 10) * 10 + 1, y = Math.floor(k / 10) * 10 + 1;
+        if (!h.length) clean++;
+        svg.appendChild(el("rect", { x: x, y: y, width: 9, height: 9, rx: 0.8, fill: h.length ? "var(--bad)" : "var(--soft)", "fill-opacity": h.length ? 0.4 : 1, stroke: "var(--accent)", "stroke-width": 0.35 }));
+        h.forEach(function (p) { svg.appendChild(el("circle", { cx: x + 1 + p[0] * 7, cy: y + 1 + p[1] * 7, r: 0.75, fill: "var(--bad)" })); });
+      });
+      return { svg: svg, clean: clean };
+    }
+    var gu = grid(hitsU), gg = grid(hitsG), box = $("grids");
+    box.replaceChildren();
+    [[gu, "Uniform (Poisson)"], [gg, "Gamma-scattered density"]].forEach(function (p) {
+      var fig = document.createElement("figure"); fig.appendChild(p[0].svg);
+      var cap = document.createElement("figcaption"); cap.innerHTML = p[1] + "<br>Clean dies <b>" + p[0].clean + "</b>/100";
+      fig.appendChild(cap); box.appendChild(fig);
+    });
+    return { M: M, cu: gu.clean, cg: gg.clean };
+  }
+  function updateNB() {
+    var a = alphaNow(), A = sd.area, lam = A / 100 * sd.d0, yp = yieldOf(A, sd.d0, 0), yn = yieldOf(A, sd.d0, a);
+    $("area2Out").textContent = f(A, 0) + " mm² (" + f(A / 100, 2) + " cm²)";
+    $("d02Out").textContent = f(sd.d0, 2) + " /cm²";
+    $("alphaOut").textContent = aName(a);
+    $("oLam2").textContent = f(lam, 2);
+    $("oYP").textContent = f(yp * 100, 2) + "%";
+    $("oYNlab").textContent = "Negative binomial yield (α " + aName(a) + ")";
+    $("oYN").textContent = f(yn * 100, 2) + "%";
+    $("oDiff").innerHTML = sgn((yn - yp) * 100, 2) + " <small>%p</small>";
+    var v = sd.d0 * sd.d0 / a;
+    $("oVar").textContent = v >= 0.001 ? f(v, 4) : v.toExponential(2);
+    $("oCv").textContent = f(1 / Math.sqrt(a), 2);
+    drawYield();
+    var s = drawGrids();
+    $("gNote").textContent = "The two grids on the right are fixed-seed samples that scatter the same " + s.M + " defects (= 100λ) over 100 dies (the seed was chosen so that, in the initial state, the samples land near the formula values; other samples scatter more widely). The left grid places them uniformly; the right places them in proportion to a density scattered die by die with a gamma distribution. In this sample the clean dies number " +
+      s.cu + " and " + s.cg + ". The formulas give " + f(yp * 100, 1) + "% and " + f(yn * 100, 1) + "%.";
+  }
+
+  //
+  //
+  function checkRows() {
+    var rows = [];
+    function rd(x, dg) { var p = Math.pow(10, dg); return Math.round(x * p) / p; }
+    function add(name, got, exp, dg, alt) {
+      var g = rd(got, dg), ok = Math.abs(g - exp) < 1e-9;
+      var status = ok ? "match" : (alt !== undefined && Math.abs(rd(alt, dg) - exp) < 1e-9 ? "round" : "miss");
+      rows.push({ name: name, got: g, expected: exp, status: status, shown: f(g, dg), shownExp: f(exp, dg) });
+    }
+    function addS(name, got, exp) { rows.push({ name: name, got: got, expected: exp, status: got === exp ? "match" : "miss", shown: got, shownExp: exp }); }
+    var AS = [100, 400, 800];
+    var EXP = {
+      mean: [647.8, 147.8, 68.2], range: ["640~657", "144~151", "66~71"], orig: [648, 148, 68],
+      g2: [640.2, 143.4, 64.8], g1: [612.6, 129.6, 55.0], p2: [-1.2, -3.0, -5.0], p1: [-5.4, -12.3, -19.3],
+      //
+      good: [579.3, 96.1, 29.1], cost: [0.00173, 0.01040, 0.03435], yRound: [0.905, 0.670, 0.449]
+    };
+    AS.forEach(function (A, i) {
+      var S = offsetStats(A, DMM);
+      add("Section 0 · counted mean " + A + " mm²", S.mean, EXP.mean[i], 1);
+      addS("Section 0 · range " + A + " mm²", S.min + "~" + S.max, EXP.range[i]);
+      add("Section 0 · count at origin (0,0) " + A + " mm²", countDies(A, DMM, 0, 0), EXP.orig[i], 0);
+      add("Section 0 · √(2A) formula " + A + " mm²", gdpw2(A, DMM), EXP.g2[i], 1);
+      add("Section 0 · √A formula " + A + " mm²", gdpw1(A, DMM), EXP.g1[i], 1);
+      add("Section 0 · √(2A) formula vs. mean " + A + " mm² (%)", (gdpw2(A, DMM) / S.mean - 1) * 100, EXP.p2[i], 1);
+      add("Section 0 · √A formula vs. mean " + A + " mm² (%)", (gdpw1(A, DMM) / S.mean - 1) * 100, EXP.p1[i], 1);
+    });
+    [[50, 95.1], [100, 90.5], [200, 81.9], [400, 67.0], [600, 54.9], [800, 44.9]].forEach(function (r) {
+      add("Section 5 · yield D₀ 0.1, " + r[0] + " mm² (%)", yieldOf(r[0], 0.1, 0) * 100, r[1], 1);
+    });
+    //
+    [[0.05, [97.5, 95.1, 90.5, 81.9, 74.1, 67.0]], [0.2, [90.5, 81.9, 67.0, 44.9, 30.1, 20.2]]].forEach(function (c) {
+      [50, 100, 200, 400, 600, 800].forEach(function (A, i) {
+        add("Exercise 1 · yield D₀ " + c[0] + ", " + A + " mm² (%)", yieldOf(A, c[0], 0) * 100, c[1][i], 1);
+      });
+    });
+    [[0.05, 1386], [0.1, 693], [0.2, 347]].forEach(function (r) { add("Exercise 1 · A₅₀ D₀ " + r[0] + " (mm²)", a50(r[0]), r[1], 0); });
+    AS.forEach(function (A, i) {
+      var g = gdpw2(A, DMM), Y = yieldOf(A, 0.1, 0);
+      add("Exercise 2 · GDPW " + A + " mm²", g, EXP.g2[i], 1);
+      //
+      add("Exercise 2 · good dies " + A + " mm²", g * Y, EXP.good[i], 1, rd(g, 1) * EXP.yRound[i]);
+      //
+      add("Exercise 2 · cost per die " + A + " mm² (× W)", 1 / (g * Y), EXP.cost[i], 5, 1 / rd(rd(g, 1) * EXP.yRound[i], 1));
+    });
+    add("Exercise 2 · cost ratio 800 ÷ 100 (×)", costMul(800, DMM, 0.1, 0) / costMul(100, DMM, 0.1, 0), 19.9, 1);
+    add("Exercise 2 · 800 mm² cost at W = USD 15,000 (USD)", 15000 * costMul(800, DMM, 0.1, 0), 515, 0);
+    [[10, 0.4344], [100, 0.4479], [1000, 0.4492]].forEach(function (r) { add("Section 5 · cell split λ 0.8, n = " + f(r[0], 0), partition(0.8, r[0]), r[1], 4); });
+    add("Section 5 · cell split limit e^−0.8", Math.exp(-0.8), 0.4493, 4);
+    [[0, "Poisson", 44.93], [5, "α 5", 47.61], [2, "α 2", 51.02], [1, "α 1", 55.56]].forEach(function (r) {
+      add("Exercise 3 · yield " + r[1] + ", λ 0.8 (%)", yieldOf(800, 0.1, r[0]) * 100, r[2], 2);
+    });
+    [[1, 0.01], [2, 0.005], [5, 0.002]].forEach(function (r) { add("Exercise 3 · Var(D) α " + r[0] + ", D₀ 0.1", 0.1 * 0.1 / r[0], r[1], 3); });
+    var iw = INIT_W;
+    add("Initial state (wafer) · count at offset (0,0)", countDies(iw.area, DMM, iw.fx, iw.fy), 68, 0);
+    add("Initial state (wafer) · " + iw.area + " mm², D₀ " + iw.d0 + " good dies", gdpw2(iw.area, DMM) * yieldOf(iw.area, iw.d0, iw.alpha), 29.1, 1);
+    add("Initial state (defect) · λ " + INIT_D.lam + ", n " + INIT_D.n, partition(INIT_D.lam, INIT_D.n), 0.4344, 4);
+    add("Initial state (defect) · A 800, D₀ 0.1, α 2 yield (%)", yieldOf(INIT_D.area, INIT_D.d0, INIT_D.alpha) * 100, 51.02, 2);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>Match</span>", round: "<span class='round'>Rounding diff</span>", miss: "<span class='miss'>Mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + r.shown + "</td><td class='num'>" + r.shownExp + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length, rnd = rows.filter(function (r) { return r.status === "round"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · no mismatches") + (rnd ? " · rounding diffs " + rnd : "");
+  }
+
+  //
+  function bindSeg(id, fn) {
+    var box = $(id);
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      box.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      fn(Number(b.dataset.v));
+    });
+  }
+  bindSeg("areaSeg", function (v) { st.area = v; $("area").value = v; updateWafer(); });
+  bindSeg("modelSeg", function (v) { st.alpha = v; updateWafer(); });
+  $("area").addEventListener("input", function (e) { st.area = Number(e.target.value); updateWafer(); });
+  $("offx").addEventListener("input", function (e) { st.fx = Number(e.target.value); updateWafer(); });
+  $("offy").addEventListener("input", function (e) { st.fy = Number(e.target.value); updateWafer(); });
+  $("d0").addEventListener("input", function (e) { st.d0 = Number(e.target.value); updateWafer(); });
+  $("wp").addEventListener("input", function (e) { st.wp = Number(e.target.value); updateWafer(); });
+  $("lam").addEventListener("input", function (e) { sd.lam = Number(e.target.value); updatePart(); });
+  $("nlog").addEventListener("input", function (e) { sd.nlog = Number(e.target.value); updatePart(); });
+  $("area2").addEventListener("input", function (e) { sd.area = Number(e.target.value); updateNB(); });
+  $("d02").addEventListener("input", function (e) { sd.d0 = Number(e.target.value); updateNB(); });
+  $("alpha").addEventListener("input", function (e) { sd.ai = Number(e.target.value); updateNB(); });
+  $("alpha").max = ALPHAS.length - 1;
+
+  $("specLine").textContent = "Wafer diameter " + DMM + " mm. Dies are square; edge exclusion and scribe line width are 0 (the Section 0 conditions in the text). Area is converted to cm² before use (100 mm² = 1 cm²).";
+  renderCheck();
+  updateWafer();
+  updatePart();
+  updateNB();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

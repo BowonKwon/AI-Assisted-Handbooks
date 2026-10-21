@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mixing HBM and HBF tiers</title>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="hbm-hbf-tier";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+/**/
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
+  --ok: #2e6b4a; --warn: #a3612c;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #8aa6e8; --accent2: #d3a06a; --mark: #2b2519; --soft: #1f2532;
+  --ok: #7fc39d; --warn: #d3a06a; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; word-break: keep-all; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 18px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 38px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 21px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { font-family: var(--mono); font-size: 14px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; white-space: nowrap; }
+.ctl.wide { grid-column: 1 / -1; }
+.ctl.wide > .lab { justify-content: flex-start; gap: 10px; }
+.ctl .sub { font-size: 12px; color: var(--mut); line-height: 1.5; }
+.tag { display: inline-block; font-size: 11px; line-height: 1.5; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--mut); white-space: nowrap; vertical-align: 1px; }
+.tag.assume { border-color: var(--accent2); color: var(--accent2); }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 5px 10px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; align-content: start; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 24px; color: var(--accent2); font-weight: 500; }
+
+.capbar { display: flex; height: 26px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--bg); }
+.capbar span { display: block; height: 100%; }
+.seg-hbm { background: var(--accent); }
+.seg-hbf { background: repeating-linear-gradient(135deg, var(--accent2) 0 4px, transparent 4px 7px); opacity: .75; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; }
+.legend svg { vertical-align: -2px; margin-right: 6px; }
+.caplab { font-size: 12.5px; color: var(--mut); margin-bottom: 4px; }
+
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 11.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Session 3, Section 6 · HBF</div>
+  <h1>Mixing HBM and HBF</h1>
+  <p class="lede">HBF does not replace HBM. It adds one tier to the memory hierarchy. Suppose that in one decode step a fraction f of the bytes read comes from HBF and the remaining 1−f from HBM. If the two are read one after the other, the time taken is the sum of the two shares.</p>
+  <div class="formula">B<sub>eff</sub> = 1 / [ (1−f)/B<sub>HBM</sub> + f/B<sub>HBF</sub> ]　·　C = C<sub>HBM</sub> + C<sub>HBF</sub>　·　HBM4 stack bandwidth = pin speed × 2,048 bits ÷ 8</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">Share read from HBF and effective bandwidth</h2>
+  <div class="bench" id="figure">
+    <div class="controls">
+      <div class="ctl">
+        <label for="f"><span>Fraction f read from HBF</span> <output id="fOut"></output></label>
+        <input type="range" id="f" min="0" max="1" step="0.001" value="0.316">
+        <div class="sub">The slider and the horizontal axis of the chart use a square-root scale to spread out small values of f.</div>
+        <div class="seg" id="presetSeg" style="margin-top:6px"><button type="button" data-v="example" aria-pressed="true">Text example</button></div>
+      </div>
+      <div class="ctl">
+        <label for="bf"><span>HBF stack bandwidth B<sub>HBF</sub> <span class="tag assume">assumed value</span></span> <output id="bfOut"></output></label>
+        <input type="range" id="bf" min="0.4" max="3" step="0.05" value="0.4">
+        <div class="seg" id="bfSeg">
+          <button type="button" data-v="0.4" aria-pressed="true">Low end 0.4</button>
+          <button type="button" data-v="3" aria-pressed="false">High end 3.0</button>
+          <button type="button" data-v="1.6" aria-pressed="false">1.6 · Sandisk first-generation product target</button>
+        </div>
+        <div class="sub">Slider range = the span of the three grades in the public specification released at OCP in 2026-08 (about 0.4–3.0 TB/s). The value for the middle grade could not be confirmed from public sources.</div>
+      </div>
+      <div class="ctl wide">
+        <div class="lab"><span>HBM4 stack bandwidth B<sub>HBM</sub></span> <span class="tag" id="bhTag"></span></div>
+        <div class="seg" id="bhSeg"></div>
+        <div class="sub" id="bhSub"></div>
+      </div>
+      <div class="ctl wide">
+        <div class="lab"><span>HBM4 stack capacity C<sub>HBM</sub></span> <span class="tag" id="chTag"></span></div>
+        <div class="seg" id="chSeg">
+          <button type="button" data-v="24" aria-pressed="false">24 GB</button>
+          <button type="button" data-v="36" aria-pressed="true">36 GB</button>
+          <button type="button" data-v="64" aria-pressed="false">64 GB · standard max</button>
+        </div>
+        <div class="sub">24–36 GB is the Samsung volume-production 12-high stack; 64 GB is the standard maximum (32Gb dies, 16-high). The HBF stack capacity C<sub>HBF</sub> is fixed at the public spec maximum of 512 GB.</div>
+      </div>
+    </div>
+    <dl class="readout">
+      <div class="big"><dt>Effective bandwidth B<sub>eff</sub></dt><dd id="oB"></dd></div>
+      <div><dt>Relative to HBM-only reads</dt><dd id="oP"></dd></div>
+      <div><dt>Total capacity C</dt><dd id="oC"></dd></div>
+      <div><dt>HBF share of step time</dt><dd id="oT"></dd></div>
+    </dl>
+    <div>
+      <div class="caplab" id="capLab"></div>
+      <div class="capbar" id="capbar" role="img" aria-label="HBM and HBF capacity comparison bars"></div>
+    </div>
+    <div class="chart" id="chart" role="img" aria-label="Effective bandwidth curve by fraction f read from HBF"></div>
+    <div class="legend" id="legend"></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>Check against the text (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">Worked example: f = 0.1, HBM4 3.3 TB/s and 36 GB (Samsung announced maximum), HBF 0.4 TB/s (assumed value) and 512 GB. The "Text" column holds values from the worked example in Session 3, Section 6 ("Mixing the two tiers"), from "Status and specifications", and from the Section 4 table "Specifications by generation" and the list below it.</caption>
+        <thead><tr><th>Item</th><th>Computed</th><th>Text</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s3" class="standalone-only">
+  <h2 id="s3">Data that can keep f small</h2>
+  <p>Once the share read from the slow tier grows even a little, that tier sets the overall speed. The place for HBF is therefore data that can keep f small: data that is mostly held and only occasionally read, such as the MoE expert weights not used in the current step. Which data qualifies is sorted out in Session 3, Exercise 4 ("Judging HBF fit") along four axes: read/write ratio, reuse distance, access granularity and latency sensitivity. The one-line rule is: "Is it read-only and large, and can you predict in advance when it will be needed?"</p>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this calculation leaves out</h2>
+  <ul class="limits">
+    <li>The model assumes the two tiers are read in sequence. Overlapping reads from both at once, and moving needed data into HBM ahead of time (prefetch), are not included.</li>
+    <li>The long latency of NAND is also folded into a single bandwidth number.</li>
+    <li>All bandwidth values are announced or assumed figures for a single stack.</li>
+    <li>As of October 2026 the first HBF standard specification has been published, but no volume-production product exists; the performance figures are spec ranges and targets.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>Values: for HBF, the first standard specification published at OCP on 2026-08-04 (announced by SK hynix: up to 512 GB per stack, three grades of about 0.4–3.0 TB/s) and the Sandisk first-generation product target (July 2025 material, 1.6 TB/s). For HBM4, JESD270-4 (8 Gbps) and the Samsung volume-shipment announcement (2026-02-12; 11.7 Gbps, up to 13 Gbps, up to 3.3 TB/s per stack, 12-high 24–36 GB).</div>
+  <div>Formula: <i>AI Infrastructure and Semiconductors</i>, Session 3, Section 6, "Mixing the two tiers: a simple model".</div>
+  <div><i>AI Infrastructure and Semiconductors</i>, interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) is under <a href="https://polyformproject.org/licenses/noncommercial/1.0.0">PolyForm Noncommercial 1.0.0</a> and the explanatory text under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through the <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issues</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.hbm_bus_bits) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#b0412e;padding:16px'>The shared constants (BOOK_DATA) are missing. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  var BUS = D.hbm_bus_bits.wide;        //
+  //
+  var C_HBF = 512;                      //
+  var BF_LO = 0.4, BF_HI = 3.0;         //
+  function busTB(gbps) { return gbps * BUS / 8 / 1000; }   //
+  //
+  var HBM = [
+    { k: "std",  B: busTB(8),    label: "HBM4 standard 8 Gbps · about 2 TB/s", tag: "JEDEC standard",
+      sub: "8 Gbps × 2,048 bits ÷ 8 = " + busTB(8).toFixed(3) + " TB/s (JESD270-4)." },
+    { k: "mass", B: busTB(11.7), label: "Volume 11.7 Gbps · about 3.0 TB/s", tag: "manufacturer figure",
+      sub: "11.7 Gbps × 2,048 bits ÷ 8 = " + busTB(11.7).toFixed(3) + " TB/s (Samsung volume-production operating speed)." },
+    { k: "max",  B: 3.3,         label: "Volume max 13 Gbps · 3.3 TB/s", tag: "manufacturer maximum",
+      sub: "13 Gbps × 2,048 bits ÷ 8 ≈ " + busTB(13).toFixed(2) + " TB/s. The worked example uses the Samsung figure ‘up to 3.3 TB/s per stack’ as announced." }
+  ];
+  var EXAMPLE = { f: 0.1, bh: "max", ch: 36, bf: 0.4 };   //
+  var state = { f: EXAMPLE.f, bh: EXAMPLE.bh, ch: EXAMPLE.ch, bf: EXAMPLE.bf };
+  var INIT = { f: state.f, bh: state.bh, ch: state.ch, bf: state.bf };
+
+  //
+  function beff(f, bh, bf) { return 1 / ((1 - f) / bh + f / bf); }
+  function tier(f, bh, bf, ch, cf) {
+    var tH = (1 - f) / bh, tF = f / bf, t = tH + tF;
+    return { b: 1 / t, ratio: (1 / t) / bh, cap: ch + cf, share: tF / t };
+  }
+
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: 0 }); }
+  function fix(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d, minimumFractionDigits: d }); }
+  function $(id) { return document.getElementById(id); }
+  function hbm(k) { return HBM.filter(function (h) { return h.k === k; })[0]; }
+  function bhNow() { return hbm(state.bh).B; }
+  function bhStr(b) { return fix(b, b === 3.3 ? 1 : 2); }
+  function pct(x) { return x * 100 < 10 && x > 0 ? fix(x * 100, 1) : fmt(x * 100); }
+  function isExample() { return state.f === EXAMPLE.f && state.bh === EXAMPLE.bh && state.ch === EXAMPLE.ch && state.bf === EXAMPLE.bf; }
+
+  //
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (tag === "text" && attrs.fill) e.style.fill = attrs.fill;   //
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  var W = 720, H = 290, L = 56, R = 104, T = 18, Bm = 46, YMAX = 3.5;
+  function sx(f) { return L + Math.sqrt(f) * (W - L - R); }
+  function sy(b) { return H - Bm - b / YMAX * (H - T - Bm); }
+  function pts(bh, bf) {
+    var out = [];
+    for (var i = 0; i <= 200; i++) { var u = i / 200, f = u * u; out.push([f, beff(f, bh, bf)]); }
+    return out;
+  }
+  function path(p) { return p.map(function (q, i) { return (i ? "L" : "M") + sx(q[0]).toFixed(1) + "," + sy(q[1]).toFixed(1); }).join(" "); }
+  function drawChart() {
+    var bh = bhNow(), svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    [0, 0.01, 0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1].forEach(function (f) {
+      g.appendChild(el("line", { x1: sx(f), x2: sx(f), y1: T, y2: H - Bm }));
+      svg.appendChild(el("text", { x: sx(f), y: H - Bm + 18, "text-anchor": "middle", "class": "tick" }, String(f)));
+    });
+    for (var b = 0; b <= YMAX + 1e-9; b += 0.5) {
+      g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(b), y2: sy(b) }));
+      svg.appendChild(el("text", { x: L - 8, y: sy(b) + 4, "text-anchor": "end", "class": "tick" }, b.toFixed(1)));
+    }
+    svg.appendChild(g);
+    svg.appendChild(el("text", { x: W - R, y: H - 8, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Fraction f read from HBF [square-root scale]"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Effective bandwidth [TB/s]"));
+
+    //
+    var lo = pts(bh, BF_LO), hi = pts(bh, BF_HI);
+    var band = path(lo) + " " + hi.slice().reverse().map(function (q) { return "L" + sx(q[0]).toFixed(1) + "," + sy(q[1]).toFixed(1); }).join(" ") + " Z";
+    svg.appendChild(el("path", { d: band, fill: "var(--accent)", "fill-opacity": 0.12, stroke: "none" }));
+    svg.appendChild(el("path", { d: path(lo), fill: "none", stroke: "var(--accent)", "stroke-width": 1.2, "stroke-opacity": 0.6 }));
+    svg.appendChild(el("path", { d: path(hi), fill: "none", stroke: "var(--accent)", "stroke-width": 1.2, "stroke-opacity": 0.6 }));
+    //
+    svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(bh), y2: sy(bh), stroke: "var(--fg)", "stroke-opacity": 0.55, "stroke-dasharray": "5 4" }));
+    //
+    svg.appendChild(el("path", { d: path(pts(bh, state.bf)), fill: "none", stroke: "var(--accent2)", "stroke-width": 2.6 }));
+
+    //
+    var labs = [
+      { y: sy(bh), t: "HBM only " + bhStr(bh), c: "var(--fg)" },
+      { y: sy(BF_HI), t: "HBF " + fix(BF_HI, 1), c: "var(--accent)" },
+      { y: sy(BF_LO), t: "HBF " + fix(BF_LO, 1), c: "var(--accent)" }
+    ].sort(function (a, b) { return a.y - b.y; });
+    for (var i = 1; i < labs.length; i++) if (labs[i].y - labs[i - 1].y < 14) labs[i].y = labs[i - 1].y + 14;
+    labs.forEach(function (q) { svg.appendChild(el("text", { x: W - R + 8, y: q.y + 4, "font-size": 12, fill: q.c }, q.t)); });
+
+    //
+    var now = beff(state.f, bh, state.bf), cx = sx(state.f), cy = sy(now);
+    svg.appendChild(el("circle", { cx: cx, cy: cy, r: 6, fill: "var(--accent2)", stroke: "var(--card)", "stroke-width": 2 }));
+    var anchor = state.f > 0.6 ? "end" : "start", dx = state.f > 0.6 ? -10 : 10;
+    var dy = now > 2.9 ? 22 : -12;
+    svg.appendChild(el("text", { x: cx + dx, y: cy + dy, "text-anchor": anchor, "font-size": 12.5, "font-weight": 700, fill: "var(--accent2)" }, "now " + fix(now, 2) + " TB/s"));
+    $("chart").replaceChildren(svg);
+
+    var solid = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--accent2)' stroke-width='2.6'/></svg>";
+    var dash = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--fg)' stroke-opacity='.55' stroke-width='1.4' stroke-dasharray='5 4'/></svg>";
+    $("legend").innerHTML = "<span>" + solid + "current B<sub>HBF</sub> " + fix(state.bf, 2) + " TB/s</span>" +
+      "<span><i style='background:var(--accent);opacity:.25'></i>HBF public spec range (0.4–3.0 TB/s)</span>" +
+      "<span>" + dash + "HBM-only reads</span>";
+  }
+
+  function drawCap(r) {
+    var tot = r.cap, sw = "display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:4px;";
+    $("capbar").innerHTML = "<span class='seg-hbm' style='width:" + (state.ch / tot * 100) + "%'></span>" +
+      "<span class='seg-hbf' style='width:" + (C_HBF / tot * 100) + "%'></span>";
+    $("capLab").innerHTML = "Capacity: <i style='" + sw + "background:var(--accent)'></i>HBM " + state.ch +
+      " GB　+　<i style='" + sw + "background:var(--accent2);opacity:.75'></i>HBF " + C_HBF + " GB (public spec maximum)　=　" + fmt(tot) + " GB";
+  }
+
+  function syncButtons() {
+    $("bhSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === state.bh)); });
+    $("chSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === state.ch)); });
+    $("bfSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Math.abs(Number(b.dataset.v) - state.bf) < 1e-9)); });
+    $("presetSeg").querySelector("button").setAttribute("aria-pressed", String(isExample()));
+    $("f").value = Math.sqrt(state.f).toFixed(3);
+    $("bf").value = state.bf;
+  }
+
+  function update() {
+    var bh = bhNow(), r = tier(state.f, bh, state.bf, state.ch, C_HBF), h = hbm(state.bh);
+    $("fOut").textContent = fix(state.f, Math.round(state.f * 1000) % 10 ? 3 : 2) + " (" + fmt(state.f * 100, 1) + "%)";
+    $("bfOut").textContent = fix(state.bf, 2) + " TB/s";
+    $("bhTag").textContent = h.tag;
+    $("bhSub").textContent = h.sub;
+    $("chTag").textContent = state.ch === 64 ? "standard max" : "manufacturer figure";
+    $("oB").innerHTML = fix(r.b, 2) + " <small>TB/s</small>";
+    $("oP").textContent = fmt(r.ratio * 100) + "%";
+    $("oC").innerHTML = fmt(r.cap) + " <small>GB</small>";
+    $("oT").innerHTML = pct(r.share) + "% <small>calculated</small>";
+    syncButtons();
+    drawCap(r);
+    drawChart();
+    var msg;
+    if (state.f === 0) msg = "With f = 0 everything is read from HBM. The effective bandwidth stays at B<sub>HBM</sub>, and HBF adds only capacity.";
+    else if (state.bf >= bh) msg = "With this setting B<sub>HBF</sub> (" + fix(state.bf, 2) + " TB/s) is at least B<sub>HBM</sub> (" + bhStr(bh) + " TB/s), so by the formula mixing never makes reads slower than HBM alone.";
+    else if (state.f > 0.2) msg = "If <b>" + fmt(state.f * 100, 1) + "%</b> of the bytes read come from HBF, the calculation puts <b>" + pct(r.share) + "%</b> of the step time into reading HBF. The effective bandwidth is " + fmt(r.ratio * 100) + "% of the HBM-only value. At this share, HBF sets the overall speed.";
+    else msg = "If <b>" + fmt(state.f * 100, 1) + "%</b> of the bytes read come from HBF, that small share already puts <b>" + pct(r.share) + "%</b> of the step time into reading HBF. The effective bandwidth is " + fmt(r.ratio * 100) + "% of the HBM-only value. A slightly larger share from the slow tier is enough for that tier to set the overall speed.";
+    $("msg").innerHTML = msg;
+  }
+
+  //
+  //
+  function checkRows() {
+    var rows = [];
+    function rnd(x, d) { var m = Math.pow(10, d); return Math.round(x * m) / m; }
+    function add(name, got, expected, d) {
+      var g = rnd(got, d);
+      rows.push({ name: name, got: g, expected: expected, status: g === expected ? "match" : "miss", d: d });
+    }
+    var ex = tier(0.1, 3.3, 0.4, 36, C_HBF), ex3 = tier(0.1, 3.3, 3.0, 36, C_HBF);
+    add("Worked example · B_eff (f 0.1, 3.3, 0.4) (TB/s)", ex.b, 1.91, 2);
+    add("〃 · vs. HBM only (%)", ex.ratio * 100, 58, 0);
+    add("〃 · B_eff if HBF is 3.0 (TB/s)", ex3.b, 3.27, 2);
+    add("〃 · capacity 36 + 512 (GB)", ex.cap, 548, 0);
+    add("HBM4 standard · 8 Gbps × 2,048 bits (TB/s)", busTB(8), 2, 0);
+    add("HBM4 volume · 11.7 Gbps × 2,048 bits (TB/s)", busTB(11.7), 3.0, 1);
+    add("HBM4 max · 13 Gbps × 2,048 bits (TB/s)", busTB(13), 3.3, 1);
+    add("HBF · max stack capacity (GB)", C_HBF, 512, 0);
+    //
+    var i0 = tier(INIT.f, hbm(INIT.bh).B, INIT.bf, INIT.ch, C_HBF);
+    var initSame = INIT.f === 0.1 && hbm(INIT.bh).B === 3.3 && INIT.ch === 36 && INIT.bf === 0.4 && C_HBF === 512;
+    var g0 = rnd(i0.b, 2);
+    rows.push({ name: "Initial state · B_eff (TB/s)", got: g0, expected: 1.91, status: initSame && g0 === 1.91 ? "match" : "miss",
+      shown: initSame ? undefined : "Different settings · " + fix(g0, 2), d: 2 });
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>Match</span>", round: "<span class='round'>Rounding diff</span>", miss: "<span class='miss'>Mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) {
+      return "<tr><td>" + r.name + "</td><td class='num'>" + (r.shown || fix(r.got, r.d)) + "</td><td class='num'>" + fix(r.expected, r.d) + "</td><td>" + tag[r.status] + "</td></tr>";
+    }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  //
+  HBM.forEach(function (h) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.v = h.k; b.textContent = h.label;
+    b.setAttribute("aria-pressed", String(h.k === state.bh));
+    $("bhSeg").appendChild(b);
+  });
+  $("bhSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.bh = b.dataset.v; update(); });
+  $("chSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.ch = Number(b.dataset.v); update(); });
+  $("bfSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.bf = Number(b.dataset.v); update(); });
+  $("presetSeg").addEventListener("click", function () { state.f = EXAMPLE.f; state.bh = EXAMPLE.bh; state.ch = EXAMPLE.ch; state.bf = EXAMPLE.bf; update(); });
+  $("f").addEventListener("input", function (e) { var u = Number(e.target.value); state.f = Math.round(u * u * 1000) / 1000; update(); });
+  $("bf").addEventListener("input", function (e) { state.bf = Math.round(Number(e.target.value) * 100) / 100; update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

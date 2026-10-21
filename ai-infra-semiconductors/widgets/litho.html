@@ -150,7 +150,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
       <div class="ctl"><div class="lab">EUV dose 배수 m (ArF와 같은 dose = 1)</div>
         <div class="seg" id="mSeg">
           <button type="button" data-v="1" aria-pressed="false">dose 그대로</button>
-          <button type="button" data-v="2" aria-pressed="false">2배 (실제 1~2배)</button>
+          <button type="button" data-v="2" aria-pressed="false">2배</button>
           <button type="button" data-v="R" aria-pressed="true">같은 요동 (193/13.5)</button>
         </div></div>
       <div class="ctl"><label for="m">dose 배수 m <output id="mOut"></output></label><input type="range" id="m" min="1" max="20" step="any" value="14.296"></div>
@@ -168,7 +168,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
       <div><dt>처리량 <span class="tag">극한</span></dt><dd id="oThr"></dd></div>
     </dl>
   </div>
-  <p class="note standalone-only">「극한」은 노광 시간이 전체를 지배할 때의 처리량이다. 웨이퍼 이송·정렬 같은 고정 시간 T₀가 있으면 떨어지는 폭은 그보다 작고, 얼마나 작은지는 T₀가 원래 노광 시간에 비해 얼마나 큰지에 달렸다(T₀가 노광 시간과 같으면 13%, 열 배면 45%로 떨어진다). 그래서 실제로는 dose를 일부만(ArF 30 mJ/cm² 대비 EUV 30~60 mJ/cm², 1~2배) 올리고, 레지스트 감도 개선과 설계 회피, 계측으로 나머지를 메운다.</p>
+  <p class="note standalone-only">「극한」은 노광 시간이 전체를 지배할 때의 처리량이다. 웨이퍼 이송·정렬 같은 고정 시간 T₀가 있으면 떨어지는 폭은 그보다 작고, 얼마나 작은지는 T₀가 원래 노광 시간에 비해 얼마나 큰지에 달렸다(T₀가 노광 시간과 같으면 13%, 열 배면 45%로 떨어진다). 그래서 실제로는 dose를 광자 수 차이만큼(14.3배) 올리지 않는다. ASML은 EUV 장비 처리량을 30 mJ/cm²(NXE:3600D·3800E)와 50 mJ/cm²(High-NA EXE:5000) 기준으로 공표하고, 나머지는 레지스트 감도 개선과 설계 회피, 계측으로 메운다.</p>
 </section>
 
 <!-- ③ 스텝 수율 (실습 4) -->
