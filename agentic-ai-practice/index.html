@@ -244,96 +244,251 @@ details>*:last-child{padding-bottom:10px}
   p,li{orphans:2;widows:2}
 }
 
-/* 『고삐를 쥐고 기계에게 일을 맡기는 법』 테마 — md2handbook 기본 CSS·인쇄 CSS 뒤에 붙는다.
-   팔레트(2026-10-13 개정): 채도를 낮춘 남회색(슬레이트 블루) + 은은한 모래색.
-   초록·주황 대비(첫 판)는 「아일랜드 국기 같다」는 소유자 의견으로 버렸다. 눈에 부담이 적게
-   모든 색은 저채도, 배경 틴트는 아주 옅게, 코드 상자는 밝은 회백색으로 둔다.
-   화면·PDF 모두 색을 쓴다(인쇄 CSS의 흑백 처리를 이 파일이 되돌린다). */
+/* 시리즈 B 라틴 글꼴(HB Serif·Sans·Mono = Source Serif 4·Source Sans 3·Source Code Pro 정적 인스턴스, OFL 1.1).
+   파일은 화면본·인쇄 산본 옆 fonts/ 에 둔다(config fonts_dir 가 복사). tools/handbook_fonts.py build-latin 이 만든다 */
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400i.woff2") format("woff2");font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-600i.woff2") format("woff2");font-weight:600;font-style:italic;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-700i.woff2") format("woff2");font-weight:700;font-style:italic;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-400i.woff2") format("woff2");font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-700i.woff2") format("woff2");font-weight:700;font-style:italic;font-display:block}
+@font-face{font-family:"HB Mono";src:url("fonts/hb-mono-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Mono";src:url("fonts/hb-mono-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+
+@font-face{font-family:"HB Symbols";src:url("fonts/hb-symbols-400.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+/* 시리즈 B 한국어 글꼴(HB Serif KR·Sans KR = Noto Serif KR·Noto Sans KR 서브셋 정적 400·700, OFL 1.1).
+   한글 음절은 KS X 1001 2,350자 + 세 책 원고에 나온 글자. 새 글자가 생기면 handbook_fonts.py check 로 확인 */
+@font-face{font-family:"HB Serif KR";src:url("fonts/hb-serif-kr-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif KR";src:url("fonts/hb-serif-kr-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans KR";src:url("fonts/hb-sans-kr-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans KR";src:url("fonts/hb-sans-kr-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+
+:root{--accent:#395785;--accent-ink:#304a71;--accent2:#8b7f6f;--tint:#e9edf2;--tint2:#f4f6f8;--accent-line:#a4b2c7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:#92a3bc;--accent-ink:#92a3bc;--accent2:#b9ab95;--tint:#1b232f;--tint2:#171c24;--accent-line:#26354d}}
+:root[data-theme="dark"]{--accent:#92a3bc;--accent-ink:#92a3bc;--accent2:#b9ab95;--tint:#1b232f;--tint2:#171c24;--accent-line:#26354d}
+
+/* ── 시리즈 B 공통(자습서 시리즈 — 반도체·실전편·원리편, 한·영) ─────────────
+   md2handbook 기본 CSS·인쇄 CSS·lang_css 뒤에 붙는다. config extra_css 목록:
+   fonts-latin.css (+ 한국어판 fonts-ko.css) → palette-{책}.css → series-b.css → 책별 덧붙임.
+   출처: output/영문판-디자인-2026-10-22/ 공통/series-common.css + 시안-B-modern/variant-B.css(2026-10-22 소유자 결정).
+   외부 요청 없음 — 글꼴은 책 옆 fonts/ 에서 읽는다(OFL 1.1, 라이선스 파일 동봉). */
+
+/* 의미 색(콜아웃)은 세 책이 같다 — 책마다 다른 것은 주색 하나뿐이다 */
 :root{
-  --accent:#3e5578; --accent2:#9a8463;
-  --tint:#eef1f6; --sand-bg:#f6f3ee;
-  --cw:#9b4f4f; --cw-bg:#f8efee;   /* ⚠️ 지킬 것 — 낮은 채도 장밋빛 */
-  --co:#3e5578; --co-bg:#eef1f6;   /* ✅ 반드시 할 것 — 기본색 */
-  --ch:#85704a; --ch-bg:#f7f3ea;   /* 💡 더 해 볼 것 — 모래색 */
-  --cr:#5f5878; --cr-bg:#f1f0f5;   /* 📖 더 읽기 — 회보라 */
-  --box-bg:#f7f7f5; --box-line:#dcdde0; --box-fg:#2b2f36;
-  --cc:#8c6656; --cx:#56637a;      /* Claude Code · Codex 꼬리표 */
+  --fg:#1d2026; --mut:#5c6370; --line:#e1e3e7; --bg:#fbfbfa; --card:#ffffff;
+  --cw:#9b4f4f; --cw-bg:#f8f0ef;   /* 주의 — 낮은 채도 장밋빛 */
+  --ch:#85704a; --ch-bg:#f7f3ea;   /* 힌트 — 모래색 */
+  --cr:#5b6170; --cr-bg:#f2f3f5;   /* 더 읽기 — 중성 회색 */
+  --box-bg:#f7f7f5; --box-line:#dcdde0;
+  --sand-bg:#f6f3ee;   /* 실전편 원고 SVG 가 쓰는 모래색 면(종전 theme.css 토큰 — 없으면 검은 면이 된다) */
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --accent:#a9bbd8; --accent2:#cbb58f;
-    --tint:#1d222b; --sand-bg:#24211c;
-    --cw:#e0a3a3; --cw-bg:#2a1f20; --co:#a9bbd8; --co-bg:#1d222b;
-    --ch:#d6c08f; --ch-bg:#26221a; --cr:#bdb6d6; --cr-bg:#211f29;
-    --box-bg:#1c1f25; --box-line:#30343c; --box-fg:#dfe3ea;
+    --fg:#e4e6ea; --mut:#9aa1ac; --line:#2c3039; --bg:#14161a; --card:#191c21;
+    --cw:#e0a3a3; --cw-bg:#2a1f20; --ch:#d6c08f; --ch-bg:#26221a; --cr:#b9bfcb; --cr-bg:#1f2228;
+    --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
   }
 }
 :root[data-theme="dark"]{
-  --accent:#a9bbd8; --accent2:#cbb58f;
-  --tint:#1d222b; --sand-bg:#24211c;
-  --cw:#e0a3a3; --cw-bg:#2a1f20; --co:#a9bbd8; --co-bg:#1d222b;
-  --ch:#d6c08f; --ch-bg:#26221a; --cr:#bdb6d6; --cr-bg:#211f29;
-  --box-bg:#1c1f25; --box-line:#30343c; --box-fg:#dfe3ea;
+  --fg:#e4e6ea; --mut:#9aa1ac; --line:#2c3039; --bg:#14161a; --card:#191c21;
+  --cw:#e0a3a3; --cw-bg:#2a1f20; --ch:#d6c08f; --ch-bg:#26221a; --cr:#b9bfcb; --cr-bg:#1f2228;
+  --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
 }
-
+:root{
+  /* 동봉 글꼴(HB …)을 맨 앞에. 영문판에는 HB … KR 파일이 없으므로 그 자리는 건너뛰고 시스템 글꼴로 간다 */
+  --serif:"HB Serif","HB Serif KR","HB Symbols",Georgia,"Noto Serif KR",serif;
+  --sans:"HB Sans","HB Sans KR","HB Symbols","Segoe UI",system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
+  --mono:"HB Mono","HB Sans KR","HB Symbols","Cascadia Mono",Consolas,"D2Coding",monospace;
+}
 *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 
-/* 표지 — 위쪽 가는 선 하나 */
-.cover{border-top:4px solid var(--accent)}
-.cover .kicker{color:var(--accent2)!important}
-.cover h1{color:var(--accent)}
+/* 숫자 — 제목·표에서 Georgia 의 옛 숫자(0·5 가 x높이로 내려앉음)가 보이던 것을 고른 숫자로 */
+h1,h2,h3,h4,th,td,.eyebrow{font-variant-numeric:lining-nums}
+td{font-variant-numeric:lining-nums tabular-nums}
 
-/* 장 머리 */
-.eyebrow{display:inline-block;background:var(--tint);color:var(--accent)!important;
-  border:1px solid var(--box-line);padding:2px 12px;border-radius:999px;letter-spacing:.08em}
-.chapter h1{color:var(--accent)}
-/* 주의: 장 첫 인용(「이 회차가 답하는 질문」)에 배경·padding 을 주는 규칙
-   (.chapter h1+blockquote …)을 넣으면 paged.js 조판이 0쪽에서 멈췄다(2026-10-13 실측,
-   규칙 단위 이분 탐색으로 특정). 인용문 꾸밈은 색만 바꾼다. */
-blockquote{border-left-color:var(--accent2)!important}
+/* 영어 머리글은 길다(기존 theme-en.css 와 같은 처리) */
+th{white-space:normal}
 
-/* 절 제목 */
-h2{color:var(--accent);border-bottom:1px solid var(--box-line)!important;
-  padding-left:10px;border-left:4px solid var(--accent2)}
-h3{color:var(--accent)!important}
+/* 인라인 코드·코드 상자 — 밝은 상자만. 큰 면적의 어두운 상자는 쓰지 않는다 */
+code{background:var(--tint)!important;color:var(--accent-ink)}
+pre{background:var(--box-bg)!important;border:1px solid var(--box-line)!important;
+  border-left:3px solid var(--accent)!important;border-radius:6px;
+  white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+pre code{background:none!important;color:inherit}
 
-/* 표 */
-.tw{border:1px solid var(--box-line)!important;border-radius:8px}
-th{background:var(--tint)!important;color:var(--accent)!important}
-
-/* 코드 — 밝은 회백색 상자, 왼쪽에 가는 기본색 선 */
-pre{background:var(--box-bg)!important;color:var(--box-fg)!important;
-  border:1px solid var(--box-line)!important;border-left:3px solid var(--accent)!important;
-  border-radius:8px}
-pre code{color:inherit;background:none!important}
-code{background:var(--tint)!important;color:var(--accent)}
-
-/* 콜아웃 */
-.callout{border:1px solid var(--box-line)!important;border-left:4px solid var(--accent)!important;
-  background:var(--tint)!important;border-radius:8px}
-.callout .ctitle{color:var(--accent)!important}
+/* 의미 콜아웃 색은 토큰으로만 */
 .callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
 .callout.warn .ctitle{color:var(--cw)!important}
-.callout.ok{border-left-color:var(--co)!important;background:var(--co-bg)!important}
-.callout.ok .ctitle{color:var(--co)!important}
-.callout.hint{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
-.callout.hint .ctitle{color:var(--ch)!important}
+.callout.ok{border-left-color:var(--accent)!important;background:var(--tint)!important}
+.callout.ok .ctitle{color:var(--accent-ink)!important}
+.callout.hint,.callout.tip{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
+.callout.hint .ctitle,.callout.tip .ctitle{color:var(--ch)!important}
 .callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
 .callout.ref .ctitle{color:var(--cr)!important}
 
-/* 도구 꼬리표: <span class="tag cc">Claude Code</span> · <span class="tag cx">Codex</span> */
+/* 실전편 도구 꼬리표(있으면) */
 .tag{display:inline-block;font-family:var(--sans);font-size:.74em;font-weight:600;
-  padding:0 8px;border-radius:999px;color:#fff;vertical-align:.1em;letter-spacing:.02em}
+  padding:0 8px;border-radius:999px;color:#fff;vertical-align:.1em;letter-spacing:.02em;background:var(--accent)}
+
+/* 링크 — 밑줄을 가늘게, 주색으로 */
+main a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px;
+  text-decoration-color:var(--accent-line)}
+
+/* 인쇄본 공통 */
+.pagedjs_page a[href^="http"]{color:var(--accent-ink)}
+.pagedjs_page .mb math{font-size:1em}
+
+/* 화면 — 본문 단을 오른쪽 칸 가운데에 둔다(넓은 화면에서 오른쪽만 비던 것) */
+@media (min-width:1081px){ main{margin:0 auto} }
+
+/* 인쇄본 — 변형 CSS 의 「.pagedjs_page .callout」 이 의미 색을 덮지 않게 다시 세운다(특이도 0,3,0) */
+.pagedjs_page .callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
+.pagedjs_page .callout.warn .ctitle{color:var(--cw)!important}
+.pagedjs_page .callout.hint,.pagedjs_page .callout.tip{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
+.pagedjs_page .callout.hint .ctitle,.pagedjs_page .callout.tip .ctitle{color:var(--ch)!important}
+.pagedjs_page .callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
+.pagedjs_page .callout.ref .ctitle{color:var(--cr)!important}
+
+/* 한국어판 — 한글에는 기울임·자간 벌림을 쓰지 않는다(가짜 기울임이 된다) */
+html[lang="ko"] .chapter > blockquote:first-of-type, html[lang="ko"] h3, html[lang="ko"] blockquote{font-style:normal!important}
+html[lang="ko"] .callout .ctitle, html[lang="ko"] .eyebrow, html[lang="ko"] th{letter-spacing:.02em!important}
+
+/* 휴대전화 — 큰 본문(시안 C 19px 등)을 한 단계 줄인다 */
+@media (max-width:600px){ main{font-size:17px!important} .chapter h1{font-size:2rem!important} .callout{padding:14px 16px!important} }
+
+/* ── 시안 B 「Modern technical」 ───────────────────────────────────
+   굵은 sans 제목 + 세리프 본문, 제목 위 짧은 주색 막대, 첫 콜아웃(Key takeaway 등)은 요약 상자,
+   나머지 NOTE 콜아웃은 「여백 노트」처럼 작은 sans·배경 없음, 표 머리 옅은 틴트·줄무늬. */
+
+main{max-width:780px;font-family:var(--serif);font-size:17.5px;line-height:1.64;color:var(--fg)}
+html[lang="ko"] main{max-width:840px;font-size:17px;line-height:1.8}
+.eyebrow{display:inline-block;font-family:var(--sans)!important;font-size:.72rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;color:#fff!important;background:var(--accent);padding:3px 10px;border-radius:3px;margin:0 0 14px!important}
+.chapter h1{font-family:var(--sans);font-weight:700;font-size:2.35rem;line-height:1.15;letter-spacing:-.018em;
+  color:var(--accent-ink);margin:0 0 20px}
+.chapter > blockquote:first-of-type{font-family:var(--sans);font-size:1.06em;color:var(--fg);border-left:3px solid var(--accent)!important}
+h2{font-family:var(--sans);font-weight:700;font-size:1.45rem;letter-spacing:-.01em;color:var(--fg);
+  border-bottom:0!important;margin:2.6em 0 .55em;padding:0}
+h2::before{content:"";display:block;width:34px;height:3px;background:var(--accent);margin:0 0 .55em}
+h3{font-family:var(--sans);font-weight:700;font-size:1.1rem;color:var(--fg)!important;margin:1.8em 0 .4em}
+h4{font-family:var(--sans);font-weight:700;color:var(--mut)}
+strong{font-weight:600}  /* 정적 글꼴 600(시안 가변 650) */
+hr{border:0!important;border-top:1px solid var(--line)!important}
+
+/* 표 */
+.tw{border:1px solid var(--line)!important;border-radius:6px;background:var(--card)}
+table{font-family:var(--sans);font-size:.86rem;line-height:1.5}
+th{background:var(--tint)!important;color:var(--accent-ink)!important;font-weight:700;font-size:.95rem;
+  letter-spacing:.04em;font-variant-caps:all-small-caps;border-bottom:1px solid var(--accent-line)!important}
+tbody tr:nth-child(even) td{background:var(--tint2)}
+
+/* 콜아웃 — 왼쪽 띠 */
+.callout{border:0!important;border-left:4px solid var(--accent)!important;background:var(--tint)!important;
+  border-radius:0 6px 6px 0;padding:14px 20px}
+.callout .ctitle{font-family:var(--sans)!important;font-size:.95rem!important;font-weight:700;letter-spacing:.06em;
+  font-variant-caps:all-small-caps;color:var(--accent-ink)!important}
+/* 장 요약 상자 = config key_callout_titles 에 적힌 제목의 NOTE(.key). 시안의 :first-of-type 은
+   원리편에서 링크 상자를 요약 상자로 만들었다 */
+.chapter aside.callout.note.key{border-left:0!important;border-top:3px solid var(--accent)!important;
+  border-radius:0 0 6px 6px;background:var(--tint)!important}
+.chapter aside.callout.note.key p{font-size:1.02em}
+/* 그 밖의 NOTE = 여백 노트풍 보조 정보 */
+.chapter aside.callout.note:not(.key){background:transparent!important;border-left:2px solid var(--line)!important;
+  font-family:var(--sans);font-size:.88em;color:var(--mut);padding:4px 0 4px 16px}
+.chapter aside.callout.note:not(.key) .ctitle{color:var(--mut)!important}
+.chapter aside.callout.note:not(.key) strong{color:var(--fg)}
+blockquote{border-left-color:var(--accent2)!important}
+details{border:1px solid var(--line)!important;border-radius:6px}
+details>summary{font-family:var(--sans);background:var(--tint)!important;color:var(--accent-ink)}
+
+/* 인쇄본 */
+@page{margin:20mm 27mm 21mm}
+.pagedjs_page main{font-size:10.3pt;line-height:1.55}
+.pagedjs_page .chapter .eyebrow{margin-top:8mm!important;font-size:7.2pt!important;color:#fff!important}
+.pagedjs_page .chapter h1{font-size:21pt;margin-bottom:10pt;color:var(--accent-ink)}
+.pagedjs_page h2{font-size:13pt;margin:17pt 0 5pt}
+.pagedjs_page h3{font-size:10.6pt;margin:11pt 0 3pt;color:#111!important}
+.pagedjs_page table{font-size:8.3pt}
+.pagedjs_page .tw{border:.6pt solid #cfd2d6!important}
+.pagedjs_page th{background:var(--tint)!important;color:var(--accent-ink)!important;font-size:8.6pt}
+.pagedjs_page .callout{border:0!important;border-left:3pt solid var(--accent)!important;background:var(--tint)!important}
+.pagedjs_page .chapter aside.callout.note.key{border-left:0!important;border-top:2.4pt solid var(--accent)!important}
+.pagedjs_page .chapter aside.callout.note:not(.key){background:transparent!important;border-left:1pt solid #cfd2d6!important}
+.pagedjs_page .callout .ctitle{color:var(--accent-ink)!important}
+.pagedjs_page blockquote{color:#222;border-left:2pt solid var(--accent)!important}
+.pagedjs_page div.sol{border:.6pt solid #c9c9c9}
+.pagedjs_page div.sol>.solhead{background:var(--tint);color:var(--accent-ink);font-family:var(--sans)}
+html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
+
+/* 표지 — 시안 견본에는 표지가 없었다. 장 머리와 같은 말투로: 위쪽 주색 선, sans 굵은 제목 */
+.cover{border-top:4px solid var(--accent)}
+.cover .kicker{color:var(--accent)!important}
+.cover h1{font-family:var(--sans);font-weight:700;letter-spacing:-.018em;color:var(--accent-ink)}
+.printtoc h2::before{display:none}
+
+/* 인쇄본 — 「fi」「fl」 합자를 끈다. Source Serif 합자가 PDF 텍스트에서 「f」 한 글자로 뽑힌 곳이 있었다
+   (반도체 영문판 170쪽 「fixed」→「fxed」, handbook_pdf_coverage 의심 1). 검색·복사·소실 점검을 지키려고 */
+.pagedjs_page{font-variant-ligatures:no-common-ligatures}
+
+/* 인쇄본 머리글 — 좌우 여백이 넓어져(27mm) 긴 장 제목이 머리글에서 두 줄로 꺾였다(원리편 영문판 0장 등 15쪽).
+   왼쪽(책 이름)은 제 폭만, 오른쪽(장 제목)은 남은 폭을 다 쓰고 그래도 넘칠 때만 말줄임표로 한 줄에 둔다.
+   paged.js 는 ::after 를 block 으로 두어 말줄임표가 안 나오므로 inline 으로 바꾼다 */
+.pagedjs_margin-top{display:flex!important}
+.pagedjs_margin-top-left{flex:0 0 auto!important;width:auto!important}
+.pagedjs_margin-top-center{flex:0 0 0!important;width:0!important}
+.pagedjs_margin-top-right{flex:1 1 0!important;min-width:0!important;width:auto!important}
+.pagedjs_margin-top-left .pagedjs_margin-content{white-space:nowrap}
+.pagedjs_margin-top-right .pagedjs_margin-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:block;text-align:right;padding-left:8mm}
+.pagedjs_margin-top-right .pagedjs_margin-content::after{display:inline!important}
+
+/* ── 색 세기 2단계(2026-10-23 소유자 결정) ─────────────────────────────
+   주색 면적은 늘리지 않고 선·글자에 주색을 더 준다. 주색 채도 +8%p·틴트 11%는 palette-{책}.css.
+   시안: output/영문판-디자인-2026-10-22/색세기-머리글-시안/(design-color/css/level-2.css). 1단계 값은 README 변경 이력 */
+h2::before{width:52px;height:4px}
+.chapter h1{padding-bottom:.32em;border-bottom:2px solid var(--accent-line)}
+.chapter > blockquote:first-of-type{border-left-width:4px!important}
+.callout{border-left-width:5px!important}
+.chapter aside.callout.note.key{border-top-width:4px!important}
+.chapter aside.callout.note.key .ctitle{color:var(--accent)!important}
+.chapter aside.callout.note:not(.key){border-left:3px solid var(--accent-line)!important}
+.chapter aside.callout.note:not(.key) .ctitle{color:var(--accent-ink)!important}
+th{border-bottom:1.5px solid var(--accent)!important}
+main a{text-decoration-color:var(--accent)}
+hr{border-top-color:var(--accent-line)!important}
+/* 인쇄본 */
+.pagedjs_page .chapter h1{padding-bottom:5pt;border-bottom:1.4pt solid var(--accent-line)}
+.pagedjs_page .callout{border-left-width:3.6pt!important}
+.pagedjs_page .chapter aside.callout.note.key{border-top-width:3pt!important}
+.pagedjs_page .chapter aside.callout.note:not(.key){border-left:2pt solid var(--accent-line)!important}
+.pagedjs_page th{border-bottom:1pt solid var(--accent)!important}
+.pagedjs_margin-top-right .pagedjs_margin-content,
+.pagedjs_margin-bottom-center .pagedjs_margin-content{color:var(--accent)!important}
+
+/* 화면 넓은 창 — 본문 단(780px)이 좁아져 넓은 블록 수식이 단 밖으로 나가 1200px 창에 가로 스크롤이 생겼다
+   (원리편 영문 1361/1185px 등, 2026-10-23 실측). md2handbook 의 좁은 화면 규칙(1080px 이하)과 같이 상자 안 가로 스크롤로.
+   paged.js 조판(화면 미디어, 1200px 창)에는 쓰지 않는다 */
+@media (min-width:1081px){ .mb{overflow-x:auto;overflow-y:hidden} }
+.pagedjs_page .mb{overflow:visible!important}
+
+/* 실전편 한국어판 — 시리즈 B(tools/handbook-themes/series-b/) 뒤에 붙는 책별 덧붙임(2026-10-22). 공개 1.0 의 theme.css 는 그대로 둔다 */
+/* 도구 꼬리표 색: <span class="tag cc">Claude Code</span> · <span class="tag cx">Codex</span> (종전 theme.css 그대로) */
+:root{--cc:#8c6656;--cx:#56637a}
 .tag.cc{background:var(--cc)} .tag.cx{background:var(--cx)}
 .tag.both{background:var(--accent)}
 
-hr{border-top:1px dashed var(--box-line)}
-
-/* 제목이 낱말 중간에서 줄바뀜되지 않게(2026-10-13 — 7회·9회 제목 「나눠 맡 / 기면」). 본문 p·li·td 는 md2handbook 기본 CSS가 이미 keep-all */
+/* 제목이 낱말 중간에서 줄바뀜되지 않게(2026-10-13 — 7회·9회 제목 「나눠 맡 / 기면」) */
 h1,h2,h3,blockquote p{word-break:keep-all;overflow-wrap:break-word}
 
-/* 긴 코드 줄이 PDF 오른쪽에서 잘리지 않게 상자 안에서 줄바꿈(2026-10-13 — 10회 훅 스크립트) */
-pre,pre code{white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+/* 인쇄본(시리즈 B 적용 빌드 2026-10-22): 10회 「3. Codex에서는」 표의 「default·acceptEdits·…」 처럼 가운뎃점으로만 이은
+   인라인 코드 묶음은 띄어쓰기가 없어 한 낱말로 취급되고(keep-all), 표가 쪽 오른쪽을 22px 넘었다. 표 칸 안 인라인 코드만 아무 데서나 끊게 한다 */
+.pagedjs_page td :not(pre)>code, .pagedjs_page td>code{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -351,6 +506,7 @@ pre,pre code{white-space:pre-wrap!important;overflow-wrap:anywhere!important}
 <li><a href="#c0-3-원리편과-어떻게-함께-읽나">3. 원리편과 어떻게 함께 읽나</a></li>
 <li><a href="#c0-4-엮은이의-실행-결과를-읽는-법">4. 엮은이의 실행 결과를 읽는 법</a></li>
 <li><a href="#c0-5-표시">5. 표시</a></li>
+<li><a href="#c0-6-판-이력">6. 판 이력</a></li>
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
@@ -517,7 +673,7 @@ pre,pre code{white-space:pre-wrap!important;overflow-wrap:anywhere!important}
 <p class="kicker">일요일은 AI · 에이전트 스터디 · 실전편</p>
 <h1>고삐를 쥐고 기계에게 일을 맡기는 법</h1>
 <p class="lede">Claude Code·Codex로 내 일을 대신할 에이전트 짓기</p>
-<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>권보원</b>(대구지방법원 부장판사) 엮음</p><p><b>구성</b> · 0회(설치와 첫 실행) + 10회<br><b>회차마다</b> · 원리 한 쪽 · 사전 과제 · Codex에서는 · 결과를 비교할 때 볼 것 · 망가뜨려 보기(예시) · 토론<br><b>짝이 되는 책</b> · 원리편 『생각하고, 행동하고, 고쳐 쓰는 기계』</p><p style="margin-top:14px;font-size:.94em">1.0판 · 2026. 10. 13. · 생성형 AI와 함께 엮었습니다. 틀린 곳이 있을 수 있으며 앞으로도 계속 고쳐 나가겠습니다.</p></div>
+<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>권보원</b>(대구지방법원 부장판사) 엮음</p><p><b>구성</b> · 0회(설치와 첫 실행) + 10회<br><b>회차마다</b> · 원리 한 쪽 · 사전 과제 · Codex에서는 · 결과를 비교할 때 볼 것 · 망가뜨려 보기(예시) · 토론<br><b>짝이 되는 책</b> · 원리편 『생각하고, 행동하고, 고쳐 쓰는 기계』</p><p style="margin-top:14px;font-size:.94em">1.1판 · 2026. 10. 23. · 생성형 AI와 함께 엮었습니다. 틀린 곳이 있을 수 있으며 앞으로도 계속 고쳐 나가겠습니다.</p></div>
 </section>
 <section class="printtoc"><h2>차례</h2><ol>
 <li><a href="#ch0">이 책의 사용법</a>
@@ -527,6 +683,7 @@ pre,pre code{white-space:pre-wrap!important;overflow-wrap:anywhere!important}
 <li><a href="#c0-3-원리편과-어떻게-함께-읽나">3. 원리편과 어떻게 함께 읽나</a></li>
 <li><a href="#c0-4-엮은이의-실행-결과를-읽는-법">4. 엮은이의 실행 결과를 읽는 법</a></li>
 <li><a href="#c0-5-표시">5. 표시</a></li>
+<li><a href="#c0-6-판-이력">6. 판 이력</a></li>
 </ol>
 </li>
 <li><a href="#ch1">0회 · 설치와 첫 실행 — 고삐를 손에 쥐기까지</a>
@@ -679,7 +836,7 @@ pre,pre code{white-space:pre-wrap!important;overflow-wrap:anywhere!important}
 <section class="chapter" id="sec0">
 <p class="eyebrow">서문</p>
 <h1 id="ch0">이 책의 사용법</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">먼저 알아 둘 것</p>
 <p>이 책은 엮은이가 생성형 AI(Claude)와 함께 만들었습니다. 실습 결과는 엮은이가 실제로 돌린 기록이고, 명령어와 설정은 공식 문서와 대조했습니다. 그래도 틀린 서술이 남아 있을 수 있습니다. 무엇보다 이 책이 다루는 도구는 몇 주 단위로 바뀝니다. 책과 화면이 다르면 장 끝 「더 읽기」의 공식 문서를 기준으로 삼아 주십시오. 지금 보시는 판과 날짜는 표지에 있습니다.</p>
 <p>이 책에서 엮은이에게 권리가 있는 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 자유롭게 고쳐 쓰고 나눌 수 있습니다. 받은 사람의 이용을 법적 조건이나 기술적 조치로 제한해서는 안 됩니다. 이 요약은 이해를 돕기 위한 것이고, 조건은 라이선스 원문을 따릅니다. 인용한 원문과 공식 문서의 문장은 이 라이선스의 대상이 아니며 각 원저작자의 권리를 따릅니다. 권리자께서 저장소 이슈로 알려 주시면 고치거나 빼겠습니다.</p>
@@ -883,6 +1040,28 @@ pre,pre code{white-space:pre-wrap!important;overflow-wrap:anywhere!important}
 <p>실제 업무 자료와 다른 사람의 개인정보는 넣지 않는다. 문서 폴더 전체나 바탕 화면에서 실행하지 않는다. 「묻지 않고 다 하기」 모드는 켜지 않는다. 자세한 것은 0회 9절.</p>
 </aside>
 <p><strong>원리편</strong> — 『생각하고, 행동하고, 고쳐 쓰는 기계』(<a href="https://bowonkwon.github.io/AI-Assisted-Handbooks/agentic-ai-reading/">온라인판</a>)</p>
+<h2 id="c0-6-판-이력">6. 판 이력</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>판</th>
+<th>날짜</th>
+<th>개요</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0판</td>
+<td>2026. 10. 13.</td>
+<td>첫 공개판. 0회와 1~10회</td>
+</tr>
+<tr>
+<td>1.1판</td>
+<td>2026. 10. 23.</td>
+<td>디자인 개편(시리즈 디자인 B). 영문판을 번역·대조하는 중에 확인된 사실 정정 2건 반영(2회 4절 실행에 쓴 규칙 파일, 4회 8절 10회에서 다시 쓰는 자료)</td>
+</tr>
+</tbody>
+</table></div>
 </section>
 
 <section class="chapter" id="sec1">
@@ -1868,7 +2047,7 @@ mv &quot;스터디-1주차-메모 (1).md&quot; 1주차_선형회귀/메모.md &a
 <p>두 도구를 함께 쓰는 사람에게 쓸모 있는 사실이 하나 있다. Claude Code는 2.1.277판부터 <code>CLAUDE.md</code> 가 없는 폴더에서 <code>AGENTS.md</code> 를 대신 읽는다(공식 문서). 엮은이가 2.2의 규칙을 <code>AGENTS.md</code> 로만 둔 폴더에서 Claude Code를 두 번 돌리자 두 번 모두 일곱 줄을 다 지켰다. 파일 하나로 두 도구를 맞출 수 있다는 뜻이다. 다만 실행한 폴더나 그 위 폴더에 <code>CLAUDE.md</code> 가 하나라도 있으면 Claude Code는 <code>AGENTS.md</code> 를 읽지 않는다(사용자 규칙 파일 <code>~/.claude/CLAUDE.md</code> 는 여기서 세지 않는다).</p>
 <hr>
 <h2 id="c3-4-결과를-비교할-때-볼-것">4. 결과를 비교할 때 볼 것</h2>
-<p>엮은이는 2.1의 폴더로 2.2를 여러 번 돌렸다. 결과를 그대로 기록하려고 대화형 대신 한 번만 시키는 방식(<code>claude -p</code>)을 썼고, 새 파일을 묻지 않고 만들게 <code>acceptEdits</code> 모드로 했다. 환경은 Claude Code 2.1.296, 모델은 Claude Opus 5.5로 고정했다.</p>
+<p>엮은이는 2.1의 폴더로 2.2를 여러 번 돌렸다. 실행에 쓴 규칙 파일은 첫 문장에 스터디 이름을 넣었고, 규칙 일곱 줄은 2.2의 상자와 같다. 결과를 그대로 기록하려고 대화형 대신 한 번만 시키는 방식(<code>claude -p</code>)을 썼고, 새 파일을 묻지 않고 만들게 <code>acceptEdits</code> 모드로 했다. 환경은 Claude Code 2.1.296, 모델은 Claude Opus 5.5로 고정했다.</p>
 <p>이번 회는 규칙 파일이 실험 대상이라 1회처럼 <code>--safe-mode</code> 로 모든 설정을 끌 수 없었다(규칙 파일도 꺼진다). 그래서 사용자 설정만 빼는 <code>--setting-sources project,local</code> 을 썼는데, <strong class="lng">이것으로는 엮은이의 사용자 규칙 파일이 빠지지 않았다.</strong> 실습 폴더 규칙 파일에 표지 문구를 넣고, 파일을 열지 못하게 한 채 「문맥에 든 지시 파일과 그 안의 낱말」을 묻자 에이전트는 표지 문구와 함께 사용자 규칙 파일의 낱말까지 정확히 말했다. 엮은이의 사용자 규칙 파일이 문맥에 섞여 답의 모양이 달라지기도 했다. 설정 <code>claudeMdExcludes</code> 로 그 파일을 제외하자 표지 문구만 남았다. 아래 결과는 모두 이 제외를 건 상태다. 새로 설치한 컴퓨터에는 사용자 규칙 파일이 없으니 신경 쓸 일이 없지만, 오래 쓴 컴퓨터라면 2.2-④의 <code>/context</code> 로 한 번 보아 둘 만하다.</p>
 <h3 id="c3-41-무엇이-달랐나">4.1 무엇이 달랐나</h3>
 <p><strong class="lng">① 규칙이 없으면 모양이 매번 달랐다.</strong> 규칙 없이 두 번 시키자 한 번은 폴더 맨 위에 <code>회의록_정리.md</code> 하나로 세 원본을 합쳤고, 다른 한 번은 맨 위에 회의별 파일 둘과 <code>README.md</code> 를 만들었다. 할 일은 둘 다 표로 썼다. 규칙 파일을 둔 다섯 번은 다섯 번 모두 <code>정리/</code> 아래 같은 이름의 파일 두 개, 같은 첫 줄, 같은 세 절, 같은 할 일 꼴이었다. 일곱 줄을 다 지켰다.</p>
@@ -2792,7 +2971,7 @@ description: 스터디 회의록을 정해진 양식(날짜·참석·발제·논
 </ol>
 <hr>
 <h2 id="c5-8-5회-미리보기">8. 5회 미리보기</h2>
-<p>이번 회에서 자동 호출을 막은 스킬도 파일로는 읽혔고, 「원본은 고치지 않는다」도 결국 모델에게 하는 부탁이었다. 5회는 부탁 대신 기계가 막는 장치, 훅을 다룬다. 사전 과제는 특정 폴더의 삭제와 외부 발송을 막는 훅 하나 달기다. 이번 회의 <code>회의록-원본</code> 은 10회에서 다시 쓰니 지우지 말고 둔다.</p>
+<p>이번 회에서 자동 호출을 막은 스킬도 파일로는 읽혔고, 「원본은 고치지 않는다」도 결국 모델에게 하는 부탁이었다. 5회는 부탁 대신 기계가 막는 장치, 훅을 다룬다. 사전 과제는 특정 폴더의 삭제와 외부 발송을 막는 훅 하나 달기다. 10회는 2회의 회의록 셋을 다시 쓰니 2회의 <code>회의록\원본</code> 은 지우지 말고 둔다.</p>
 <hr>
 <h2 id="c5-더-읽기">더 읽기</h2>
 <p><strong>공식 문서</strong> (2026-10-13 확인)</p>
