@@ -439,6 +439,18 @@ html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
    (반도체 영문판 170쪽 「fixed」→「fxed」, handbook_pdf_coverage 의심 1). 검색·복사·소실 점검을 지키려고 */
 .pagedjs_page{font-variant-ligatures:no-common-ligatures}
 
+/* 인쇄본 머리글 — 좌우 여백이 넓어져(27mm) 긴 장 제목이 머리글에서 두 줄로 꺾였다(원리편 영문판 0장 등 15쪽).
+   왼쪽(책 이름)은 제 폭만, 오른쪽(장 제목)은 남은 폭을 다 쓰고 그래도 넘칠 때만 말줄임표로 한 줄에 둔다.
+   paged.js 는 ::after 를 block 으로 두어 말줄임표가 안 나오므로 inline 으로 바꾼다 */
+.pagedjs_margin-top{display:flex!important}
+.pagedjs_margin-top-left{flex:0 0 auto!important;width:auto!important}
+.pagedjs_margin-top-center{flex:0 0 0!important;width:0!important}
+.pagedjs_margin-top-right{flex:1 1 0!important;min-width:0!important;width:auto!important}
+.pagedjs_margin-top-left .pagedjs_margin-content{white-space:nowrap}
+.pagedjs_margin-top-right .pagedjs_margin-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:block;text-align:right;padding-left:8mm}
+.pagedjs_margin-top-right .pagedjs_margin-content::after{display:inline!important}
+
 /* 영문판 전용(2026-10-22 최종 빌드). 기본 CSS 의 th{white-space:nowrap} 은 짧은 한국어 머리글을 전제로 한다.
    영어 머리글은 길어 인쇄본에서 표 세 개(2회차 KV 예산 표, 3회차 세대별 사양 표, 6회차 칩렛 표)가
    쪽 오른쪽 밖으로 잘렸다. th.nw 는 그대로 nowrap 이다. */
