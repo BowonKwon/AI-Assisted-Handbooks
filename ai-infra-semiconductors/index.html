@@ -251,6 +251,205 @@ figure.widget figcaption,figure.widget-still figcaption{font-size:.84rem;
   color:var(--mut);line-height:1.6;margin-top:.55em}
 figure.widget figcaption b,figure.widget-still figcaption b{color:var(--fg)}
 @media print{figure.widget{break-inside:avoid}}
+
+/* 시리즈 B 라틴 글꼴(HB Serif·Sans·Mono = Source Serif 4·Source Sans 3·Source Code Pro 정적 인스턴스, OFL 1.1).
+   파일은 화면본·인쇄 산본 옆 fonts/ 에 둔다(config fonts_dir 가 복사). tools/handbook_fonts.py build-latin 이 만든다 */
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400i.woff2") format("woff2");font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-600i.woff2") format("woff2");font-weight:600;font-style:italic;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-700i.woff2") format("woff2");font-weight:700;font-style:italic;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-400i.woff2") format("woff2");font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-700i.woff2") format("woff2");font-weight:700;font-style:italic;font-display:block}
+@font-face{font-family:"HB Mono";src:url("fonts/hb-mono-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Mono";src:url("fonts/hb-mono-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+
+@font-face{font-family:"HB Symbols";src:url("fonts/hb-symbols-400.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+/* 시리즈 B 한국어 글꼴(HB Serif KR·Sans KR = Noto Serif KR·Noto Sans KR 서브셋 정적 400·700, OFL 1.1).
+   한글 음절은 KS X 1001 2,350자 + 세 책 원고에 나온 글자. 새 글자가 생기면 handbook_fonts.py check 로 확인 */
+@font-face{font-family:"HB Serif KR";src:url("fonts/hb-serif-kr-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif KR";src:url("fonts/hb-serif-kr-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans KR";src:url("fonts/hb-sans-kr-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans KR";src:url("fonts/hb-sans-kr-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+
+:root{--accent:#6e5646;--accent-ink:#5e493c;--accent2:#8b7f6f;--tint:#f5f3f2;--tint2:#faf9f9;--accent-line:#ccc4be}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:#afa299;--accent-ink:#afa299;--accent2:#b9ab95;--tint:#222021;--tint2:#1a1a1d;--accent-line:#38302c}}
+:root[data-theme="dark"]{--accent:#afa299;--accent-ink:#afa299;--accent2:#b9ab95;--tint:#222021;--tint2:#1a1a1d;--accent-line:#38302c}
+
+/* ── 시리즈 B 공통(자습서 시리즈 — 반도체·실전편·원리편, 한·영) ─────────────
+   md2handbook 기본 CSS·인쇄 CSS·lang_css 뒤에 붙는다. config extra_css 목록:
+   fonts-latin.css (+ 한국어판 fonts-ko.css) → palette-{책}.css → series-b.css → 책별 덧붙임.
+   출처: output/영문판-디자인-2026-10-22/ 공통/series-common.css + 시안-B-modern/variant-B.css(2026-10-22 소유자 결정).
+   외부 요청 없음 — 글꼴은 책 옆 fonts/ 에서 읽는다(OFL 1.1, 라이선스 파일 동봉). */
+
+/* 의미 색(콜아웃)은 세 책이 같다 — 책마다 다른 것은 주색 하나뿐이다 */
+:root{
+  --fg:#1d2026; --mut:#5c6370; --line:#e1e3e7; --bg:#fbfbfa; --card:#ffffff;
+  --cw:#9b4f4f; --cw-bg:#f8f0ef;   /* 주의 — 낮은 채도 장밋빛 */
+  --ch:#85704a; --ch-bg:#f7f3ea;   /* 힌트 — 모래색 */
+  --cr:#5b6170; --cr-bg:#f2f3f5;   /* 더 읽기 — 중성 회색 */
+  --box-bg:#f7f7f5; --box-line:#dcdde0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --fg:#e4e6ea; --mut:#9aa1ac; --line:#2c3039; --bg:#14161a; --card:#191c21;
+    --cw:#e0a3a3; --cw-bg:#2a1f20; --ch:#d6c08f; --ch-bg:#26221a; --cr:#b9bfcb; --cr-bg:#1f2228;
+    --box-bg:#1b1e23; --box-line:#30343c;
+  }
+}
+:root[data-theme="dark"]{
+  --fg:#e4e6ea; --mut:#9aa1ac; --line:#2c3039; --bg:#14161a; --card:#191c21;
+  --cw:#e0a3a3; --cw-bg:#2a1f20; --ch:#d6c08f; --ch-bg:#26221a; --cr:#b9bfcb; --cr-bg:#1f2228;
+  --box-bg:#1b1e23; --box-line:#30343c;
+}
+:root{
+  /* 동봉 글꼴(HB …)을 맨 앞에. 영문판에는 HB … KR 파일이 없으므로 그 자리는 건너뛰고 시스템 글꼴로 간다 */
+  --serif:"HB Serif","HB Serif KR","HB Symbols",Georgia,"Noto Serif KR",serif;
+  --sans:"HB Sans","HB Sans KR","HB Symbols","Segoe UI",system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
+  --mono:"HB Mono","HB Sans KR","HB Symbols","Cascadia Mono",Consolas,"D2Coding",monospace;
+}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+/* 숫자 — 제목·표에서 Georgia 의 옛 숫자(0·5 가 x높이로 내려앉음)가 보이던 것을 고른 숫자로 */
+h1,h2,h3,h4,th,td,.eyebrow{font-variant-numeric:lining-nums}
+td{font-variant-numeric:lining-nums tabular-nums}
+
+/* 영어 머리글은 길다(기존 theme-en.css 와 같은 처리) */
+th{white-space:normal}
+
+/* 인라인 코드·코드 상자 — 밝은 상자만. 큰 면적의 어두운 상자는 쓰지 않는다 */
+code{background:var(--tint)!important;color:var(--accent-ink)}
+pre{background:var(--box-bg)!important;border:1px solid var(--box-line)!important;
+  border-left:3px solid var(--accent)!important;border-radius:6px;
+  white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+pre code{background:none!important;color:inherit}
+
+/* 의미 콜아웃 색은 토큰으로만 */
+.callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
+.callout.warn .ctitle{color:var(--cw)!important}
+.callout.ok{border-left-color:var(--accent)!important;background:var(--tint)!important}
+.callout.ok .ctitle{color:var(--accent-ink)!important}
+.callout.hint,.callout.tip{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
+.callout.hint .ctitle,.callout.tip .ctitle{color:var(--ch)!important}
+.callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
+.callout.ref .ctitle{color:var(--cr)!important}
+
+/* 실전편 도구 꼬리표(있으면) */
+.tag{display:inline-block;font-family:var(--sans);font-size:.74em;font-weight:600;
+  padding:0 8px;border-radius:999px;color:#fff;vertical-align:.1em;letter-spacing:.02em;background:var(--accent)}
+
+/* 링크 — 밑줄을 가늘게, 주색으로 */
+main a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px;
+  text-decoration-color:var(--accent-line)}
+
+/* 인쇄본 공통 */
+.pagedjs_page a[href^="http"]{color:var(--accent-ink)}
+.pagedjs_page .mb math{font-size:1em}
+
+/* 화면 — 본문 단을 오른쪽 칸 가운데에 둔다(넓은 화면에서 오른쪽만 비던 것) */
+@media (min-width:1081px){ main{margin:0 auto} }
+
+/* 인쇄본 — 변형 CSS 의 「.pagedjs_page .callout」 이 의미 색을 덮지 않게 다시 세운다(특이도 0,3,0) */
+.pagedjs_page .callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
+.pagedjs_page .callout.warn .ctitle{color:var(--cw)!important}
+.pagedjs_page .callout.hint,.pagedjs_page .callout.tip{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
+.pagedjs_page .callout.hint .ctitle,.pagedjs_page .callout.tip .ctitle{color:var(--ch)!important}
+.pagedjs_page .callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
+.pagedjs_page .callout.ref .ctitle{color:var(--cr)!important}
+
+/* 한국어판 — 한글에는 기울임·자간 벌림을 쓰지 않는다(가짜 기울임이 된다) */
+html[lang="ko"] .chapter > blockquote:first-of-type, html[lang="ko"] h3, html[lang="ko"] blockquote{font-style:normal!important}
+html[lang="ko"] .callout .ctitle, html[lang="ko"] .eyebrow, html[lang="ko"] th{letter-spacing:.02em!important}
+
+/* 휴대전화 — 큰 본문(시안 C 19px 등)을 한 단계 줄인다 */
+@media (max-width:600px){ main{font-size:17px!important} .chapter h1{font-size:2rem!important} .callout{padding:14px 16px!important} }
+
+/* ── 시안 B 「Modern technical」 ───────────────────────────────────
+   굵은 sans 제목 + 세리프 본문, 제목 위 짧은 주색 막대, 첫 콜아웃(Key takeaway 등)은 요약 상자,
+   나머지 NOTE 콜아웃은 「여백 노트」처럼 작은 sans·배경 없음, 표 머리 옅은 틴트·줄무늬. */
+
+main{max-width:780px;font-family:var(--serif);font-size:17.5px;line-height:1.64;color:var(--fg)}
+html[lang="ko"] main{max-width:840px;font-size:17px;line-height:1.8}
+.eyebrow{display:inline-block;font-family:var(--sans)!important;font-size:.72rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;color:#fff!important;background:var(--accent);padding:3px 10px;border-radius:3px;margin:0 0 14px!important}
+.chapter h1{font-family:var(--sans);font-weight:700;font-size:2.35rem;line-height:1.15;letter-spacing:-.018em;
+  color:var(--accent-ink);margin:0 0 20px}
+.chapter > blockquote:first-of-type{font-family:var(--sans);font-size:1.06em;color:var(--fg);border-left:3px solid var(--accent)!important}
+h2{font-family:var(--sans);font-weight:700;font-size:1.45rem;letter-spacing:-.01em;color:var(--fg);
+  border-bottom:0!important;margin:2.6em 0 .55em;padding:0}
+h2::before{content:"";display:block;width:34px;height:3px;background:var(--accent);margin:0 0 .55em}
+h3{font-family:var(--sans);font-weight:700;font-size:1.1rem;color:var(--fg)!important;margin:1.8em 0 .4em}
+h4{font-family:var(--sans);font-weight:700;color:var(--mut)}
+strong{font-weight:600}  /* 정적 글꼴 600(시안 가변 650) */
+hr{border:0!important;border-top:1px solid var(--line)!important}
+
+/* 표 */
+.tw{border:1px solid var(--line)!important;border-radius:6px;background:var(--card)}
+table{font-family:var(--sans);font-size:.86rem;line-height:1.5}
+th{background:var(--tint)!important;color:var(--accent-ink)!important;font-weight:700;font-size:.95rem;
+  letter-spacing:.04em;font-variant-caps:all-small-caps;border-bottom:1px solid var(--accent-line)!important}
+tbody tr:nth-child(even) td{background:var(--tint2)}
+
+/* 콜아웃 — 왼쪽 띠 */
+.callout{border:0!important;border-left:4px solid var(--accent)!important;background:var(--tint)!important;
+  border-radius:0 6px 6px 0;padding:14px 20px}
+.callout .ctitle{font-family:var(--sans)!important;font-size:.95rem!important;font-weight:700;letter-spacing:.06em;
+  font-variant-caps:all-small-caps;color:var(--accent-ink)!important}
+/* 장 요약 상자 = config key_callout_titles 에 적힌 제목의 NOTE(.key). 시안의 :first-of-type 은
+   원리편에서 링크 상자를 요약 상자로 만들었다 */
+.chapter aside.callout.note.key{border-left:0!important;border-top:3px solid var(--accent)!important;
+  border-radius:0 0 6px 6px;background:var(--tint)!important}
+.chapter aside.callout.note.key p{font-size:1.02em}
+/* 그 밖의 NOTE = 여백 노트풍 보조 정보 */
+.chapter aside.callout.note:not(.key){background:transparent!important;border-left:2px solid var(--line)!important;
+  font-family:var(--sans);font-size:.88em;color:var(--mut);padding:4px 0 4px 16px}
+.chapter aside.callout.note:not(.key) .ctitle{color:var(--mut)!important}
+.chapter aside.callout.note:not(.key) strong{color:var(--fg)}
+blockquote{border-left-color:var(--accent2)!important}
+details{border:1px solid var(--line)!important;border-radius:6px}
+details>summary{font-family:var(--sans);background:var(--tint)!important;color:var(--accent-ink)}
+
+/* 인쇄본 */
+@page{margin:20mm 27mm 21mm}
+.pagedjs_page main{font-size:10.3pt;line-height:1.55}
+.pagedjs_page .chapter .eyebrow{margin-top:8mm!important;font-size:7.2pt!important;color:#fff!important}
+.pagedjs_page .chapter h1{font-size:21pt;margin-bottom:10pt;color:var(--accent-ink)}
+.pagedjs_page h2{font-size:13pt;margin:17pt 0 5pt}
+.pagedjs_page h3{font-size:10.6pt;margin:11pt 0 3pt;color:#111!important}
+.pagedjs_page table{font-size:8.3pt}
+.pagedjs_page .tw{border:.6pt solid #cfd2d6!important}
+.pagedjs_page th{background:var(--tint)!important;color:var(--accent-ink)!important;font-size:8.6pt}
+.pagedjs_page .callout{border:0!important;border-left:3pt solid var(--accent)!important;background:var(--tint)!important}
+.pagedjs_page .chapter aside.callout.note.key{border-left:0!important;border-top:2.4pt solid var(--accent)!important}
+.pagedjs_page .chapter aside.callout.note:not(.key){background:transparent!important;border-left:1pt solid #cfd2d6!important}
+.pagedjs_page .callout .ctitle{color:var(--accent-ink)!important}
+.pagedjs_page blockquote{color:#222;border-left:2pt solid var(--accent)!important}
+.pagedjs_page div.sol{border:.6pt solid #c9c9c9}
+.pagedjs_page div.sol>.solhead{background:var(--tint);color:var(--accent-ink);font-family:var(--sans)}
+html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
+
+/* 표지 — 시안 견본에는 표지가 없었다. 장 머리와 같은 말투로: 위쪽 주색 선, sans 굵은 제목 */
+.cover{border-top:4px solid var(--accent)}
+.cover .kicker{color:var(--accent)!important}
+.cover h1{font-family:var(--sans);font-weight:700;letter-spacing:-.018em;color:var(--accent-ink)}
+.printtoc h2::before{display:none}
+
+/* 인쇄본 — 「fi」「fl」 합자를 끈다. Source Serif 합자가 PDF 텍스트에서 「f」 한 글자로 뽑힌 곳이 있었다
+   (반도체 영문판 170쪽 「fixed」→「fxed」, handbook_pdf_coverage 의심 1). 검색·복사·소실 점검을 지키려고 */
+.pagedjs_page{font-variant-ligatures:no-common-ligatures}
+
+/* 반도체 한국어판 — 시리즈 B(tools/handbook-themes/series-b/) 뒤에 붙는 책별 덧붙임(2026-10-22). 쪽채움 개별 규칙 자리 */
+
+/* 쪽채움(시리즈 B 적용 빌드 2026-10-22): 6회차 「출처」 입문 자료 표(.keep)가 제목과 함께 통째로 넘어가 171쪽이 29%만 찼다.
+   이 자리에서만 표 나눔을 허용한다(행은 나누지 않고, 이어지는 쪽에 머리글 반복). 그림 2-3(kv-cache) 은 config print_max_mm 82 */
+.kwn:has(> #c6-출처){break-inside:auto}
+.kwn:has(> #c6-출처) > .tw.keep{break-inside:auto}
+.kwn:has(> #c6-출처) > .tw.keep > table{break-inside:auto}
 </style>
 </head>
 <body>
@@ -981,7 +1180,7 @@ figure.widget figcaption b,figure.widget-still figcaption b{color:var(--fg)}
 <section class="chapter" id="sec1">
 <p class="eyebrow">1회차</p>
 <h1 id="ch1">AI 반도체 산업 지형</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">핵심 Takeaway</p>
 <p><strong class="lng">"AI 반도체"는 단일 제품이 아니라 연산 칩과 메모리 칩을 아우르는 느슨한 범주이며, 이 모호함이 시장 통계를 읽을 때 첫 번째 함정이 된다.</strong>
 산업은 설계(팹리스) · 제조(파운드리/IDM) · 장비·소재의 3층으로 나뉘고, <strong class="lng">이익이 큰 층과 대체 불가능한 층이 일치하지 않는다.</strong> 수요는 학습에서 추론으로 이동 중이며, 이 전환이 메모리 병목을 산업 전체의 중심 문제로 끌어올렸다.
@@ -1631,7 +1830,7 @@ figure.widget figcaption b,figure.widget-still figcaption b{color:var(--fg)}
 <section class="chapter" id="sec2">
 <p class="eyebrow">2회차</p>
 <h1 id="ch2">AI 칩 — 연산 반도체</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">핵심 Takeaway</p>
 <p><strong class="lng">가속기 설계의 제1원리는 "연산을 빠르게"가 아니라 "데이터 이동을 줄이기"다.</strong> 곱셈 한 번의 에너지보다 DRAM에서 데이터를 한 번 가져오는 에너지가 두 자릿수 배 크기 때문이다.
 CPU·GPU·NPU·TPU·ASIC의 차이는 <strong class="lng">① 명령어당 오버헤드를 얼마나 상각하는가, ② 가져온 데이터를 몇 번 재사용하는가</strong> 라는 두 축으로 통일적으로 설명된다.
@@ -4738,7 +4937,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <section class="chapter" id="sec3">
 <p class="eyebrow">3회차</p>
 <h1 id="ch3">AI 메모리 — DRAM · HBM · HBF</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">핵심 Takeaway</p>
 <p><strong class="lng">HBM의 기괴해 보이는 형태(수직 적층 + 2,048비트 초광폭 버스 + 실리콘 인터포저)는 디자인 선택이 아니라 물리적 제약의 필연적 귀결이다.</strong>
 대역폭을 올리는 길은 "신호를 빠르게" 또는 "선을 많이" 둘뿐인데, 전자는 신호 무결성과 전력에서 막혔다. 그래서 후자를 극단까지 밀었고, 선을 수천 개 뽑으려면 물리적으로 아주 가까이 붙여야 해서 TSV와 인터포저가 필수가 되었다. <strong class="lng">메모리 문제가 곧 패키징 문제가 된 이유가 여기 있다.</strong>
@@ -7376,7 +7575,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <section class="chapter" id="sec4">
 <p class="eyebrow">4회차</p>
 <h1 id="ch4">팹리스 · 파운드리와 밸류체인</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">핵심 Takeaway</p>
 <p><strong class="lng">반도체 산업의 분업 구조(팹리스·파운드리·IDM·OSAT)는 취향이 아니라 비용 구조의 귀결이다.</strong> 팹 건설비가 지수적으로 증가하면서 제조는 규모의 경제가 지배하는 소수 과점이 되었고, 설계는 자산이 가벼운 다수 경쟁이 되었다.
 그리고 이 산업의 거의 모든 경제적 판단은 하나의 식으로 수렴한다: <strong class="lng">수율 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>Y</mi><mo>&#x0003D;</mo><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mi>A</mi><msub><mi>D</mi><mn>0</mn></msub></mrow></msup></mrow></math></span> — 다이 면적이 커지면 수율이 지수적으로 떨어진다.</strong> 이 식이 칩렛 분할의 근거이고, 파운드리 가격 구조의 근거이며, <a href="#ch6">6회차</a> 첨단 패키징의 존재 이유다.
@@ -10564,7 +10763,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <section class="chapter" id="sec5">
 <p class="eyebrow">5회차</p>
 <h1 id="ch5">전공정</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">핵심 Takeaway</p>
 <p><strong class="lng">전공정 8대 공정은 외울 목록이 아니라 하나의 반복 루프다: "패턴을 그린다 → 재료를 더하거나 뺀다 → 평탄화한다 → 검사한다."</strong> 이 루프가 층마다 반복되어 수백 단계가 된다.
 그 중심에 노광이 있고, 노광은 단 하나의 식으로 요약된다 — 레일리 판정식 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mtext>CD</mtext><mo>&#x0003D;</mo><msub><mi>k</mi><mn>1</mn></msub><mi>&#x003BB;</mi><mo>&#x0002F;</mo><mtext>NA</mtext></mrow></math></span>. 파장을 줄이거나, 개구수를 키우거나, 공정계수를 줄이거나. <strong class="lng">반도체 미세화의 역사 전체가 이 세 항을 공격한 역사다.</strong>
@@ -14543,7 +14742,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <section class="chapter" id="sec6">
 <p class="eyebrow">6회차</p>
 <h1 id="ch6">후공정과 첨단 패키징</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">핵심 Takeaway</p>
 <p><strong class="lng">AI 반도체를 이해하려면 이 회차가 가장 중요하다.</strong> 한때 "자르고 붙이고 포장하는" 저부가가치 마무리였던 후공정이, 오늘날 성능 향상의 주된 무대가 되었다.
 이유는 세 가지 압력이 동시에 작동했기 때문이다: <strong>① 수율</strong> — 다이가 크면 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>Y</mi><mo>&#x0003D;</mo><msup><mi>e</mi><mrow><mo>&#x02212;</mo><mi>A</mi><msub><mi>D</mi><mn>0</mn></msub></mrow></msup></mrow></math></span> 로 수율이 무너진다, <strong>② 노광 필드 한계</strong> — 한 번에 찍을 수 있는 면적에 상한이 있고 High-NA에서 그 절반이 된다, <strong>③ 이종 최적화</strong> — 로직·SRAM·아날로그·I/O는 최적 공정이 서로 다르다. 셋 다 "쪼개서 붙여라"를 가리킨다.
@@ -19638,7 +19837,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <section class="chapter" id="sec7">
 <p class="eyebrow">7회차</p>
 <h1 id="ch7">AI 데이터센터</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">핵심 Takeaway</p>
 <p><strong class="lng">칩 수준에서 시작한 열과 전력 문제가 건물 수준에서 최종 상한이 된다.</strong> AI 랙의 전력밀도가 전통적 데이터센터의 열 배로 뛰면서 냉각·배전·건물 구조가 전부 바뀌었고, 이제 AI 인프라의 제약은 칩 공급이 아니라 <strong>전력 계통 접속과 부지</strong>가 되어가고 있다.
 데이터센터 효율 지표(PUE·WUE)는 측정 경계를 확인하지 않으면 비교가 무의미하다. <strong class="lng">PUE는 IT 장비가 비효율적일수록 오히려 좋아 보이는 구조적 함정을 갖고 있다.</strong>
