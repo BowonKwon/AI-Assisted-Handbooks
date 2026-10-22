@@ -273,9 +273,9 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
 
 @font-face{font-family:"HB Symbols";src:url("fonts/hb-symbols-400.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
 
-:root{--accent:#6e5646;--accent-ink:#5e493c;--accent2:#8b7f6f;--tint:#f5f3f2;--tint2:#faf9f9;--accent-line:#ccc4be}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:#afa299;--accent-ink:#afa299;--accent2:#b9ab95;--tint:#222021;--tint2:#1a1a1d;--accent-line:#38302c}}
-:root[data-theme="dark"]{--accent:#afa299;--accent-ink:#afa299;--accent2:#b9ab95;--tint:#222021;--tint2:#1a1a1d;--accent-line:#38302c}
+:root{--accent:#7a5841;--accent-ink:#684b37;--accent2:#8b7f6f;--tint:#f0edea;--tint2:#f8f6f5;--accent-line:#c2b2a8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:#b6a396;--accent-ink:#b6a396;--accent2:#b9ab95;--tint:#282322;--tint2:#1d1c1e;--accent-line:#45362d}}
+:root[data-theme="dark"]{--accent:#b6a396;--accent-ink:#b6a396;--accent2:#b9ab95;--tint:#282322;--tint2:#1d1c1e;--accent-line:#45362d}
 
 /* ── 시리즈 B 공통(자습서 시리즈 — 반도체·실전편·원리편, 한·영) ─────────────
    md2handbook 기본 CSS·인쇄 CSS·lang_css 뒤에 붙는다. config extra_css 목록:
@@ -290,18 +290,19 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
   --ch:#85704a; --ch-bg:#f7f3ea;   /* 힌트 — 모래색 */
   --cr:#5b6170; --cr-bg:#f2f3f5;   /* 더 읽기 — 중성 회색 */
   --box-bg:#f7f7f5; --box-line:#dcdde0;
+  --sand-bg:#f6f3ee;   /* 실전편 원고 SVG 가 쓰는 모래색 면(종전 theme.css 토큰 — 없으면 검은 면이 된다) */
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --fg:#e4e6ea; --mut:#9aa1ac; --line:#2c3039; --bg:#14161a; --card:#191c21;
     --cw:#e0a3a3; --cw-bg:#2a1f20; --ch:#d6c08f; --ch-bg:#26221a; --cr:#b9bfcb; --cr-bg:#1f2228;
-    --box-bg:#1b1e23; --box-line:#30343c;
+    --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
   }
 }
 :root[data-theme="dark"]{
   --fg:#e4e6ea; --mut:#9aa1ac; --line:#2c3039; --bg:#14161a; --card:#191c21;
   --cw:#e0a3a3; --cw-bg:#2a1f20; --ch:#d6c08f; --ch-bg:#26221a; --cr:#b9bfcb; --cr-bg:#1f2228;
-  --box-bg:#1b1e23; --box-line:#30343c;
+  --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
 }
 :root{
   /* 동봉 글꼴(HB …)을 맨 앞에. 영문판에는 HB … KR 파일이 없으므로 그 자리는 건너뛰고 시스템 글꼴로 간다 */
@@ -450,6 +451,35 @@ html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
 .pagedjs_margin-top-right .pagedjs_margin-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   display:block;text-align:right;padding-left:8mm}
 .pagedjs_margin-top-right .pagedjs_margin-content::after{display:inline!important}
+
+/* ── 색 세기 2단계(2026-10-23 소유자 결정) ─────────────────────────────
+   주색 면적은 늘리지 않고 선·글자에 주색을 더 준다. 주색 채도 +8%p·틴트 11%는 palette-{책}.css.
+   시안: output/영문판-디자인-2026-10-22/색세기-머리글-시안/(design-color/css/level-2.css). 1단계 값은 README 변경 이력 */
+h2::before{width:52px;height:4px}
+.chapter h1{padding-bottom:.32em;border-bottom:2px solid var(--accent-line)}
+.chapter > blockquote:first-of-type{border-left-width:4px!important}
+.callout{border-left-width:5px!important}
+.chapter aside.callout.note.key{border-top-width:4px!important}
+.chapter aside.callout.note.key .ctitle{color:var(--accent)!important}
+.chapter aside.callout.note:not(.key){border-left:3px solid var(--accent-line)!important}
+.chapter aside.callout.note:not(.key) .ctitle{color:var(--accent-ink)!important}
+th{border-bottom:1.5px solid var(--accent)!important}
+main a{text-decoration-color:var(--accent)}
+hr{border-top-color:var(--accent-line)!important}
+/* 인쇄본 */
+.pagedjs_page .chapter h1{padding-bottom:5pt;border-bottom:1.4pt solid var(--accent-line)}
+.pagedjs_page .callout{border-left-width:3.6pt!important}
+.pagedjs_page .chapter aside.callout.note.key{border-top-width:3pt!important}
+.pagedjs_page .chapter aside.callout.note:not(.key){border-left:2pt solid var(--accent-line)!important}
+.pagedjs_page th{border-bottom:1pt solid var(--accent)!important}
+.pagedjs_margin-top-right .pagedjs_margin-content,
+.pagedjs_margin-bottom-center .pagedjs_margin-content{color:var(--accent)!important}
+
+/* 화면 넓은 창 — 본문 단(780px)이 좁아져 넓은 블록 수식이 단 밖으로 나가 1200px 창에 가로 스크롤이 생겼다
+   (원리편 영문 1361/1185px 등, 2026-10-23 실측). md2handbook 의 좁은 화면 규칙(1080px 이하)과 같이 상자 안 가로 스크롤로.
+   paged.js 조판(화면 미디어, 1200px 창)에는 쓰지 않는다 */
+@media (min-width:1081px){ .mb{overflow-x:auto;overflow-y:hidden} }
+.pagedjs_page .mb{overflow:visible!important}
 
 /* 영문판 전용(2026-10-22 최종 빌드). 기본 CSS 의 th{white-space:nowrap} 은 짧은 한국어 머리글을 전제로 한다.
    영어 머리글은 길어 인쇄본에서 표 세 개(2회차 KV 예산 표, 3회차 세대별 사양 표, 6회차 칩렛 표)가
