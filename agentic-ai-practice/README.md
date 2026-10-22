@@ -1,9 +1,10 @@
 # 고삐를 쥐고 기계에게 일을 맡기는 법
 
-**Claude Code·Codex로 내 일을 대신할 에이전트 짓기** · 일요일은 AI · 에이전트 스터디 · 실전편 · 권보원 엮음 · 1.0판(2026. 10. 13.)
+**Claude Code·Codex로 내 일을 대신할 에이전트 짓기** · 일요일은 AI · 에이전트 스터디 · 실전편 · 권보원 엮음 · 1.1판(2026. 10. 23.)
 
 - [화면본(HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/agentic-ai-practice/)
-- [인쇄본(PDF, 118쪽)](agentic-ai-practice-v1.0.pdf)
+- [인쇄본(PDF, 127쪽)](agentic-ai-practice-v1.1.pdf)
+- English edition: [*Harness in Hand*](#english-edition)
 
 GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일이 커서 표시되지 않습니다. 책은 위 화면본 링크로 여십시오.
 
@@ -24,7 +25,7 @@ GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일
 
 ## 인용
 
-권보원(Bowon Kwon) 엮음, 『고삐를 쥐고 기계에게 일을 맡기는 법: Claude Code·Codex로 내 일을 대신할 에이전트 짓기』, 1.0판(2026. 10. 13.), https://github.com/BowonKwon/AI-Assisted-Handbooks
+권보원(Bowon Kwon) 엮음, 『고삐를 쥐고 기계에게 일을 맡기는 법: Claude Code·Codex로 내 일을 대신할 에이전트 짓기』, 1.1판(2026. 10. 23.), https://github.com/BowonKwon/AI-Assisted-Handbooks
 
 ## 판 이력
 
@@ -32,3 +33,21 @@ GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일
 |---|---|---|
 | 1.0 | 2026. 10. 13. | 첫 공개판 |
 | 1.0 정정 | 2026. 10. 13. | 이용 허락 문구를 고쳤다(권리가 있는 범위, 추가 제한 금지, 요약의 지위, 제3자 자료 제외). 인쇄본에서 쪽 너비를 넘던 표 둘(6회·7회)을 고치고, 화면본이 휴대전화에서 가로로 넘치던 것을 고쳤다. 본문 내용은 같다(118쪽) |
+| 1.1 | 2026. 10. 23. | 디자인 개편(시리즈 디자인 B: 세리프 본문, 굵은 제목, 인쇄본 머리글에 회차 번호와 짧은 제목). 영문판을 번역·대조하는 중에 확인된 사실 정정 2건 반영(2회 4절 실행에 쓴 규칙 파일, 4회 8절 10회에서 다시 쓰는 자료) |
+
+## 이용 허락
+
+글은 [CC BY-NC 4.0](../LICENSE)입니다(엮은이에게 권리가 있는 범위에서). 원문에서 옮기거나 다시 그린 표·인용·그림은 이 라이선스의 대상이 아니며 각 원저작자의 권리를 따릅니다. 화면본·인쇄본에 쓴 글꼴(`fonts/`)은 Source Serif 4·Source Sans 3·Source Code Pro·Noto Serif KR·Noto Sans KR 을 줄이고 이름을 바꾼 수정본으로, SIL Open Font License 1.1 을 따릅니다(같은 폴더의 라이선스 파일).
+
+## English edition
+
+*Harness in Hand: Building AI Agents with Claude Code and Codex* · Sunday AI agent study · hands-on volume · edited by Bowon Kwon · edition 1.0-en (October 22, 2026), translated from Korean edition 1.0
+
+- [Read online (HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/agentic-ai-practice/en/)
+- [Print edition (PDF, 156 pages)](en/agentic-ai-practice-v1.0-en.pdf)
+
+The editor translated the book working with Claude Code. The practice results were not translated: the agents were given the same tasks again with English instructions and English practice materials on October 22, 2026, and the text reports those runs, so results differ from the Korean edition in places. Quotations that were originally in English were restored from the original sources. Before publication, OpenAI Codex, given the two editions, the run records and the sources they cite, compared them; each finding was rechecked against the originals. Details are in the colophon at the end of the book.
+
+**Citation:** Bowon Kwon (ed.), *Harness in Hand: Building AI Agents with Claude Code and Codex*, edition 1.0-en (October 22, 2026), https://github.com/BowonKwon/AI-Assisted-Handbooks
+
+**License:** To the extent the editor holds rights in it, the text is licensed under [CC BY-NC 4.0](../LICENSE). Quoted originals and sentences from official documentation are not covered by this license and remain subject to the rights of their authors. The fonts in `en/fonts/` are modified (instanced, subset and renamed) versions of Source Serif 4, Source Sans 3, Source Code Pro and Noto Sans KR, licensed under the SIL Open Font License 1.1 (license files in the same folder).
