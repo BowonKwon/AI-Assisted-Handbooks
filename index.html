@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ko" data-lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-Assisted Handbooks</title>
+<meta name="description" content="생성형 AI와 함께 엮은 자습서 네 권 — Agentic AI 논문 읽기, 실전편, AI 인프라와 반도체, 법률가를 위한 LLM 위키. Study handbooks compiled with generative AI.">
+<meta property="og:title" content="AI-Assisted Handbooks">
+<meta property="og:description" content="생성형 AI와 함께 엮은 자습서 네 권과 영문판 세 권 · Four study handbooks, three in English.">
+<meta name="color-scheme" content="light dark">
+<style>
+@font-face{font-family:"HB Serif";src:url(agentic-ai-reading/fonts/hb-serif-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"HB Serif";src:url(agentic-ai-reading/fonts/hb-serif-400i.woff2) format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"HB Serif";src:url(agentic-ai-reading/fonts/hb-serif-600.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"HB Serif";src:url(agentic-ai-reading/fonts/hb-serif-700.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"HB Serif KR";src:url(agentic-ai-reading/fonts/hb-serif-kr-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"HB Serif KR";src:url(agentic-ai-reading/fonts/hb-serif-kr-700.woff2) format("woff2");font-weight:600 700;font-display:swap}
+@font-face{font-family:"HB Sans";src:url(agentic-ai-reading/fonts/hb-sans-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"HB Sans";src:url(agentic-ai-reading/fonts/hb-sans-600.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"HB Sans";src:url(agentic-ai-reading/fonts/hb-sans-700.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"HB Sans KR";src:url(agentic-ai-reading/fonts/hb-sans-kr-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"HB Sans KR";src:url(agentic-ai-reading/fonts/hb-sans-kr-700.woff2) format("woff2");font-weight:600 700;font-display:swap}
+@font-face{font-family:"HB Mono";src:url(agentic-ai-reading/fonts/hb-mono-400.woff2) format("woff2");font-weight:400;font-display:swap}
+
+:root{
+  --serif:"HB Serif","HB Serif KR",Georgia,"Noto Serif KR",serif;
+  --sans:"HB Sans","HB Sans KR","Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --mono:"HB Mono",Consolas,monospace;
+  --bg:#f6f5f1; --paper:#fffefb; --ink:#1d1f24; --ink-2:#4a4d55; --ink-3:#7a7d85;
+  --line:#dedbd2; --line-2:#ebe8e0; --grid:rgba(29,31,36,.045);
+  --theo:#5c487a; --theo-tint:#edebf2; --theo-line:#b9b0c8;
+  --prac:#395785; --prac-tint:#e9eef5; --prac-line:#aebdd3;
+  --semi:#7a5841; --semi-tint:#f2ece6; --semi-line:#cdb9a8;
+  --wiki:#6b4049; --wiki-tint:#f3eaeb; --wiki-line:#cfb3b8;
+  --shadow:0 1px 0 rgba(0,0,0,.04),0 12px 28px -14px rgba(30,25,20,.28);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#15161a; --paper:#1c1d22; --ink:#e7e5df; --ink-2:#b4b2ac; --ink-3:#8a8882;
+  --line:#2e3036; --line-2:#26282d; --grid:rgba(255,255,255,.035);
+  --theo:#ada2c4; --theo-tint:#25222e; --theo-line:#4a4260;
+  --prac:#9db3d6; --prac-tint:#1f2530; --prac-line:#3a4a63;
+  --semi:#cfb29b; --semi-tint:#2a241f; --semi-line:#5a4a3d;
+  --wiki:#d2a6ae; --wiki-tint:#2b2224; --wiki-line:#5d4247;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 14px 30px -16px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --bg:#15161a; --paper:#1c1d22; --ink:#e7e5df; --ink-2:#b4b2ac; --ink-3:#8a8882;
+  --line:#2e3036; --line-2:#26282d; --grid:rgba(255,255,255,.035);
+  --theo:#ada2c4; --theo-tint:#25222e; --theo-line:#4a4260;
+  --prac:#9db3d6; --prac-tint:#1f2530; --prac-line:#3a4a63;
+  --semi:#cfb29b; --semi-tint:#2a241f; --semi-line:#5a4a3d;
+  --wiki:#d2a6ae; --wiki-tint:#2b2224; --wiki-line:#5d4247;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 14px 30px -16px rgba(0,0,0,.7);
+}
+html[data-lang="ko"] .en, html[data-lang="en"] .ko{display:none!important}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;background-position:-1px -1px}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;border-bottom:1px solid var(--line)}
+.mark{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 15px/1 var(--sans);letter-spacing:.01em}
+.mark i{display:grid;grid-template-columns:repeat(2,7px);gap:2px}
+.mark i b{width:7px;height:7px;border-radius:1.5px}
+.tools{display:flex;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:2px;background:var(--paper)}
+.seg button{font:600 12.5px/1 var(--sans);letter-spacing:.04em;border:0;background:none;color:var(--ink-3);padding:7px 11px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.gh{font:600 12.5px/1 var(--sans);text-decoration:none;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:8px 13px;background:var(--paper)}
+.gh:hover{color:var(--ink);border-color:var(--ink-3)}
+
+/* hero */
+.hero{padding:72px 0 56px;display:grid;grid-template-columns:1.25fr .75fr;gap:56px;align-items:end}
+.kicker{font:600 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
+.hero h1{font:600 clamp(36px,5.2vw,62px)/1.12 var(--serif);letter-spacing:-.015em;margin:0 0 22px}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--theo),var(--prac) 40%,var(--semi) 70%,var(--wiki));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:18px;color:var(--ink-2);max-width:36em;margin:0;word-break:keep-all}
+.hero h1{word-break:keep-all}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+.stats div{padding:16px 0 14px}
+.stats div+div{padding-left:16px;border-left:1px solid var(--line)}
+.stats b{display:block;font:600 34px/1 var(--serif);font-variant-numeric:lining-nums tabular-nums}
+.stats span{display:block;margin-top:8px;font-size:13px;color:var(--ink-3);line-height:1.35}
+.spec{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 22px;font:13px/1.5 var(--mono);color:var(--ink-3);margin-top:-8px}
+.spec span::before{content:"▸ ";color:var(--ink-3)}
+
+/* section heads */
+.sh{display:flex;align-items:baseline;gap:14px;margin:8px 0 22px}
+.sh h2{font:600 13px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;margin:0;color:var(--ink-2)}
+.sh hr{flex:1;border:0;border-top:1px solid var(--line);margin:0}
+.sh small{font:12px/1 var(--mono);color:var(--ink-3)}
+
+/* book cards */
+.books{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-bottom:28px}
+.book{--c:var(--ink);--t:var(--paper);--l:var(--line);position:relative;display:grid;grid-template-columns:170px 1fr;gap:24px;
+  background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:24px;box-shadow:var(--shadow)}
+.book.theo{--c:var(--theo);--t:var(--theo-tint);--l:var(--theo-line)}
+.book.prac{--c:var(--prac);--t:var(--prac-tint);--l:var(--prac-line)}
+.book.semi{--c:var(--semi);--t:var(--semi-tint);--l:var(--semi-line)}
+.book.wiki{--c:var(--wiki);--t:var(--wiki-tint);--l:var(--wiki-line)}
+.book::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:4px;background:var(--c);border-radius:6px 6px 0 0}
+
+.cover{position:relative;aspect-ratio:1/1.414;background:var(--t);border:1px solid var(--l);border-radius:2px 5px 5px 2px;overflow:hidden;
+  box-shadow:inset 9px 0 0 -1px var(--c),inset 10px 0 0 -1px rgba(255,255,255,.25),3px 4px 0 -1px var(--line-2),3px 4px 0 0 var(--line);
+  padding:14px 12px 12px 22px;display:flex;flex-direction:column;transition:transform .25s ease}
+.book:hover .cover{transform:translateY(-3px) rotate(-.6deg)}
+.cover small{font:600 8.5px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--c);opacity:.85}
+.cover strong{display:block;margin-top:7px;font:600 15px/1.28 var(--serif);color:var(--c);letter-spacing:-.005em;word-break:keep-all}
+.cover svg{margin-top:auto;width:100%;height:auto;display:block}
+.cover .ed{position:absolute;right:9px;bottom:9px;font:600 8.5px/1 var(--mono);color:var(--c);border:1px solid var(--l);border-radius:2px;padding:3px 4px;background:var(--paper)}
+
+.meta{min-width:0;display:flex;flex-direction:column}
+.field{font:600 11.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--c);margin:0 0 8px}
+.book h3{font:600 23px/1.28 var(--serif);margin:0 0 6px;letter-spacing:-.01em;word-break:keep-all}
+.sub{font-size:14.5px;color:var(--ink-2);margin:0 0 12px;line-height:1.5;word-break:keep-all}
+.desc{font-size:14.5px;margin:0 0 14px;line-height:1.6;word-break:keep-all}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0 0 16px;font-size:13px;line-height:1.45}
+dt{color:var(--ink-3);font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;padding-top:1px}
+dd{margin:0;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.acts{margin-top:auto;display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 var(--sans);text-decoration:none;padding:9px 13px;border-radius:4px;border:1px solid var(--l);color:var(--c);background:var(--paper)}
+.btn:hover{background:var(--t)}
+.btn.pri{background:var(--c);border-color:var(--c);color:var(--paper)}
+.btn.pri:hover{filter:brightness(1.08);background:var(--c)}
+.btn .k{font:600 10px/1 var(--mono);opacity:.75;letter-spacing:.06em}
+.note{font-size:12.5px;color:var(--ink-3);align-self:center}
+
+/* companion bridge */
+.pair{position:relative}
+.bridge{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:-12px 0 -12px;font:600 11.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.bridge::before,.bridge::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--theo-line),var(--prac-line))}
+.bridge span{display:inline-flex;align-items:center;gap:8px;border:1px dashed var(--line);border-radius:999px;padding:7px 12px;background:var(--bg)}
+.bridge i{font-style:normal;color:var(--theo)}
+.bridge i+i{color:var(--prac)}
+
+/* path */
+.path{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:6px;background:var(--paper);margin:10px 0 64px;overflow:hidden}
+.path div{padding:18px 18px 16px;border-right:1px solid var(--line-2)}
+.path div:last-child{border-right:0}
+.path b{display:block;font:600 11.5px/1 var(--mono);letter-spacing:.1em;margin-bottom:9px}
+.path p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-2);word-break:keep-all}
+.path .p1 b{color:var(--theo)} .path .p2 b{color:var(--prac)} .path .p3 b{color:var(--semi)} .path .p4 b{color:var(--wiki)}
+
+/* footer */
+footer{border-top:2px solid var(--ink);padding:30px 0 56px;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:36px;font-size:13.5px;color:var(--ink-2);line-height:1.6}
+footer h4{font:600 11.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px}
+footer p{margin:0 0 10px;word-break:keep-all}
+footer ul{list-style:none;margin:0;padding:0}
+footer li{margin:0 0 6px}
+footer a{color:var(--ink);text-decoration-color:var(--line);text-underline-offset:3px}
+footer a:hover{text-decoration-color:var(--ink)}
+.copy{grid-column:1/-1;font:12px/1.5 var(--mono);color:var(--ink-3);border-top:1px solid var(--line);padding-top:16px}
+
+/* Korean labels: mono letter-spacing spreads Hangul apart */
+.kicker .ko,.sh h2.ko,.field.ko,.path b.ko,footer h4.ko,.spec .ko,.cover small.ko,.bridge i,.bridge .ko{font-family:var(--sans);letter-spacing:.03em}
+.sh h2.ko,footer h4.ko{font-size:14px}
+.acts .btn{padding:9px 11px}
+
+@media (max-width:960px){
+  .hero{grid-template-columns:1fr;gap:34px;padding:48px 0 40px}
+  .books{grid-template-columns:1fr}
+  .bridge{margin:-8px 0}
+  .path{grid-template-columns:1fr 1fr}
+  .path div:nth-child(2){border-right:0}
+  .path div:nth-child(-n+2){border-bottom:1px solid var(--line-2)}
+  footer{grid-template-columns:1fr 1fr}
+  footer>div:first-child{grid-column:1/-1}
+}
+@media (max-width:560px){
+  .wrap{padding:0 16px}
+  .bar{padding:16px 0}
+  .mark span{display:none}
+  .gh{display:none}
+  .book{grid-template-columns:1fr;padding:18px;gap:18px}
+  .cover{width:150px}
+  .book h3{font-size:21px}
+  .stats b{font-size:27px}
+  .stats div+div{padding-left:10px}
+  .path{grid-template-columns:1fr}
+  .path div{border-right:0;border-bottom:1px solid var(--line-2)}
+  .path div:last-child{border-bottom:0}
+  footer{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.cover{transition:none}.book:hover .cover{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="bar">
+  <a class="mark" href="./" aria-label="AI-Assisted Handbooks">
+    <i aria-hidden="true"><b style="background:var(--theo)"></b><b style="background:var(--prac)"></b><b style="background:var(--semi)"></b><b style="background:var(--wiki)"></b></i>
+    <span>AI-Assisted Handbooks</span>
+  </a>
+  <div class="tools">
+    <div class="seg" role="group" aria-label="Language">
+      <button type="button" data-set-lang="ko" aria-pressed="true">한국어</button>
+      <button type="button" data-set-lang="en" aria-pressed="false">English</button>
+    </div>
+    <a class="gh" href="https://github.com/BowonKwon/AI-Assisted-Handbooks">GitHub ↗</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <p class="kicker"><span class="ko">권보원 엮음 · 2026</span><span class="en">Edited by Bowon Kwon · 2026</span></p>
+    <h1 class="ko">생성형 AI와 함께 엮은 <em>자습서</em></h1>
+    <h1 class="en">Study handbooks, compiled <em>with generative AI</em></h1>
+    <p class="lede ko">에이전트가 어떻게 생각하고 움직이는지 논문으로 읽고, 내 컴퓨터에 직접 붙여 일을 맡겨 보고, 그 밑에서 도는 반도체까지 내려가 봅니다. 법률가가 읽은 자료를 쌓아 두는 위키도 한 권 있습니다. 모두 화면본과 PDF로 읽을 수 있습니다.</p>
+    <p class="lede en">Read how agents think and act, paper by paper. Attach those parts to your own computer and hand them real work. Then go down to the chips they run on. A fourth volume, in Korean only, shows lawyers how to keep what they read in an LLM wiki. Every book is free to read online or as a PDF.</p>
+  </div>
+  <div>
+    <div class="stats">
+      <div><b>4</b><span class="ko">자습서</span><span class="en">handbooks</span></div>
+      <div><b>3</b><span class="ko">영문판</span><span class="en">English editions</span></div>
+      <div><b>1,851</b><span class="ko">쪽 (PDF 합계)</span><span class="en">PDF pages in all</span></div>
+    </div>
+  </div>
+  <p class="spec">
+    <span class="ko">원문 대조 검증을 거친 판</span><span class="en">Checked against original sources</span>
+    <span class="ko">고친 곳은 판과 날짜로 반영</span><span class="en">Corrections ship as new versions</span>
+    <span>CC BY-NC 4.0</span>
+  </p>
+</section>
+
+<div class="sh"><h2 class="ko">자습서</h2><h2 class="en">The handbooks</h2><hr></div>
+
+<div class="books">
+
+  <!-- Theory -->
+  <article class="book theo">
+    <div class="cover" aria-hidden="true">
+      <small class="ko">일요일은 AI · 원리편</small><small class="en">Sunday AI · Theory</small>
+      <strong class="ko">생각하고, 행동하고, 고쳐 쓰는 기계</strong>
+      <strong class="en">Machines That Think, Act, and Revise</strong>
+      <svg viewBox="0 0 120 92" fill="none" stroke="currentColor" style="color:var(--c)">
+        <circle cx="60" cy="46" r="30" stroke-opacity=".35" stroke-dasharray="2 4"/>
+        <path d="M60 16 A30 30 0 0 1 86 61" stroke-width="1.6"/>
+        <path d="M86 61 A30 30 0 0 1 34 61" stroke-width="1.6"/>
+        <path d="M34 61 A30 30 0 0 1 60 16" stroke-width="1.6"/>
+        <circle cx="60" cy="16" r="6" fill="var(--paper)" stroke-width="1.6"/>
+        <circle cx="86" cy="61" r="6" fill="var(--paper)" stroke-width="1.6"/>
+        <circle cx="34" cy="61" r="6" fill="var(--paper)" stroke-width="1.6"/>
+        <circle cx="60" cy="16" r="2" fill="currentColor" stroke="none"/>
+        <rect x="83.5" y="58.5" width="5" height="5" fill="currentColor" stroke="none"/>
+        <path d="M31 63 l3 -5 l3 5 z" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="ed">1.1 · 1.0-en</span>
+    </div>
+    <div class="meta">
+      <p class="field ko">컴퓨터과학 · AI · 원리편</p><p class="field en">Computer science · AI · Theory</p>
+      <h3 class="ko">생각하고, 행동하고, 고쳐 쓰는 기계</h3>
+      <h3 class="en">Machines That Think, Act, and Revise</h3>
+      <p class="sub ko">ReAct에서 LLM Wiki까지, Agentic AI 논문 읽기</p>
+      <p class="sub en">Reading Agentic AI Papers, from ReAct to LLM Wiki</p>
+      <p class="desc ko">에이전트의 부품 하나를 논문 한 편으로 읽습니다. 사전 자습 0장과 본편 20장, 부록 4종으로 이루어져 있고, 회차마다 통계의 눈으로 결과를 다시 읽습니다.</p>
+      <p class="desc en">Each chapter reads one paper on one part of an agent: a preliminary Chapter 0, twenty chapters, and four appendices. Every chapter rereads the results with a statistician's eye.</p>
+      <dl>
+        <dt class="ko">독자</dt><dt class="en">Readers</dt>
+        <dd class="ko">확률·통계와 프로그래밍 기초가 있는 스터디 참가자, 혼자 읽는 독자</dd>
+        <dd class="en">Study groups and self-learners with basic statistics and programming</dd>
+        <dt class="ko">판</dt><dt class="en">Edition</dt>
+        <dd class="ko">1.1 · 2026. 10. 23. · 453쪽</dd>
+        <dd class="en">1.0-en · Oct 22, 2026 · 540 pp.</dd>
+      </dl>
+      <div class="acts ko">
+        <a class="btn pri" href="agentic-ai-reading/">화면본으로 읽기</a>
+        <a class="btn" href="agentic-ai-reading/agentic-ai-reading-v1.1.pdf"><span class="k">PDF</span> 내려받기</a>
+        <a class="btn" href="agentic-ai-reading/en/"><span class="k">EN</span> English</a>
+      </div>
+      <div class="acts en">
+        <a class="btn pri" href="agentic-ai-reading/en/">Read online</a>
+        <a class="btn" href="agentic-ai-reading/en/agentic-ai-reading-v1.0-en.pdf"><span class="k">PDF</span> Download</a>
+        <a class="btn" href="agentic-ai-reading/"><span class="k">KO</span> Korean edition</a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Practice -->
+  <article class="book prac">
+    <div class="cover" aria-hidden="true">
+      <small class="ko">일요일은 AI · 실전편</small><small class="en">Sunday AI · Hands-on</small>
+      <strong class="ko">고삐를 쥐고 기계에게 일을 맡기는 법</strong>
+      <strong class="en">Harness in Hand</strong>
+      <svg viewBox="0 0 120 92" fill="none" stroke="currentColor" style="color:var(--c)">
+        <rect x="40" y="30" width="72" height="50" rx="4" fill="var(--paper)" stroke-width="1.6"/>
+        <path d="M40 40 H112" stroke-opacity=".5"/>
+        <circle cx="46" cy="35" r="1.4" fill="currentColor" stroke="none"/>
+        <circle cx="51" cy="35" r="1.4" fill="currentColor" stroke="none" fill-opacity=".6"/>
+        <path d="M49 52 l6 5 l-6 5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M60 63 H72" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M8 18 C 26 18, 22 56, 40 56" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M8 26 C 22 26, 20 64, 40 66" stroke-width="1.6" stroke-linecap="round" stroke-opacity=".55"/>
+        <rect x="3" y="14" width="7" height="16" rx="3.5" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="ed">1.1 · 1.0-en</span>
+    </div>
+    <div class="meta">
+      <p class="field ko">컴퓨터과학 · AI · 실전편</p><p class="field en">Computer science · AI · Hands-on</p>
+      <h3 class="ko">고삐를 쥐고 기계에게 일을 맡기는 법</h3>
+      <h3 class="en">Harness in Hand</h3>
+      <p class="sub ko">Claude Code·Codex로 내 일을 대신할 에이전트 짓기</p>
+      <p class="sub en">Building AI Agents with Claude Code and Codex</p>
+      <p class="desc ko">원리편이 논문으로 읽은 부품을 회차마다 하나씩 내 컴퓨터에 붙여 일을 맡깁니다. 지시문, 도구와 MCP, 스킬, 훅, 메모리, 서브에이전트, 스펙과 검증을 거쳐 보안과 운영·평가까지 다루고, 실습 결과는 엮은이가 실제로 돌린 기록입니다.</p>
+      <p class="desc en">One lesson attaches one part to your own computer and hands it a job: instructions, tools and MCP, skills, hooks, memory, subagents, specs and verification, then security, operations and evaluation. The results are the editor's own runs, redone in English for this edition.</p>
+      <dl>
+        <dt class="ko">독자</dt><dt class="en">Readers</dt>
+        <dd class="ko">Claude Code나 Codex를 처음 쓰는 스터디 참가자, 혼자 읽는 독자</dd>
+        <dd class="en">Study groups and self-learners new to Claude Code or Codex</dd>
+        <dt class="ko">판</dt><dt class="en">Edition</dt>
+        <dd class="ko">1.1 · 2026. 10. 23. · 127쪽</dd>
+        <dd class="en">1.0-en · Oct 22, 2026 · 156 pp.</dd>
+      </dl>
+      <div class="acts ko">
+        <a class="btn pri" href="agentic-ai-practice/">화면본으로 읽기</a>
+        <a class="btn" href="agentic-ai-practice/agentic-ai-practice-v1.1.pdf"><span class="k">PDF</span> 내려받기</a>
+        <a class="btn" href="agentic-ai-practice/en/"><span class="k">EN</span> English</a>
+      </div>
+      <div class="acts en">
+        <a class="btn pri" href="agentic-ai-practice/en/">Read online</a>
+        <a class="btn" href="agentic-ai-practice/en/agentic-ai-practice-v1.0-en.pdf"><span class="k">PDF</span> Download</a>
+        <a class="btn" href="agentic-ai-practice/"><span class="k">KO</span> Korean edition</a>
+      </div>
+    </div>
+  </article>
+
+  <div class="bridge" aria-hidden="true"><span><i>원리</i>⟷<i>실전</i> <span class="ko" style="border:0;padding:0">짝을 이루는 두 권</span><span class="en" style="border:0;padding:0">companion volumes</span></span></div>
+
+  <!-- Semiconductor -->
+  <article class="book semi">
+    <div class="cover" aria-hidden="true">
+      <small class="ko">일곱 회차 자습서</small><small class="en">Seven sessions</small>
+      <strong class="ko">AI 인프라와 반도체</strong>
+      <strong class="en">AI Infrastructure and Semiconductors</strong>
+      <svg viewBox="0 0 120 92" fill="none" stroke="currentColor" style="color:var(--c)">
+        <defs><clipPath id="wf"><circle cx="60" cy="48" r="38"/></clipPath></defs>
+        <circle cx="60" cy="48" r="38" fill="var(--paper)" stroke-width="1.6"/>
+        <g clip-path="url(#wf)" stroke-opacity=".45">
+          <path d="M22 26H98M22 37H98M22 48H98M22 59H98M22 70H98M38 10V86M49 10V86M60 10V86M71 10V86M82 10V86"/>
+        </g>
+        <rect x="49" y="37" width="11" height="11" fill="currentColor" stroke="none"/>
+        <rect x="60" y="48" width="11" height="11" fill="currentColor" stroke="none" fill-opacity=".55"/>
+        <rect x="71" y="37" width="11" height="11" fill="currentColor" stroke="none" fill-opacity=".3"/>
+        <path d="M55 85.5 h10" stroke-width="2.4" stroke="var(--t)"/>
+      </svg>
+      <span class="ed">2.0.1 · 2.0.1-en</span>
+    </div>
+    <div class="meta">
+      <p class="field ko">반도체 · 컴퓨터 구조</p><p class="field en">Semiconductors · Computer architecture</p>
+      <h3 class="ko">AI 인프라와 반도체</h3>
+      <h3 class="en">AI Infrastructure and Semiconductors</h3>
+      <p class="sub ko">통계·전산·AI 배경 학습자를 위한 일곱 회차 자습서</p>
+      <p class="sub en">A Self-Study Guide</p>
+      <p class="desc ko">산업 지형에서 시작해 AI 칩과 메모리, 팹리스·파운드리, 전공정과 후공정·패키징을 거쳐 데이터센터까지 일곱 회차로 내려갑니다. 화면본에는 수치를 직접 바꿔 보는 인터랙티브 그림이 들어 있습니다.</p>
+      <p class="desc en">Seven sessions go from the industry map through AI chips and memory, fabless and foundry, front-end and back-end processing and packaging, down to the data center. The online edition has interactive figures that let you change the numbers yourself.</p>
+      <dl>
+        <dt class="ko">독자</dt><dt class="en">Readers</dt>
+        <dd class="ko">통계·전산·AI 배경 학습자</dd>
+        <dd class="en">Learners with statistics, computing or AI backgrounds</dd>
+        <dt class="ko">판</dt><dt class="en">Edition</dt>
+        <dd class="ko">2.0.1 · 2026. 10. 22. · 224쪽</dd>
+        <dd class="en">2.0.1-en · Oct 22, 2026 · 253 pp.</dd>
+      </dl>
+      <div class="acts ko">
+        <a class="btn pri" href="ai-infra-semiconductors/">화면본으로 읽기</a>
+        <a class="btn" href="ai-infra-semiconductors/ai-infra-semiconductors-v2.0.1.pdf"><span class="k">PDF</span> 내려받기</a>
+        <a class="btn" href="ai-infra-semiconductors/en/"><span class="k">EN</span> English</a>
+      </div>
+      <div class="acts en">
+        <a class="btn pri" href="ai-infra-semiconductors/en/">Read online</a>
+        <a class="btn" href="ai-infra-semiconductors/en/ai-infra-semiconductors-v2.0.1-en.pdf"><span class="k">PDF</span> Download</a>
+        <a class="btn" href="ai-infra-semiconductors/"><span class="k">KO</span> Korean edition</a>
+      </div>
+    </div>
+  </article>
+
+  <!-- LLM wiki -->
+  <article class="book wiki">
+    <div class="cover" aria-hidden="true">
+      <small class="ko">법률가를 위한 자습서</small><small class="en">For lawyers · Korean</small>
+      <strong>읽은 것이 사라지지 않는 서재</strong>
+      <svg viewBox="0 0 120 92" fill="none" stroke="currentColor" style="color:var(--c)">
+        <rect x="14" y="20" width="40" height="28" rx="2" fill="var(--paper)" stroke-width="1.4"/>
+        <rect x="66" y="12" width="40" height="28" rx="2" fill="var(--paper)" stroke-width="1.4"/>
+        <rect x="40" y="58" width="40" height="28" rx="2" fill="var(--paper)" stroke-width="1.4"/>
+        <path d="M54 30 L66 26 M34 48 L50 58 M86 40 L70 58" stroke-dasharray="2 2.5"/>
+        <path d="M20 28H44M20 34H40M20 40H46M72 20H96M72 26H92M72 32H98M46 66H70M46 72H66M46 78H72" stroke-opacity=".5"/>
+        <path d="M20 28H34M72 20H84M46 66H58" stroke-width="2"/>
+      </svg>
+      <span class="ed">2.0</span>
+    </div>
+    <div class="meta">
+      <p class="field ko">법학 · AI 활용</p><p class="field en">Law · Applied AI</p>
+      <h3>읽은 것이 사라지지 않는 서재</h3>
+      <p class="sub ko">법률가를 위한 LLM 위키 자습서</p>
+      <p class="sub en">A Library That Remembers What You Read: Building an LLM Wiki — A Self-Study Guide for Lawyers <span style="white-space:nowrap">(Korean only)</span></p>
+      <p class="desc ko">혼자서 처음부터 끝까지. 설치부터 시작해, 읽은 자료가 사라지지 않게 쌓아 두고 석 달 동안 운영하는 방법입니다. 7부 26장으로, 제1~22장의 A 트랙과 이미 코드를 쓰는 분을 위한 B 트랙(제23~26장)이 있습니다.</p>
+      <p class="desc en">From installation to three months of running it alone: how to make what you read accumulate instead of disappearing. Seven parts and 26 chapters: track A (Chapters 1–22) and track B (Chapters 23–26) for readers who already write code.</p>
+      <dl>
+        <dt class="ko">독자</dt><dt class="en">Readers</dt>
+        <dd class="ko">법률가(법관·변호사·기업 법무·연구자), 혼자 읽는 독자</dd>
+        <dd class="en">Lawyers (judges, attorneys, in-house counsel, researchers)</dd>
+        <dt class="ko">판</dt><dt class="en">Edition</dt>
+        <dd class="ko">2.0 · 2026. 10. 13. · 98쪽</dd>
+        <dd class="en">2.0 (Korean) · Oct 13, 2026 · 98 pp.</dd>
+      </dl>
+      <div class="acts">
+        <a class="btn pri" href="llm-wiki/"><span class="ko">화면본으로 읽기</span><span class="en">Read online (Korean)</span></a>
+        <a class="btn" href="llm-wiki/llm-wiki-v2.0.pdf"><span class="k">PDF</span> <span class="ko">내려받기</span><span class="en">Download</span></a>
+      </div>
+    </div>
+  </article>
+</div>
+
+<div class="sh"><h2 class="ko">어디서 시작할까</h2><h2 class="en">Where to start</h2><hr></div>
+<div class="path">
+  <div class="p1"><b class="ko">왜 그렇게 움직이나</b><b class="en">Why it works</b>
+    <p class="ko">에이전트의 원리를 논문으로 — 원리편부터.</p><p class="en">The ideas behind agents, from the papers: start with the Theory volume.</p></div>
+  <div class="p2"><b class="ko">내 일에 붙여 보기</b><b class="en">Put it to work</b>
+    <p class="ko">원리편을 읽지 않아도 따라올 수 있게 썼습니다 — 실전편.</p><p class="en">Written so you can follow it without the Theory volume: Harness in Hand.</p></div>
+  <div class="p3"><b class="ko">밑바닥까지</b><b class="en">All the way down</b>
+    <p class="ko">모델을 돌리는 칩과 메모리, 그 산업 — 반도체 자습서.</p><p class="en">The chips, memory and industry that run the models: the semiconductor guide.</p></div>
+  <div class="p4"><b class="ko">법률가라면</b><b class="en">If you practise law</b>
+    <p class="ko">읽은 판결·논문을 쌓아 두는 개인 위키 — 서재.</p><p class="en">A personal wiki for the judgments and papers you read (Korean).</p></div>
+</div>
+
+<footer>
+  <div>
+    <h4 class="ko">오류 제보</h4><h4 class="en">Corrections</h4>
+    <p class="ko">원문과 대조하는 검증을 여러 차례 거쳤지만 틀린 서술이 남아 있을 수 있습니다. 원문과 다른 서술을 찾으면 <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">Issues</a>로 알려 주십시오. 고친 내용은 판과 날짜를 올려 반영합니다.</p>
+    <p class="en">The handbooks have been checked against the original sources several times, but errors may remain. Please report any discrepancy via <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">Issues</a>; corrections are released with a new version number and date.</p>
+    <p class="ko">이 자료는 엮은이가 개인적으로 공부하며 엮은 것으로, 엮은이가 속한 기관의 견해나 업무와는 관계가 없습니다.</p>
+    <p class="en">These are personal study materials and do not represent the views of any institution the editor belongs to.</p>
+  </div>
+  <div>
+    <h4 class="ko">이용 허락</h4><h4 class="en">License</h4>
+    <ul>
+      <li class="ko">본문: <a href="LICENSE">CC BY-NC 4.0</a></li><li class="en">Text: <a href="LICENSE">CC BY-NC 4.0</a></li>
+      <li class="ko">인터랙티브 그림 코드: <a href="ai-infra-semiconductors/widgets/LICENSE.md">PolyForm Noncommercial 1.0.0</a></li><li class="en">Interactive-figure code: <a href="ai-infra-semiconductors/widgets/LICENSE.md">PolyForm Noncommercial 1.0.0</a></li>
+      <li class="ko">원문에서 옮긴 표·인용·그림은 각 원저작자의 권리를 따릅니다. <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks#이용-허락">자세히</a></li>
+      <li class="en">Reproduced tables, quotations and figures remain subject to their authors' rights. <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks#english">Details</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4 class="ko">관련 저장소</h4><h4 class="en">Related</h4>
+    <ul>
+      <li><a href="https://github.com/BowonKwon/SundayAI">SundayAI</a> <span class="ko">— 「일요일은 AI」 스터디 발제 자료</span><span class="en">— study-group session materials</span></li>
+      <li><a href="https://github.com/BowonKwon/AI-and-Law-Presentations">AI-and-Law-Presentations</a> <span class="ko">— 인공지능과 법 발표 슬라이드</span><span class="en">— slides on AI and law</span></li>
+      <li><a href="https://github.com/BowonKwon/AI-Assisted-Handbooks">GitHub</a> <span class="ko">— 이 저장소</span><span class="en">— this repository</span></li>
+    </ul>
+  </div>
+  <div class="copy">© 2026 <span class="ko">권보원</span><span class="en">Bowon Kwon</span> · Compiled with generative AI (Claude)</div>
+</footer>
+
+</div>
+<script>
+(function(){
+  var root=document.documentElement, KEY="aah-lang";
+  function set(l){
+    root.setAttribute("data-lang",l); root.setAttribute("lang",l);
+    document.querySelectorAll("[data-set-lang]").forEach(function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-set-lang")===l));});
+  }
+  var q=new URLSearchParams(location.search).get("lang"), saved=null;
+  try{saved=localStorage.getItem(KEY);}catch(e){}
+  var nav=(navigator.language||"").toLowerCase();
+  set(q==="en"||q==="ko"?q:(saved||(nav.indexOf("ko")===0?"ko":"en")));
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){
+    b.addEventListener("click",function(){var l=b.getAttribute("data-set-lang");set(l);try{localStorage.setItem(KEY,l);}catch(e){}});
+  });
+})();
+</script>
+</body>
+</html>
