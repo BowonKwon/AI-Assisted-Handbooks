@@ -3,7 +3,7 @@
 **통계·전산·AI 배경 학습자를 위한 일곱 회차 자습서** · 일요일은 AI · 반도체 스터디 · 권보원 엮음 · 2.0.1판(2026. 10. 22.)
 
 - [화면본(HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/ai-infra-semiconductors/)
-- [인쇄본(PDF, 208쪽)](ai-infra-semiconductors-v2.0.1.pdf)
+- [인쇄본(PDF, 206쪽)](ai-infra-semiconductors-v2.0.1.pdf)
 GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일이 커서 표시되지 않습니다. 책은 위 화면본 링크로 여십시오. 인터랙티브 그림 12종은 화면본 본문에 들어 있고, 그림 하나씩 따로 여는 단독 페이지는 `widgets/` 폴더에 있습니다(예: [루프라인](https://bowonkwon.github.io/AI-Assisted-Handbooks/ai-infra-semiconductors/widgets/roofline.html)).
 
 「일요일은 AI」 스터디의 반도체 회차를 위해 엮은 자습서입니다. 반도체를 전공하지 않았지만 통계·전산·AI 배경이 있는 독자를 위해 썼고, 용어를 외우는 대신 몇 개의 식을 세워 숫자를 직접 넣어 보게 합니다. 회차마다 정량 실습과 전체 풀이(32문항)가 붙어 있습니다. 화면본에서는 식 가까이에 놓인 인터랙티브 그림에서 값을 바꿔 볼 수 있고, 인쇄본에는 같은 자리에 처음 상태의 그림이 실려 있습니다. 이용할 때 유의할 점과 만든 방식은 책 앞의 「이 책의 사용법」과 끝의 간기에 있습니다.
@@ -45,7 +45,7 @@ GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일
 *AI Infrastructure and Semiconductors: A Self-Study Guide* · Sunday AI semiconductor sessions · edited by Bowon Kwon · edition 2.0.1-en (October 22, 2026), translated from the Korean edition 2.0.1
 
 - [Read online (HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/ai-infra-semiconductors/en/)
-- [Print edition (PDF, 242 pages)](en/ai-infra-semiconductors-v2.0.1-en.pdf)
+- [Print edition (PDF, 234 pages)](en/ai-infra-semiconductors-v2.0.1-en.pdf)
 
 The twelve interactive figures are embedded in the online edition; stand-alone pages for each figure are in the `en/widgets/` folder (for example, [roofline](https://bowonkwon.github.io/AI-Assisted-Handbooks/ai-infra-semiconductors/en/widgets/roofline.html)). The print edition shows each figure in its initial state.
 

@@ -259,6 +259,32 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
    영어 머리글은 길어 인쇄본에서 표 세 개(2회차 KV 예산 표, 3회차 세대별 사양 표, 6회차 칩렛 표)가
    쪽 오른쪽 밖으로 잘렸다. th.nw 는 그대로 nowrap 이다. */
 th{white-space:normal}
+
+/* 반쯤 빈 쪽 줄이기(2026-10-22, 소유자 지시 「빈자리 조절」). 아래 일곱 표는 짧은 표(.keep)라
+   쪽에서 나누지 않는데, 영어 칸이 길어 한 쪽 가까이 되면서 제목·도입 문단과 함께 통째로 다음 쪽으로
+   넘어가 앞쪽이 절반 넘게 비었다(직전 빌드 8·54·89·140·144·185·240쪽). 이 자리에서만 나눔을 허용한다.
+   행(tr)은 여전히 나누지 않고, 이어지는 쪽에는 머리글이 반복된다 */
+.kwn:has(> #c0-what-each-session-contains),
+.kwn:has(> #c2-sources),
+.kwn:has(> #c4-mapping-table),
+.kwn:has(> #c5-self-study-appendix-b--leads-for-the-discussion-questions),
+.kwn:has(> #c5-sources),
+.kwn:has(> #c6-sources),
+.kwn:has(> #c11-edition-history){break-inside:auto}
+.kwn:has(> #c0-what-each-session-contains) > .tw.keep,
+.kwn:has(> #c2-sources) > .tw.keep,
+.kwn:has(> #c4-mapping-table) > .tw.keep,
+.kwn:has(> #c5-self-study-appendix-b--leads-for-the-discussion-questions) > .tw.keep,
+.kwn:has(> #c5-sources) > .tw.keep,
+.kwn:has(> #c6-sources) > .tw.keep,
+.kwn:has(> #c11-edition-history) > .tw.keep{break-inside:auto}
+.kwn:has(> #c0-what-each-session-contains) > .tw.keep > table,
+.kwn:has(> #c2-sources) > .tw.keep > table,
+.kwn:has(> #c4-mapping-table) > .tw.keep > table,
+.kwn:has(> #c5-self-study-appendix-b--leads-for-the-discussion-questions) > .tw.keep > table,
+.kwn:has(> #c5-sources) > .tw.keep > table,
+.kwn:has(> #c6-sources) > .tw.keep > table,
+.kwn:has(> #c11-edition-history) > .tw.keep > table{break-inside:auto}
 </style>
 </head>
 <body>
@@ -28026,7 +28052,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <tr>
 <td>Edition 2.0.1</td>
 <td>2026-10-22</td>
-<td>Corrected the volume-production timing of TSMC's A16 process. Where the book had given only the "production in 2026" plan from the 2024 announcement, it now gives "volume production expected to start in 2027," based on a TSMC executive's remarks reported from the April 2026 Technology Symposium (Session 4, the table in section 4; Session 5, section 3; and their sources and verification status). The rest of the text did not change</td>
+<td>Corrected the volume-production timing of TSMC's A16 process. Where the book had given only the "production in 2026" plan from the 2024 announcement, it now gives "volume production expected to start in 2027," based on a TSMC executive's remarks reported from the April 2026 Technology Symposium (Session 4, the table in section 4; Session 5, section 3; and their sources and verification status). Factual and bibliographic errors found while translating the English edition and checking it against the sources were corrected at the same time, and company names were brought into line with each company's current styling (Sandisk, Arm, ZEISS)</td>
 </tr>
 <tr>
 <td>Edition 2.0.1-en</td>
