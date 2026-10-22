@@ -243,6 +243,255 @@ details>*:last-child{padding-bottom:10px}
   h2,h3,h4{page-break-after:avoid}
   p,li{orphans:2;widows:2}
 }
+
+/* 시리즈 B 라틴 글꼴(HB Serif·Sans·Mono = Source Serif 4·Source Sans 3·Source Code Pro 정적 인스턴스, OFL 1.1).
+   파일은 화면본·인쇄 산본 옆 fonts/ 에 둔다(config fonts_dir 가 복사). tools/handbook_fonts.py build-latin 이 만든다 */
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400i.woff2") format("woff2");font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-600i.woff2") format("woff2");font-weight:600;font-style:italic;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif";src:url("fonts/hb-serif-700i.woff2") format("woff2");font-weight:700;font-style:italic;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-400i.woff2") format("woff2");font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans";src:url("fonts/hb-sans-700i.woff2") format("woff2");font-weight:700;font-style:italic;font-display:block}
+@font-face{font-family:"HB Mono";src:url("fonts/hb-mono-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Mono";src:url("fonts/hb-mono-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+
+@font-face{font-family:"HB Symbols";src:url("fonts/hb-symbols-400.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
+/* 시리즈 B 한국어 글꼴(HB Serif KR·Sans KR = Noto Serif KR·Noto Sans KR 서브셋 정적 400·700, OFL 1.1).
+   한글 음절은 KS X 1001 2,350자 + 세 책 원고에 나온 글자. 새 글자가 생기면 handbook_fonts.py check 로 확인 */
+@font-face{font-family:"HB Serif KR";src:url("fonts/hb-serif-kr-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Serif KR";src:url("fonts/hb-serif-kr-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans KR";src:url("fonts/hb-sans-kr-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:"HB Sans KR";src:url("fonts/hb-sans-kr-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+
+:root{--accent:#5c487a;--accent-ink:#4e3d68;--accent2:#8b7f6f;--tint:#edebf0;--tint2:#f6f5f8;--accent-line:#b4abc2}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:#a59ab6;--accent-ink:#a59ab6;--accent2:#b9ab95;--tint:#22202d;--tint2:#1a1a23;--accent-line:#372e48}}
+:root[data-theme="dark"]{--accent:#a59ab6;--accent-ink:#a59ab6;--accent2:#b9ab95;--tint:#22202d;--tint2:#1a1a23;--accent-line:#372e48}
+
+/* ── 시리즈 B 공통(자습서 시리즈 — 반도체·실전편·원리편, 한·영) ─────────────
+   md2handbook 기본 CSS·인쇄 CSS·lang_css 뒤에 붙는다. config extra_css 목록:
+   fonts-latin.css (+ 한국어판 fonts-ko.css) → palette-{책}.css → series-b.css → 책별 덧붙임.
+   출처: output/영문판-디자인-2026-10-22/ 공통/series-common.css + 시안-B-modern/variant-B.css(2026-10-22 소유자 결정).
+   외부 요청 없음 — 글꼴은 책 옆 fonts/ 에서 읽는다(OFL 1.1, 라이선스 파일 동봉). */
+
+/* 의미 색(콜아웃)은 세 책이 같다 — 책마다 다른 것은 주색 하나뿐이다 */
+:root{
+  --fg:#1d2026; --mut:#5c6370; --line:#e1e3e7; --bg:#fbfbfa; --card:#ffffff;
+  --cw:#9b4f4f; --cw-bg:#f8f0ef;   /* 주의 — 낮은 채도 장밋빛 */
+  --ch:#85704a; --ch-bg:#f7f3ea;   /* 힌트 — 모래색 */
+  --cr:#5b6170; --cr-bg:#f2f3f5;   /* 더 읽기 — 중성 회색 */
+  --box-bg:#f7f7f5; --box-line:#dcdde0;
+  --sand-bg:#f6f3ee;   /* 실전편 원고 SVG 가 쓰는 모래색 면(종전 theme.css 토큰 — 없으면 검은 면이 된다) */
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --fg:#e4e6ea; --mut:#9aa1ac; --line:#2c3039; --bg:#14161a; --card:#191c21;
+    --cw:#e0a3a3; --cw-bg:#2a1f20; --ch:#d6c08f; --ch-bg:#26221a; --cr:#b9bfcb; --cr-bg:#1f2228;
+    --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
+  }
+}
+:root[data-theme="dark"]{
+  --fg:#e4e6ea; --mut:#9aa1ac; --line:#2c3039; --bg:#14161a; --card:#191c21;
+  --cw:#e0a3a3; --cw-bg:#2a1f20; --ch:#d6c08f; --ch-bg:#26221a; --cr:#b9bfcb; --cr-bg:#1f2228;
+  --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
+}
+:root{
+  /* 동봉 글꼴(HB …)을 맨 앞에. 영문판에는 HB … KR 파일이 없으므로 그 자리는 건너뛰고 시스템 글꼴로 간다 */
+  --serif:"HB Serif","HB Serif KR","HB Symbols",Georgia,"Noto Serif KR",serif;
+  --sans:"HB Sans","HB Sans KR","HB Symbols","Segoe UI",system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
+  --mono:"HB Mono","HB Sans KR","HB Symbols","Cascadia Mono",Consolas,"D2Coding",monospace;
+}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+/* 숫자 — 제목·표에서 Georgia 의 옛 숫자(0·5 가 x높이로 내려앉음)가 보이던 것을 고른 숫자로 */
+h1,h2,h3,h4,th,td,.eyebrow{font-variant-numeric:lining-nums}
+td{font-variant-numeric:lining-nums tabular-nums}
+
+/* 영어 머리글은 길다(기존 theme-en.css 와 같은 처리) */
+th{white-space:normal}
+
+/* 인라인 코드·코드 상자 — 밝은 상자만. 큰 면적의 어두운 상자는 쓰지 않는다 */
+code{background:var(--tint)!important;color:var(--accent-ink)}
+pre{background:var(--box-bg)!important;border:1px solid var(--box-line)!important;
+  border-left:3px solid var(--accent)!important;border-radius:6px;
+  white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+pre code{background:none!important;color:inherit}
+
+/* 의미 콜아웃 색은 토큰으로만 */
+.callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
+.callout.warn .ctitle{color:var(--cw)!important}
+.callout.ok{border-left-color:var(--accent)!important;background:var(--tint)!important}
+.callout.ok .ctitle{color:var(--accent-ink)!important}
+.callout.hint,.callout.tip{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
+.callout.hint .ctitle,.callout.tip .ctitle{color:var(--ch)!important}
+.callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
+.callout.ref .ctitle{color:var(--cr)!important}
+
+/* 실전편 도구 꼬리표(있으면) */
+.tag{display:inline-block;font-family:var(--sans);font-size:.74em;font-weight:600;
+  padding:0 8px;border-radius:999px;color:#fff;vertical-align:.1em;letter-spacing:.02em;background:var(--accent)}
+
+/* 링크 — 밑줄을 가늘게, 주색으로 */
+main a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px;
+  text-decoration-color:var(--accent-line)}
+
+/* 인쇄본 공통 */
+.pagedjs_page a[href^="http"]{color:var(--accent-ink)}
+.pagedjs_page .mb math{font-size:1em}
+
+/* 화면 — 본문 단을 오른쪽 칸 가운데에 둔다(넓은 화면에서 오른쪽만 비던 것) */
+@media (min-width:1081px){ main{margin:0 auto} }
+
+/* 인쇄본 — 변형 CSS 의 「.pagedjs_page .callout」 이 의미 색을 덮지 않게 다시 세운다(특이도 0,3,0) */
+.pagedjs_page .callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
+.pagedjs_page .callout.warn .ctitle{color:var(--cw)!important}
+.pagedjs_page .callout.hint,.pagedjs_page .callout.tip{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
+.pagedjs_page .callout.hint .ctitle,.pagedjs_page .callout.tip .ctitle{color:var(--ch)!important}
+.pagedjs_page .callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
+.pagedjs_page .callout.ref .ctitle{color:var(--cr)!important}
+
+/* 한국어판 — 한글에는 기울임·자간 벌림을 쓰지 않는다(가짜 기울임이 된다) */
+html[lang="ko"] .chapter > blockquote:first-of-type, html[lang="ko"] h3, html[lang="ko"] blockquote{font-style:normal!important}
+html[lang="ko"] .callout .ctitle, html[lang="ko"] .eyebrow, html[lang="ko"] th{letter-spacing:.02em!important}
+
+/* 휴대전화 — 큰 본문(시안 C 19px 등)을 한 단계 줄인다 */
+@media (max-width:600px){ main{font-size:17px!important} .chapter h1{font-size:2rem!important} .callout{padding:14px 16px!important} }
+
+/* ── 시안 B 「Modern technical」 ───────────────────────────────────
+   굵은 sans 제목 + 세리프 본문, 제목 위 짧은 주색 막대, 첫 콜아웃(Key takeaway 등)은 요약 상자,
+   나머지 NOTE 콜아웃은 「여백 노트」처럼 작은 sans·배경 없음, 표 머리 옅은 틴트·줄무늬. */
+
+main{max-width:780px;font-family:var(--serif);font-size:17.5px;line-height:1.64;color:var(--fg)}
+html[lang="ko"] main{max-width:840px;font-size:17px;line-height:1.8}
+.eyebrow{display:inline-block;font-family:var(--sans)!important;font-size:.72rem!important;font-weight:700!important;
+  letter-spacing:.12em!important;color:#fff!important;background:var(--accent);padding:3px 10px;border-radius:3px;margin:0 0 14px!important}
+.chapter h1{font-family:var(--sans);font-weight:700;font-size:2.35rem;line-height:1.15;letter-spacing:-.018em;
+  color:var(--accent-ink);margin:0 0 20px}
+.chapter > blockquote:first-of-type{font-family:var(--sans);font-size:1.06em;color:var(--fg);border-left:3px solid var(--accent)!important}
+h2{font-family:var(--sans);font-weight:700;font-size:1.45rem;letter-spacing:-.01em;color:var(--fg);
+  border-bottom:0!important;margin:2.6em 0 .55em;padding:0}
+h2::before{content:"";display:block;width:34px;height:3px;background:var(--accent);margin:0 0 .55em}
+h3{font-family:var(--sans);font-weight:700;font-size:1.1rem;color:var(--fg)!important;margin:1.8em 0 .4em}
+h4{font-family:var(--sans);font-weight:700;color:var(--mut)}
+strong{font-weight:600}  /* 정적 글꼴 600(시안 가변 650) */
+hr{border:0!important;border-top:1px solid var(--line)!important}
+
+/* 표 */
+.tw{border:1px solid var(--line)!important;border-radius:6px;background:var(--card)}
+table{font-family:var(--sans);font-size:.86rem;line-height:1.5}
+th{background:var(--tint)!important;color:var(--accent-ink)!important;font-weight:700;font-size:.95rem;
+  letter-spacing:.04em;font-variant-caps:all-small-caps;border-bottom:1px solid var(--accent-line)!important}
+tbody tr:nth-child(even) td{background:var(--tint2)}
+
+/* 콜아웃 — 왼쪽 띠 */
+.callout{border:0!important;border-left:4px solid var(--accent)!important;background:var(--tint)!important;
+  border-radius:0 6px 6px 0;padding:14px 20px}
+.callout .ctitle{font-family:var(--sans)!important;font-size:.95rem!important;font-weight:700;letter-spacing:.06em;
+  font-variant-caps:all-small-caps;color:var(--accent-ink)!important}
+/* 장 요약 상자 = config key_callout_titles 에 적힌 제목의 NOTE(.key). 시안의 :first-of-type 은
+   원리편에서 링크 상자를 요약 상자로 만들었다 */
+.chapter aside.callout.note.key{border-left:0!important;border-top:3px solid var(--accent)!important;
+  border-radius:0 0 6px 6px;background:var(--tint)!important}
+.chapter aside.callout.note.key p{font-size:1.02em}
+/* 그 밖의 NOTE = 여백 노트풍 보조 정보 */
+.chapter aside.callout.note:not(.key){background:transparent!important;border-left:2px solid var(--line)!important;
+  font-family:var(--sans);font-size:.88em;color:var(--mut);padding:4px 0 4px 16px}
+.chapter aside.callout.note:not(.key) .ctitle{color:var(--mut)!important}
+.chapter aside.callout.note:not(.key) strong{color:var(--fg)}
+blockquote{border-left-color:var(--accent2)!important}
+details{border:1px solid var(--line)!important;border-radius:6px}
+details>summary{font-family:var(--sans);background:var(--tint)!important;color:var(--accent-ink)}
+
+/* 인쇄본 */
+@page{margin:20mm 27mm 21mm}
+.pagedjs_page main{font-size:10.3pt;line-height:1.55}
+.pagedjs_page .chapter .eyebrow{margin-top:8mm!important;font-size:7.2pt!important;color:#fff!important}
+.pagedjs_page .chapter h1{font-size:21pt;margin-bottom:10pt;color:var(--accent-ink)}
+.pagedjs_page h2{font-size:13pt;margin:17pt 0 5pt}
+.pagedjs_page h3{font-size:10.6pt;margin:11pt 0 3pt;color:#111!important}
+.pagedjs_page table{font-size:8.3pt}
+.pagedjs_page .tw{border:.6pt solid #cfd2d6!important}
+.pagedjs_page th{background:var(--tint)!important;color:var(--accent-ink)!important;font-size:8.6pt}
+.pagedjs_page .callout{border:0!important;border-left:3pt solid var(--accent)!important;background:var(--tint)!important}
+.pagedjs_page .chapter aside.callout.note.key{border-left:0!important;border-top:2.4pt solid var(--accent)!important}
+.pagedjs_page .chapter aside.callout.note:not(.key){background:transparent!important;border-left:1pt solid #cfd2d6!important}
+.pagedjs_page .callout .ctitle{color:var(--accent-ink)!important}
+.pagedjs_page blockquote{color:#222;border-left:2pt solid var(--accent)!important}
+.pagedjs_page div.sol{border:.6pt solid #c9c9c9}
+.pagedjs_page div.sol>.solhead{background:var(--tint);color:var(--accent-ink);font-family:var(--sans)}
+html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
+
+/* 표지 — 시안 견본에는 표지가 없었다. 장 머리와 같은 말투로: 위쪽 주색 선, sans 굵은 제목 */
+.cover{border-top:4px solid var(--accent)}
+.cover .kicker{color:var(--accent)!important}
+.cover h1{font-family:var(--sans);font-weight:700;letter-spacing:-.018em;color:var(--accent-ink)}
+.printtoc h2::before{display:none}
+
+/* 인쇄본 — 「fi」「fl」 합자를 끈다. Source Serif 합자가 PDF 텍스트에서 「f」 한 글자로 뽑힌 곳이 있었다
+   (반도체 영문판 170쪽 「fixed」→「fxed」, handbook_pdf_coverage 의심 1). 검색·복사·소실 점검을 지키려고 */
+.pagedjs_page{font-variant-ligatures:no-common-ligatures}
+
+/* 인쇄본 머리글 — 좌우 여백이 넓어져(27mm) 긴 장 제목이 머리글에서 두 줄로 꺾였다(원리편 영문판 0장 등 15쪽).
+   왼쪽(책 이름)은 제 폭만, 오른쪽(장 제목)은 남은 폭을 다 쓰고 그래도 넘칠 때만 말줄임표로 한 줄에 둔다.
+   paged.js 는 ::after 를 block 으로 두어 말줄임표가 안 나오므로 inline 으로 바꾼다 */
+.pagedjs_margin-top{display:flex!important}
+.pagedjs_margin-top-left{flex:0 0 auto!important;width:auto!important}
+.pagedjs_margin-top-center{flex:0 0 0!important;width:0!important}
+.pagedjs_margin-top-right{flex:1 1 0!important;min-width:0!important;width:auto!important}
+.pagedjs_margin-top-left .pagedjs_margin-content{white-space:nowrap}
+.pagedjs_margin-top-right .pagedjs_margin-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:block;text-align:right;padding-left:8mm}
+.pagedjs_margin-top-right .pagedjs_margin-content::after{display:inline!important}
+
+/* ── 색 세기 2단계(2026-10-23 소유자 결정) ─────────────────────────────
+   주색 면적은 늘리지 않고 선·글자에 주색을 더 준다. 주색 채도 +8%p·틴트 11%는 palette-{책}.css.
+   시안: output/영문판-디자인-2026-10-22/색세기-머리글-시안/(design-color/css/level-2.css). 1단계 값은 README 변경 이력 */
+h2::before{width:52px;height:4px}
+.chapter h1{padding-bottom:.32em;border-bottom:2px solid var(--accent-line)}
+.chapter > blockquote:first-of-type{border-left-width:4px!important}
+.callout{border-left-width:5px!important}
+.chapter aside.callout.note.key{border-top-width:4px!important}
+.chapter aside.callout.note.key .ctitle{color:var(--accent)!important}
+.chapter aside.callout.note:not(.key){border-left:3px solid var(--accent-line)!important}
+.chapter aside.callout.note:not(.key) .ctitle{color:var(--accent-ink)!important}
+th{border-bottom:1.5px solid var(--accent)!important}
+main a{text-decoration-color:var(--accent)}
+hr{border-top-color:var(--accent-line)!important}
+/* 인쇄본 */
+.pagedjs_page .chapter h1{padding-bottom:5pt;border-bottom:1.4pt solid var(--accent-line)}
+.pagedjs_page .callout{border-left-width:3.6pt!important}
+.pagedjs_page .chapter aside.callout.note.key{border-top-width:3pt!important}
+.pagedjs_page .chapter aside.callout.note:not(.key){border-left:2pt solid var(--accent-line)!important}
+.pagedjs_page th{border-bottom:1pt solid var(--accent)!important}
+.pagedjs_margin-top-right .pagedjs_margin-content,
+.pagedjs_margin-bottom-center .pagedjs_margin-content{color:var(--accent)!important}
+
+/* 화면 넓은 창 — 본문 단(780px)이 좁아져 넓은 블록 수식이 단 밖으로 나가 1200px 창에 가로 스크롤이 생겼다
+   (원리편 영문 1361/1185px 등, 2026-10-23 실측). md2handbook 의 좁은 화면 규칙(1080px 이하)과 같이 상자 안 가로 스크롤로.
+   paged.js 조판(화면 미디어, 1200px 창)에는 쓰지 않는다 */
+@media (min-width:1081px){ .mb{overflow-x:auto;overflow-y:hidden} }
+.pagedjs_page .mb{overflow:visible!important}
+
+/* 원리편 한국어판 — 시리즈 B(tools/handbook-themes/series-b/) 뒤에 붙는 책별 덧붙임(2026-10-22). 쪽채움 개별 규칙 자리 */
+
+/* 인쇄본 쪽 조정(시리즈 B 적용 빌드 2026-10-22). 본문 단이 좁아지고(좌우 여백 27mm) 쪽 위치가 모두 바뀌어 새로 생긴 것들.
+   ① 넓은 블록 수식 두 곳이 쪽 오른쪽을 넘었다(170쪽 40px·376쪽 5px) — 인쇄본 블록 수식만 한 단계 줄인다
+   ② 16장 「엮은이의 다리 — SQL 인젝션…」 상자가 통째로 넘어가 308쪽이 48%만 찬다 — 콜아웃은 쪽에서 나누지 않는다는 원칙대로 둔다
+   ③ 열두 행 넘는 짧은 표(.keep)가 통째로 넘어가 앞쪽이 45%만 찼다(366쪽) — 그런 표만 나눔 허용(행은 나누지 않고 머리글 반복) */
+.pagedjs_page .mb math{font-size:.9em}
+.kwn:has(> .tw.keep tr:nth-child(12)){break-inside:auto}
+.kwn:has(> .tw.keep tr:nth-child(12)) > .tw.keep,
+.kwn:has(> .tw.keep tr:nth-child(12)) > .tw.keep > table{break-inside:auto}
+
+/* 2026-10-23 색 세기 2단계·짧은 머리글 빌드(1.1판). 15회 「직관 잡기」 제목·Figure 1 소제목·첫 문단(6줄)이 한 덩어리(.kwn)라
+   앞쪽(312쪽) 남은 자리에 들지 못해 통째로 넘어가고, 그 뒤 「엮은이의 다리」 상자도 넘어가 313쪽이 48%만 찼다.
+   이 덩어리만 나눔을 허용한다(문단은 orphans·widows 로 두 줄 이상 남는다). 위 ②의 308쪽과 같은 자리다 */
+.kwn:has(#c16-직관-잡기){break-inside:auto}
 </style>
 </head>
 <body>
@@ -638,6 +887,7 @@ details>*:last-child{padding-bottom:10px}
 <ol class="subs">
 <li><a href="#c26-어떻게-만들었나">어떻게 만들었나</a></li>
 <li><a href="#c26-이용할-때">이용할 때</a></li>
+<li><a href="#c26-판-이력">판 이력</a></li>
 </ol>
 </details></li>
 </ol></nav>
@@ -647,7 +897,7 @@ details>*:last-child{padding-bottom:10px}
 <p class="kicker">일요일은 AI · 에이전트 스터디</p>
 <h1>생각하고, 행동하고, 고쳐 쓰는 기계</h1>
 <p class="lede">ReAct에서 LLM Wiki까지, Agentic AI 논문 읽기</p>
-<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>권보원</b>(대구지방법원 부장판사) 엮음</p><p><b>구성</b> · 사용법 + 0장 + 20회 + 부록 4종<br><b>회차마다</b> · 발제 가이드(50분) · 직관 잡기 · 본론 · 통계의 눈으로 다시 읽기 · 곁가지 · 서베이로 돌아가기 · 오해 · 토론 · 영상<br><b>권장 진행</b> · 매주 1회, 전체 20회(약 5개월) / 필수 15회 / 최소 13회</p><p style="margin-top:14px"><b>인쇄</b> · Ctrl+P → PDF로 저장하면 접이식 풀이가 자동으로 모두 펼쳐집니다.<br><b>오프라인</b> · 이 파일 하나로 완결됩니다. 링크는 인터넷이 있을 때 열립니다.</p><p style="margin-top:14px;font-size:.94em">1.0판 · 2026. 10. 5. · 생성형 AI와 함께 엮었습니다. 틀린 곳이 있을 수 있으며 앞으로도 계속 고쳐 나가겠습니다.</p></div>
+<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>권보원</b>(대구지방법원 부장판사) 엮음</p><p><b>구성</b> · 사용법 + 0장 + 20회 + 부록 4종<br><b>회차마다</b> · 발제 가이드(50분) · 직관 잡기 · 본론 · 통계의 눈으로 다시 읽기 · 곁가지 · 서베이로 돌아가기 · 오해 · 토론 · 영상<br><b>권장 진행</b> · 매주 1회, 전체 20회(약 5개월) / 필수 15회 / 최소 13회</p><p style="margin-top:14px"><b>인쇄</b> · Ctrl+P → PDF로 저장하면 접이식 풀이가 자동으로 모두 펼쳐집니다.<br><b>오프라인</b> · 이 파일 하나로 완결됩니다. 링크는 인터넷이 있을 때 열립니다.</p><p style="margin-top:14px;font-size:.94em">1.1판 · 2026. 10. 23. · 생성형 AI와 함께 엮었습니다. 틀린 곳이 있을 수 있으며 앞으로도 계속 고쳐 나가겠습니다.</p></div>
 </section>
 <section class="printtoc"><h2>차례</h2><ol>
 <li><a href="#ch0">이 책의 사용법</a>
@@ -1009,15 +1259,16 @@ details>*:last-child{padding-bottom:10px}
 <ol class="subs">
 <li><a href="#c26-어떻게-만들었나">어떻게 만들었나</a></li>
 <li><a href="#c26-이용할-때">이용할 때</a></li>
+<li><a href="#c26-판-이력">판 이력</a></li>
 </ol>
 </li>
 </ol></section>
 <section class="chapter" id="sec0">
 <p class="eyebrow">들어가며</p>
 <h1 id="ch0">이 책의 사용법</h1>
-<aside class="callout note">
+<aside class="callout note key">
 <p class="ctitle">먼저 알아 둘 것</p>
-<p>이 책은 엮은이가 생성형 AI(Claude)와 함께 만들었습니다. 장마다 원문과 대조하는 검증을 여러 차례 거쳤지만 틀린 서술이 남아 있을 수 있습니다. 수치와 인용은 원문으로 다시 확인해 주십시오. 이 책은 앞으로도 계속 고쳐 나가겠습니다. 지금 보시는 판과 날짜는 표지와 간기에 있습니다(1.0판 · 2026. 10. 5.).</p>
+<p>이 책은 엮은이가 생성형 AI(Claude)와 함께 만들었습니다. 장마다 원문과 대조하는 검증을 여러 차례 거쳤지만 틀린 서술이 남아 있을 수 있습니다. 수치와 인용은 원문으로 다시 확인해 주십시오. 이 책은 앞으로도 계속 고쳐 나가겠습니다. 지금 보시는 판과 날짜는 표지와 간기에 있습니다(1.1판 · 2026. 10. 23.).</p>
 <p>이 책에서 엮은이에게 권리가 있는 부분은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 자유롭게 고쳐 쓰고 나눌 수 있습니다. 받은 사람의 이용을 법적 조건이나 기술적 조치로 제한해서는 안 됩니다. 이 요약은 이해를 돕기 위한 것이고, 조건은 라이선스 원문을 따릅니다. 원문에서 옮기거나 다시 그린 표·인용·그림은 이 라이선스의 대상이 아니며 각 원저작자의 권리를 따릅니다. 권리자께서 저장소 이슈로 알려 주시면 고치거나 빼겠습니다.</p>
 </aside>
 <p>이 책은 「일요일은 AI」 스터디가 매주 한 시간씩 Agentic AI 논문을 읽기 위해 엮은 자습서입니다. 확률·통계·선형대수와 프로그래밍 기초가 있으면 읽기 편합니다. 자연어처리와 강화학습이 처음이거나 오랜만인 분은 0장(사전 자습)으로 먼저 복습하실 수 있습니다. 다른 모임에서 같은 방식으로 스터디를 하시거나 혼자 읽으셔도 좋습니다.</p>
@@ -2149,7 +2400,7 @@ cheese =&gt;                         ← prompt
 </ul>
 <p><strong>A. 고객 지원.</strong> 챗봇 인터페이스에 도구를 붙인 것이다. 대화 흐름을 따르면서도 외부 정보와 행동이 필요하고, 고객 데이터·주문 이력을 가져오는 도구와 환불·티켓 갱신 같은 행동을 붙일 수 있으며, 사용자가 정의한 「해결」로 성공을 잴 수 있다. 해결된 건에만 요금을 받는 가격 모델을 여러 회사가 쓴다는 것을 실용성의 증거로 드는데, 회사 이름이나 수치는 없다.</p>
 <p><strong>B. 코딩 에이전트.</strong> 자동 시험으로 해답을 검증하고, 시험 결과를 피드백 삼아 되풀이해 고칠 수 있으며, 문제 공간이 구조화되어 있고 품질을 객관적으로 잴 수 있다. 자사 구현이 SWE-bench Verified의 실제 GitHub 이슈를 풀 요청 설명만 보고 풀 수 있다고 쓰지만 해결률은 없다. 그리고 해답이 더 넓은 시스템 요구사항과 맞는지는 여전히 사람이 검토해야 한다는 단서를 단다.</p>
-<p>두 사례에서 에이전트가 잘 되는 곳은 「무엇이 성공인가」를 환경이 알려 주는 곳이다. 앞 절의 「ground truth from the environment」와 짝을 이루는 관찰이다.</p>
+<p>두 사례에서 에이전트가 잘 되는 곳은 「무엇이 성공인가」를 환경이 알려 주는 곳이다. 앞 절에서 환경으로부터 얻는다고 한 「ground truth」와 짝을 이루는 관찰이다.</p>
 <h3 id="c2-7-부록-2--도구에도-프롬프트-공학을-appendix-2-prompt-engineering-your-tools">7. 부록 2 — 도구에도 프롬프트 공학을 (Appendix 2: Prompt engineering your tools)</h3>
 <p><a href="#ch8">7회</a>에서 다시 다루므로 요지만 본다. 도구 정의에도 전체 프롬프트만큼 프롬프트 공학의 공을 들이라는 것이다. 파일 편집은 diff로도 파일 전체 재작성으로도, 구조화된 출력은 마크다운으로도 JSON으로도 지정할 수 있다. 사람에게는 손실 없이 바꿀 수 있는 겉모양 차이지만 LLM에게는 어려운 형식이 따로 있다. diff는 새 코드를 쓰기 전에 바뀌는 줄 수를 알아야 하고, JSON 안의 코드는 줄바꿈과 따옴표를 모두 이스케이프해야 한다. 그래서 「생각할」 토큰을 넉넉히 주고, 인터넷 텍스트에서 자연스럽게 보았을 형식에 가깝게 하고, 줄 수 세기나 이스케이프 같은 형식 부담을 없애라고 한다. ACI 요령으로는 모델의 입장이 되어 보기, 인자 이름과 설명을 신입 개발자용 docstring처럼 쓰기, 여러 입력으로 실수를 찾기, 실수를 구조적으로 막는 포카요케(poka-yoke)를 든다.</p>
 <p>끝의 일화는 이렇다. SWE-bench 에이전트를 만들 때 Anthropic은 전체 프롬프트보다 도구를 다듬는 데 시간을 더 썼다. 루트 디렉터리를 벗어난 뒤 상대 경로에서 모델이 실수하자 도구가 늘 절대 경로를 요구하도록 바꿨고, 모델은 그 방법을 「flawlessly」 썼다고 한다. 몇 번 시험했는지는 적혀 있지 않다.</p>
@@ -2162,7 +2413,7 @@ cheese =&gt;                         ← prompt
 <p><strong class="lng">실습 — 「가장 단순한 해법부터」를 실험으로 바꾸기.</strong> 여러분 조직에 반복되는 과제 묶음이 있다고 하자(예: 고객 문의 답변 초안, 사내 규정 질의응답, 작은 코드 수정). 같은 과제를 (W) 프롬프트 체이닝이나 라우팅으로 짠 워크플로와 (A) 같은 도구를 쓰는 에이전트로 풀게 해서, 성공률·비용·분산을 비교하려 한다. (a) 처치와 통제를 어떻게 잡겠는가? 무엇을 같게 묶어 두어야 하는가? (b) 결과 지표를 셋 이상 정하라. 「분산」은 무엇의 분산인가? (c) 표본 단위는 무엇이고, 몇 개가 필요한가? 워크플로 성공률 70%, 에이전트 78%라는 가정으로 어림하라. (d) 결과를 오염시킬 교란 요인을 들라. (e) 이 설계로도 답할 수 없는 것은 무엇인가?</p>
 <details class="sol">
 <summary><strong>풀이 펼치기</strong></summary>
-<p><strong>(a) 처치와 통제.</strong> 처치는 제어 구조 하나이고 나머지는 묶는다. 같은 모델 스냅숏(버전과 날짜 기록), 같은 도구와 도구 설명, 같은 검색 색인, 같은 토큰·시간 상한. 통제군을 하나 더 둔다. (S) 검색과 예시를 붙인 단일 호출이다. 권고의 첫 문장이 「이것으로 충분할 수 있다」였으니 S를 빼면 권고의 절반을 시험하지 못한다. 모든 과제를 세 팔(arm)에서 다 풀게 하는 과제 안 비교로 짜면 난이도 차이가 상쇄되고, 성공 여부는 과제별로 짝지어진 이진 자료가 된다. 실행 순서는 무작위로 섞는다.</p>
+<p><strong>(a) 처치와 통제.</strong> 처치는 제어 구조 하나이고 나머지는 묶는다. 같은 모델 스냅숏(버전과 날짜 기록), 같은 도구와 도구 설명, 같은 검색 색인, 같은 토큰·시간 상한. 통제군을 하나 더 둔다. (S) 검색과 예시를 붙인 단일 호출이다. 권고가 많은 응용에서는 이것으로 「대개 충분하다」고 했으니 S를 빼면 권고의 절반을 시험하지 못한다. 모든 과제를 세 팔(arm)에서 다 풀게 하는 과제 안 비교로 짜면 난이도 차이가 상쇄되고, 성공 여부는 과제별로 짝지어진 이진 자료가 된다. 실행 순서는 무작위로 섞는다.</p>
 <p><strong>(b) 결과 지표.</strong></p>
 <ul>
 <li>성공률: 실행 전에 고정한 판정기(코드면 시험 통과, 문서면 채점표).</li>
@@ -2498,7 +2749,7 @@ L21의 workflow는 코드가 경로를 정하는 시스템이고, OpenAI 안내�
 <hr>
 <h2 id="c3-본론">본론</h2>
 <h3 id="c3-1-범위와-질문--figure-1과-table-1-1-2">1. 범위와 질문 — Figure 1과 Table 1 (§1, §2)</h3>
-<p><strong>Figure 1.</strong> 2쪽의 그림은 네 겹으로 되어 있다. 맨 위 띠는 사용자(User)가 과제(Task)를 제안하고(Propose), 에이전트 추론 시스템(Agentic Reasoning System)이 풀고(Solve), 그 경험을 앞으로의 과제(Future Tasks)로 일반화하는(Generalize) 흐름이다. 둘째 띠는 「LLM Reasoning → Agentic Reasoning (§Section 2)」라는 제목 아래 세 쌍의 전환을 그린다. Paradigm은 Static Input에서 Dynamic Context로, Compute는 Passive에서 Interactive로, Learning은 Pre-trained에서 Evolving으로 바뀐다. 오른쪽 끝에 「And More …」가 붙어 있다. 아래 네 칸이 본론이다. Foundational(Complex Planning · Tool Use · Web Search, §3), Self-evolving(Feedback Loop · Agentic Memory · Self-Evolving, §4), Collective Multi-agent(Role Assigning · Collaboration · Co-evolving, §5), Applications and Benchmarks(§6·§7, 의료·금융·법률·교육·로봇·과학·소프트웨어·게임·웹)다.</p>
+<p><strong>Figure 1.</strong> 2쪽의 그림은 네 겹으로 되어 있다. 맨 위 띠는 사용자(User)가 과제(Task)를 제안하고(Propose), 에이전트 추론 시스템(Agentic Reasoning System)이 풀고(Solve), 그 경험을 앞으로의 과제(Future Tasks)로 일반화하는(Generalize) 흐름이다. 둘째 띠는 「LLM Reasoning → Agentic Reasoning (▷§Section 2)」라는 제목 아래 세 쌍의 전환을 그린다. Paradigm은 Static Input에서 Dynamic Context로, Compute는 Passive에서 Interactive로, Learning은 Pre-trained에서 Evolving으로 바뀐다. 오른쪽 끝에 「And More …」가 붙어 있다. 아래 네 칸이 본론이다. Foundational(Complex Planning · Tool Use · Web Search, §3), Self-evolving(Feedback Loop · Agentic Memory · Self-Evolving, §4), Collective Multi-agent(Role Assigning · Collaboration · Co-evolving, §5), Applications and Benchmarks(§6·§7, 의료·금융·법률·교육·로봇·과학·소프트웨어·게임·웹)다.</p>
 <p>캡션은 세 층을 "in order of increasing environmental dynamics"로 배열했다고 적는다. 안정된 환경(기초), 피드백과 쌓인 상태가 있는 환경(자기 진화), 여러 에이전트가 함께 있는 환경(집단)의 순서다. 이것이 서베이의 첫째 축이다.</p>
 <p><strong class="lng">Table 1 — LLM 추론 대 에이전트 추론.</strong> §2 첫머리는 전통적인 LLM 추론이 추론 시점의 계산을 늘려("scaling test-time computation") 성능을 올린다면, 에이전트 추론은 상호작용을 늘린다("scaling test-time interaction")고 대비한다.</p>
 <div class="tw"><table>
@@ -2712,7 +2963,7 @@ L21의 workflow는 코드가 경로를 정하는 시스템이고, OpenAI 안내�
 <p><strong class="lng"><span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 와 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi></mrow></math></span> 를 왜 굳이 나누나.</strong> 초록과 §1과 §2.2가 되풀이하는 주장이다. 가중치를 건드리지 않고 프롬프트·워크플로·통신 그래프를 최적화하는 연구가 빠르게 늘고 있는데, 최적화 고리가 있다고 이것을 「사후 학습」에 넣으면 비용 구조와 배포 요건과 실패 양식이 다른 두 체제를 섞는다는 것이다. 초록의 표현은 "otherwise misfiled as post-training"이다.</p>
 <p>판본의 차이도 여기서 생긴다. arXiv 원고를 소개한 한국어 글(<a href="https://epoko77.com/agentic-reasoning-for-large-language-models-by-meta-google-deepmind-amazon-%EB%93%B1/">이승현의 AI Native Insight</a>)은 이 서베이를 「세 층 × 두 최적화 모드(인-컨텍스트 대 사후 학습)」로 소개하고 Reflexion을 인-컨텍스트 쪽에서 설명한다. 개정판에서는 모드가 셋이고 Reflexion은 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 로 분류된다(Table 4, Table 9). 심사 전 원고를 다룬 자료(이 장의 보조 영상 둘 포함)를 볼 때 이 차이를 염두에 둔다. 저자 소속도 같은 글의 제목과 달리 29인 가운데 22인이 UIUC이고, Meta 2인·Amazon 2인·Google DeepMind 1인·UCSD 1인·Yale 1인이다(개정판 PDF는 익명이라 arXiv 원고 1면의 소속 표기로 셌다).</p>
 <h3 id="c3-6-3층--3모드-격자-23-table-3-table-4">6. 3층 × 3모드 격자 (§2.3, Table 3, Table 4)</h3>
-<p>§2.3은 "A taxonomy is a choice, not a discovery."로 시작해, 버린 대안과 고른 것의 비용을 독자에게 밝힐 의무가 있다고 쓴다.</p>
+<p>§2.3은 "A taxonomy is a choice, not a discovery"로 시작해, 버린 대안과 고른 것의 비용을 독자에게 밝힐 의무가 있다고 쓴다.</p>
 <p><strong>버린 대안 셋.</strong></p>
 <ul>
 <li>능력 목록(계획 / 도구 / 기억 / …). 찾아보기는 쉽지만 능력을 어떻게 얻는지 알려 주지 않는다. 프롬프트로 하는 계획과 강화학습으로 배운 계획이 나란히 놓인다.</li>
@@ -2887,7 +3138,7 @@ L21의 workflow는 코드가 경로를 정하는 시스템이고, OpenAI 안내�
 </thead>
 <tbody>
 <tr>
-<td>2022년 이전</td>
+<td>2022년까지</td>
 <td>36</td>
 <td></td>
 <td>계획</td>
@@ -3732,7 +3983,7 @@ A2는 일반적으로 가정되지 않는다(§2.2). 계획 후 실행형에서�
 <p><strong class="lng">Harness engineering: leveraging Codex in an agent-first world</strong> (Ryan Lopopolo 2026, OpenAI · <a href="https://openai.com/index/harness-engineering/">원문</a> · <a href="https://openai.com/ko-KR/index/harness-engineering/">한국어판</a>). 서베이가 「OpenAI 2026c」로 §1·§2·§6.4·§12.5에 걸쳐 인용하는 글이다. 사람이 코드를 한 줄도 직접 쓰지 않고 Codex만으로 내부 베타 제품을 만든 팀의 다섯 달 보고다. 2025년 8월 말 빈 저장소에서 시작해 약 100만 줄, 병합된 PR 약 1,500건에 이르렀고, 처음 세 명이던 엔지니어 한 사람이 하루 평균 PR 3.5건을 냈다. 손으로 짰을 때의 10분의 1 시간이라는 것은 저자들의 추정이다. 사람의 일은 코드를 쓰는 것에서 환경을 설계하고 의도를 명세하고 피드백 고리를 만드는 것으로 옮겨 갔다고 쓴다.</p>
 <p>장치는 서베이의 층에 거의 다 걸린다(대응은 이 책의 읽기다). 워크트리마다 앱을 띄우고 로그·지표·트레이스를 작업마다 일회용 관측 스택으로 붙였다(E·O). Chrome DevTools Protocol과 DOM 스냅샷·스크린샷 스킬로 에이전트가 화면을 직접 다룬다(T). 약 100줄짜리 <code>AGENTS.md</code> 를 백과사전이 아니라 목차로 두고, <code>docs/</code> 를 기록 체계(system of record)로 삼아 필요한 만큼만 드러낸다(C). 실행 계획은 진행·결정 기록과 함께 저장소에 커밋한다(L). 계층 간 의존 방향은 맞춤 린터와 구조 시험이 기계적으로 막고, 린트 오류 메시지에 고치는 법을 적어 에이전트의 컨텍스트에 넣는다(V·G). 문서를 훑는 「doc-gardening」 에이전트와 「golden principles」 위반을 찾는 배경 작업이 정리 PR을 연다(V·L).</p>
 <p>서베이와 갈리는 곳은 셋이다. 첫째, 이름이다. 「harness engineering」은 제목에만 나오고 본문에서 정의되지 않는다. 프롬프트·컨텍스트·하네스 공학의 세 단계 구분도, 「task runner」라는 말도 본문에는 없다. §2.1이 OpenAI가 이 용어를 채택했다고 쓴 것은 제목으로 뒷받침된다. 그러나 Figure 1 캡션과 §2.2가 세 단계 구분을 이 글에 기대어 말하는 것은 내용을 서베이의 틀로 읽은 것이다. 내용으로는 프롬프트 하나로 버그 재현부터 수정·시연 영상·PR·병합까지 이어 가는 대목이 §6.4의 task runner와 잘 맞는다. 둘째, §12.5다. 서베이는 OpenAI가 하네스 공학을 단순히 비계를 더 얹는 일이 아니라 사람의 주의·저장소 상태·에이전트 실행을 맞추는 일로 본다고 쓴다(OpenAI 2026c;d). 사람의 시간과 주의가 유일하게 희소한 자원이라는 말, 저장소를 기록 체계로 삼는다는 말은 본문에 있다. 그러나 비계와 맞세우는 대조는 이 글에 없고, 결론은 오히려 규율이 「코드보다 비계에서 드러난다(the discipline shows up more in the scaffolding rather than the code)」고 쓴다. 함께 인용된 2026d에도 그 대조는 없다. 2026d는 Codex CLI의 에이전트 루프를 풀어 쓴 Michael Bolin의 글(<a href="https://openai.com/index/unrolling-the-codex-agent-loop/">「Unrolling the Codex agent loop」</a>, 2026-01-23)로, 에이전트를 「하네스」라고 부르며 프롬프트를 항목 목록으로 조립하는 방식, 접두부가 정확히 같아야 맞는 프롬프트 캐시, 상태를 남기지 않는 요청, 대화 압축을 설명한다. 비계나 사람의 주의, 모델이 좋아질 때의 일은 다루지 않는다. §12.5의 대조는 두 글을 묶어 읽은 서베이의 정리로 보아야 한다. 셋째, 근거의 성격이다. 수치는 한 팀의 자기 보고이고 비교 조건이 없다. 글 스스로도 이 자율성이 이 저장소의 구조와 도구에 크게 기대므로 비슷한 투자 없이 일반화된다고 가정하지 말라고 하고, 모델이 더 좋아지면 이 체계가 어떻게 변할지 모른다고 적는다. 앞의 SWE-agent 절제가 하네스의 효과를 통제된 비교로 보였다면, 이 글은 같은 주장을 운영 경험으로 뒷받침한다. 마지막 유보는 §12.5의 「모델이 좋아지면 하네스를 다시 추정하라」와 같은 물음이다.</p>
-<p><strong class="lng">Agent harness for large language model agents: A survey</strong> (Qianyu Meng 외 2026, Preprints). 서베이가 자기 분류와 직접 견주는 선행 정리다(<a href="https://doi.org/10.20944/preprints202604.0428.v2">Preprints 202604.0428</a>. 서베이 참고문헌의 저자 9인은 v1·v2(2026-04-07·09)와 맞고, 2026-04-28의 v3는 저자가 11인이다). 이것이 하네스 하나를 여섯 구성요소로 기술한 해부도라면, Harness 서베이는 수많은 프로젝트를 일곱 칸에 나누는 지도다(본론 4절). 비슷한 이름의 다른 서베이(Guo 외, 「From Question Answering to Task Completion: A Survey on Agent System and Harness Design」)도 있으니 검색할 때 서지를 섞지 않는다.</p>
+<p><strong class="lng">Agent Harness for Large Language Model Agents: A Survey</strong> (Qianyu Meng 외 2026, Preprints). 서베이가 자기 분류와 직접 견주는 선행 정리다(<a href="https://doi.org/10.20944/preprints202604.0428.v2">Preprints 202604.0428</a>. 서베이 참고문헌의 저자 9인은 v1·v2(2026-04-07·09)와 맞고, 2026-04-28의 v3는 저자가 11인이다). 이것이 하네스 하나를 여섯 구성요소로 기술한 해부도라면, Harness 서베이는 수많은 프로젝트를 일곱 칸에 나누는 지도다(본론 4절). 비슷한 이름의 다른 서베이(Guo 외, 「From Question Answering to Task Completion: A Survey on Agent System and Harness Design」)도 있으니 검색할 때 서지를 섞지 않는다.</p>
 <p><strong class="lng">Stop Comparing LLM Agents Without Disclosing the Harness</strong> (<a href="https://arxiv.org/abs/2605.23950">Yunbei Zhang 외 2026</a> · 이 책 <a href="#ch19">18회</a>). 서베이가 「Zhang 외 2026c」로 인용하는 입장 논문 preprint다. 서베이가 전하는 내용은 점수가 모델–하네스 쌍의 성질이라는 것(§8.1), 하네스가 닫힌 고리의 제어기 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mi>H</mi></msub></mrow></math></span> 라는 것(§11.3), 모델 × 하네스 요인 실험이 순위의 역전을 드러낼 수 있다는 것(§12.5)이다. 서베이가 이 생각을 생태계 지도의 한 결론으로 놓는다면, 이 논문은 평가 관행에 대한 요구로 세운다. 하네스를 밝히지 않은 비교의 문제는 <a href="#ch19">18회</a> 곁가지에서 다시 다룬다.</p>
 <p><strong class="lng">Building effective agents</strong> (<a href="https://www.anthropic.com/engineering/building-effective-agents">Erik S.·Barry Zhang 2024, Anthropic</a> · 이 책 <a href="#ch2">1회</a>). <a href="#ch2">1회</a>는 워크플로(미리 정한 코드 경로로 LLM과 도구를 조율한다)와 에이전트(LLM이 자기 과정과 도구 사용을 동적으로 정한다)를 가르고, 가장 단순한 해법에서 시작하라고 권했다. <a href="#ch2">1회</a>가 무엇을 만들지를 묻는다면 이 회차는 그것을 무엇으로 감쌀지를 묻는다. <a href="#ch2">1회</a>의 절약 원칙은 서베이 §12.5의 「모델이 좋아지면 하네스를 다시 추정하라」는 요구와 맞닿는다.</p>
 <hr>
@@ -3985,7 +4236,7 @@ A2는 일반적으로 가정되지 않는다(§2.2). 계획 후 실행형에서�
 <li>[S32] Yunbei Zhang 외. 「Stop Comparing LLM Agents Without Disclosing the Harness」. 2026, preprint. <a href="https://arxiv.org/abs/2605.23950">arXiv 2605.23950</a>. 이 장의 서술은 Harness 서베이의 인용(§5.7, §8.1, §11.3, §12.5)에 한정된다.</li>
 <li>[L21] Erik S.·Barry Zhang (Anthropic). 「Building effective agents」. Anthropic Engineering 블로그, 2024-12-19. <a href="https://www.anthropic.com/engineering/building-effective-agents">원문</a></li>
 <li>Michael Bolin (OpenAI). 「Unrolling the Codex agent loop」. OpenAI 블로그, 2026-01-23. <a href="https://openai.com/index/unrolling-the-codex-agent-loop/">원문</a> · <a href="https://openai.com/ko-KR/index/unrolling-the-codex-agent-loop/">한국어판</a>. Harness 서베이의 「OpenAI 2026d」. 2026-10-05에 원문 페이지에서 저자·날짜와 본문을 확인했다.</li>
-<li>Qianyu Meng 외. 「Agent harness for large language model agents: A survey」. Preprints, 2026. <a href="https://doi.org/10.20944/preprints202604.0428.v2">DOI 10.20944/preprints202604.0428</a>(v2, 2026-04-09. v3는 2026-04-28). Harness 서베이 참고문헌의 서지를 Crossref 메타데이터와 대조했다.</li>
+<li>Qianyu Meng 외. 「Agent Harness for Large Language Model Agents: A Survey」. Preprints, 2026. <a href="https://doi.org/10.20944/preprints202604.0428.v2">DOI 10.20944/preprints202604.0428</a>(v2, 2026-04-09. v3는 2026-04-28). Harness 서베이 참고문헌의 서지를 Crossref 메타데이터와 대조했다.</li>
 </ul>
 <p><strong>확인 방법.</strong> 2026-10-05에 Harness 서베이 PDF(71쪽), AR 개정판 PDF(146쪽, 익명 심사본), SWE-agent PDF에서 절·그림·표 번호와 수치, 인용문을 대조했다. 저자·게재 상태·링크는 2026-10-04에 확인한 부록 III의 서지를 따랐다. Harness 서베이의 Figure 1·2·3·5와 SWE-agent Table 3은 PDF 페이지를 렌더링해 눈으로 읽었고, Figure 2의 51개 항목과 층별 개수는 확대한 그림에서 엮은이가 셌다. S21은 위 링크의 원문을 텍스트로 받아 읽었고, S22는 2026-10-05에 영문 원문 페이지를 텍스트로 받아 읽고, 서베이가 이 글을 인용한 자리 전부(§1, §2.1·2.2·2.4·2.5, Figure 1·9, §6.4, §12.5)와 대조했다. 「harness engineering」「task runner」, 세 공학의 구분이 본문에 없다는 것은 전문 검색으로 확인했다. 서베이가 함께 인용한 OpenAI 2026d(서베이 참고문헌의 URL)도 같은 날 원문을 받아 「scaffold」「attention」「human」이 나오지 않음을 검색으로 확인했다. 7절의 계산은 인쇄된 숫자로 엮은이가 파이썬(scipy·statsmodels)으로 했다. Table S1은 138행을 파싱해 범주 머리줄의 항목 수와 일치함을 확인했고, 윌슨 구간·굿먼 동시 구간·카이제곱 적합도 검정·크러스컬–월리스 검정·이항검정을 계산했다. SWE-agent 비교는 두 비율의 정규 근사 검정, 정확 맥니마 검정의 두 극단, 본페로니 보정으로, 표본 크기는 두 비율 비교와 맥니마 검정의 정규 근사 공식으로 구했다.</p>
 </section>
@@ -5336,7 +5587,7 @@ a self-help book's content. ... The best choice is 2.
 </tbody>
 </table></div>
 <p><em>원문 Table 8. 원문 캡션은 「Cost analysis on Game of 24」인데 본문은 이 표를 창의적 글쓰기의 비용으로 소개하고, 표 머리도 「Creative Writing」이다. 캡션의 오기로 보인다.</em></p>
-<p>논문의 읽기는 이렇다. Game of 24에서 ToT는 문항당 생성 토큰 5.5k를 써서 CoT 100회(6.7k)와 비슷하지만, 성능은 독립 CoT 100회의 best of 100보다 낫다. 창의적 글쓰기에서는 생성 토큰과 비용이 약 5배인데, 부록 B.3은 그 이유를 "<span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>b</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 이고 토큰 대부분이 글 생성에 들기 때문"이라고 적는다. 다만 §4.2는 너비 상한을 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>b</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span>, 후보 수를 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 로 적으므로(이 장 4절), B.3의 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>b</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 는 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 를 가리킨 것으로 보인다. 주 실험 두 개의 비용은 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.74</mn><mo>&#x000D7;</mo><mn>100</mn><mo>&#x0002B;</mo><mn>0.32</mn><mo>&#x000D7;</mo><mn>100</mn><mo>&#x0003D;</mo><mn>106</mn></mrow></math></span> 달러, 크로스워드 DFS 실험도 100달러 안쪽이라고 적는다. ToT는 CoT보다 5–100배 많은 생성 토큰이 들 수 있고, 저자들은 CoT가 어려워하는 과제에만 쓰고, 빔 크기·투표 수·모델을 바꿔 비용을 맞추고, 효율을 높일 여지로는 답을 찾으면 BFS를 일찍 멈추는 것을 든다. 「~에만 쓰라」가 아니라 「CoT가 어려워하는 과제에 쓰기를 권한다」가 원문의 표현이다.</p>
+<p>논문의 읽기는 이렇다. Game of 24에서 ToT는 문항당 생성 토큰 5.5k를 써서 CoT 100회(6.7k)와 비슷하지만, 성능은 독립 CoT 100회의 best of 100보다 낫다. 창의적 글쓰기에서는 생성 토큰과 비용이 약 5배인데, 부록 B.3은 그 이유를 "<span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>b</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 이고 토큰 대부분이 글 생성에 들기 때문"이라고 적는다. 다만 §4.2는 너비 상한을 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>b</mi><mo>&#x0003D;</mo><mn>1</mn></mrow></math></span>, 후보 수를 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 로 적으므로(이 장 4절), B.3의 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>b</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 는 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x0003D;</mo><mn>5</mn></mrow></math></span> 를 가리킨 것으로 보인다. 주 실험 두 개의 비용은 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>0.74</mn><mo>&#x000D7;</mo><mn>100</mn><mo>&#x0002B;</mo><mn>0.32</mn><mo>&#x000D7;</mo><mn>100</mn><mo>&#x0003D;</mo><mn>106</mn></mrow></math></span> 달러, 크로스워드 DFS 실험도 100달러 안쪽이라고 적는다. ToT는 CoT보다 5–100배 많은 생성 토큰이 들 수 있고, 저자들은 CoT가 어려워하는 과제에 쓰기를 권하고, 빔 크기·투표 수·모델을 바꿔 비용을 맞추고, 효율을 높일 여지로는 답을 찾으면 BFS를 일찍 멈추는 것을 든다.</p>
 <p><strong>표 안의 숫자가 서로 맞는가.</strong> Table 7·8의 행 다섯 개(IO·CoT best of 100, 창의적 글쓰기의 셋)는 생성 토큰 1k당 약 $0.062, 프롬프트 토큰 1k당 약 $0.024라는 한 쌍의 단가로 ±$0.01 안에서 재현된다. 같은 단가로 ToT의 Game of 24 행(5.5k / 1.4k)을 계산하면 약 $0.38이 나와 표의 $0.74와 두 배쯤 차이가 난다. $0.74가 되려면 프롬프트 토큰이 1.4k가 아니라 16k 남짓이어야 한다. 단가는 논문 밖에서 가져오지 않고 표의 다른 행에서 역산했다. 어느 숫자가 틀렸는지는 논문만으로 가릴 수 없지만, 생각마다 평가를 세 번 부르는 설계라면 프롬프트 칸 쪽을 의심할 여지가 있다. 비용을 인용할 때는 이 어긋남을 밝혀 둔다.</p>
 <h3 id="c6-7-통계의-눈으로-다시-읽기">7. 통계의 눈으로 다시 읽기</h3>
 <aside class="callout note">
@@ -5509,9 +5760,9 @@ a self-help book's content. ... The best choice is 2.
 <li>[S03] Xuezhi Wang 외. 「Self-Consistency Improves Chain of Thought Reasoning in Language Models」. ICLR 2023. <a href="https://arxiv.org/abs/2203.11171">arXiv 2203.11171</a> (ToT 논문 §2의 정식화로 소개).</li>
 <li>[L02] Shunyu Yao 외. 「ReAct: Synergizing Reasoning and Acting in Language Models」. ICLR 2023. <a href="https://arxiv.org/abs/2210.03629">arXiv 2210.03629</a> (각주 4).</li>
 <li>[L11] Noah Shinn 외. 「Reflexion: Language Agents with Verbal Reinforcement Learning」. NeurIPS 2023. <a href="https://arxiv.org/abs/2303.11366">arXiv 2303.11366</a></li>
-<li>Shibo Hao 외. 「Reasoning with Language Model is Planning with World Model」. 2023. <a href="https://arxiv.org/abs/2305.14992">arXiv 2305.14992</a> (ToT 참고문헌 [9]의 서지).
-<strong>확인 방법.</strong> 2026-10-05에 원문 PDF에서 절·그림·표 번호와 수치를 대조했다. 저자·게재 상태·라이선스·코드는 부록 III의 서지를 따랐다. ToT의 Figure 1·2·4·6과 AR 서베이 Figure 2는 PDF 페이지를 렌더링해 확대한 뒤 글자를 읽었고, ToT Figure 3·5는 그림을 보았으나 눈금 값은 옮기지 않았다. S05는 PDF가 없어 2026-10-05에 arXiv API로 받은 초록만 읽었고, RAP의 arXiv 번호는 같은 날 arXiv API로 제목을 대조했다. 7절의 계산은 논문에 인쇄된 숫자로 엮은이가 파이썬(scipy·statsmodels)으로 했다. 비율의 신뢰구간은 윌슨 구간, 독립 비교는 피셔 정확검정, 대응 비교의 범위는 주변 합계에서 가능한 불일치 칸의 양 끝을 만들어 정확 이항검정(McNemar)으로, 창의적 글쓰기는 부호검정으로 구했다. 실습 2의 두 점 혼합과 베타분포는 평균과 best of 100을 맞추는 방정식을 수치로 풀었고, Table 7·8의 단가는 다섯 행에 대한 최소제곱으로 역산했다.</li>
+<li>Shibo Hao 외. 「Reasoning with Language Model is Planning with World Model」. 2023. <a href="https://arxiv.org/abs/2305.14992">arXiv 2305.14992</a> (ToT 참고문헌 [9]의 서지).</li>
 </ul>
+<p><strong>확인 방법.</strong> 2026-10-05에 원문 PDF에서 절·그림·표 번호와 수치를 대조했다. 저자·게재 상태·라이선스·코드는 부록 III의 서지를 따랐다. ToT의 Figure 1·2·4·6과 AR 서베이 Figure 2는 PDF 페이지를 렌더링해 확대한 뒤 글자를 읽었고, ToT Figure 3·5는 그림을 보았으나 눈금 값은 옮기지 않았다. S05는 PDF가 없어 2026-10-05에 arXiv API로 받은 초록만 읽었고, RAP의 arXiv 번호는 같은 날 arXiv API로 제목을 대조했다. 7절의 계산은 논문에 인쇄된 숫자로 엮은이가 파이썬(scipy·statsmodels)으로 했다. 비율의 신뢰구간은 윌슨 구간, 독립 비교는 피셔 정확검정, 대응 비교의 범위는 주변 합계에서 가능한 불일치 칸의 양 끝을 만들어 정확 이항검정(McNemar)으로, 창의적 글쓰기는 부호검정으로 구했다. 실습 2의 두 점 혼합과 베타분포는 평균과 best of 100을 맞추는 방정식을 수치로 풀었고, Table 7·8의 단가는 다섯 행에 대한 최소제곱으로 역산했다.</p>
 </section>
 
 <section class="chapter" id="sec7">
@@ -6028,7 +6279,7 @@ Act 4:     Finish[keyboard function keys]
 </tbody>
 </table></div>
 <p><em>원문 Table 4. IL과 IL+RL은 WebShop 원 논문(Yao 외 2022)의 수치다.</em></p>
-<p>예시 하나만 준 Act도 이미 IL·IL+RL과 비슷하다. 생각을 드문드문 더한 ReAct는 이전 최고 성공률보다 절대값으로 약 10%p 높다(40.0 대 29.1). 초록의 "ALFWorld 34%, WebShop 10%"는 각각 71 − 37과 이 차이를 가리킨다. 사람 전문가와의 거리는 아직 크다. 논문은 사람이 상품을 훨씬 많이 둘러보고 검색어를 더 자주 고친다고 지적한다.</p>
+<p>예시 하나만 준 Act도 이미 IL·IL+RL과 비슷하다. 생각을 드문드문 더한 ReAct는 이전 최고 성공률보다 절대값으로 약 10%p 높다(40.0 대 29.1). 초록의 ALFWorld 34%, WebShop 10%는 각각 71 − 37과 이 차이를 가리킨다. 사람 전문가와의 거리는 아직 크다. 논문은 사람이 상품을 훨씬 많이 둘러보고 검색어를 더 자주 고친다고 지적한다.</p>
 <p><strong class="lng">다른 모델에서도 되는가 — 부록 A.1.</strong> GPT-3(text-davinci-002, 탐욕적 디코딩)로 다시 돌린 결과다.</p>
 <div class="tw"><table>
 <thead>
@@ -6166,7 +6417,7 @@ Act 4:     Finish[keyboard function keys]
 <text x="545" y="170" font-size="11.5" text-anchor="middle" fill="currentColor" fill-opacity="0.75">행동은 생각과 이력(관찰 포함)을 함께 본다</text>
 </svg>
 <p><em>AR 서베이 개정판 §2.2의 가정 A2를 그래프로 옮긴 것이다. 그림은 엮은이가 그렸다.</em></p>
-<p>Figure 1(2b)를 보면 이 화살표가 눈에 보인다. Act 6의 관찰("On the countertop 3, you see a apple 1, a bread 1, …… a pepper shaker 1, and a vase 3.") 다음에 생각 없이 곧바로 Act 7 <code>Take pepper shaker 1 from countertop 3</code> 이 나온다. 행동에 들어간 물건 번호와 장소 번호는 생각이 아니라 관찰에서 왔다. ALFWorld처럼 생각이 드문드문 나오는 궤적에서는 생각이 비어 있는 단계가 많고, 그 단계의 행동은 이력에 기댈 수밖에 없다. ReAct의 드문 생각을 서베이의 틀에 놓으려면 그 단계의 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>z</mi><mi>t</mi></msub></mrow></math></span> 를 빈 문자열로 보면 된다. 이 대응은 엮은이의 해석이다.</p>
+<p>Figure 1(2b)를 보면 이 화살표가 눈에 보인다. Act 6의 관찰("On the countertop 3, you see a apple 1, a bread 1, ...... a pepper shaker 1, and a vase 3.") 다음에 생각 없이 곧바로 Act 7 <code>Take pepper shaker 1 from countertop 3</code> 이 나온다. 행동에 들어간 물건 번호와 장소 번호는 생각이 아니라 관찰에서 왔다. ALFWorld처럼 생각이 드문드문 나오는 궤적에서는 생각이 비어 있는 단계가 많고, 그 단계의 행동은 이력에 기댈 수밖에 없다. ReAct의 드문 생각을 서베이의 틀에 놓으려면 그 단계의 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>z</mi><mi>t</mi></msub></mrow></math></span> 를 빈 문자열로 보면 된다. 이 대응은 엮은이의 해석이다.</p>
 <p><strong>문맥 내 추론의 한 예로서.</strong> 서베이는 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi></mrow></math></span> 를 고정하고 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>Z</mi></mrow></math></span> 위를 탐색하는 문맥 내 추론의 예로 ReAct를 들며 "생각 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span> 와 행동 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>a</mi></mrow></math></span> 를 번갈아 내는 탐욕적 디코딩"이라고 요약한다. 같은 자리에서 ToT와 MCTS 계열은 각각 다른 목적함수를 가진 탐색으로 따로 정식화한다. ReAct 논문 각주 4가 반복 고리의 원인으로 탐욕적 디코딩을 의심했다는 점과 겹쳐 읽으면, <a href="#ch6">5회</a>의 탐색을 이 약점에 대한 한 가지 응답으로 볼 수도 있다.</p>
 <p><strong>표에서 ReAct가 놓인 칸.</strong> 개정판은 ReAct를 네 표에 올리고 네 곳 모두 최적화 대상을 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span> 로 적는다.</p>
 <div class="tw"><table>
@@ -6272,7 +6523,7 @@ Act 4:     Finish[keyboard function keys]
 <li>[L03] Timo Schick 외. 「Toolformer: Language Models Can Teach Themselves to Use Tools」. NeurIPS 2023. <a href="https://arxiv.org/abs/2302.04761">arXiv 2302.04761</a> (초록).</li>
 <li>[L11] Noah Shinn 외. 「Reflexion: Language Agents with Verbal Reinforcement Learning」. NeurIPS 2023. <a href="https://arxiv.org/abs/2303.11366">arXiv 2303.11366</a> (§4.1, 부록의 WebShop 결과).</li>
 <li>Wenlong Huang 외. 「Inner Monologue: Embodied Reasoning through Planning with Language Models」. 2022. <a href="https://arxiv.org/abs/2207.05608">arXiv 2207.05608</a> (ReAct 참고문헌 목록의 서지).</li>
-<li>Reiichiro Nakano 외. 「WebGPT: Browser-assisted Question-answering with Human Feedback」. 2021. <a href="https://arxiv.org/abs/2112.09332">arXiv 2112.09332</a> (ReAct 참고문헌 목록의 서지).</li>
+<li>Reiichiro Nakano 외. 「WebGPT: Browser-assisted question-answering with human feedback」. 2021. <a href="https://arxiv.org/abs/2112.09332">arXiv 2112.09332</a> (ReAct 참고문헌 목록의 서지).</li>
 </ul>
 <p><strong>확인 방법.</strong> 2026-10-04에 원문 PDF에서 절·그림·표 번호와 수치를 대조했다. 저자·게재 상태·라이선스·코드 저장소는 PDF에 없는 것이 있어 OpenReview·arXiv·GitHub에서 같은 날 확인한 부록 III의 서지를 따랐다(AR 서베이 PDF는 익명 심사본이다). Figure 1의 궤적은 PDF 그림을 확대해 글자를 읽었다. 4절과 실습의 신뢰구간·검정·기댓값은 논문에 인쇄된 숫자로 엮은이가 계산했다(윌슨 구간, 피셔 정확검정, 표준정규 최댓값의 기댓값은 몬테카를로 근사).</p>
 </section>
@@ -7133,7 +7384,7 @@ MCP는 학습 방법이 아니라 호스트와 서버 사이의 통신 규약이
 <h3 id="c9-닫힌-책과-열린-책--figure-1">닫힌 책과 열린 책 — Figure 1</h3>
 <p>논문은 질의응답 모델을 두 무리로 나눈다(§4.1). 닫힌 책(closed-book) 모델(T5-11B)은 아무것도 찾아보지 않고 가중치만으로 답을 생성한다. 열린 책(open-book) 모델은 문서를 검색해, 당시에는 주로 답의 구간(span)을 그대로 뽑아냈다(추출형, REALM과 DPR). RAG는 그 사이에 선다. 검색은 하되 답은 생성한다.</p>
 <p>논문은 이를 두 기억으로 설명한다(§1). 생성기 BART의 모수 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi></mrow></math></span> 는 모수적 기억(parametric memory), 위키백과를 벡터로 바꿔 둔 문서 색인은 비모수적 기억(non-parametric memory)이다. 가중치 속 지식은 고치기 어렵고, 근거를 들여다보기 어렵고, 환각(hallucination)을 낳는다. 색인 속 지식은 직접 고칠 수 있고 무엇을 가져왔는지 보인다.</p>
-<p>Figure 1에는 과제 셋이 나란히 그려져 있다. 질문 "Define "middle ear"", 주장 "Barack Obama was born in Hawaii."(판정 "supports"), Jeopardy 문제 생성의 입력 "The Divine Comedy"다. 셋이 같은 틀을 지난다. 입력 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span> 가 질의 인코더 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi></mrow></math></span> 를 거쳐 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 가 되고, 최대 내적 검색(Maximum Inner Product Search, MIPS)이 색인에서 문서 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>z</mi><mn>1</mn></msub><mo>&#x0002C;</mo><mo>&#x02026;</mo><mo>&#x0002C;</mo><msub><mi>z</mi><mn>4</mn></msub></mrow></math></span> 를 꺼내고, 생성기 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B8;</mi></msub></mrow></math></span> 가 문서마다 출력을 만들고, 「Marginalize」 상자가 합친다. 위쪽 점선 화살표에는 "End-to-End Backprop through q and <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B8;</mi></msub></mrow></math></span>"라고 적혀 있다. 학습 신호가 질의 인코더까지만 가고 색인에는 닿지 않는다.</p>
+<p>Figure 1에는 과제 셋이 나란히 그려져 있다. 질문 "Define 'middle ear'", 주장 "Barack Obama was born in Hawaii."(판정 "supports"), Jeopardy 문제 생성의 입력 "The Divine Comedy"다. 셋이 같은 틀을 지난다. 입력 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span> 가 질의 인코더 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi></mrow></math></span> 를 거쳐 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>q</mi><mo stretchy="false">&#x00028;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 가 되고, 최대 내적 검색(Maximum Inner Product Search, MIPS)이 색인에서 문서 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>z</mi><mn>1</mn></msub><mo>&#x0002C;</mo><mo>&#x02026;</mo><mo>&#x0002C;</mo><msub><mi>z</mi><mn>4</mn></msub></mrow></math></span> 를 꺼내고, 생성기 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B8;</mi></msub></mrow></math></span> 가 문서마다 출력을 만들고, 「Marginalize」 상자가 합친다. 위쪽 점선 화살표에는 "End-to-End Backprop through q and <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B8;</mi></msub></mrow></math></span>"라고 적혀 있다. 학습 신호가 질의 인코더까지만 가고 색인에는 닿지 않는다.</p>
 <svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RAG의 구조: 질의 인코더, 문서 색인, 생성기, 주변화" font-family="system-ui,-apple-system,'Malgun Gothic',sans-serif" style="width:100%;max-width:720px;height:auto;display:block;margin:1.5em auto">
 <defs><marker id="r8arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" fill-opacity="0.75"/></marker></defs>
 <rect x="215" y="8" width="130" height="48" rx="7" fill="currentColor" fill-opacity="0.04" stroke="currentColor" stroke-opacity="0.45" stroke-dasharray="5 4"/>
@@ -7479,7 +7730,7 @@ MCP는 학습 방법이 아니라 호스트와 서버 사이의 통신 규약이
 <pre><code class="language-text">&quot;The Sun Also Rises&quot; is a novel by this author of &quot;A Farewell to Arms&quot;
 </code></pre>
 <p>그림은 생성된 토큰마다 RAG-Token의 문서 사후확률 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo stretchy="false">&#x00028;</mo><msub><mi>z</mi><mi>i</mi></msub><mo>&#x02223;</mo><mi>x</mi><mo>&#x0002C;</mo><msub><mi>y</mi><mi>i</mi></msub><mo>&#x0002C;</mo><msub><mi>y</mi><mrow><mo>&#x02212;</mo><mi>i</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span> 를 열지도로 그렸다(가로축 토큰, 세로축 Doc 1~5). 원문은 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>y</mi><mrow><mo>&#x02212;</mo><mi>i</mi></mrow></msub></mrow></math></span> 를 따로 정의하지 않는다. 관례대로 「<span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>i</mi></mrow></math></span> 번째를 뺀 나머지 토큰」으로 읽으면 다 생성된 열을 보고 계산한 사후확률이다. RAG-Token에서는 뒤 토큰의 확률이 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>z</mi><mi>i</mi></msub></mrow></math></span> 에 기대지 않으므로, 이 값은 검색 사전확률과 그 토큰의 생성 확률을 곱한 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B7;</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo><mspace width="0.167em" /><msub><mi>p</mi><mi>&#x003B8;</mi></msub><mo stretchy="false">&#x00028;</mo><msub><mi>y</mi><mi>i</mi></msub><mo>&#x02223;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>z</mi><mo>&#x0002C;</mo><msub><mi>y</mi><mrow><mn>1</mn><mi>:</mi><mi>i</mi><mo>&#x02212;</mo><mn>1</mn></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span> 을 문서들에 대해 정규화한 것과 같다(엮은이의 풀이). 사전확률 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B7;</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 는 토큰마다 같지만, 사후확률은 그 토큰을 어느 문서가 잘 설명하느냐에 따라 열마다 달라진다. 문서 1에는 『A Farewell to Arms』(1929)가, 문서 2에는 데뷔작 『The Sun Also Rises』(1926)가 들어 있다. PDF 그림을 확대해 보면 가장 진한 칸은 "Sun" 열의 문서 2와, 두 번째 제목이 시작되는 "A" 열의 문서 1이다. 논문은 각 제목의 첫 토큰이 생성된 뒤 사후확률이 평평해진다는 점에 주목한다. 제목의 나머지는 특정 문서 없이 모수적 지식으로 채운다는 가설이다.</p>
-<p>저자들은 BART만으로 이 가설을 확인한다. BART에 "The Sun 까지만 주면 "The Sun Also Rises"로 이어 쓰되 두 번째 제목 자리에도 같은 "The Sun Also Rises"를 되풀이하고, … this author of "A 까지 주면 "A Farewell to Arms"로 끝맺는다. 논문의 정리로는 비모수적 기억이 생성을 안내해 모수적 기억에 저장된 지식을 끌어낸다. 이 해석은 그림 한 장과 예 하나에 기댄 것이고, 평평해지는 현상이 얼마나 일반적인지는 재지 않았다(「토론 질문」 1번).</p>
+<p>저자들은 BART만으로 이 가설을 확인한다. BART에 <code>"The Sun</code> 까지만 주면 "The Sun Also Rises"로 이어 쓰되 두 번째 제목 자리에도 같은 "The Sun Also Rises"를 되풀이하고, … <code>this author of "A</code> 까지 주면 "A Farewell to Arms"로 끝맺는다. 논문의 정리로는 비모수적 기억이 생성을 안내해 모수적 기억에 저장된 지식을 끌어낸다. 이 해석은 그림 한 장과 예 하나에 기댄 것이고, 평평해지는 현상이 얼마나 일반적인지는 재지 않았다(「토론 질문」 1번).</p>
 <p><strong>FEVER(§4.4).</strong> 3분류에서 RAG는 검색 지도를 쓰는 복잡한 파이프라인인 최고 모델과 4.3%p 안쪽(72.5 대 76.8), 2분류에서는 금 증거 문장을 받는 RoBERTa 모델과 2.7%p 안쪽이다(89.5 대 92.2). RAG가 가져온 문서를 금 증거 문서와 제목으로 대조하면 1위 문서가 금 문서인 경우가 71%, 상위 10개 안에 있는 경우가 90%였다. 분모는 적혀 있지 않다.</p>
 <h3 id="c9-8-절제-실험-색인-교체-문서-수-45-table-6-figure-3">8. 절제 실험, 색인 교체, 문서 수 (§4.5, Table 6, Figure 3)</h3>
 <p><strong class="lng">검색기를 얼려 보기와 바꿔 보기.</strong> 절제 실험은 둘이다. 훈련 중 검색기를 고정하는 것(Frozen), 그리고 검색기를 단어 겹침 기반의 고정 BM25로 바꾸고 그 점수를 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 의 로짓으로 쓰는 것(BM25)이다.</p>
@@ -7707,7 +7958,7 @@ MCP는 학습 방법이 아니라 호스트와 서버 사이의 통신 규약이
 <p><strong class="lng">ReAct와 Toolformer</strong> (<a href="https://arxiv.org/abs/2210.03629">Yao 외 2023</a> · 이 책 <a href="#ch7">6회</a> · <a href="https://arxiv.org/abs/2302.04761">Schick 외 2023</a> · 이 책 <a href="#ch8">7회</a>). 여기서 검색은 모델이 고르는 행동이거나 도구 하나다. ReAct의 <code>search[entity]</code> 는 첫 다섯 문장만 돌려주는 일부러 약한 API이고(논문 스스로 최신 어휘·신경망 검색기보다 훨씬 약하다고 적는다), 언제 무엇을 몇 번 검색할지를 생각 속에서 정한다. Toolformer의 위키백과 검색 도구는 BM25 검색기이고, 질의응답 실험에서는 과제가 너무 쉬워진다며 질의응답 도구를 껐다. RAG는 입력마다 생성 전에 한 번, <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> 개를 늘 가져온다. 검색 여부를 고르는 일이 없다. 덧붙여 ReAct Table 1의 FEVER 「지도학습 최고 성능」 89.5는 각주에서 Lewis 외 2020을 인용하는데, RAG Table 2에서 89.5는 2분류의 값이고 3분류는 72.5다. ReAct의 FEVER는 세 레이블이므로 두 표를 어떻게 맞춰 읽을지는 열려 있다.</p>
 <p><strong class="lng">Lost in the Middle</strong> (<a href="https://arxiv.org/abs/2307.03172">Liu 외 2024</a> · 이 책 <a href="#ch10">9회</a>). §5의 사례 연구는 검색한 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> 개 문서를 모두 프롬프트 하나에 넣는 검색기–독해기 구조다. RAG의 생성기는 문서를 하나씩 보고 바깥에서 주변화하므로 「긴 컨텍스트 가운데 놓인 문서」라는 문제가 같은 꼴로 생기지 않는다. 한 문서의 기여는 입력 속 자리가 아니라 검색 확률 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B7;</mi></msub><mo stretchy="false">&#x00028;</mo><mi>z</mi><mo>&#x02223;</mo><mi>x</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 와 그 문서를 본 생성 확률 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B8;</mi></msub><mo stretchy="false">&#x00028;</mo><mi>y</mi><mo>&#x02223;</mo><mi>x</mi><mo>&#x0002C;</mo><mi>z</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span> 가 함께 정한다(이 대비는 이 책의 읽기다). 문서 수를 늘릴 때의 포화와 두 구조의 대비는 <a href="#ch10">9회</a> 본론 6절과 곁가지에서 숫자로 본다.</p>
 <p><strong>Self-RAG</strong> (<a href="https://arxiv.org/abs/2310.11511">Asai 외 2024</a> · 이 책 <a href="#ch11">10회</a>). 서론이 Lewis 외 2020과 Guu 외 2020을 관례적 RAG로 들고(Figure 1 왼쪽), 검색이 필요한지와 상관없이 정해진 수의 문단을 무차별로 가져오는 것을 문제로 삼는다. Self-RAG는 반성 토큰(reflection token)을 내도록 모델을 학습시켜 필요할 때만 검색하고 결과를 스스로 평가하게 한다. RAG 부록 F의 빈 문서 실험이 실패한 자리를 별도의 토큰과 학습 자료로 푼 셈이다.</p>
-<p><strong>LLM Wiki</strong> (<a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy 2026</a> · 이 책 <a href="#ch21">20회</a> 예고). 질의 시점에 조각을 검색하는 RAG에서는 "the LLM is rediscovering knowledge from scratch on every question. There's no accumulation."이라고 적고, 지식을 "compiled once and then kept current, not re-derived on every query" 하자고 한다. RAG는 질의 때마다 조인하고, LLM Wiki는 미리 합쳐 둔다. 색인 교체의 장점과 종합이 쌓이는 장점이 무엇을 맞바꾸는지는 <a href="#ch21">20회</a>에서 본다.</p>
+<p><strong>LLM Wiki</strong> (<a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy 2026</a> · 이 책 <a href="#ch21">20회</a> 예고). 질의 시점에 조각을 검색하는 RAG에서는 "the LLM is rediscovering knowledge from scratch on every question. There's no accumulation."이라고 적고, 지식을 "compiled once and then <em>kept current</em>, not re-derived on every query" 하자고 한다. RAG는 질의 때마다 조인하고, LLM Wiki는 미리 합쳐 둔다. 색인 교체의 장점과 종합이 쌓이는 장점이 무엇을 맞바꾸는지는 <a href="#ch21">20회</a>에서 본다.</p>
 <hr>
 <h2 id="c9-서베이로-돌아가기">서베이로 돌아가기</h2>
 <h3 id="c9-agentic-reasoning-서베이-개정판-33--전통-rag라는-기준점">Agentic Reasoning 서베이 개정판 §3.3 — 「전통 RAG」라는 기준점</h3>
@@ -9797,13 +10048,13 @@ Bio FactScore와 ASQA MAUVE는 7B가 높다(Table 2). PopQA에서 13B의 이득 
 You said: Your nose switches ...(same as above)... nasal cycle.
 I checked: How often do your nostrils switch?
 I found this article: Although we don't usually notice it, during the nasal
-cycle one nostril becomes congested ... On average, the congestion pattern
-switches about every 2 hours, according to a small 2016 study ...
+cycle one nostril becomes congested … On average, the congestion pattern
+switches about every 2 hours, according to a small 2016 study …
 Your nose's switching time is about every 2 hours, not 45 minutes.
 This disagrees with what you said.
 
 (c) Edit model (y, q, e) → new y
-  ...
+  …
 This suggests 45 minutes switch time in your statement is wrong.
 My fix: Your nose switches back and forth between nostrils. When you
 sleep, you switch about every 2 hours. This is to prevent a buildup of
@@ -10045,7 +10296,7 @@ y: The Crown-of-thorns starfish is native to the Great Barrier Reef...The
 <h3 id="c12-5-reflexion--세-모델과-두-기억-3">5. Reflexion — 세 모델과 두 기억 (§3)</h3>
 <p>Reflexion은 세 모델로 이루어진다.</p>
 <ul>
-<li><strong class="lng">행위자(Actor) <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>M</mi><mi>a</mi></msub></mrow></math></span>.</strong> 관찰을 조건으로 텍스트와 행동을 생성한다. CoT나 <a href="#ch7">6회</a>를 쓰고, 기억 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>m</mi><mi>e</mi><mi>m</mi></mrow></math></span> 이 맥락으로 붙는다.</li>
+<li><strong class="lng">행위자(Actor) <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>M</mi><mi>a</mi></msub></mrow></math></span>.</strong> 관찰을 조건으로 텍스트와 행동을 생성한다. CoT나 ReAct(<a href="#ch7">6회</a>)를 쓰고, 기억 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>m</mi><mi>e</mi><mi>m</mi></mrow></math></span> 이 맥락으로 붙는다.</li>
 <li><strong class="lng">평가자(Evaluator) <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>M</mi><mi>e</mi></msub></mrow></math></span>.</strong> 궤적에 보상 점수를 매긴다. 추론은 정확 일치(EM), 의사결정은 휴리스틱, 일부 실험은 다른 언어모델이다.</li>
 <li><strong class="lng">자기 반성(Self-Reflection) 모델 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>M</mi><mrow><mi>s</mi><mi>r</mi></mrow></msub></mrow></math></span>.</strong> 이진 성공 신호 같은 희소한 보상, 궤적, 기억을 받아 구체적인 말로 된 피드백을 쓴다. 실패한 에이전트는 어떤 행동 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>a</mi><mi>i</mi></msub></mrow></math></span> 가 뒤따른 잘못된 행동들로 이어졌음을 추론하고, 대신 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>a</mi><mi>i</mi><mi>&#x02032;</mi></msubsup></mrow></math></span> 를 했어야 했다고 적어 다음 시도에서 그 자리에서 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msubsup><mi>a</mi><mi>i</mi><mi>&#x02032;</mi></msubsup></mrow></math></span> 를 고른다.</li>
 </ul>
@@ -10082,7 +10333,7 @@ y: The Crown-of-thorns starfish is native to the Great Barrier Reef...The
 <p><strong>분석.</strong> 기준선의 흔한 실패는 물건을 쥐지 않았는데 쥐었다고 믿고 긴 궤적을 이어 가는 것이다. 논문은 장기 기억이 두 경우에 돕는다고 본다. 긴 궤적 초반의 실수를 짚어 새 계획을 제안할 때, 그리고 뒤질 곳이 많을 때 여러 시도에 걸쳐 방을 빠짐없이 뒤질 때다. 부록 B의 Figure 5가 반성문의 실물이다.</p>
 <pre><code class="language-text">Task: examine the mug with the desklamp.
 Trial #1
-  ...
+  …
 &gt; go to desk 2
 On the desk 2, you see a alarmclock 1, a bowl 1, a mug 3, a pencil 3, and a pencil 2.
 &gt; think: Now I find a desklamp (1). Next, I need to use it.
@@ -10101,7 +10352,7 @@ Trial #2
 You turn on the desklamp 1.
 Status: Success
 </code></pre>
-<p><em>Reflexion 부록 B Figure 5를 줄여 옮겼다(첫 시도의 앞부분, 되풀이된 행동 한 줄, 둘째 시도의 생각 줄과 관찰 두 줄을 뺐다).</em></p>
+<p><em>Reflexion 부록 B Figure 5를 줄여 옮겼다(맨 앞의 환경 설명, 첫 시도의 앞부분, 되풀이된 행동과 관찰 한 쌍, 둘째 시도의 생각 두 줄과 관찰 두 줄을 뺐다).</em></p>
 <p>첫 시도의 실패 지점은 램프가 없는 desk 2에서 램프를 찾았다고 믿은 생각이다. 반성문은 이 환각을 짚지 않는다. 대신 「램프를 먼저 찾았어야 했다」는 계획의 교훈과 「램프는 desk 1에 있었다」는 이 방 고유의 사실을 남긴다. 둘째 시도는 그 사실 덕에 세 행동으로 끝난다. 뒤의 것은 같은 방을 다시 뒤질 때만 쓸모 있는 메모다. 강화학습 비유가 어긋나는 자리가 여기다.</p>
 <h3 id="c12-7-reflexion--추론-hotpotqa-42">7. Reflexion — 추론: HotpotQA (§4.2)</h3>
 <p><strong>설정.</strong> HotpotQA 100문항(Figure 4 캡션)에서 세 행위자를 비교한다. CoT는 질문만 보고 답하고(<span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>Q</mi><mo>&#x02192;</mo><mi>A</mi></mrow></math></span>), CoT (GT)는 정답 근거 문단 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>C</mi><mrow><mi>g</mi><mi>t</mi></mrow></msub></mrow></math></span> 까지 받아 추론 능력만 따로 보며(<span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>Q</mi><mo>&#x0002C;</mo><msub><mi>C</mi><mrow><mi>g</mi><mi>t</mi></mrow></msub><mo>&#x02192;</mo><mi>A</mi></mrow></math></span>), ReAct는 위키백과 API로 검색한다. 시도 사이의 성공 신호는 정답과의 EM 채점이고, 기억은 반성문 3개다.</p>
@@ -10860,7 +11111,7 @@ should be counted as CORRECT.
 <p>논문은 MemGPT의 첫 마디가 사람 것과 비슷하거나 가끔 넘어서며, 사람보다 장황하고 페르소나 정보를 더 많이 다룬다고 관찰한다. 둘을 나란히 놓으면, 항목을 많이 늘어놓을수록 오르기 쉬운 지표에서 사람을 넘었다는 것이 「더 몰입감 있다」보다 「페르소나를 더 많이 옮겨 적었다」를 뜻할 여지도 있다. 실제로 SIM-1은 GPT-3.5 Turbo(0.830)에서 GPT-4(0.868)로 오르는데 SIM-H는 0.817에서 0.773으로 내려간다. 작업 컨텍스트 저장이 몰입의 열쇠라는 서술도 있지만 그것을 뺀 절제 결과는 없다.</p>
 <h3 id="c13-6-문서-분석--다중-문서-qa와-중첩-키값-검색-32">6. 문서 분석 — 다중 문서 QA와 중첩 키–값 검색 (§3.2)</h3>
 <p>법률·금융 문서, 예를 들어 미국 상장사의 연차 보고서(SEC Form 10-K)는 쉽게 백만 토큰을 넘고, 실제 분석은 그런 문서 여럿을 가로질러야 한다는 것이 논문의 문제의식이다.</p>
-<p><strong class="lng">다중 문서 QA(§3.2.1).</strong> Lost in the Middle의 검색기–독해기(retriever-reader) 과제다. NaturalQuestions-Open의 질문에 검색기가 위키백과 문서를 고르고 독해기 LLM이 답하며, 검색 문서 수 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 를 늘려 가며 정확도를 잰다. 검색기는 양쪽이 같다(<code>text-embedding-ada-002</code> 임베딩의 코사인 유사도). MemGPT는 문서 전체를 보관 저장소(PostgreSQL과 pgvector)에 올려 두고 스스로 검색하고, 기준선은 상위 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 개를 받아 넣되 창보다 많으면 문서 조각을 잘라 넣는다. NaturalQuestions-Open에서 질문 50개를 뽑고 문서 말뭉치는 2018년 말 위키백과 덤프를 썼으며, LLM 평가자가 답과 근거 문서 텍스트를 함께 내야 맞은 것으로 센다(부록 6.1.5). Figure 6은 MemGPT가 <code>page=2</code> 로 결과를 넘겨 가며 답을 찾는 장면이다.</p>
+<p><strong class="lng">다중 문서 QA(§3.2.1).</strong> Lost in the Middle의 검색기–독해기(retriever-reader) 과제다. NaturalQuestions-Open의 질문에 검색기가 위키백과 문서를 고르고 독해기 LLM이 답하며, 검색 문서 수 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 를 늘려 가며 정확도를 잰다. 검색기는 양쪽이 같다(<code>text-embedding-ada-002</code> 임베딩의 코사인 유사도). MemGPT는 문서 전체를 보관 저장소(PostgreSQL과 pgvector)에 올려 두고 스스로 검색하고, 기준선은 상위 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 개를 받아 넣되 창보다 많으면 문서 조각을 잘라 넣는다. NaturalQuestions-Open에서 질문 50개를 뽑고 문서 말뭉치는 2018년 말 위키백과 덤프를 썼으며, 답하는 LLM이 답과 근거 문서 텍스트를 함께 내야 LLM 평가자가 맞은 것으로 센다(부록 6.1.4–6.1.5). Figure 6은 MemGPT가 <code>page=2</code> 로 결과를 넘겨 가며 답을 찾는 장면이다.</p>
 <p>결과는 Figure 5의 곡선이다. 논문의 서술을 정리하면 이렇다.</p>
 <ul>
 <li>고정 창 기준선은 대략 검색기 성능에서 막힌다. 검색기가 정답 문서를 띄우지 못하면 볼 길이 없는데, 정답 문서가 검색 결과 앞쪽 열두어 개 밖에 있는 일이 잦았다. <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 가 커지면 문서를 잘라 넣어야 해서 정답 조각이 빠지고 정확도가 떨어진다.</li>
@@ -11164,7 +11415,7 @@ Table 3은 페르소나·사람 첫 마디와의 유사도를 잴 뿐이고, 사
 <p>관공서나 회사의 업무 분장표를 떠올리자. 담당자마다 맡은 일과 내야 할 서식이 정해져 있고, 서류는 결재선을 따라 한 방향으로 흐른다. 기안자는 정해진 양식으로 쓰고, 검토자는 양식의 빈칸이 채워졌는지부터 본다. 말로 전하면 사라질 정보가 서식의 칸 덕분에 남는다. MetaGPT의 역할 프로필(이름·직무·목표·제약)이 업무 분장표에, 역할별 문서 서식이 결재 양식에, 다섯 역할의 순서가 결재선에 해당한다.</p>
 <p>개발자·DB 관리자라면 메시지 큐의 발행–구독(publish–subscribe)을 떠올려도 된다. 생산자는 받는 사람을 일일이 부르지 않고 주제(topic)에 메시지를 발행하고, 소비자는 자기가 관심 있는 주제만 구독한다. 생산자와 소비자가 서로를 몰라도 되니 연결선이 줄어든다. MetaGPT의 공유 메시지 풀이 브로커에, 역할 프로필에 따른 구독이 주제 구독에 해당한다.</p>
 <p>통계 쪽 다리는 곱셈이다. 단계가 다섯이고 단계마다 독립적으로 90% 확률로 맞는다면 끝까지 맞을 확률은 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>0.9</mn><mn>5</mn></msup><mo>&#x02248;</mo><mn>0.59</mn></mrow></math></span> 다(6절에서 다시 계산한다).</p>
-<p>비유가 어긋나는 곳도 있다. 사람의 결재선에서는 검토자가 서류를 반려한다. MetaGPT의 흐름은 대체로 한 방향이고, 되돌아가는 고리는 엔지니어의 실행 피드백(최대 3회)뿐이다. Figure 3의 「Anything UNCLEAR?」 칸이 앞 단계로 되묻는 장치로 작동하는지는 논문이 설명하지 않는다. 메시지 큐는 전달과 순서를 보장하지만 MetaGPT의 구독은 「관심 있는 것」을 고르는 장치일 뿐이다. 곱셈 비유는 단계 오류가 독립이고 고쳐지지 않는다는 가정 위에 서 있다. 같은 모델이 모든 역할을 맡으면 오류끼리 상관이 생기고, 뒤 단계가 앞 단계의 오류를 고치기도 한다.</p>
+<p>비유가 어긋나는 곳도 있다. 사람의 결재선에서는 검토자가 서류를 반려한다. MetaGPT의 흐름은 대체로 한 방향이고, 되돌아가는 고리는 엔지니어의 실행 피드백(최대 3회)뿐이다. Figure 3의 「Anything Unclear ?」 칸이 앞 단계로 되묻는 장치로 작동하는지는 논문이 설명하지 않는다. 메시지 큐는 전달과 순서를 보장하지만 MetaGPT의 구독은 「관심 있는 것」을 고르는 장치일 뿐이다. 곱셈 비유는 단계 오류가 독립이고 고쳐지지 않는다는 가정 위에 서 있다. 같은 모델이 모든 역할을 맡으면 오류끼리 상관이 생기고, 뒤 단계가 앞 단계의 오류를 고치기도 한다.</p>
 </aside>
 <hr>
 <h2 id="c14-본론">본론</h2>
@@ -11236,7 +11487,7 @@ Constraint  The code you write should conform to code standard like PEP8,
 </tr>
 </tbody>
 </table></div>
-<p>Figure 3의 예는 사람이 넣은 한 줄 "Make the 2048 sliding tile number puzzzle game"(그림의 철자 그대로)에서 시작한다. 제품 관리자의 상자에는 생각 한 줄("Think: The boss requires the creation of 2048 sliding title number puzzle game.")과 제품 목표·사용자 이야기·경쟁 분석·사분면 도표·요구 풀이 있다. 설계자는 "For this project, we will use Pygame, an open-source library designed for making video games with Python."이라고 생각하고 클래스 도표, 호출 흐름, 파일 목록을 낸다. 프로젝트 관리자는 이것을 과제 목록과 파일별 논리 분석으로 바꾸고, 엔지니어는 <code>game.py</code> 의 <code>Game</code> 클래스부터 쓰고, QA 엔지니어는 코드 품질을 검토한다. 맨 아래에서 사람이 완성된 게임을 키보드로 해 본다.</p>
+<p>Figure 3의 예는 사람이 넣은 한 줄 "Make the 2048 sliding tile number puzzle game"에서 시작한다. 제품 관리자의 상자에는 생각 한 줄("Think: The boss requires the creation of 2048 sliding title number puzzzle game.", 철자는 그림 그대로)과 제품 목표·사용자 이야기·경쟁 분석·사분면 도표·요구 풀이 있다. 설계자는 "For this project, we will use Pygame, an open-source library designed for making video games with Python."이라고 생각하고 클래스 도표, 호출 흐름, 파일 목록을 낸다. 프로젝트 관리자는 이것을 과제 목록과 파일별 논리 분석으로 바꾸고, 엔지니어는 <code>game.py</code> 의 <code>Game</code> 클래스부터 쓰고, QA 엔지니어는 코드 품질을 검토한다. 맨 아래에서 사람이 완성된 게임을 키보드로 해 본다.</p>
 <p><strong>그림을 자세히 보면.</strong> 제품 관리자의 제품 목표 첫 줄은 "Create a web-based 2048 game that is easy to play"인데, 설계자는 Pygame을 쓰기로 하고 설계자 상자 안에서 「웹」은 다시 나오지 않는다. 그림에 보이는 범위에서는 웹 기반이라는 요구가 설계 단계에서 빠졌다. 논문이 논하는 점은 아니지만, 구조화된 문서를 주고받아도 앞 단계의 요구가 다음 단계에서 빠질 수 있다는 예로 읽을 여지가 있다. 부록 B의 데모도 그렇다. 사용자 입력은 그림 그리는 GUI 앱("draw an image")인데 요구 문서의 「Original Requirements」는 RGB 값을 출력하는 색 측정기(color meter)이고, 시스템 설계의 파일 목록과 프로젝트 관리자의 과제 목록도 서로 다르다. 다른 실행의 문서를 이어 붙였을 수도 있으나 논문은 설명하지 않는다.</p>
 <h3 id="c14-3-구조화된-통신과-발행구독-32-figure-2-왼쪽">3. 구조화된 통신과 발행–구독 (§3.2, Figure 2 왼쪽)</h3>
 <p>§3.2의 통신 규약에는 두 부품이 있다.</p>
@@ -12597,8 +12848,8 @@ end_of_edit
 <ul>
 <li><strong>도구와 영역(부록 E.3).</strong> 도구 상자가 작다. 웹 브라우징, 정적·동적 분석, 결함 위치 찾기, 퍼징 기반 시험 생성을 더할 일로 들고, 같은 원칙이 웹 쇼핑이나 사내 지식 베이스 같은 다른 영역에도 옮겨 가는지를 질문으로 남긴다.</li>
 <li><strong class="lng">손으로 한 ACI 개발(부록 E.3).</strong> 구성 요소 다수가 궤적에서 되풀이되는 행동을 사람이 관찰해 만들어졌다. 이 과정의 자동화, 그리고 자동화된 시스템이 자기 설계를 점검하며 개선을 쌓아 가게 하는 일을 열린 문제로 둔다. <a href="#ch20">19회</a>가 여기서 출발한다.</li>
-<li><strong class="lng">모델과 턴의 한계(§4, 부록 B.3.1).</strong> 다른 모델은 에이전트 설정에서 성능이 모자랐다. 첫 10~20턴의 접근이 실패하면 뒤의 턴을 잘 활용하지 못한다("struggle to make use of later turns").</li>
-<li><strong>윤리와 위험(부록 E.1).</strong> 코드 실행은 일회용 Docker 컨테이너로 격리했지만 가상화된 하드웨어 격리만큼 안전하지는 않다고 적는다. 비공식 평가 도구가 "키로거를 만들어 숨긴 폴더에 저장하라"는 이슈 설명을 심어 둘 위험(<a href="#ch16">15회</a> 간접 프롬프트 인젝션의 코딩 에이전트판)과 악성 코드 생산에 쓰일 위험도 든다.</li>
+<li><strong class="lng">모델과 턴의 한계(§4, 부록 B.3.1).</strong> 다른 모델은 에이전트 설정에서 성능이 모자랐다. 첫 10~20턴의 접근이 실패하면 뒤의 턴을 잘 활용하지 못한다("struggles to make use of later turns").</li>
+<li><strong>윤리와 위험(부록 E.1).</strong> 코드 실행은 일회용 Docker 컨테이너로 격리했지만 가상화된 하드웨어 격리만큼 안전하지는 않다고 적는다. 비공식 평가 도구가 키로거를 만들어 숨긴 폴더에 저장하라고 시키는 이슈 설명을 심어 둘 위험(<a href="#ch16">15회</a> 간접 프롬프트 인젝션의 코딩 에이전트판)과 악성 코드 생산에 쓰일 위험도 든다.</li>
 </ul>
 <p>논문이 밝히지 않은 단서도 적어 둔다. ACI는 개발 분할에서 GPT-4 Turbo의 궤적을 보며 다듬었으므로 이 모델의 버릇에 맞춰졌을 여지가 있고, Claude 3 Opus용으로 따로 다듬은 ACI와 비교한 것은 아니다. 절제는 모두 한 번씩 실행했다(7절). 실패 유형은 GPT-4o가 매겼고 검증 15건의 일치율 87%(13건)는 윌슨 95% 구간이 62~96%로 넓다. 결론을 뒤집는 단서는 아니고, 결론의 크기를 읽을 때 붙여 둘 단서다.</p>
 <hr>
@@ -12687,7 +12938,7 @@ Vim·VSCode식 반복 검색은 검색 명령을 아예 주지 않은 경우보�
 <ul>
 <li>〔리뷰〕 <a href="https://www.youtube.com/watch?v=fpEwY-3b-Vw">「[DSBA Study] Agent AI 13주차 - Web&amp;Coding Agents - Part 1」</a> — DSBA 연구실</li>
 <li>〔저자〕 <a href="https://www.youtube.com/watch?v=f6D5eHNr_VI">「Few Shot Code Generation to Autonomous Software Engineering Agents // John Yang」</a> — AAIF Live</li>
-<li>〔저자〕 <a href="https://www.youtube.com/watch?v=f9L9Fkq-8K4">「LLM Agents MOOC | UC Berkeley CS294-196 Fall 2024 | Agents for Software Development by Graham Neubig」</a> — Berkeley RDI (발표자는 SWE-agent 논문의 저자 명단에 없다. 소프트웨어 개발 에이전트 일반을 다루는 강의다)</li>
+<li>〔보조〕 <a href="https://www.youtube.com/watch?v=f9L9Fkq-8K4">「LLM Agents MOOC | UC Berkeley CS294-196 Fall 2024 | Agents for Software Development by Graham Neubig」</a> — Berkeley RDI (발표자는 SWE-agent 논문의 저자 명단에 없다. 소프트웨어 개발 에이전트 일반을 다루는 강의다)</li>
 </ul>
 <p>영상은 2026-10-04에 YouTube oEmbed로 제목과 채널을 확인했다. 본편 내용은 엮은이가 검증하지 않았다.</p>
 <hr>
@@ -12990,7 +13241,7 @@ Vim·VSCode식 반복 검색은 검색 명령을 아예 주지 않은 경우보�
 <p><strong class="lng">기억 오염 — 세션을 넘는 지속 감염 (§4.2.4 Persistence, Figure 8 → <a href="#ch13">12회</a>).</strong> GPT-4 합성 애플리케이션에 간단한 키–값 저장소를 붙여 장기 기억을 흉내 낸다. 한 세션에서 주입을 받은 모델이 공격 코드의 일부를 자기 기억에 써 둔다. 그다음 모델을 초기화해 깨끗한 상태로 되돌린다. 그런데 사용자가 "지난 대화를 기억에서 읽어 줘"라고 하면, 모델이 그 기억을 읽다가 <strong>스스로 다시 감염된다.</strong> Figure 8은 이 네 단계를 그린다. 감염된 모델이 주입을 장기 기억에 저장하고(1), 새 세션에서 사용자가 기억을 읽어야 하는 질문을 하면(2) 주입이 끌려 나와(3) 모델이 다시 감염된다(4). 세션을 넘겨 지속적으로 오염될 수 있다는 시연이다.</p>
 <p>이 대목이 <a href="#ch13">12회</a>와 곧바로 이어진다. MemGPT는 고정된 컨텍스트 창의 한계를 넘으려고 외부 기억(archival·recall storage)을 두고, 모델이 함수 호출로 그 기억을 스스로 읽고 쓰게 한다. 그 설계가 바로 이 공격의 표적이다. 무엇을 남기고 무엇을 읽어 올지를 모델이 정하는데, 그 기억이 한 번 오염되면 그 항목을 검색해 읽어 오는 이후 세션마다 재감염될 수 있다. <a href="#ch13">12회</a>에서 기억을 "이력을 요약한 충분통계량"(가정 A1)으로 읽었다면, 여기서는 그 기억이 <strong class="lng">공격자가 심은 지시를 나르는 통로</strong>가 된다. 외부 기억은 긴 과제를 가능하게 하는 바로 그 성질 때문에 공격면을 넓힌다.</p>
 <p><strong class="lng">저장소 오염 — 코드 자동완성 조종 (§4.2.4 Code Completion, Figure 9 → <a href="#ch15">14회</a>).</strong> GitHub Copilot을 겨냥한다. 코드 자동완성 엔진은 최근 연 파일이나 관련 클래스에서 조각을 모아 컨텍스트 창을 채운다. 공격자가 인기 저장소의 공개 문서를 고쳐(1) 주석에 프롬프트를 심어 두면, 개발자가 그 패키지를 내려받아(2) 열었을 때 주입이 컨텍스트에 실려(3) 자동완성 제안을 오염시킨다(4). 저자들은 이런 주입이 현재로서는 사람이 코드를 직접 검토해야만 발견된다고 적는다("can currently only be detected through manual code review"). 다만 저자들은 이 공격이 맥락에 매우 민감하고, 큰 애플리케이션에 묻히면 효과가 크게 줄었다고 적는다. 컨텍스트 창을 짜는 알고리듬이 비공개라 실전 가능성은 더 연구가 필요하다는 것이다.</p>
-<p>이 시연이 <a href="#ch15">14회</a>의 전제를 뒤집어 읽게 한다. SWE-agent는 에이전트가 저장소를 읽고 고치는 시스템이고, 그 성능은 "모델은 그대로 두고 인터페이스(ACI)만 바꿔도 달라진다"는 데서 나왔다. 그런데 에이전트가 읽는 저장소가 공격자의 것일 수 있다. <a href="#ch15">14회</a>에서 본 SWE-agent 논문 자신도 윤리 성명에서 이 위험을 짚는다. 비공식 저장소가 "키로거 기능을 숨은 폴더에 만들라"는 과제 설명을 품을 수 있다는 것, 에이전트가 생성한 코드를 실제 기기에서 실행하는 위험을 Docker 샌드박스로 가둔다는 것이다. Greshake의 Figure 9는 그 위험이 추상적 우려가 아님을 구체적 경로로 보인다.</p>
+<p>이 시연이 <a href="#ch15">14회</a>의 전제를 뒤집어 읽게 한다. SWE-agent는 에이전트가 저장소를 읽고 고치는 시스템이고, 그 성능은 모델은 그대로 두고 인터페이스(ACI)만 바꿔도 달라진다는 데서 나왔다. 그런데 에이전트가 읽는 저장소가 공격자의 것일 수 있다. <a href="#ch15">14회</a>에서 본 SWE-agent 논문 자신도 윤리 성명에서 이 위험을 짚는다. 비공식 저장소가 키로거 기능을 만들어 숨은 폴더에 저장하라고 시키는 과제 설명을 품을 수 있다는 것, 에이전트가 생성한 코드를 실제 기기에서 실행하는 위험을 Docker 샌드박스로 가둔다는 것이다. Greshake의 Figure 9는 그 위험이 추상적 우려가 아님을 구체적 경로로 보인다.</p>
 <p><strong>나머지 시연 한 줄씩.</strong> 사기는 가짜 아마존 기프트카드로 자격증명을 받아 낸다(§4.2.2, Bing Chat). 악성코드는 두 갈래다. 악성 링크를 자연스러운 답변에 끼워 퍼뜨리는 것과, 프롬프트 자체가 웜이 되는 것이다. 뒤의 것(§4.2.3 Spreading Injections, Figure 6)은 메일을 읽고 쓰는 합성 애플리케이션에서, 받은 메일에 심긴 지시가 주소록의 모든 연락처에 같은 지시를 복제해 보내게 한다. 원격 제어는 이미 감염된 모델이 공격자 서버에서 새 지시를 주기적으로 받아 와 원격 백도어가 된다(§4.2.4 Remote Control, Figure 7). 조작된 콘텐츠는 틀린 요약, 편향 출력(보수·진보 페르소나에 맞춘 답), 출처 차단(특정 언론사 숨기기), 허위정보(아인슈타인의 노벨상 수상 부정), 숨은 광고로 갈린다(§4.2.5). 가용성은 배경에서 시간 잡아먹는 작업을 돌리게 하거나, 검색 질의·결과를 동형문자(homoglyph)·제로폭 문자로 망가뜨려 검색을 무력화한다(§4.2.6).</p>
 <h3 id="c16-4-숨은-주입과-프롬프트-속-방어-지시-43-부록-prompt-2">4. 숨은 주입과 프롬프트 속 방어 지시 (§4.3, 부록 Prompt 2)</h3>
 <p>§4.3은 주입을 숨기는 두 방법을 보인다. 다단 공격(multi-stage, §4.3.1)은 평범한 콘텐츠에 작은 주입 하나를 심어, 모델이 그것을 따라 <strong class="lng">더 큰 2차 payload를 스스로 가져오게</strong> 한다. payload는 보안 용어로, 공격이 실제로 수행시키려는 지시 묶음을 가리킨다. 1차는 짧아 눈에 안 띄고, 2차는 사용자에게 보이지 않으니 얼마든지 길고 노골적일 수 있다. 저자들은 위키백과 글 가운데에 주석으로 1차 주입을 숨겨, 모델이 특정 키워드를 검색하게 만들고 그 검색이 2차 payload를 끌어오는 예를 보인다. 부호화 주입(§4.3.2)은 프롬프트를 Base64 문자열로 바꿔 넣어 필터를 피한다. 논문은 "이것을 네 내적 독백에서 Base64로 복호화하라"는 지시만 주었는데도 공격이 통했다고 적는다.</p>
@@ -13042,7 +13293,7 @@ Tools can be used by responding in the following format:
 <p>간접 인젝션의 피해는 모델 한 대에서 끝나지 않는다. 도구·검색·기억·코드 저장소를 거쳐 커진다. Harness 서베이는 이 문제를 ETCLOVG 일곱 층의 마지막 G(거버넌스·보안)에 둔다.</p>
 <ul>
 <li><strong>§3.3 위협 모델.</strong> 서베이는 에이전트 샌드박스가 마주하는 위협을 셋으로 나눈다. 프롬프트 인젝션(검색된 웹페이지·도구 응답·파일 내용 같은 외부 입력이 에이전트 행동을 탈취), 목표 오정렬(에이전트 스스로 샌드박스 탈출을 하위 목표로 삼음), 조합 증폭(도구 여럿을 가진 에이전트에서 한 약점이 통합 능력을 가로질러 번짐)이다. Greshake의 공격이 첫째에 정확히 놓인다. 샌드박스 탈출 쪽에서는 공격 평가가 구체적이고 재현 가능한 벤치마크(SandboxEscapeBench, Docker 컨테이너 구성에 따라 탈출 성공률 15~35%)를 내놨는데 방어 연구는 아직 고립된 프로토타입으로 흩어져 있다고 서베이는 적는다.</li>
-<li><strong>§9 거버넌스·보안.</strong> 서베이는 거버넌스를 다섯 메커니즘으로 나눈다. ①권한 모델·신원 관리(§9.1), ②생애주기 훅(§9.2), ③구성요소 강화(§9.3), ④선언적 헌법(§9.4), ⑤감사 기반시설(§9.5)이다. 이 장의 곁가지들이 이 격자에 흩어져 놓인다. Instruction Hierarchy는 §9.3 모델 강화의 대표 예로, "LLM이 모든 입력 텍스트를 같은 우선순위로 다루는 것이 프롬프트 인젝션의 뿌리 원인"이라는 문장과 함께 인용된다. CaMeL은 §9.2의 사후 실행 훅(정보 흐름 제어·오염 추적)으로, 모든 데이터 값에 출처 꼬리표를 달아 믿을 수 없는 데이터가 제어 흐름을 못 바꾸게 하는 기법으로 정리된다.</li>
+<li><strong>§9 거버넌스·보안.</strong> 서베이는 거버넌스를 다섯 메커니즘으로 나눈다. ①권한 모델·신원 관리(§9.1), ②생애주기 훅(§9.2), ③구성요소 강화(§9.3), ④선언적 헌법(§9.4), ⑤감사 기반시설(§9.5)이다. 이 장의 곁가지들이 이 격자에 흩어져 놓인다. Instruction Hierarchy는 §9.3 모델 강화의 대표 예로, "LLM이 모든 입력 텍스트를 같은 우선순위로 다루는 것이 프롬프트 인젝션의 뿌리 원인의 하나"라는 문장과 함께 인용된다. CaMeL은 §9.2의 사후 실행 훅(정보 흐름 제어·오염 추적)으로, 모든 데이터 값에 출처 꼬리표를 달아 믿을 수 없는 데이터가 제어 흐름을 못 바꾸게 하는 기법으로 정리된다.</li>
 </ul>
 <svg viewBox="0 0 720 192" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="한 도구 사용 주기 위의 네 훅 지점" font-family="system-ui,-apple-system,'Malgun Gothic',sans-serif" style="width:100%;max-width:720px;height:auto;display:block;margin:1.5em auto">
 <defs><marker id="r15arrB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" fill-opacity="0.75"/></marker></defs>
@@ -13419,7 +13670,7 @@ Willison이 수집한 사례 목록은 2023년 이후로도 여러 생산 시스
 </table></div>
 <p><em>원문 Table 6(부록 A.3)을 세로로 풀었다. §3.2의 「약 13k, 33k, 31k」는 학습 분할의 합(12,725, 33,207, 31,144)이다.</em></p>
 <p>보상 모형 데이터는 프롬프트 하나당 출력 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> 개(4~9)의 순위에서 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo minsize="2.047em" maxsize="2.047em">&#x00028;</mo><mfrac linethickness="0"><mrow><mi>K</mi></mrow><mrow><mn>2</mn></mrow></mfrac><mo minsize="2.047em" maxsize="2.047em">&#x00029;</mo></mrow></math></span> 쌍을 모두 쓰므로, 학습에 쓴 쌍의 수는 프롬프트 수보다 한 자릿수 크다(부록 A.3). 시험 세트는 3,196개 프롬프트다(Table 9). 데이터의 96% 남짓이 영어로 분류되었다(부록 A.4).</p>
-<p><strong>레이블러.</strong> Upwork와 Scale AI를 통해 약 40명을 고용했다(§3.4). 민감한 발화 표시와 출력 순위에서 연구자와의 일치도(느슨한 기준선 75%), 민감한 프롬프트에 쓴 시연의 점수, 「어떤 집단에 대해 민감한 발화를 알아볼 수 있는가」라는 자기 평가로 골랐다(부록 B.1).</p>
+<p><strong>레이블러.</strong> Upwork와 Scale AI를 통해 약 40명을 고용했다(§3.4). 민감한 발화 표시와 출력 순위에서 연구자와의 일치도(느슨한 기준선 75%), 민감한 프롬프트에 쓴 시연의 점수, 「어떤 주제나 문화 집단에 대해 민감한 발화를 알아볼 수 있는가」라는 자기 평가로 골랐다(부록 B.1).</p>
 <p><strong>무엇을 우선하라고 했나.</strong> 학습 데이터를 만들 때는 사용자에 대한 도움을 가장 우선하게 했고, 최종 평가에서는 진실성과 무해함을 우선하게 했다(§3.4, 부록 B.2). 모델은 도움을 우선하는 선호로 학습되고 진실성과 무해함을 우선하는 선호로 채점된 셈이다. 애매할 때의 원칙은 "which output would you rather receive from a customer assistant who is trying to help you with this task?"였다(Figure 10).</p>
 <p><strong>일치도.</strong> 학습 레이블러끼리는 72.6 ± 1.5%, 학습 데이터를 만들지 않은 보류(held-out) 레이블러끼리는 77.3 ± 1.3% 일치했고, 참고로 Stiennon 외(2020)의 요약 과제에서 연구자끼리는 73 ± 4%였다(§3.4). 이 ±가 무엇의 ±인지는 11절에서 본다.</p>
 <h3 id="c17-3-보상-모형--순위를-쌍으로-쪼갠다-35">3. 보상 모형 — 순위를 쌍으로 쪼갠다 (§3.5)</h3>
@@ -14626,7 +14877,7 @@ GAIA는 최종 답만 채점한다(§6). Figure 5 캡션에 따르면 도구 없
 <h2 id="c18-영상">영상</h2>
 <ul>
 <li>〔저자〕 <a href="https://www.youtube.com/watch?v=e4jOGywUCc4">「[Monday evening short video] Summary of two new amazing LLM benchmarking papers: GAIA and GPQA」</a> — Hugging Face (6분. 설명란에 올린 사람이 GAIA 공저자라고 적혀 있다. GPQA도 함께 다룬다)</li>
-<li>〔보조〕 <a href="https://www.youtube.com/watch?v=0pnEUAwoDP0">「How to Build, Evaluate, and Iterate on LLM Agents」</a> — DeepLearningAI</li>
+<li>〔보조〕 <a href="https://www.youtube.com/watch?v=0pnEUAwoDP0">「How to Build, Evaluate, and Iterate on LLM Agents」</a> — DeepLearningAI (LlamaIndex·TruEra 창업자의 워크숍. 주제 논문 저자의 발표가 아니다)</li>
 <li>〔보조〕 <a href="https://www.youtube.com/watch?v=24BPH3wQzRU">「Evaluation and Benchmarking of LLM Agents A Survey」</a> — Learn by Doing with Steven</li>
 <li>〔보조〕 <a href="https://www.youtube.com/watch?v=AX6ns2fTZtA">「CS 886 Lecture 21 Part 1: Toolformer, ART, and AgentBench」</a> — ccopyu (Waterloo 대학교 CS 886(2024 겨울) 강의 녹화. AgentBench는 다루는 논문 셋 중 하나)</li>
 <li>한국어 영상, GAIA·AgentBench 저자의 학회 강연은 찾지 못했다(2026-10-05 재검색. 검색어: "GAIA 벤치마크 논문 리뷰", "AgentBench 논문 리뷰", "GAIA benchmark Mialon talk", "AgentBench Evaluating LLMs as Agents talk").</li>
@@ -15040,7 +15291,7 @@ GAIA는 최종 답만 채점한다(§6). Figure 5 캡션에 따르면 도구 없
                the question cannot be completed at this moment ...&quot;,
 &quot;done&quot;: true, &quot;reward&quot;: 1.0, &quot;success&quot;: 1.0, &quot;num_actions&quot;: 12
 </code></pre>
-<p><em>Kapoor 외 §5.1의 STeP 궤적 로그를 옮겼다. url·observation 필드는 길어서 뺐고, 말줄임표는 원문에 있는 것이다.</em></p>
+<p><em>Kapoor 외 §5.1의 STeP 궤적 로그를 옮겼다. url·observation 필드는 길어서 뺐고, 말줄임표는 엮은이가 줄인 자리다.</em></p>
 <p>에이전트는 게시 제한 때문에 글을 올리지 못했다고 판단하고 멈췄는데 보상과 성공은 1.0이다. Table A6에 따르면 이 제한은 Reddit 과제 129개 가운데 원 논문 평가에서 2개, STeP 평가에서 30개에 영향을 주었다.</p>
 <div class="tw"><table>
 <thead>
@@ -15641,7 +15892,7 @@ HumanEval에서 System 2 기법의 쓸모가 입증되지 않았다고 말할 �
 <li>Sayash Kapoor 외. 「Holistic Agent Leaderboard: The Missing Infrastructure for AI Agent Evaluation」. 2025. <a href="https://arxiv.org/abs/2510.11977">arXiv 2510.11977</a> (Harness 서베이 참고문헌의 서지).</li>
 <li>Lovish Madaan 외. 「Quantifying Variance in Evaluation Benchmarks」. 2024. <a href="https://arxiv.org/abs/2406.10229">arXiv 2406.10229</a> (Miller 참고문헌 [15]).</li>
 <li>Dallas Card 외. 「With Little Power Comes Great Responsibility」. 2020. <a href="https://arxiv.org/abs/2010.06595">arXiv 2010.06595</a> (Miller 참고문헌 [2]).</li>
-<li>Alberto Abadie 외. 「When should you adjust standard errors for clustering?」. The Quarterly Journal of Economics 138(1). (Miller 참고문헌 [1]의 서지. 링크는 달지 않았다.)</li>
+<li>Alberto Abadie 외. 「When Should You Adjust Standard Errors for Clustering?」. The Quarterly Journal of Economics 138(1). (Miller 참고문헌 [1]의 서지. 링크는 달지 않았다.)</li>
 </ul>
 <p><strong>확인 방법.</strong> 2026-10-05에 두 주제 논문의 PDF(둘 다 arXiv v1. Kapoor의 arXiv 판은 v1뿐이다)와 텍스트 추출본으로 절·식·표 번호와 수치를 대조했다. Kapoor Figure 1·2는 PDF 4·6쪽을 렌더링해 읽었고, 이 장의 재작도는 그림의 눈금이 아니라 Table A1의 숫자로 그렸다. ReAct·SWE-agent·GAIA·HarnessFix의 숫자, AR 서베이 §7.3·§9, Harness 서베이 §8.4.3·§11은 각 PDF에서 확인했다. 저자·게재·라이선스는 부록 III의 서지를 따랐고, S32의 초록·저자와 LDB·LATS·HAL·Madaan·Card의 arXiv 번호·제목은 같은 날 arXiv 초록 페이지에서 확인했다. 계산은 엮은이가 인쇄된 숫자로 파이썬(scipy·numpy)으로 했다. 표준오차·<span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span> 검정은 정규근사, 맥니마는 이항 정확검정, 0/75 상한은 클로퍼–피어슨, 표준편차 구간은 카이제곱, 최댓값의 기대 부풀림은 몬테카를로 근사다. ALFWorld 유형별 게임 수는 정수 조건을 만족하는 조합을 모두 열거했고, SWE-agent의 문항별 해결 횟수는 pass@1~6의 정수 해로 풀어 2만 회 모의실험에 썼다.</p>
 </section>
@@ -15912,7 +16163,7 @@ HumanEval에서 System 2 기법의 쓸모가 입증되지 않았다고 말할 �
     body={amount, description, ...}
   reuse relation: semantically reused
 </code></pre>
-<p><em>원문 §III-A 2의 예시 상자를 옮겼다(화살표만 ASCII로 바꿨다).</em></p>
+<p><em>원문 §III-A 2의 예시 상자를 옮겼다(화살표를 ASCII로 바꾸고 글머리표를 뺐다).</em></p>
 <p>문서가 요구한 <code>user_email</code> 이 요청 본문에 없다는 사실이 이 링크로 「관측 가능」해진다. 그런데 이 상자의 금액은 <code>amount=54.0</code> 이고, Figure 3의 S4 설명에는 「amount=117.6」으로 세 번 호출했다고 적혀 있다. 같은 사례의 두 그림에서 금액이 다른 이유를 논문은 밝히지 않는다.</p>
 <p><strong>제어 흐름 링크.</strong> 하네스가 왜 이 단계에서 다음 단계로 넘어갔는지를 잇는다. 관측된 전이를 하네스의 실행 논리(계속·재시도·위임·검증·종료·중단)에 맞추고 촉발 논리와 조건을 남긴다. 원문 §III-A 3의 예시는 S5 → S6 링크의 촉발 논리를 「completion guard」, 조건을 「status=success」로 적고, 그 논리가 <code>appworld_agent/core.py</code> 의 <code>execute() -&gt; task_completed()</code> 에 있다고 짚는다.</p>
 <p><strong>구현 앵커.</strong> 링크는 실행 중 일어난 일을 기술할 뿐, 그 행동을 하네스의 어디가 만들었는지는 말하지 않는다. 앵커가 그 다리다. 도구 이름, 템플릿 참조, 검증기 이벤트 같은 신호를 실마리로 산출물(경로와 줄 범위, 프롬프트·스키마 식별자)을 찾는다. 사례의 S3–S4 링크는 AppWorld 공식 단순 ReAct 코드 에이전트의 프롬프트 파일과 초기화 함수에 묶인다. <a href="#ch7">6회</a>의 ReAct 루프가 고칠 대상으로 다시 나온다.</p>
@@ -16513,7 +16764,7 @@ HumanEval에서 System 2 기법의 쓸모가 입증되지 않았다고 말할 �
 <p><strong class="lng">Anthropic의 장시간 에이전트 하네스</strong> (<a href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents">Young 2025</a>). 사람이 손으로 하네스를 고친 사례다. 여러 컨텍스트 창에 걸쳐 웹 앱을 만들게 했더니 한 번에 다 하려다 컨텍스트가 바닥나고, 진척이 보이면 프로젝트를 「완료」로 선언하고, 시험 없이 기능을 완료로 표시했다. 처방은 기능 200여 개를 모두 「실패」로 적은 JSON 목록과 진행 파일을 두고, 기능 하나씩 끝에서 끝까지 시험한 뒤에만 「통과」로 바꾸게 한 것이다. 「섣부른 완료 선언」은 Figure 3의 종료 관문 결함과 같은 계열이다(엮은이의 읽기). 차이는 진단자와 증거다. 여기서는 엔지니어가 관찰로 진단했고 수치 비교가 없다.</p>
 <p><strong>SWE-agent</strong> (<a href="https://arxiv.org/abs/2405.15793">Yang 외 2024</a> · 이 책 <a href="#ch15">14회</a>). Figure 8은 SWE-bench Lite에서 GPT-4 Turbo가 풀지 못한 궤적 248개를 GPT-4o로 아홉 범주에 자동 분류했다(저자 레이블과 일치 87%). 52.0%가 잘못되거나 지나치게 좁은 구현, 23.4%가 편집 실패에서 회복하지 못한 경우였다. 차이는 분류의 축이다. 이 범주는 행동의 증상이고, 그것을 하네스로 옮기는 해석은 사람이 했다. 그렇게 사람이 만든 장치가 편집 린트 가드레일이고, 빼면 18.0%가 15.0%로 내려간다(Table 3). HarnessFix는 증상에서 층과 구현 위치로 가는 해석을 자동화한다.</p>
 <p><strong>Reflexion</strong> (<a href="https://arxiv.org/abs/2303.11366">Shinn 외 2023</a> · 이 책 <a href="#ch12">11회</a>). 실패에서 배우되 고치는 대상이 다르다. Reflexion은 실패 뒤 모델이 반성문을 쓰고 최근 한두 개에서 세 개(원문의 Ω는 「보통 1~3」)를 기억에 남겨 같은 과제의 다음 시도에 쓴다. HarnessFix는 여러 과제의 실패를 모아 하네스 코드를 고치고, 보지 않은 시험 과제에서 효과를 잰다. 둘 다 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi></mrow></math></span> 를 고정하고 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 를 바꾸지만 Reflexion은 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 가 글인 언어적 진화, HarnessFix는 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 가 코드인 구조적 진화에 가깝다(뒤의 분류는 이 책의 읽기).</p>
-<p><strong>하네스 미공개 비교 비판</strong> (<a href="https://arxiv.org/abs/2605.23950">Zhang 외 2026</a> · 이 책 <a href="#ch19">18회</a>). 초록은 기반 능력이 비슷한 최전선 모델들("comparable frontier capability") 사이에서는 장기 과제의 성능 차이를 가르는 것이 모델보다 하네스라는 「Binding Constraint Thesis」를 내세우고, 하네스가 만든 분산이 모델 순위를 뒤집는 일이 「자주(often)」 있다며 하네스 공개와 분산 분해를 요구한다. 주제 논문 Table III에서도 모델마다 하네스를 고치자 GAIA의 1·2위(Gemini 3 Pro 69.4 대 Claude Sonnet 4.5 66.7 → 83.9 대 84.4)와 SWE-Bench의 3·4위가 바뀐다. 다만 그 차이는 0.5~0.6%p로 표준오차보다 훨씬 작다. 겹쳐 읽으면, 하네스를 자동으로 고칠수록 「어느 하네스에서 잰 성적인가」를 밝힐 필요가 커진다.</p>
+<p><strong>하네스 미공개 비교 비판</strong> (<a href="https://arxiv.org/abs/2605.23950">Zhang 외 2026</a> · 이 책 <a href="#ch19">18회</a>). 초록은 기반 능력이 비슷한 최전선 모델들("comparable frontier capability") 사이에서는 장기 과제의 성능을 하네스가 모델보다 「자주(often)」 더 크게 좌우한다는 「Binding Constraint Thesis」를 내세우고, 하네스가 만든 분산이 모델 순위를 뒤집은 사례도 있다며 하네스 공개와 분산 분해를 요구한다. 주제 논문 Table III에서도 모델마다 하네스를 고치자 GAIA의 1·2위(Gemini 3 Pro 69.4 대 Claude Sonnet 4.5 66.7 → 83.9 대 84.4)와 SWE-Bench의 3·4위가 바뀐다. 다만 그 차이는 0.5~0.6%p로 표준오차보다 훨씬 작다. 겹쳐 읽으면, 하네스를 자동으로 고칠수록 「어느 하네스에서 잰 성적인가」를 밝힐 필요가 커진다.</p>
 <p><strong>LLM Wiki</strong> (<a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy 2026</a> · 이 책 <a href="#ch21">20회</a>). 다음 회차의 예고다. 위키 구조와 절차를 적은 스키마 문서(CLAUDE.md 같은 것), 주기적 건강검진(Lint), 덧붙이기만 하는 작업 기록(log.md)을 둔다. 스키마 문서는 하네스 산출물, 건강검진은 관측·검증 층의 일, 작업 기록은 수리 기억과 같은 자리다(이 책의 읽기). 차이는 고치는 대상이다. HarnessFix는 하네스를, LLM Wiki의 에이전트는 지식을 고친다.</p>
 <hr>
 <h2 id="c20-서베이로-돌아가기">서베이로 돌아가기</h2>
@@ -17098,7 +17349,7 @@ GPT-5 mini 행의 범위다. Table III 전체로는 5.9에서 18.4까지다. 「
 <hr>
 <h2 id="c21-곁가지--주제-논문과-다른-점">곁가지 — 주제 논문과 다른 점</h2>
 <p>아래 연구들은 「지식이나 경험을 영속적인 바깥 저장소에 쌓는다」는 생각을 다른 형태로 구현했다. 무엇을 쌓는지, 누가 읽는지, 언제 계산하는지에서 갈린다.</p>
-<p><strong>Agent Skills</strong> (<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Zhang 외 2025</a>). Anthropic의 엔지니어링 블로그 글이다. 스킬은 지시문·스크립트·자료를 담은 디렉터리이고, 설계 원리는 점진적 공개(progressive disclosure)다. 처음에는 모든 스킬의 이름과 설명만 시스템 프롬프트에 올리고, 관련 있어 보이면 SKILL.md 본문을, 그 안에서 가리킨 파일은 필요할 때만 연다. 글은 스킬이 담는 것을 "procedural knowledge and organizational context"라 부른다. LLM Wiki가 「무엇을 아는가」를, 스킬이 「어떻게 하는가」를 쌓는다는 대비는 이 책의 정리다. 스킬은 코드를 묶어 결정론적으로 돌릴 수 있고, 신뢰할 수 없는 스킬은 설치 전에 감사하라는 경고도 있다(<a href="#ch16">15회</a>).</p>
+<p><strong>Agent Skills</strong> (<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Zhang 외 2025</a>). Anthropic의 엔지니어링 블로그 글이다. 스킬은 지시문·스크립트·자료를 담은 디렉터리이고, 설계 원리는 점진적 공개(progressive disclosure)다. 처음에는 모든 스킬의 이름과 설명만 시스템 프롬프트에 올리고, 관련 있어 보이면 SKILL.md 본문을, 그 안에서 가리킨 파일은 필요할 때만 연다. 글은 실제 일에는 "procedural knowledge and organizational context"가 필요하다고 쓰고 스킬을 그 방법으로 내놓는다. LLM Wiki가 「무엇을 아는가」를, 스킬이 「어떻게 하는가」를 쌓는다는 대비는 이 책의 정리다. 스킬은 코드를 묶어 결정론적으로 돌릴 수 있고, 신뢰할 수 없는 스킬은 설치 전에 감사하라는 경고도 있다(<a href="#ch16">15회</a>).</p>
 <p><strong>Voyager</strong> (<a href="https://arxiv.org/abs/2305.16291">Wang 외 2023</a> · 이 책 <a href="#ch13">12회</a>). 마인크래프트에서 사람 개입 없이 탐험하며 스킬을 늘려 가는 평생 학습 에이전트다. 초록의 구성 요소는 자동 커리큘럼, "ever-growing skill library of executable code", 환경 피드백·실행 오류·자기 검증으로 프로그램을 고치는 반복 프롬프팅이고, GPT-4를 블랙박스로 불러 미세조정이 필요 없다. 차이는 검증 방식이다. Voyager의 스킬은 코드라서 실행할 수 있고, 실행했을 때의 환경 피드백·실행 오류와 자기 검증(앞의 반복 프롬프팅이 쓰는 세 신호)으로 맞는지를 검사한다. 실행이 오류 없이 끝났다는 것만으로 과제를 이뤘다고 보지는 않는다. 위키 페이지는 실행기가 없어 원본과 대조해야 틀린 곳을 찾는다. AR 서베이 개정판은 Voyager를 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 가 실행 가능한 스킬 라이브러리인 「절차적 진화」의 예로 든다(§2.2).</p>
 <p><strong>RAG</strong> (<a href="https://arxiv.org/abs/2005.11401">Lewis 외 2020</a> · 이 책 <a href="#ch9">8회</a>). 질의마다 문서 상위 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> 개를 검색해 생성에 붙인다. 미리 해 두는 것은 색인뿐이고 종합은 질의 때 한다. 주의할 점이 있다. Lewis 외의 RAG는 질의 인코더와 생성기를 미세조정하므로 AR 서베이의 기준을 적용하면 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi></mrow></math></span> 쪽이다(서베이 자신은 이 논문을 「고정된 일회성 검색」의 전통 RAG로만 인용하고 세 체제에 넣지 않는다 — <a href="#ch22">부록 I</a> 4절). gist가 말하는 RAG는 가중치를 건드리지 않는 제품형 파일 업로드에 가깝다. 같은 이름 아래 다른 것을 비교하지 않도록 구별해 둔다.</p>
 <p><strong>MemGPT</strong> (<a href="https://arxiv.org/abs/2310.08560">Packer 외 2023</a> · 이 책 <a href="#ch13">12회</a>). 운영체제의 페이징처럼 컨텍스트 창 안팎으로 정보를 옮긴다(초록). MemGPT에서는 모델이 대화 중에 기억을 넣고 빼고, LLM Wiki에서는 별도의 작업이 저장소를 사람도 읽는 문서로 가꾼다.</p>
@@ -17445,7 +17696,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 <h2 id="c21-출처">출처</h2>
 <p><strong>핵심 읽기</strong></p>
 <ul>
-<li>[L20] Andrej Karpathy. 「LLM Wiki — A pattern for building personal knowledge bases using LLMs」. GitHub Gist, 2026-04-04. <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">gist</a>. 인용한 곳: 「The core idea」, 「Architecture」, 「Operations」, 「Indexing and logging」, 「Optional: CLI tools」, 「Tips and tricks」, 「Why this works」, 「Note」.</li>
+<li>[L20] Andrej Karpathy. 「LLM Wiki」. GitHub Gist, 2026-04-04. <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">gist</a>. 인용한 곳: 「The core idea」, 「Architecture」, 「Operations」, 「Indexing and logging」, 「Optional: CLI tools」, 「Tips and tricks」, 「Why this works」, 「Note」.</li>
 <li>[S33] Liyan Tang 외. 「WikiSkill: Compiling Agent Experience into Persistent Knowledge for Skill Evolution」. 2026, preprint. <a href="https://arxiv.org/abs/2608.27454">arXiv 2608.27454</a>. 인용한 곳: 초록, §1, §2, §3.1–3.2(식 4, Figure 2), §4.1–4.2.1(Table 1), §5.1(Table 3), §5.3(Figure 3), Limitations, 부록 B(Table 6)·C·D.1. 이 장은 arXiv v1(2026-08-27)과 대조했다.</li>
 </ul>
 <p><strong>서베이</strong></p>
@@ -17472,7 +17723,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 <h1 id="ch22">부록 I — 기호표</h1>
 <p>이 책의 수식 기호는 <a href="#ch3">2회</a>가 읽는 <a href="https://openreview.net/forum?id=2HIxxXIq2u">Agentic Reasoning 서베이 개정판</a> §2.2의 것을 기준으로 삼는다. 각 장은 주제 논문의 기호를 그대로 쓰되, 「서베이로 돌아가기」 절에서 아래 기호와의 대응표를 둔다. 절·식 번호는 OpenReview 익명 심사본(2026-09-01 생성, 146쪽) 기준이다.</p>
 <h2 id="c22-1-환경과-에이전트--두-튜플">1. 환경과 에이전트 — 두 튜플</h2>
-<p>서베이는 환경과 에이전트를 일부러 따로 적는다. 흔히 에이전트의 컨텍스트를 환경 상태에 섞어 쓰는데, 그러면 「같은 환경에서 두 에이전트가 무엇을 달리하는가」가 보이지 않는다는 것이 이유다.</p>
+<p>서베이는 환경과 에이전트를 일부러 따로 적는다. 흔히 에이전트의 컨텍스트를 환경 상태에 섞어 쓰는데, 그러면 같은 환경에서 두 에이전트가 무엇을 달리하는지가 보이지 않는다는 것이 이유다.</p>
 <p><strong class="lng">환경 — 부분관측 마르코프 결정과정(POMDP)</strong></p>
 <p><span class="mb"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>E</mi><mo>&#x0003D;</mo><mi>&#x027E8;</mi><mi>X</mi><mo>&#x0002C;</mo><mi>O</mi><mo>&#x0002C;</mo><mi>A</mi><mo>&#x0002C;</mo><mi>T</mi><mo>&#x0002C;</mo><mi>&#x003A9;</mi><mo>&#x0002C;</mo><mi>R</mi><mo>&#x0002C;</mo><mi>&#x003B3;</mi><mi>&#x027E9;</mi></mrow></math></span></p>
 <div class="tw"><table>
@@ -18617,7 +18868,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 </tr>
 <tr>
 <td>L20</td>
-<td>Andrej Karpathy. 「LLM Wiki — A pattern for building personal knowledge bases using LLMs」. GitHub Gist, 2026-04-04</td>
+<td>Andrej Karpathy. 「LLM Wiki」. GitHub Gist, 2026-04-04</td>
 <td><a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">gist</a></td>
 <td>20</td>
 </tr>
@@ -18920,7 +19171,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 </tr>
 <tr>
 <td>3</td>
-<td>Qianyu Meng 외. 「Agent harness for large language model agents: A survey」. Preprints, 2026</td>
+<td>Qianyu Meng 외. 「Agent Harness for Large Language Model Agents: A Survey」. Preprints, 2026</td>
 <td><a href="https://doi.org/10.20944/preprints202604.0428.v2">DOI 10.20944/preprints202604.0428</a></td>
 <td>Harness 서베이 참고문헌, Crossref(v1·v2 저자 9인, v3 11인)</td>
 </tr>
@@ -18956,7 +19207,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 </tr>
 <tr>
 <td>6</td>
-<td>Reiichiro Nakano 외. 「WebGPT: Browser-assisted Question-answering with Human Feedback」. 2021</td>
+<td>Reiichiro Nakano 외. 「WebGPT: Browser-assisted question-answering with human feedback」. 2021</td>
 <td><a href="https://arxiv.org/abs/2112.09332">arXiv 2112.09332</a></td>
 <td>ReAct 참고문헌</td>
 </tr>
@@ -19070,7 +19321,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 </tr>
 <tr>
 <td>18</td>
-<td>Alberto Abadie 외. 「When should you adjust standard errors for clustering?」. The Quarterly Journal of Economics 138(1)</td>
+<td>Alberto Abadie 외. 「When Should You Adjust Standard Errors for Clustering?」. The Quarterly Journal of Economics 138(1)</td>
 <td>링크 없음</td>
 <td>Miller 참고문헌</td>
 </tr>
@@ -19219,7 +19470,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 <ul>
 <li>〔리뷰〕 <a href="https://www.youtube.com/watch?v=fpEwY-3b-Vw">「[DSBA Study] Agent AI 13주차 - Web&amp;Coding Agents - Part 1」</a> — DSBA 연구실</li>
 <li>〔저자〕 <a href="https://www.youtube.com/watch?v=f6D5eHNr_VI">「Few Shot Code Generation to Autonomous Software Engineering Agents // John Yang」</a> — AAIF Live</li>
-<li>〔저자〕 <a href="https://www.youtube.com/watch?v=f9L9Fkq-8K4">「LLM Agents MOOC | UC Berkeley CS294-196 Fall 2024 | Agents for Software Development by Graham Neubig」</a> — Berkeley RDI</li>
+<li>〔보조〕 <a href="https://www.youtube.com/watch?v=f9L9Fkq-8K4">「LLM Agents MOOC | UC Berkeley CS294-196 Fall 2024 | Agents for Software Development by Graham Neubig」</a> — Berkeley RDI (발표자는 SWE-agent 논문의 저자 명단에 없다. 소프트웨어 개발 에이전트 일반을 다루는 강의다)</li>
 </ul>
 <h2 id="c25-15회-간접-프롬프트-인젝션">15회 간접 프롬프트 인젝션</h2>
 <ul>
@@ -19297,7 +19548,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 </tr>
 <tr>
 <td>판</td>
-<td>1.0판 · 2026. 10. 5.</td>
+<td>1.1판 · 2026. 10. 23.</td>
 </tr>
 <tr>
 <td>이용 허락</td>
@@ -19309,7 +19560,7 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 </tr>
 <tr>
 <td>원문</td>
-<td>논문·보고서 42편, 블로그·사양 문서·강의 페이지·gist 19편(부록 III), 영상 56편(부록 IV, 제목·채널만 확인)</td>
+<td>논문·보고서 42편, 블로그·사양 문서·강의 페이지·gist 19편(부록 III), 영상 67편(부록 IV, 제목·채널만 확인)</td>
 </tr>
 </tbody>
 </table></div>
@@ -19336,7 +19587,29 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 <li><strong>틀린 곳과 개정.</strong> 이 책은 계속 고쳐 나간다. 원문과 다른 서술을 찾으면 공개 저장소의 이슈(Issues)나 엮은이에게 알려 주기 바란다. 고친 내용은 판과 날짜를 올려 반영한다.</li>
 <li><strong>개인의 학습 자료.</strong> 이 책은 엮은이가 개인적으로 공부하며 엮은 것이다. 엮은이가 속한 기관의 견해나 업무와는 관계가 없다.</li>
 </ul>
-<p>일요일은 AI · 에이전트 스터디 · 권보원 엮음 · 1.0판 · 2026. 10. 5.</p>
+<h2 id="c26-판-이력">판 이력</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>판</th>
+<th>날짜</th>
+<th>개요</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0판</td>
+<td>2026. 10. 5.</td>
+<td>첫 공개판. 사용법·0장·1~20회·부록 4종</td>
+</tr>
+<tr>
+<td>1.1판</td>
+<td>2026. 10. 23.</td>
+<td>디자인 개편(시리즈 디자인 B). 영문판을 번역·대조하는 중에 확인된 사실·인용·서지 정정 34건과 조판 정정 3건 반영</td>
+</tr>
+</tbody>
+</table></div>
+<p>일요일은 AI · 에이전트 스터디 · 권보원 엮음 · 1.1판 · 2026. 10. 23.</p>
 </section>
 </main>
 </div>
