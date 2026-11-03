@@ -150,12 +150,14 @@ details>*:last-child{padding-bottom:10px}
 
 .printtoc{display:none}
 
-@media (max-width:1080px){
-  .layout{grid-template-columns:minmax(0,1fr)}
+@media screen and (max-width:1080px){
   :not(pre)>code{overflow-wrap:anywhere}
   .mb{overflow-x:auto;overflow-y:hidden}
   main{overflow-wrap:break-word}
   .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}
+}
+@media (max-width:1080px){
+  .layout{grid-template-columns:minmax(0,1fr)}
   .rail{position:static;height:auto;border-right:0;
     border-bottom:1px solid var(--line);padding:18px}
   main{padding:32px 22px 80px}
