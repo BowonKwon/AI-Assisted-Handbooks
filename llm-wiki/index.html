@@ -5,17 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>법률가를 위한 LLM 위키 자습서</title>
 <style>
-/* 팔레트는 주제에서 가져왔다 — 클린룸 조명의 차가운 종이색 바탕,
-   흑연 잉크, 연마된 웨이퍼의 인디고, 그리고 이 책의 소재인 구리
-   (Cu 배선·TSV 충전·하이브리드 본딩). */
+
 :root{
   --bg:#f7f8fa; --fg:#16181d; --mut:#5d6470; --line:#dfe3ea;
   --card:#ffffff; --accent:#2f4b8f; --accent2:#a3612c;
   --code:#eef1f5; --mark:#fdf4e3;
-  --cw:#a8410f; --cw-bg:#fdf3ec;   /* ⚠️ 주의 */
-  --co:#1c6b45; --co-bg:#edf7f1;   /* ✅ 성공 */
-  --ch:#7a5a12; --ch-bg:#fdf8e8;   /* 💡 팁   */
-  --cr:#4a3a72; --cr-bg:#f3f1f9;   /* 📖 더보기 */
+  --cw:#a8410f; --cw-bg:#fdf3ec;
+  --co:#1c6b45; --co-bg:#edf7f1;
+  --ch:#7a5a12; --ch-bg:#fdf8e8;
+  --cr:#4a3a72; --cr-bg:#f3f1f9;
   --serif:"Noto Serif KR","Nanum Myeongjo",Georgia,"Batang",serif;
   --sans:"Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
   --mono:"D2Coding","Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
@@ -29,7 +27,7 @@ body{margin:0;background:var(--bg);color:var(--fg);
 .layout{display:grid;grid-template-columns:288px minmax(0,1fr);gap:0;
   max-width:1400px;margin:0 auto}
 
-/* ── 사이드바 목차 ─────────────────────────────── */
+
 .rail{position:sticky;top:0;height:100vh;overflow-y:auto;
   border-right:1px solid var(--line);padding:26px 18px 60px;background:var(--card)}
 .rail .brand{font-family:var(--serif);font-weight:700;font-size:1.05rem;
@@ -47,7 +45,7 @@ body{margin:0;background:var(--bg);color:var(--fg);
 .rail summary{cursor:pointer;list-style:none}
 .rail summary::-webkit-details-marker{display:none}
 
-/* ── 본문 ──────────────────────────────────────── */
+
 main{padding:56px 60px 120px;max-width:920px}
 h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;
   text-wrap:balance;page-break-after:avoid}
@@ -64,13 +62,13 @@ ul,ol{padding-left:1.35em;margin:0 0 1.15em}
 li{margin:.3em 0}
 li>ul,li>ol{margin:.3em 0}
 
-/* 챕터 구획 */
+
 .chapter{padding-top:8px}
 .chapter+.chapter{margin-top:80px;border-top:3px double var(--line);padding-top:56px}
 .eyebrow{font-family:var(--sans);font-size:.74rem;letter-spacing:.16em;
   text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 8px}
 
-/* 표 */
+
 .tw{overflow-x:auto;margin:0 0 1.3em;border:1px solid var(--line);
   border-radius:8px;background:var(--card)}
 table{border-collapse:collapse;width:100%;font-size:.87rem;line-height:1.6}
@@ -81,7 +79,7 @@ tbody tr:last-child td{border-bottom:0}
 td>strong{white-space:nowrap} td>strong.lng{white-space:normal}
 ul.check{list-style:none;padding-left:.4em}
 
-/* 코드·도해 */
+
 pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
   padding:14px 16px;overflow-x:auto;margin:0 0 1.3em;
   font-family:var(--mono);font-size:.78rem;line-height:1.55}
@@ -91,7 +89,7 @@ pre code{background:none;padding:0;font-size:1em}
 .mathfail{background:#ffe9e9;color:#a00}
 .prn{display:none}.scr{display:inline}
 
-/* 수식 */
+
 .mi math{font-size:1.02em}
 .mb{display:block;text-align:center;margin:1.2em 0}
 .mb math{font-size:1.12em}
@@ -101,7 +99,7 @@ pre code{background:none;padding:0;font-size:1em}
 math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math",
   var(--serif);}
 
-/* 콜아웃 */
+
 .callout{border:1px solid var(--line);border-left:4px solid var(--accent);
   background:var(--card);border-radius:8px;padding:16px 20px;margin:0 0 1.5em}
 .callout .ctitle{font-family:var(--serif);font-weight:700;font-size:.95rem;
@@ -109,8 +107,7 @@ math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math",
 .callout.tip{border-left-color:var(--accent2)}
 .callout.tip .ctitle{color:var(--accent2)}
 .callout>*:last-child{margin-bottom:0}
-/* 이모지 콜아웃 (> ⚠️ …) — 색은 반드시 토큰으로 잡는다.
-   리터럴로 박으면 다크에서 배경만 흰색으로 남아 흰 글씨가 겹친다(실측 83곳). */
+
 .callout.warn{border-left-color:var(--cw);background:var(--cw-bg)}
 .callout.warn .ctitle{color:var(--cw)}
 .callout.ok{border-left-color:var(--co);background:var(--co-bg)}
@@ -125,7 +122,7 @@ blockquote{margin:0 0 1.3em;padding:2px 0 2px 18px;
   border-left:3px solid var(--line);color:var(--mut)}
 blockquote>*:last-child{margin-bottom:0}
 
-/* 접이식 풀이 */
+
 details{border:1px solid var(--line);border-radius:8px;margin:0 0 1.3em;
   background:var(--card);overflow:hidden}
 details>summary{cursor:pointer;padding:11px 16px;background:var(--code);
@@ -139,7 +136,7 @@ details>*:not(summary){padding:0 20px}
 details>*:not(summary):first-of-type{padding-top:14px}
 details>*:last-child{padding-bottom:10px}
 
-/* 표지 */
+
 .cover{min-height:88vh;display:flex;flex-direction:column;justify-content:center;
   border-bottom:3px double var(--line);margin-bottom:56px}
 .cover .kicker{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;
@@ -150,23 +147,22 @@ details>*:last-child{padding-bottom:10px}
   border-top:1px solid var(--line);padding-top:16px}
 .cover .meta b{color:var(--fg)}
 
-/* 인쇄용 목차(화면에서는 숨김) */
+
 .printtoc{display:none}
 
 @media (max-width:1080px){
-  .layout{grid-template-columns:minmax(0,1fr)}  /* 1fr 은 가장 넓은 내용보다 좁아지지 못해 휴대전화에서 가로 넘침(2026-10-13) */
-  :not(pre)>code{overflow-wrap:anywhere}         /* 긴 URL·설정 키 인라인 코드 */
-  .mb{overflow-x:auto;overflow-y:hidden}         /* 화면보다 넓은 블록 수식은 상자 안에서 가로 스크롤 */
-  main{overflow-wrap:break-word}                 /* 글자로 적은 긴 URL — 넘칠 때만 끊는다 */
-  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}  /* 긴 인라인 수식 */
+  .layout{grid-template-columns:minmax(0,1fr)}
+  :not(pre)>code{overflow-wrap:anywhere}
+  .mb{overflow-x:auto;overflow-y:hidden}
+  main{overflow-wrap:break-word}
+  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}
   .rail{position:static;height:auto;border-right:0;
     border-bottom:1px solid var(--line);padding:18px}
   main{padding:32px 22px 80px}
   .cover h1{font-size:2.1rem}
 }
 
-/* 뷰어의 테마는 세 상태다 — 명시적 light / 명시적 dark / 아무 표시 없는 시스템.
-   셋 모두에서 색이 한 벌로 풀리도록 토큰을 세 번 정의한다. */
+
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#121419; --fg:#e6e9ef; --mut:#98a0ad; --line:#2a2f38;
@@ -215,7 +211,7 @@ details>*:last-child{padding-bottom:10px}
   h3{font-size:11pt;margin:12pt 0 4pt;color:#000}
   h4{font-size:10pt;color:#333}
 
-  /* 접이식은 인쇄 시 모두 펼쳐 보인다 */
+
   details{border:1px solid #bbb;page-break-inside:auto}
   details>summary{background:#eee;color:#000;border-bottom:1px solid #bbb}
   details>*:not(summary){display:block!important}
@@ -237,7 +233,7 @@ details>*:last-child{padding-bottom:10px}
 
   .prn{display:inline} .scr{display:none}
   a{color:#000;text-decoration:none}
-  /* 바깥 링크는 인쇄본에서도 눌리고 보여야 한다(2026-10-04). 흑백 인쇄에서도 밑줄로 구별된다 */
+
   a[href^="http"]{color:#1f4e86;text-decoration:underline;text-decoration-thickness:.5pt;
     text-underline-offset:1.5pt;overflow-wrap:anywhere}
   h2,h3,h4{page-break-after:avoid}

@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>노광 계산판</title>
-<script>window.BOOK_DATA={"_about": "위젯이 함께 쓰는 상수. 값은 본문 표와 같아야 한다(위젯은 본문에 없는 수치를 만들지 않는다). 값을 바꾸면 인쇄본의 정지 그림도 다시 찍어야 한다. _src 는 값을 옮겨 온 본문 위치", "chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80, "_src": "2회차 자습 부록 A 실습 1 풀이 표(312 TFLOP/s, 2.04 TB/s). 용량 80GB 는 제품명"}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7, "_src": "2회차 6절 「실제 칩의 리지 포인트」 표(989 TFLOP/s, 3.35 TB/s, HBM3 80GB). tdp_kw 0.7 은 2회차 실습 4 풀이 「전력을 어디서 재는가」 표(H100 SXM 최대 TDP 700 W, H100 사양표)"}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 시스템(GPU당)", "B": 8.0, "cap": 180, "_src": "2회차 6절 「용량도 칩과 시스템이 다르다」 상자: DGX B200 데이터시트 8장 합계 64 TB/s(계산하면 GPU당 8.0 TB/s, I* ≈ 281), 사용자 안내서·데이터시트 8장 합계 1,440 GB(계산하면 GPU당 180 GB). 계산 기본값은 칩 값이고, 이 값은 roofline·kv-cache 에서 「시스템 기준」으로 바꿔 볼 때만 쓴다"}, "_src": "2회차 6절 같은 표(2,250 TFLOP/s, 7.7 TB/s, HBM3e 192GB). 192GB·7.7 TB/s 는 칩 공표값(NVIDIA Blackwell 아키텍처 기술 개요 V2.1 표 3, HGX B200 GPU당 최대)으로 둔다. 2,250 은 같은 표 희소 4.5 PFLOPS 의 절반. DGX B200 데이터시트의 합계 64 TB/s(GPU당 8.0)는 시스템 값이라 기본 계산에 쓰지 않는다. 그 값은 아래 sys 에 두고, roofline·kv-cache 의 「B200 · DGX 시스템」 단추를 눌렀을 때만 쓴다. DGX B200 시스템은 8장 합계 1,440GB, 계산하면 GPU당 180GB(사용자 안내서·데이터시트) — 본문 2회차 6절 「용량도 칩과 시스템이 다르다」가 둘을 구분한다"}], "_chips_units": "P = TFLOP/s(BF16 dense, 희소성 미적용), B = TB/s, cap = GB(10진)", "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64, "_src": "2회차 자습 부록 A 실습 3 풀이 설정(70B급, L = 80, GQA 8헤드 × 128, MHA 64헤드)"}, "tpu_v1": {"array": 256, "_src": "2회차 4절(256 × 256 = 65,536개 8비트 MAC)"}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048, "_src": "3회차 3절 길 ②(HBM3까지 1,024비트, HBM4 2,048비트)"}, "wafer": {"d_mm": 300, "_src": "4회차 0절·5절 「웨이퍼당 굿다이 수」, 6회차 실습 1 풀이(300 mm 웨이퍼, d = 30 cm). die-cost·chiplet 이 함께 쓴다"}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2, "_src": "2회차 실습 4 풀이 「전력을 어디서 재는가」 표(DGX H100/H200 사용자 안내서, 최대 10.2 kW, 계산하면 장당 1.275 kW), 7회차 실습 6 풀이(DGX H100 최대 입력 전력 10.2 kW)"}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440, "_src": "2회차 실습 4 풀이 끝(DGX B200 데이터시트 최대 약 14.3 kW, 장당 약 1.79 kW), 7회차 실습 5 (a)·(c) 풀이(14.3 kW, 8장 합계 1,440 GB)"}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100, "_src": "7회차 실습 5 (a)·(c) 풀이(약 14 kW, 8장 합계 2.1 TB)"}, "_about": "asic-breakeven·datacenter 가 함께 쓰는 제조사 시스템 사양. 모두 최대값이지 상시 소비가 아니다"}};window.WIDGET_ID="litho";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 시스템(GPU당)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="litho";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
 <style>
 html,body{margin:0}
-/* 책 안에서는 높이를 부모가 내용에 맞춘다. 소수점 반올림 1px 로 안쪽 스크롤바가 생기지 않게 막는다 */
+
 html[data-embed]{overflow:hidden}
 [data-embed] .standalone-only{display:none!important}
 [data-embed] .wrap{padding-block:14px 10px;gap:22px}
@@ -16,9 +16,7 @@ html[data-embed]{overflow:hidden}
 </head>
 <body>
 <style>
-/* 레이아웃: 한 단, 네 실험. ① 해상도와 초점심도(data-part="optics") ② 같은 dose의 광자 수와 노광 시간(data-part="photon")
-   ③ 스텝 수율(data-part="steps") ④ 축소 투영과 최대 다이(data-part="field"). 책에는 네 부분을 따로 넣는다(config 의 part).
-   책 안(html[data-embed])에서는 .standalone-only 가 숨는다. 공유 상수는 쓰지 않는다(입력 기본값은 모두 본문 5회차 값). */
+
 :root {
   --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
   --accent: #2f4b8f; --accent2: #a3612c; --mark: #fdf4e3; --soft: #e9edf6;
