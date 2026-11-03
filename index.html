@@ -21,7 +21,6 @@
 @font-face{font-family:"HB Sans KR";src:url(agentic-ai-reading/fonts/hb-sans-kr-400.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"HB Sans KR";src:url(agentic-ai-reading/fonts/hb-sans-kr-700.woff2) format("woff2");font-weight:600 700;font-display:swap}
 @font-face{font-family:"HB Mono";src:url(agentic-ai-reading/fonts/hb-mono-400.woff2) format("woff2");font-weight:400;font-display:swap}
-
 :root{
   --serif:"HB Serif","HB Serif KR",Georgia,"Noto Serif KR",serif;
   --sans:"HB Sans","HB Sans KR","Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
@@ -60,8 +59,6 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);
   background-size:28px 28px;background-position:-1px -1px}
 a{color:inherit}
 .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
-
-/* top bar */
 .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;border-bottom:1px solid var(--line)}
 .mark{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 15px/1 var(--sans);letter-spacing:.01em}
 .mark i{display:grid;grid-template-columns:repeat(2,7px);gap:2px}
@@ -72,8 +69,6 @@ a{color:inherit}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .gh{font:600 12.5px/1 var(--sans);text-decoration:none;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:8px 13px;background:var(--paper)}
 .gh:hover{color:var(--ink);border-color:var(--ink-3)}
-
-/* hero */
 .hero{padding:72px 0 56px;display:grid;grid-template-columns:1.25fr .75fr;gap:56px;align-items:end}
 .kicker{font:600 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
 .hero h1{font:600 clamp(36px,5.2vw,62px)/1.12 var(--serif);letter-spacing:-.015em;margin:0 0 22px}
@@ -87,14 +82,10 @@ a{color:inherit}
 .stats span{display:block;margin-top:8px;font-size:13px;color:var(--ink-3);line-height:1.35}
 .spec{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 22px;font:13px/1.5 var(--mono);color:var(--ink-3);margin-top:-8px}
 .spec span::before{content:"▸ ";color:var(--ink-3)}
-
-/* section heads */
 .sh{display:flex;align-items:baseline;gap:14px;margin:8px 0 22px}
 .sh h2{font:600 13px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;margin:0;color:var(--ink-2)}
 .sh hr{flex:1;border:0;border-top:1px solid var(--line);margin:0}
 .sh small{font:12px/1 var(--mono);color:var(--ink-3)}
-
-/* book cards */
 .books{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-bottom:28px}
 .book{--c:var(--ink);--t:var(--paper);--l:var(--line);position:relative;display:grid;grid-template-columns:170px 1fr;gap:24px;
   background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:24px;box-shadow:var(--shadow)}
@@ -103,7 +94,6 @@ a{color:inherit}
 .book.semi{--c:var(--semi);--t:var(--semi-tint);--l:var(--semi-line)}
 .book.wiki{--c:var(--wiki);--t:var(--wiki-tint);--l:var(--wiki-line)}
 .book::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:4px;background:var(--c);border-radius:6px 6px 0 0}
-
 .cover{position:relative;aspect-ratio:1/1.414;background:var(--t);border:1px solid var(--l);border-radius:2px 5px 5px 2px;overflow:hidden;
   box-shadow:inset 9px 0 0 -1px var(--c),inset 10px 0 0 -1px rgba(255,255,255,.25),3px 4px 0 -1px var(--line-2),3px 4px 0 0 var(--line);
   padding:14px 12px 12px 22px;display:flex;flex-direction:column;transition:transform .25s ease}
@@ -112,7 +102,6 @@ a{color:inherit}
 .cover strong{display:block;margin-top:7px;font:600 15px/1.28 var(--serif);color:var(--c);letter-spacing:-.005em;word-break:keep-all}
 .cover svg{margin-top:auto;width:100%;height:auto;display:block}
 .cover .ed{position:absolute;right:9px;bottom:9px;font:600 8.5px/1 var(--mono);color:var(--c);border:1px solid var(--l);border-radius:2px;padding:3px 4px;background:var(--paper)}
-
 .meta{min-width:0;display:flex;flex-direction:column}
 .field{font:600 11.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--c);margin:0 0 8px}
 .book h3{font:600 23px/1.28 var(--serif);margin:0 0 6px;letter-spacing:-.01em;word-break:keep-all}
@@ -128,24 +117,18 @@ dd{margin:0;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .btn.pri:hover{filter:brightness(1.08);background:var(--c)}
 .btn .k{font:600 10px/1 var(--mono);opacity:.75;letter-spacing:.06em}
 .note{font-size:12.5px;color:var(--ink-3);align-self:center}
-
-/* companion bridge */
 .pair{position:relative}
 .bridge{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin:-12px 0 -12px;font:600 11.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 .bridge::before,.bridge::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--theo-line),var(--prac-line))}
 .bridge span{display:inline-flex;align-items:center;gap:8px;border:1px dashed var(--line);border-radius:999px;padding:7px 12px;background:var(--bg)}
 .bridge i{font-style:normal;color:var(--theo)}
 .bridge i+i{color:var(--prac)}
-
-/* path */
 .path{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:6px;background:var(--paper);margin:10px 0 64px;overflow:hidden}
 .path div{padding:18px 18px 16px;border-right:1px solid var(--line-2)}
 .path div:last-child{border-right:0}
 .path b{display:block;font:600 11.5px/1 var(--mono);letter-spacing:.1em;margin-bottom:9px}
 .path p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-2);word-break:keep-all}
 .path .p1 b{color:var(--theo)} .path .p2 b{color:var(--prac)} .path .p3 b{color:var(--semi)} .path .p4 b{color:var(--wiki)}
-
-/* footer */
 footer{border-top:2px solid var(--ink);padding:30px 0 56px;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:36px;font-size:13.5px;color:var(--ink-2);line-height:1.6}
 footer h4{font:600 11.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px}
 footer p{margin:0 0 10px;word-break:keep-all}
@@ -154,12 +137,9 @@ footer li{margin:0 0 6px}
 footer a{color:var(--ink);text-decoration-color:var(--line);text-underline-offset:3px}
 footer a:hover{text-decoration-color:var(--ink)}
 .copy{grid-column:1/-1;font:12px/1.5 var(--mono);color:var(--ink-3);border-top:1px solid var(--line);padding-top:16px}
-
-/* Korean labels: mono letter-spacing spreads Hangul apart */
 .kicker .ko,.sh h2.ko,.field.ko,.path b.ko,footer h4.ko,.spec .ko,.cover small.ko,.bridge i,.bridge .ko{font-family:var(--sans);letter-spacing:.03em}
 .sh h2.ko,footer h4.ko{font-size:14px}
 .acts .btn{padding:9px 11px}
-
 @media (max-width:960px){
   .hero{grid-template-columns:1fr;gap:34px;padding:48px 0 40px}
   .books{grid-template-columns:1fr}

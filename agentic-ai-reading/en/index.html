@@ -5,17 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Machines That Think, Act, and Revise</title>
 <style>
-/* 팔레트는 주제에서 가져왔다 — 클린룸 조명의 차가운 종이색 바탕,
-   흑연 잉크, 연마된 웨이퍼의 인디고, 그리고 이 책의 소재인 구리
-   (Cu 배선·TSV 충전·하이브리드 본딩). */
 :root{
   --bg:#f7f8fa; --fg:#16181d; --mut:#5d6470; --line:#dfe3ea;
   --card:#ffffff; --accent:#2f4b8f; --accent2:#a3612c;
   --code:#eef1f5; --mark:#fdf4e3;
-  --cw:#a8410f; --cw-bg:#fdf3ec;   /* ⚠️ 주의 */
-  --co:#1c6b45; --co-bg:#edf7f1;   /* ✅ 성공 */
-  --ch:#7a5a12; --ch-bg:#fdf8e8;   /* 💡 팁   */
-  --cr:#4a3a72; --cr-bg:#f3f1f9;   /* 📖 더보기 */
+  --cw:#a8410f; --cw-bg:#fdf3ec;
+  --co:#1c6b45; --co-bg:#edf7f1;
+  --ch:#7a5a12; --ch-bg:#fdf8e8;
+  --cr:#4a3a72; --cr-bg:#f3f1f9;
   --serif:"Noto Serif KR","Nanum Myeongjo",Georgia,"Batang",serif;
   --sans:"Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
   --mono:"D2Coding","Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
@@ -25,11 +22,8 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--fg);
   font-family:var(--sans);font-size:16px;line-height:1.78;
   -webkit-text-size-adjust:100%}
-
 .layout{display:grid;grid-template-columns:288px minmax(0,1fr);gap:0;
   max-width:1400px;margin:0 auto}
-
-/* ── 사이드바 목차 ─────────────────────────────── */
 .rail{position:sticky;top:0;height:100vh;overflow-y:auto;
   border-right:1px solid var(--line);padding:26px 18px 60px;background:var(--card)}
 .rail .brand{font-family:var(--serif);font-weight:700;font-size:1.05rem;
@@ -46,8 +40,6 @@ body{margin:0;background:var(--bg);color:var(--fg);
 .rail details{margin:0}
 .rail summary{cursor:pointer;list-style:none}
 .rail summary::-webkit-details-marker{display:none}
-
-/* ── 본문 ──────────────────────────────────────── */
 main{padding:56px 60px 120px;max-width:920px}
 h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;
   text-wrap:balance;page-break-after:avoid}
@@ -63,14 +55,10 @@ hr{border:0;border-top:1px solid var(--line);margin:2.4em 0}
 ul,ol{padding-left:1.35em;margin:0 0 1.15em}
 li{margin:.3em 0}
 li>ul,li>ol{margin:.3em 0}
-
-/* 챕터 구획 */
 .chapter{padding-top:8px}
 .chapter+.chapter{margin-top:80px;border-top:3px double var(--line);padding-top:56px}
 .eyebrow{font-family:var(--sans);font-size:.74rem;letter-spacing:.16em;
   text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 8px}
-
-/* 표 */
 .tw{overflow-x:auto;margin:0 0 1.3em;border:1px solid var(--line);
   border-radius:8px;background:var(--card)}
 table{border-collapse:collapse;width:100%;font-size:.87rem;line-height:1.6}
@@ -80,8 +68,6 @@ th{background:var(--code);font-weight:700;white-space:nowrap;font-size:.83rem}
 tbody tr:last-child td{border-bottom:0}
 td>strong{white-space:nowrap} td>strong.lng{white-space:normal}
 ul.check{list-style:none;padding-left:.4em}
-
-/* 코드·도해 */
 pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
   padding:14px 16px;overflow-x:auto;margin:0 0 1.3em;
   font-family:var(--mono);font-size:.78rem;line-height:1.55}
@@ -90,8 +76,6 @@ code{font-family:var(--mono);font-size:.86em;background:var(--code);
 pre code{background:none;padding:0;font-size:1em}
 .mathfail{background:#ffe9e9;color:#a00}
 .prn{display:none}.scr{display:inline}
-
-/* 수식 */
 .mi math{font-size:1.02em}
 .mb{display:block;text-align:center;margin:1.2em 0}
 .mb math{font-size:1.12em}
@@ -100,8 +84,6 @@ pre code{background:none;padding:0;font-size:1em}
 .mb.eq .eqno{flex:0 0 auto;font-variant-numeric:tabular-nums;color:#555}
 math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math",
   var(--serif);}
-
-/* 콜아웃 */
 .callout{border:1px solid var(--line);border-left:4px solid var(--accent);
   background:var(--card);border-radius:8px;padding:16px 20px;margin:0 0 1.5em}
 .callout .ctitle{font-family:var(--serif);font-weight:700;font-size:.95rem;
@@ -109,8 +91,6 @@ math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math",
 .callout.tip{border-left-color:var(--accent2)}
 .callout.tip .ctitle{color:var(--accent2)}
 .callout>*:last-child{margin-bottom:0}
-/* 이모지 콜아웃 (> ⚠️ …) — 색은 반드시 토큰으로 잡는다.
-   리터럴로 박으면 다크에서 배경만 흰색으로 남아 흰 글씨가 겹친다(실측 83곳). */
 .callout.warn{border-left-color:var(--cw);background:var(--cw-bg)}
 .callout.warn .ctitle{color:var(--cw)}
 .callout.ok{border-left-color:var(--co);background:var(--co-bg)}
@@ -120,12 +100,9 @@ math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math",
 .callout.ref{border-left-color:var(--cr);background:var(--cr-bg)}
 .callout.ref .ctitle{color:var(--cr)}
 .callout.ref a{color:var(--cr)}
-
 blockquote{margin:0 0 1.3em;padding:2px 0 2px 18px;
   border-left:3px solid var(--line);color:var(--mut)}
 blockquote>*:last-child{margin-bottom:0}
-
-/* 접이식 풀이 */
 details{border:1px solid var(--line);border-radius:8px;margin:0 0 1.3em;
   background:var(--card);overflow:hidden}
 details>summary{cursor:pointer;padding:11px 16px;background:var(--code);
@@ -138,8 +115,6 @@ details[open]>summary{border-bottom:1px solid var(--line)}
 details>*:not(summary){padding:0 20px}
 details>*:not(summary):first-of-type{padding-top:14px}
 details>*:last-child{padding-bottom:10px}
-
-/* 표지 */
 .cover{min-height:88vh;display:flex;flex-direction:column;justify-content:center;
   border-bottom:3px double var(--line);margin-bottom:56px}
 .cover .kicker{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;
@@ -149,24 +124,18 @@ details>*:last-child{padding-bottom:10px}
 .cover .meta{font-size:.82rem;color:var(--mut);line-height:1.9;
   border-top:1px solid var(--line);padding-top:16px}
 .cover .meta b{color:var(--fg)}
-
-/* 인쇄용 목차(화면에서는 숨김) */
 .printtoc{display:none}
-
 @media (max-width:1080px){
-  .layout{grid-template-columns:minmax(0,1fr)}  /* 1fr 은 가장 넓은 내용보다 좁아지지 못해 휴대전화에서 가로 넘침(2026-10-13) */
-  :not(pre)>code{overflow-wrap:anywhere}         /* 긴 URL·설정 키 인라인 코드 */
-  .mb{overflow-x:auto;overflow-y:hidden}         /* 화면보다 넓은 블록 수식은 상자 안에서 가로 스크롤 */
-  main{overflow-wrap:break-word}                 /* 글자로 적은 긴 URL — 넘칠 때만 끊는다 */
-  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}  /* 긴 인라인 수식 */
+  .layout{grid-template-columns:minmax(0,1fr)}
+  :not(pre)>code{overflow-wrap:anywhere}
+  .mb{overflow-x:auto;overflow-y:hidden}
+  main{overflow-wrap:break-word}
+  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}
   .rail{position:static;height:auto;border-right:0;
     border-bottom:1px solid var(--line);padding:18px}
   main{padding:32px 22px 80px}
   .cover h1{font-size:2.1rem}
 }
-
-/* 뷰어의 테마는 세 상태다 — 명시적 light / 명시적 dark / 아무 표시 없는 시스템.
-   셋 모두에서 색이 한 벌로 풀리도록 토큰을 세 번 정의한다. */
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#121419; --fg:#e6e9ef; --mut:#98a0ad; --line:#2a2f38;
@@ -187,7 +156,6 @@ details>*:last-child{padding-bottom:10px}
   --ch:#e0c470; --ch-bg:#241f10;
   --cr:#b3a3e0; --cr-bg:#1c1930;
 }
-
 @media print{
   @page{ size:A4; margin:18mm 16mm 20mm; }
   html,body{background:#fff!important;color:#000!important;
@@ -195,12 +163,10 @@ details>*:last-child{padding-bottom:10px}
   .layout{display:block;max-width:none}
   .rail{display:none!important}
   main{padding:0;max-width:none}
-
   .cover{min-height:0;height:auto;page-break-after:always;
     border-bottom:0;margin:0;padding-top:38mm;display:block}
   .cover h1{font-size:30pt}
   .cover .lede{font-size:12pt}
-
   .printtoc{display:block;page-break-after:always}
   .printtoc h2{border:0;margin:0 0 14pt;font-size:17pt}
   .printtoc ol{list-style:none;padding:0;margin:0;font-size:10pt}
@@ -208,47 +174,35 @@ details>*:last-child{padding-bottom:10px}
   .printtoc .subs{margin:2pt 0 8pt 14pt;font-weight:400;color:#333}
   .printtoc .subs li{margin:1pt 0}
   .printtoc a{color:#000;text-decoration:none}
-
   .chapter{page-break-before:always;margin:0;border-top:0;padding-top:0}
   h1{font-size:20pt;margin-bottom:4pt}
   h2{font-size:13pt;margin:16pt 0 6pt}
   h3{font-size:11pt;margin:12pt 0 4pt;color:#000}
   h4{font-size:10pt;color:#333}
-
-  /* 접이식은 인쇄 시 모두 펼쳐 보인다 */
   details{border:1px solid #bbb;page-break-inside:auto}
   details>summary{background:#eee;color:#000;border-bottom:1px solid #bbb}
   details>*:not(summary){display:block!important}
-
   .tw{overflow:visible;border:1px solid #bbb;page-break-inside:auto}
   table{font-size:8.6pt}
   th{background:#eee;color:#000}
   th,td{padding:4pt 6pt;border-bottom:1px solid #ccc}
   tr{page-break-inside:avoid}
-
   pre{background:#f6f6f6;border:1px solid #ccc;font-size:7.4pt;
     line-height:1.42;white-space:pre;page-break-inside:avoid}
   code{background:#f0f0f0}
-
   .callout{border:1px solid #bbb;border-left:3px solid #666;background:#fafafa;
     page-break-inside:avoid}
   .callout .ctitle{color:#000}
   blockquote{color:#333;border-left:2px solid #999;page-break-inside:avoid}
-
   .prn{display:inline} .scr{display:none}
   a{color:#000;text-decoration:none}
-  /* 바깥 링크는 인쇄본에서도 눌리고 보여야 한다(2026-10-04). 흑백 인쇄에서도 밑줄로 구별된다 */
   a[href^="http"]{color:#1f4e86;text-decoration:underline;text-decoration-thickness:.5pt;
     text-underline-offset:1.5pt;overflow-wrap:anywhere}
   h2,h3,h4{page-break-after:avoid}
   p,li{orphans:2;widows:2}
 }
-
 :root{--sans:"Source Sans 3","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Noto Sans KR","Malgun Gothic",sans-serif;--serif:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman","Noto Serif KR",serif;}
 main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre,code{-webkit-hyphens:manual;hyphens:manual}
-
-/* 시리즈 B 라틴 글꼴(HB Serif·Sans·Mono = Source Serif 4·Source Sans 3·Source Code Pro 정적 인스턴스, OFL 1.1).
-   파일은 화면본·인쇄 산본 옆 fonts/ 에 둔다(config fonts_dir 가 복사). tools/handbook_fonts.py build-latin 이 만든다 */
 @font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
 @font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400i.woff2") format("woff2");font-weight:400;font-style:italic;font-display:block}
 @font-face{font-family:"HB Serif";src:url("fonts/hb-serif-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
@@ -262,27 +216,18 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
 @font-face{font-family:"HB Sans";src:url("fonts/hb-sans-700i.woff2") format("woff2");font-weight:700;font-style:italic;font-display:block}
 @font-face{font-family:"HB Mono";src:url("fonts/hb-mono-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
 @font-face{font-family:"HB Mono";src:url("fonts/hb-mono-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
-
 @font-face{font-family:"HB Symbols";src:url("fonts/hb-symbols-400.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
-
 :root{--accent:#5c487a;--accent-ink:#4e3d68;--accent2:#8b7f6f;--tint:#edebf0;--tint2:#f6f5f8;--accent-line:#b4abc2}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:#a59ab6;--accent-ink:#a59ab6;--accent2:#b9ab95;--tint:#22202d;--tint2:#1a1a23;--accent-line:#372e48}}
 :root[data-theme="dark"]{--accent:#a59ab6;--accent-ink:#a59ab6;--accent2:#b9ab95;--tint:#22202d;--tint2:#1a1a23;--accent-line:#372e48}
 
-/* ── 시리즈 B 공통(자습서 시리즈 — 반도체·실전편·원리편, 한·영) ─────────────
-   md2handbook 기본 CSS·인쇄 CSS·lang_css 뒤에 붙는다. config extra_css 목록:
-   fonts-latin.css (+ 한국어판 fonts-ko.css) → palette-{책}.css → series-b.css → 책별 덧붙임.
-   출처: output/영문판-디자인-2026-10-22/ 공통/series-common.css + 시안-B-modern/variant-B.css(2026-10-22 소유자 결정).
-   외부 요청 없음 — 글꼴은 책 옆 fonts/ 에서 읽는다(OFL 1.1, 라이선스 파일 동봉). */
-
-/* 의미 색(콜아웃)은 세 책이 같다 — 책마다 다른 것은 주색 하나뿐이다 */
 :root{
   --fg:#1d2026; --mut:#5c6370; --line:#e1e3e7; --bg:#fbfbfa; --card:#ffffff;
-  --cw:#9b4f4f; --cw-bg:#f8f0ef;   /* 주의 — 낮은 채도 장밋빛 */
-  --ch:#85704a; --ch-bg:#f7f3ea;   /* 힌트 — 모래색 */
-  --cr:#5b6170; --cr-bg:#f2f3f5;   /* 더 읽기 — 중성 회색 */
+  --cw:#9b4f4f; --cw-bg:#f8f0ef;
+  --ch:#85704a; --ch-bg:#f7f3ea;
+  --cr:#5b6170; --cr-bg:#f2f3f5;
   --box-bg:#f7f7f5; --box-line:#dcdde0;
-  --sand-bg:#f6f3ee;   /* 실전편 원고 SVG 가 쓰는 모래색 면(종전 theme.css 토큰 — 없으면 검은 면이 된다) */
+  --sand-bg:#f6f3ee;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -297,28 +242,19 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
   --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
 }
 :root{
-  /* 동봉 글꼴(HB …)을 맨 앞에. 영문판에는 HB … KR 파일이 없으므로 그 자리는 건너뛰고 시스템 글꼴로 간다 */
   --serif:"HB Serif","HB Serif KR","HB Symbols",Georgia,"Noto Serif KR",serif;
   --sans:"HB Sans","HB Sans KR","HB Symbols","Segoe UI",system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
   --mono:"HB Mono","HB Sans KR","HB Symbols","Cascadia Mono",Consolas,"D2Coding",monospace;
 }
 *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-
-/* 숫자 — 제목·표에서 Georgia 의 옛 숫자(0·5 가 x높이로 내려앉음)가 보이던 것을 고른 숫자로 */
 h1,h2,h3,h4,th,td,.eyebrow{font-variant-numeric:lining-nums}
 td{font-variant-numeric:lining-nums tabular-nums}
-
-/* 영어 머리글은 길다(기존 theme-en.css 와 같은 처리) */
 th{white-space:normal}
-
-/* 인라인 코드·코드 상자 — 밝은 상자만. 큰 면적의 어두운 상자는 쓰지 않는다 */
 code{background:var(--tint)!important;color:var(--accent-ink)}
 pre{background:var(--box-bg)!important;border:1px solid var(--box-line)!important;
   border-left:3px solid var(--accent)!important;border-radius:6px;
   white-space:pre-wrap!important;overflow-wrap:anywhere!important}
 pre code{background:none!important;color:inherit}
-
-/* 의미 콜아웃 색은 토큰으로만 */
 .callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
 .callout.warn .ctitle{color:var(--cw)!important}
 .callout.ok{border-left-color:var(--accent)!important;background:var(--tint)!important}
@@ -327,41 +263,22 @@ pre code{background:none!important;color:inherit}
 .callout.hint .ctitle,.callout.tip .ctitle{color:var(--ch)!important}
 .callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
 .callout.ref .ctitle{color:var(--cr)!important}
-
-/* 실전편 도구 꼬리표(있으면) */
 .tag{display:inline-block;font-family:var(--sans);font-size:.74em;font-weight:600;
   padding:0 8px;border-radius:999px;color:#fff;vertical-align:.1em;letter-spacing:.02em;background:var(--accent)}
-
-/* 링크 — 밑줄을 가늘게, 주색으로 */
 main a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px;
   text-decoration-color:var(--accent-line)}
-
-/* 인쇄본 공통 */
 .pagedjs_page a[href^="http"]{color:var(--accent-ink)}
 .pagedjs_page .mb math{font-size:1em}
-
-/* 화면 — 본문 단을 오른쪽 칸 가운데에 둔다(넓은 화면에서 오른쪽만 비던 것) */
 @media (min-width:1081px){ main{margin:0 auto} }
-
-/* 인쇄본 — 변형 CSS 의 「.pagedjs_page .callout」 이 의미 색을 덮지 않게 다시 세운다(특이도 0,3,0) */
 .pagedjs_page .callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
 .pagedjs_page .callout.warn .ctitle{color:var(--cw)!important}
 .pagedjs_page .callout.hint,.pagedjs_page .callout.tip{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
 .pagedjs_page .callout.hint .ctitle,.pagedjs_page .callout.tip .ctitle{color:var(--ch)!important}
 .pagedjs_page .callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
 .pagedjs_page .callout.ref .ctitle{color:var(--cr)!important}
-
-/* 한국어판 — 한글에는 기울임·자간 벌림을 쓰지 않는다(가짜 기울임이 된다) */
 html[lang="ko"] .chapter > blockquote:first-of-type, html[lang="ko"] h3, html[lang="ko"] blockquote{font-style:normal!important}
 html[lang="ko"] .callout .ctitle, html[lang="ko"] .eyebrow, html[lang="ko"] th{letter-spacing:.02em!important}
-
-/* 휴대전화 — 큰 본문(시안 C 19px 등)을 한 단계 줄인다 */
 @media (max-width:600px){ main{font-size:17px!important} .chapter h1{font-size:2rem!important} .callout{padding:14px 16px!important} }
-
-/* ── 시안 B 「Modern technical」 ───────────────────────────────────
-   굵은 sans 제목 + 세리프 본문, 제목 위 짧은 주색 막대, 첫 콜아웃(Key takeaway 등)은 요약 상자,
-   나머지 NOTE 콜아웃은 「여백 노트」처럼 작은 sans·배경 없음, 표 머리 옅은 틴트·줄무늬. */
-
 main{max-width:780px;font-family:var(--serif);font-size:17.5px;line-height:1.64;color:var(--fg)}
 html[lang="ko"] main{max-width:840px;font-size:17px;line-height:1.8}
 .eyebrow{display:inline-block;font-family:var(--sans)!important;font-size:.72rem!important;font-weight:700!important;
@@ -374,27 +291,20 @@ h2{font-family:var(--sans);font-weight:700;font-size:1.45rem;letter-spacing:-.01
 h2::before{content:"";display:block;width:34px;height:3px;background:var(--accent);margin:0 0 .55em}
 h3{font-family:var(--sans);font-weight:700;font-size:1.1rem;color:var(--fg)!important;margin:1.8em 0 .4em}
 h4{font-family:var(--sans);font-weight:700;color:var(--mut)}
-strong{font-weight:600}  /* 정적 글꼴 600(시안 가변 650) */
+strong{font-weight:600}
 hr{border:0!important;border-top:1px solid var(--line)!important}
-
-/* 표 */
 .tw{border:1px solid var(--line)!important;border-radius:6px;background:var(--card)}
 table{font-family:var(--sans);font-size:.86rem;line-height:1.5}
 th{background:var(--tint)!important;color:var(--accent-ink)!important;font-weight:700;font-size:.95rem;
   letter-spacing:.04em;font-variant-caps:all-small-caps;border-bottom:1px solid var(--accent-line)!important}
 tbody tr:nth-child(even) td{background:var(--tint2)}
-
-/* 콜아웃 — 왼쪽 띠 */
 .callout{border:0!important;border-left:4px solid var(--accent)!important;background:var(--tint)!important;
   border-radius:0 6px 6px 0;padding:14px 20px}
 .callout .ctitle{font-family:var(--sans)!important;font-size:.95rem!important;font-weight:700;letter-spacing:.06em;
   font-variant-caps:all-small-caps;color:var(--accent-ink)!important}
-/* 장 요약 상자 = config key_callout_titles 에 적힌 제목의 NOTE(.key). 시안의 :first-of-type 은
-   원리편에서 링크 상자를 요약 상자로 만들었다 */
 .chapter aside.callout.note.key{border-left:0!important;border-top:3px solid var(--accent)!important;
   border-radius:0 0 6px 6px;background:var(--tint)!important}
 .chapter aside.callout.note.key p{font-size:1.02em}
-/* 그 밖의 NOTE = 여백 노트풍 보조 정보 */
 .chapter aside.callout.note:not(.key){background:transparent!important;border-left:2px solid var(--line)!important;
   font-family:var(--sans);font-size:.88em;color:var(--mut);padding:4px 0 4px 16px}
 .chapter aside.callout.note:not(.key) .ctitle{color:var(--mut)!important}
@@ -402,8 +312,6 @@ tbody tr:nth-child(even) td{background:var(--tint2)}
 blockquote{border-left-color:var(--accent2)!important}
 details{border:1px solid var(--line)!important;border-radius:6px}
 details>summary{font-family:var(--sans);background:var(--tint)!important;color:var(--accent-ink)}
-
-/* 인쇄본 */
 @page{margin:20mm 27mm 21mm}
 .pagedjs_page main{font-size:10.3pt;line-height:1.55}
 .pagedjs_page .chapter .eyebrow{margin-top:8mm!important;font-size:7.2pt!important;color:#fff!important}
@@ -421,20 +329,11 @@ details>summary{font-family:var(--sans);background:var(--tint)!important;color:v
 .pagedjs_page div.sol{border:.6pt solid #c9c9c9}
 .pagedjs_page div.sol>.solhead{background:var(--tint);color:var(--accent-ink);font-family:var(--sans)}
 html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
-
-/* 표지 — 시안 견본에는 표지가 없었다. 장 머리와 같은 말투로: 위쪽 주색 선, sans 굵은 제목 */
 .cover{border-top:4px solid var(--accent)}
 .cover .kicker{color:var(--accent)!important}
 .cover h1{font-family:var(--sans);font-weight:700;letter-spacing:-.018em;color:var(--accent-ink)}
 .printtoc h2::before{display:none}
-
-/* 인쇄본 — 「fi」「fl」 합자를 끈다. Source Serif 합자가 PDF 텍스트에서 「f」 한 글자로 뽑힌 곳이 있었다
-   (반도체 영문판 170쪽 「fixed」→「fxed」, handbook_pdf_coverage 의심 1). 검색·복사·소실 점검을 지키려고 */
 .pagedjs_page{font-variant-ligatures:no-common-ligatures}
-
-/* 인쇄본 머리글 — 좌우 여백이 넓어져(27mm) 긴 장 제목이 머리글에서 두 줄로 꺾였다(원리편 영문판 0장 등 15쪽).
-   왼쪽(책 이름)은 제 폭만, 오른쪽(장 제목)은 남은 폭을 다 쓰고 그래도 넘칠 때만 말줄임표로 한 줄에 둔다.
-   paged.js 는 ::after 를 block 으로 두어 말줄임표가 안 나오므로 inline 으로 바꾼다 */
 .pagedjs_margin-top{display:flex!important}
 .pagedjs_margin-top-left{flex:0 0 auto!important;width:auto!important}
 .pagedjs_margin-top-center{flex:0 0 0!important;width:0!important}
@@ -443,10 +342,6 @@ html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
 .pagedjs_margin-top-right .pagedjs_margin-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   display:block;text-align:right;padding-left:8mm}
 .pagedjs_margin-top-right .pagedjs_margin-content::after{display:inline!important}
-
-/* ── 색 세기 2단계(2026-10-23 소유자 결정) ─────────────────────────────
-   주색 면적은 늘리지 않고 선·글자에 주색을 더 준다. 주색 채도 +8%p·틴트 11%는 palette-{책}.css.
-   시안: output/영문판-디자인-2026-10-22/색세기-머리글-시안/(design-color/css/level-2.css). 1단계 값은 README 변경 이력 */
 h2::before{width:52px;height:4px}
 .chapter h1{padding-bottom:.32em;border-bottom:2px solid var(--accent-line)}
 .chapter > blockquote:first-of-type{border-left-width:4px!important}
@@ -458,7 +353,6 @@ h2::before{width:52px;height:4px}
 th{border-bottom:1.5px solid var(--accent)!important}
 main a{text-decoration-color:var(--accent)}
 hr{border-top-color:var(--accent-line)!important}
-/* 인쇄본 */
 .pagedjs_page .chapter h1{padding-bottom:5pt;border-bottom:1.4pt solid var(--accent-line)}
 .pagedjs_page .callout{border-left-width:3.6pt!important}
 .pagedjs_page .chapter aside.callout.note.key{border-top-width:3pt!important}
@@ -466,53 +360,18 @@ hr{border-top-color:var(--accent-line)!important}
 .pagedjs_page th{border-bottom:1pt solid var(--accent)!important}
 .pagedjs_margin-top-right .pagedjs_margin-content,
 .pagedjs_margin-bottom-center .pagedjs_margin-content{color:var(--accent)!important}
-
-/* 화면 넓은 창 — 본문 단(780px)이 좁아져 넓은 블록 수식이 단 밖으로 나가 1200px 창에 가로 스크롤이 생겼다
-   (원리편 영문 1361/1185px 등, 2026-10-23 실측). md2handbook 의 좁은 화면 규칙(1080px 이하)과 같이 상자 안 가로 스크롤로.
-   paged.js 조판(화면 미디어, 1200px 창)에는 쓰지 않는다 */
 @media (min-width:1081px){ .mb{overflow-x:auto;overflow-y:hidden} }
 .pagedjs_page .mb{overflow:visible!important}
 
-/* 원리편 영문판 1.0-en 덧붙임 CSS(2026-10-22 통합 세션). md2handbook 기본 CSS·인쇄 CSS 뒤에 붙는다.
-   한국어판은 테마 파일 없이 기본 CSS로 빌드했다. 영문판은 아래 조정만 더한다. */
-
-/* 표 머리글 줄바꿈 허용 — md2handbook 기본 th{white-space:nowrap} 과 긴 영어 머리글이 겹쳐
-   인쇄본 오른쪽 밖으로 표가 잘렸다(첫 빌드 8개 표, 최대 199px). 반도체 영문판 theme-en.css 와 같은 처리 */
 th{white-space:normal}
-
-/* 인쇄본 블록 수식 — 영문판 첫 빌드에서 8·10·18장 블록 수식 셋이 본문 오른쪽 끝을 최대 52px 넘었다
-   (RAG-Sequence 식, ISSUP 정규화 식, 대응 분산 식). 한국어판과 같은 수식이나 영문판은 본문 글자 폭이
-   달라 줄 폭이 다르다. 인쇄본(paged.js 쪽 안)에서만 블록 수식 글자를 1.12em → 1em 으로. 화면본은 그대로 */
 .pagedjs_page .mb math{font-size:1em}
-
-/* 반쯤 빈 쪽 줄이기(원고 문장은 바꾸지 않음).
-   ① 1장 「4. Five workflows」 표 — 짧은 표(.keep)라 쪽에서 나누지 않는데 영어 칸이 길어 반 쪽을 넘으면서 통째로
-   다음 쪽으로 넘어가 앞쪽(첫 빌드 34쪽)이 43%만 찼다. 1장의 .keep 표만 쪽 나눔을 허용한다(행 tr 은 나누지 않음).
-   paged.js 는 「A + B」 선택자를 [data-following] 속성 선택자로 바꾸며 뒤쪽 하위 선택자를 버리므로 장 id(#sec2)로 건다.
-   ② 1장 「Agentic Reasoning survey, revised version」 제목 — md2handbook 의 .kwn-next 어림(110mm)이 커서 제목이
-   다음 쪽으로 밀렸다(①을 고친 뒤 42쪽 53%). 문단은 쪽에서 나뉘므로 35mm 로(실전편 theme.css 와 같은 처리).
-   콜아웃(엮은이의 다리) 두 곳(3·18장)은 나눔을 허용해 보았으나 paged.js 가 쪽 경계에서 한 줄을 잃어
-   (handbook_pdf_coverage 의심 1, 3장 「The analogy also breaks down」 문단) 되돌렸다 — 그 두 쪽은 반쯤 빈 채로 둔다 */
 #sec2 .kwn:has(> .tw.keep), #sec2 .tw.keep, #sec2 table.keep{break-inside:auto!important}
 .kwn.kwn-next:has(#c2-agentic-reasoning-survey-revised-version--what-does-it-optimize-and-who-sets-the-path){padding-bottom:35mm!important;margin-bottom:-35mm!important}
-
-/* 원리편 영문판 — 시리즈 B(tools/handbook-themes/series-b/) 적용 빌드(1.0-en-r2, 2026-10-22)에서만 theme-en.css 뒤에 붙는다.
-   본문 단이 좁아져(좌우 여백 27mm) 새로 생긴 인쇄본 넘침·빈자리를 고친다. 원고는 그대로다.
-   ① 블록 수식 셋(8장 RAG-Sequence 식 84px, 10장 ISSUP 식 60px, 18장 군집 분산 식 50px)이 쪽 오른쪽을 넘었다 — 인쇄본 블록 수식 1em → .85em
-   ② 13장 Table 3(아홉 칸) 13px 넘침 — 인쇄본 표 머리글 자간을 0, 칸 안쪽 여백을 줄인다
-   ③ 15장 「4. Hidden injections…」 제목 뒤 첫 문단이 길어 .kwn-next 어림(110mm)이 커서 제목째 넘어가 앞쪽이 34%만 찼다 — 35mm 로
-   (콜아웃 「The editor's bridge」 앞의 빈자리 22·56·131쪽은 콜아웃을 쪽에서 나누지 않는 원칙대로 둔다) */
 .pagedjs_page .mb math{font-size:.85em}
 .pagedjs_page th{letter-spacing:0!important}
 .pagedjs_page th,.pagedjs_page td{padding-left:4pt;padding-right:4pt}
 .kwn.kwn-next:has(#c16-4-hidden-injections-and-a-defensive-instruction-inside-the-prompt-43-appendix-prompt-2){padding-bottom:35mm!important;margin-bottom:-35mm!important}
-
-/* 2026-10-23 색 세기 2단계·짧은 머리글 빌드(1.0-en-r3). 2장 발제 표(Presenter's guide)의 시간 칸 「10–25 min」 등이
-   두 줄로 꺾여 표가 길어지고, 앞쪽 끝 문단 세 줄이 다음 쪽으로 밀려 「엮은이의 다리」 상자가 통째로 넘어가 56쪽이 43%만 찼다.
-   이 표의 첫 칸만 줄바꿈을 막는다(md2handbook 의 td.nw 는 8자 이하 칸에만 붙는다) */
 .kwn:has(#c3-presenters-guide) td:first-child{white-space:nowrap}
-/* 그래도 한 줄이 넘어가 56쪽이 36%였다 — 이 발제 표(짧은 표 .keep)만 쪽 나눔을 허용해 장 첫 쪽(54쪽) 남은 자리부터 쓰게 한다
-   (행은 나누지 않고 머리글 반복, 1장 #sec2 와 같은 처리). 콜아웃은 그대로 나누지 않는다 */
 #sec3 .kwn:has(#c3-presenters-guide), #sec3 .kwn:has(#c3-presenters-guide) .tw.keep,
 #sec3 .kwn:has(#c3-presenters-guide) table.keep{break-inside:auto!important}
 </style>
@@ -522,6 +381,7 @@ th{white-space:normal}
 <aside class="rail">
 <p class="brand">Machines That Think, Act, and Revise</p>
 <p class="sub">Sunday AI · Agent Study</p>
+<p class="xlinks" style="font-size:.8rem;margin:0 0 12px;color:var(--mut)"><a style="display:inline;padding:0;margin:0;border:0;background:none" href="../index.html" lang="ko">한국어판</a> · <a style="display:inline;padding:0;margin:0;border:0;background:none" href="../../index.html">All handbooks</a></p>
 <button id="toggleAll" style="width:100%;margin-bottom:14px;padding:7px;font:inherit;font-size:.78rem;cursor:pointer;border:1px solid var(--line);border-radius:6px;background:var(--code);color:var(--fg)">Expand all solutions</button>
 <nav><ol>
 <li class="ch"><details open><summary>
