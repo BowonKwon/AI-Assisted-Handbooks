@@ -1,9 +1,10 @@
 # 읽은 것이 사라지지 않는 서재
 
-**법률가를 위한 LLM 위키 자습서 — 혼자서 처음부터 끝까지** · 권보원 엮음 · 2.0판(2026. 10. 13.)
+**법률가를 위한 LLM 위키 자습서 — 혼자서 처음부터 끝까지** · 권보원 엮음 · 2.1판(2026. 11. 7.)
 
 - [화면본(HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/llm-wiki/)
-- [인쇄본(PDF, 98쪽)](llm-wiki-v2.0.pdf)
+- [인쇄본(PDF, 103쪽)](llm-wiki-v2.1.pdf)
+- English edition: [*A Library That Remembers What You Read*](#english-edition)
 
 GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일이 커서 표시되지 않습니다. 책은 위 화면본 링크로 여십시오.
 
@@ -27,7 +28,7 @@ Andrej Karpathy가 제안한 「LLM 위키」 — 읽은 자료를 AI 에이전�
 
 ## 인용
 
-권보원(Bowon Kwon) 엮음, 『읽은 것이 사라지지 않는 서재: 법률가를 위한 LLM 위키 자습서』, 2.0판(2026. 10. 13.), https://github.com/BowonKwon/AI-Assisted-Handbooks
+권보원(Bowon Kwon) 엮음, 『읽은 것이 사라지지 않는 서재: 법률가를 위한 LLM 위키 자습서』, 2.1판(2026. 11. 7.), https://github.com/BowonKwon/AI-Assisted-Handbooks
 
 ## 판 이력
 
@@ -36,3 +37,23 @@ Andrej Karpathy가 제안한 「LLM 위키」 — 읽은 자료를 AI 에이전�
 | 판 | 날짜 | 내용 |
 |---|---|---|
 | 2.0 | 2026. 10. 13. | 첫 공개판. Claude Code 관련 서술을 공식 문서로 다시 대조했다 |
+| 2.1 | 2026. 11. 7. | 영문판을 만들며 찾아낸 것을 고쳤다. 원문과 어긋난 따옴표 인용을 원문대로 바로잡고 비판 ①의 출처를 밝혔다. Claude Code의 바뀐 사실(Ultra 요금제, 패키지 관리자 자동 업그레이드, 대화록 보존 기간, `AGENTS.md` 를 읽는 조건, 클라우드 업로드 조건)을 공식 문서로 고쳤다. 디자인 개편(시리즈 디자인 B, 주색 서가 녹색). Codex의 독립 대조를 반영했다 |
+
+## 이용 허락
+
+글은 [CC BY-NC 4.0](../LICENSE)입니다(엮은이에게 권리가 있는 범위에서). 원문에서 옮긴 표·인용은 이 라이선스의 대상이 아니며 각 원저작자의 권리를 따릅니다. 화면본·인쇄본에 쓴 글꼴(`fonts/`)은 Source Serif 4·Source Sans 3·Source Code Pro·Noto Serif KR·Noto Sans KR 을 줄이고 이름을 바꾼 수정본으로, SIL Open Font License 1.1 을 따릅니다(같은 폴더의 라이선스 파일).
+
+## English edition
+
+*A Library That Remembers What You Read: Building an LLM Wiki — A Self-Study Guide for Lawyers* · edited by Bowon Kwon · edition 2.1-en (November 7, 2026), translated from Korean edition 2.1 (November 7, 2026)
+
+- [Read online (HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/llm-wiki/en/)
+- [Print edition (PDF, 116 pages)](en/llm-wiki-v2.1-en.pdf)
+
+A self-study guide for lawyers who want to build an LLM wiki on their own, following Andrej Karpathy's pattern: an AI agent summarizes and links what you read into a folder of Markdown files on your own computer. It starts with installation and covers three months of running the wiki. What works and what does not are given the same weight: a whole chapter sets out the criticisms of the method, and what must not go in, where the data goes, and the habit of rechecking AI-made citations come before the hands-on part. Korean examples (statutes, public databases) are kept; one box headed "Comparable cases elsewhere" adds an example from another jurisdiction.
+
+The editor translated the book working with Claude Code. Quotations that were originally in English were restored from the original sources rather than translated back from Korean. Korean-language sources are kept and marked "(in Korean)." Before publication, OpenAI Codex, given only the Korean and English texts and the sources they cite, compared the two editions paragraph by paragraph; each finding was rechecked against the originals. Details are in the colophon at the end of the book.
+
+**Citation:** Bowon Kwon (ed.), *A Library That Remembers What You Read: Building an LLM Wiki — A Self-Study Guide for Lawyers*, edition 2.1-en (November 7, 2026), https://github.com/BowonKwon/AI-Assisted-Handbooks
+
+**License:** To the extent the editor holds rights in it, the text is licensed under [CC BY-NC 4.0](../LICENSE). Quotations and tables taken from original works are not covered by this license and remain subject to the rights of their authors. The fonts in `en/fonts/` are modified (instanced, subset and renamed) versions of Source Serif 4, Source Sans 3, Source Code Pro and Noto Sans KR, licensed under the SIL Open Font License 1.1 (license files in the same folder).
