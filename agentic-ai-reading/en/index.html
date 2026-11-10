@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Machines That Think, Act, and Revise</title>
 <style>
+
 :root{
   --bg:#f7f8fa; --fg:#16181d; --mut:#5d6470; --line:#dfe3ea;
   --card:#ffffff; --accent:#2f4b8f; --accent2:#a3612c;
@@ -22,8 +23,11 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--fg);
   font-family:var(--sans);font-size:16px;line-height:1.78;
   -webkit-text-size-adjust:100%}
+
 .layout{display:grid;grid-template-columns:288px minmax(0,1fr);gap:0;
   max-width:1400px;margin:0 auto}
+
+
 .rail{position:sticky;top:0;height:100vh;overflow-y:auto;
   border-right:1px solid var(--line);padding:26px 18px 60px;background:var(--card)}
 .rail .brand{font-family:var(--serif);font-weight:700;font-size:1.05rem;
@@ -40,6 +44,8 @@ body{margin:0;background:var(--bg);color:var(--fg);
 .rail details{margin:0}
 .rail summary{cursor:pointer;list-style:none}
 .rail summary::-webkit-details-marker{display:none}
+
+
 main{padding:56px 60px 120px;max-width:920px}
 h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;
   text-wrap:balance;page-break-after:avoid}
@@ -55,10 +61,14 @@ hr{border:0;border-top:1px solid var(--line);margin:2.4em 0}
 ul,ol{padding-left:1.35em;margin:0 0 1.15em}
 li{margin:.3em 0}
 li>ul,li>ol{margin:.3em 0}
+
+
 .chapter{padding-top:8px}
 .chapter+.chapter{margin-top:80px;border-top:3px double var(--line);padding-top:56px}
 .eyebrow{font-family:var(--sans);font-size:.74rem;letter-spacing:.16em;
   text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 8px}
+
+
 .tw{overflow-x:auto;margin:0 0 1.3em;border:1px solid var(--line);
   border-radius:8px;background:var(--card)}
 table{border-collapse:collapse;width:100%;font-size:.87rem;line-height:1.6}
@@ -68,6 +78,8 @@ th{background:var(--code);font-weight:700;white-space:nowrap;font-size:.83rem}
 tbody tr:last-child td{border-bottom:0}
 td>strong{white-space:nowrap} td>strong.lng{white-space:normal}
 ul.check{list-style:none;padding-left:.4em}
+
+
 pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
   padding:14px 16px;overflow-x:auto;margin:0 0 1.3em;
   font-family:var(--mono);font-size:.78rem;line-height:1.55}
@@ -76,6 +88,8 @@ code{font-family:var(--mono);font-size:.86em;background:var(--code);
 pre code{background:none;padding:0;font-size:1em}
 .mathfail{background:#ffe9e9;color:#a00}
 .prn{display:none}.scr{display:inline}
+
+
 .mi math{font-size:1.02em}
 .mb{display:block;text-align:center;margin:1.2em 0}
 .mb math{font-size:1.12em}
@@ -84,6 +98,8 @@ pre code{background:none;padding:0;font-size:1em}
 .mb.eq .eqno{flex:0 0 auto;font-variant-numeric:tabular-nums;color:#555}
 math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math",
   var(--serif);}
+
+
 .callout{border:1px solid var(--line);border-left:4px solid var(--accent);
   background:var(--card);border-radius:8px;padding:16px 20px;margin:0 0 1.5em}
 .callout .ctitle{font-family:var(--serif);font-weight:700;font-size:.95rem;
@@ -91,6 +107,7 @@ math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math",
 .callout.tip{border-left-color:var(--accent2)}
 .callout.tip .ctitle{color:var(--accent2)}
 .callout>*:last-child{margin-bottom:0}
+
 .callout.warn{border-left-color:var(--cw);background:var(--cw-bg)}
 .callout.warn .ctitle{color:var(--cw)}
 .callout.ok{border-left-color:var(--co);background:var(--co-bg)}
@@ -100,9 +117,12 @@ math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math",
 .callout.ref{border-left-color:var(--cr);background:var(--cr-bg)}
 .callout.ref .ctitle{color:var(--cr)}
 .callout.ref a{color:var(--cr)}
+
 blockquote{margin:0 0 1.3em;padding:2px 0 2px 18px;
   border-left:3px solid var(--line);color:var(--mut)}
 blockquote>*:last-child{margin-bottom:0}
+
+
 details{border:1px solid var(--line);border-radius:8px;margin:0 0 1.3em;
   background:var(--card);overflow:hidden}
 details>summary{cursor:pointer;padding:11px 16px;background:var(--code);
@@ -115,6 +135,8 @@ details[open]>summary{border-bottom:1px solid var(--line)}
 details>*:not(summary){padding:0 20px}
 details>*:not(summary):first-of-type{padding-top:14px}
 details>*:last-child{padding-bottom:10px}
+
+
 .cover{min-height:88vh;display:flex;flex-direction:column;justify-content:center;
   border-bottom:3px double var(--line);margin-bottom:56px}
 .cover .kicker{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;
@@ -124,7 +146,10 @@ details>*:last-child{padding-bottom:10px}
 .cover .meta{font-size:.82rem;color:var(--mut);line-height:1.9;
   border-top:1px solid var(--line);padding-top:16px}
 .cover .meta b{color:var(--fg)}
+
+
 .printtoc{display:none}
+
 @media screen and (max-width:1080px){
   :not(pre)>code{overflow-wrap:anywhere}
   .mb{overflow-x:auto;overflow-y:hidden}
@@ -138,6 +163,8 @@ details>*:last-child{padding-bottom:10px}
   main{padding:32px 22px 80px}
   .cover h1{font-size:2.1rem}
 }
+
+
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#121419; --fg:#e6e9ef; --mut:#98a0ad; --line:#2a2f38;
@@ -158,6 +185,7 @@ details>*:last-child{padding-bottom:10px}
   --ch:#e0c470; --ch-bg:#241f10;
   --cr:#b3a3e0; --cr-bg:#1c1930;
 }
+
 @media print{
   @page{ size:A4; margin:18mm 16mm 20mm; }
   html,body{background:#fff!important;color:#000!important;
@@ -165,10 +193,12 @@ details>*:last-child{padding-bottom:10px}
   .layout{display:block;max-width:none}
   .rail{display:none!important}
   main{padding:0;max-width:none}
+
   .cover{min-height:0;height:auto;page-break-after:always;
     border-bottom:0;margin:0;padding-top:38mm;display:block}
   .cover h1{font-size:30pt}
   .cover .lede{font-size:12pt}
+
   .printtoc{display:block;page-break-after:always}
   .printtoc h2{border:0;margin:0 0 14pt;font-size:17pt}
   .printtoc ol{list-style:none;padding:0;margin:0;font-size:10pt}
@@ -176,35 +206,46 @@ details>*:last-child{padding-bottom:10px}
   .printtoc .subs{margin:2pt 0 8pt 14pt;font-weight:400;color:#333}
   .printtoc .subs li{margin:1pt 0}
   .printtoc a{color:#000;text-decoration:none}
+
   .chapter{page-break-before:always;margin:0;border-top:0;padding-top:0}
   h1{font-size:20pt;margin-bottom:4pt}
   h2{font-size:13pt;margin:16pt 0 6pt}
   h3{font-size:11pt;margin:12pt 0 4pt;color:#000}
   h4{font-size:10pt;color:#333}
+
+
   details{border:1px solid #bbb;page-break-inside:auto}
   details>summary{background:#eee;color:#000;border-bottom:1px solid #bbb}
   details>*:not(summary){display:block!important}
+
   .tw{overflow:visible;border:1px solid #bbb;page-break-inside:auto}
   table{font-size:8.6pt}
   th{background:#eee;color:#000}
   th,td{padding:4pt 6pt;border-bottom:1px solid #ccc}
   tr{page-break-inside:avoid}
+
   pre{background:#f6f6f6;border:1px solid #ccc;font-size:7.4pt;
     line-height:1.42;white-space:pre;page-break-inside:avoid}
   code{background:#f0f0f0}
+
   .callout{border:1px solid #bbb;border-left:3px solid #666;background:#fafafa;
     page-break-inside:avoid}
   .callout .ctitle{color:#000}
   blockquote{color:#333;border-left:2px solid #999;page-break-inside:avoid}
+
   .prn{display:inline} .scr{display:none}
   a{color:#000;text-decoration:none}
+
   a[href^="http"]{color:#1f4e86;text-decoration:underline;text-decoration-thickness:.5pt;
     text-underline-offset:1.5pt;overflow-wrap:anywhere}
   h2,h3,h4{page-break-after:avoid}
   p,li{orphans:2;widows:2}
 }
+
 :root{--sans:"Source Sans 3","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Noto Sans KR","Malgun Gothic",sans-serif;--serif:"Source Serif 4","Source Serif Pro",Georgia,"Times New Roman","Noto Serif KR",serif;}
 main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre,code{-webkit-hyphens:manual;hyphens:manual}
+
+
 @font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
 @font-face{font-family:"HB Serif";src:url("fonts/hb-serif-400i.woff2") format("woff2");font-weight:400;font-style:italic;font-display:block}
 @font-face{font-family:"HB Serif";src:url("fonts/hb-serif-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
@@ -218,10 +259,15 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
 @font-face{font-family:"HB Sans";src:url("fonts/hb-sans-700i.woff2") format("woff2");font-weight:700;font-style:italic;font-display:block}
 @font-face{font-family:"HB Mono";src:url("fonts/hb-mono-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
 @font-face{font-family:"HB Mono";src:url("fonts/hb-mono-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:block}
+
 @font-face{font-family:"HB Symbols";src:url("fonts/hb-symbols-400.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:block}
+
 :root{--accent:#5c487a;--accent-ink:#4e3d68;--accent2:#8b7f6f;--tint:#edebf0;--tint2:#f6f5f8;--accent-line:#b4abc2}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--accent:#a59ab6;--accent-ink:#a59ab6;--accent2:#b9ab95;--tint:#22202d;--tint2:#1a1a23;--accent-line:#372e48}}
 :root[data-theme="dark"]{--accent:#a59ab6;--accent-ink:#a59ab6;--accent2:#b9ab95;--tint:#22202d;--tint2:#1a1a23;--accent-line:#372e48}
+
+
+
 
 :root{
   --fg:#1d2026; --mut:#5c6370; --line:#e1e3e7; --bg:#fbfbfa; --card:#ffffff;
@@ -244,19 +290,28 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
   --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
 }
 :root{
+
   --serif:"HB Serif","HB Serif KR","HB Symbols",Georgia,"Noto Serif KR",serif;
   --sans:"HB Sans","HB Sans KR","HB Symbols","Segoe UI",system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
   --mono:"HB Mono","HB Sans KR","HB Symbols","Cascadia Mono",Consolas,"D2Coding",monospace;
 }
 *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+
 h1,h2,h3,h4,th,td,.eyebrow{font-variant-numeric:lining-nums}
 td{font-variant-numeric:lining-nums tabular-nums}
+
+
 th{white-space:normal}
+
+
 code{background:var(--tint)!important;color:var(--accent-ink)}
 pre{background:var(--box-bg)!important;border:1px solid var(--box-line)!important;
   border-left:3px solid var(--accent)!important;border-radius:6px;
   white-space:pre-wrap!important;overflow-wrap:anywhere!important}
 pre code{background:none!important;color:inherit}
+
+
 .callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
 .callout.warn .ctitle{color:var(--cw)!important}
 .callout.ok{border-left-color:var(--accent)!important;background:var(--tint)!important}
@@ -265,22 +320,39 @@ pre code{background:none!important;color:inherit}
 .callout.hint .ctitle,.callout.tip .ctitle{color:var(--ch)!important}
 .callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
 .callout.ref .ctitle{color:var(--cr)!important}
+
+
 .tag{display:inline-block;font-family:var(--sans);font-size:.74em;font-weight:600;
   padding:0 8px;border-radius:999px;color:#fff;vertical-align:.1em;letter-spacing:.02em;background:var(--accent)}
+
+
 main a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px;
   text-decoration-color:var(--accent-line)}
+
+
 .pagedjs_page a[href^="http"]{color:var(--accent-ink)}
 .pagedjs_page .mb math{font-size:1em}
+
+
 @media (min-width:1081px){ main{margin:0 auto} }
+
+
 .pagedjs_page .callout.warn{border-left-color:var(--cw)!important;background:var(--cw-bg)!important}
 .pagedjs_page .callout.warn .ctitle{color:var(--cw)!important}
 .pagedjs_page .callout.hint,.pagedjs_page .callout.tip{border-left-color:var(--ch)!important;background:var(--ch-bg)!important}
 .pagedjs_page .callout.hint .ctitle,.pagedjs_page .callout.tip .ctitle{color:var(--ch)!important}
 .pagedjs_page .callout.ref{border-left-color:var(--cr)!important;background:var(--cr-bg)!important}
 .pagedjs_page .callout.ref .ctitle{color:var(--cr)!important}
+
+
 html[lang="ko"] .chapter > blockquote:first-of-type, html[lang="ko"] h3, html[lang="ko"] blockquote{font-style:normal!important}
 html[lang="ko"] .callout .ctitle, html[lang="ko"] .eyebrow, html[lang="ko"] th{letter-spacing:.02em!important}
+
+
 @media (max-width:600px){ main{font-size:17px!important} .chapter h1{font-size:2rem!important} .callout{padding:14px 16px!important} }
+
+
+
 main{max-width:780px;font-family:var(--serif);font-size:17.5px;line-height:1.64;color:var(--fg)}
 html[lang="ko"] main{max-width:840px;font-size:17px;line-height:1.8}
 .eyebrow{display:inline-block;font-family:var(--sans)!important;font-size:.72rem!important;font-weight:700!important;
@@ -295,18 +367,24 @@ h3{font-family:var(--sans);font-weight:700;font-size:1.1rem;color:var(--fg)!impo
 h4{font-family:var(--sans);font-weight:700;color:var(--mut)}
 strong{font-weight:600}
 hr{border:0!important;border-top:1px solid var(--line)!important}
+
+
 .tw{border:1px solid var(--line)!important;border-radius:6px;background:var(--card)}
 table{font-family:var(--sans);font-size:.86rem;line-height:1.5}
 th{background:var(--tint)!important;color:var(--accent-ink)!important;font-weight:700;font-size:.95rem;
   letter-spacing:.04em;font-variant-caps:all-small-caps;border-bottom:1px solid var(--accent-line)!important}
 tbody tr:nth-child(even) td{background:var(--tint2)}
+
+
 .callout{border:0!important;border-left:4px solid var(--accent)!important;background:var(--tint)!important;
   border-radius:0 6px 6px 0;padding:14px 20px}
 .callout .ctitle{font-family:var(--sans)!important;font-size:.95rem!important;font-weight:700;letter-spacing:.06em;
   font-variant-caps:all-small-caps;color:var(--accent-ink)!important}
+
 .chapter aside.callout.note.key{border-left:0!important;border-top:3px solid var(--accent)!important;
   border-radius:0 0 6px 6px;background:var(--tint)!important}
 .chapter aside.callout.note.key p{font-size:1.02em}
+
 .chapter aside.callout.note:not(.key){background:transparent!important;border-left:2px solid var(--line)!important;
   font-family:var(--sans);font-size:.88em;color:var(--mut);padding:4px 0 4px 16px}
 .chapter aside.callout.note:not(.key) .ctitle{color:var(--mut)!important}
@@ -314,6 +392,8 @@ tbody tr:nth-child(even) td{background:var(--tint2)}
 blockquote{border-left-color:var(--accent2)!important}
 details{border:1px solid var(--line)!important;border-radius:6px}
 details>summary{font-family:var(--sans);background:var(--tint)!important;color:var(--accent-ink)}
+
+
 @page{margin:20mm 27mm 21mm}
 .pagedjs_page main{font-size:10.3pt;line-height:1.55}
 .pagedjs_page .chapter .eyebrow{margin-top:8mm!important;font-size:7.2pt!important;color:#fff!important}
@@ -331,11 +411,17 @@ details>summary{font-family:var(--sans);background:var(--tint)!important;color:v
 .pagedjs_page div.sol{border:.6pt solid #c9c9c9}
 .pagedjs_page div.sol>.solhead{background:var(--tint);color:var(--accent-ink);font-family:var(--sans)}
 html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
+
+
 .cover{border-top:4px solid var(--accent)}
 .cover .kicker{color:var(--accent)!important}
 .cover h1{font-family:var(--sans);font-weight:700;letter-spacing:-.018em;color:var(--accent-ink)}
 .printtoc h2::before{display:none}
+
+
 .pagedjs_page{font-variant-ligatures:no-common-ligatures}
+
+
 .pagedjs_margin-top{display:flex!important}
 .pagedjs_margin-top-left{flex:0 0 auto!important;width:auto!important}
 .pagedjs_margin-top-center{flex:0 0 0!important;width:0!important}
@@ -344,6 +430,8 @@ html[lang="ko"] .pagedjs_page main{font-size:9.9pt;line-height:1.7}
 .pagedjs_margin-top-right .pagedjs_margin-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   display:block;text-align:right;padding-left:8mm}
 .pagedjs_margin-top-right .pagedjs_margin-content::after{display:inline!important}
+
+
 h2::before{width:52px;height:4px}
 .chapter h1{padding-bottom:.32em;border-bottom:2px solid var(--accent-line)}
 .chapter > blockquote:first-of-type{border-left-width:4px!important}
@@ -355,6 +443,7 @@ h2::before{width:52px;height:4px}
 th{border-bottom:1.5px solid var(--accent)!important}
 main a{text-decoration-color:var(--accent)}
 hr{border-top-color:var(--accent-line)!important}
+
 .pagedjs_page .chapter h1{padding-bottom:5pt;border-bottom:1.4pt solid var(--accent-line)}
 .pagedjs_page .callout{border-left-width:3.6pt!important}
 .pagedjs_page .chapter aside.callout.note.key{border-top-width:3pt!important}
@@ -362,18 +451,32 @@ hr{border-top-color:var(--accent-line)!important}
 .pagedjs_page th{border-bottom:1pt solid var(--accent)!important}
 .pagedjs_margin-top-right .pagedjs_margin-content,
 .pagedjs_margin-bottom-center .pagedjs_margin-content{color:var(--accent)!important}
+
+
 @media (min-width:1081px){ .mb{overflow-x:auto;overflow-y:hidden} }
 .pagedjs_page .mb{overflow:visible!important}
 
+
+
+
 th{white-space:normal}
+
+
 .pagedjs_page .mb math{font-size:1em}
+
+
 #sec2 .kwn:has(> .tw.keep), #sec2 .tw.keep, #sec2 table.keep{break-inside:auto!important}
 .kwn.kwn-next:has(#c2-agentic-reasoning-survey-revised-version--what-does-it-optimize-and-who-sets-the-path){padding-bottom:35mm!important;margin-bottom:-35mm!important}
+
+
 .pagedjs_page .mb math{font-size:.85em}
 .pagedjs_page th{letter-spacing:0!important}
 .pagedjs_page th,.pagedjs_page td{padding-left:4pt;padding-right:4pt}
 .kwn.kwn-next:has(#c16-4-hidden-injections-and-a-defensive-instruction-inside-the-prompt-43-appendix-prompt-2){padding-bottom:35mm!important;margin-bottom:-35mm!important}
+
+
 .kwn:has(#c3-presenters-guide) td:first-child{white-space:nowrap}
+
 #sec3 .kwn:has(#c3-presenters-guide), #sec3 .kwn:has(#c3-presenters-guide) .tw.keep,
 #sec3 .kwn:has(#c3-presenters-guide) table.keep{break-inside:auto!important}
 </style>
@@ -382,12 +485,12 @@ th{white-space:normal}
 <div class="layout">
 <aside class="rail">
 <p class="brand">Machines That Think, Act, and Revise</p>
-<p class="sub">Sunday AI · Agent Study</p>
+<p class="sub">Sunday AI · agent study</p>
 <p class="xlinks" style="font-size:.8rem;margin:0 0 12px;color:var(--mut)"><a style="display:inline;padding:0;margin:0;border:0;background:none" href="../index.html" lang="ko">한국어판</a> · <a style="display:inline;padding:0;margin:0;border:0;background:none" href="../../index.html">All handbooks</a></p>
 <button id="toggleAll" style="width:100%;margin-bottom:14px;padding:7px;font:inherit;font-size:.78rem;cursor:pointer;border:1px solid var(--line);border-radius:6px;background:var(--code);color:var(--fg)">Expand all solutions</button>
 <nav><ol>
 <li class="ch"><details open><summary>
-<a href="#ch0">How to Use This Book</a></summary>
+<a href="#ch0">How to use this book</a></summary>
 <ol class="subs">
 <li><a href="#c0-1-how-a-meeting-runs">1. How a meeting runs</a></li>
 <li><a href="#c0-2-how-many-meetings--schedules">2. How many meetings? — Schedules</a></li>
@@ -399,7 +502,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch1">Chapter 0. Preliminaries — Language Models, Tokens, In-Context Learning, and Reinforcement-Learning Terms</a></summary>
+<a href="#ch1">Chapter 0. Preliminaries — language models, tokens, in-context learning, and reinforcement-learning terms</a></summary>
 <ol class="subs">
 <li><a href="#c1-1-reading-a-language-model-as-a-conditional-distribution">1. Reading a language model as a conditional distribution</a></li>
 <li><a href="#c1-2-in-context-learning--learning-that-does-not-change-the-weights">2. In-context learning — learning that does not change the weights</a></li>
@@ -413,7 +516,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch2">Chapter 1. What Is an Agent? — A Practitioner&#x27;s Map</a></summary>
+<a href="#ch2">Chapter 1. What is an agent? — A practitioner&#x27;s map</a></summary>
 <ol class="subs">
 <li><a href="#c2-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c2-building-intuition">Building intuition</a></li>
@@ -428,7 +531,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch3">Chapter 2. The Agent&#x27;s Head — Thinking, Acting, and Learning in One Frame</a></summary>
+<a href="#ch3">Chapter 2. The agent&#x27;s head — thinking, acting, and learning in one frame</a></summary>
 <ol class="subs">
 <li><a href="#c3-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c3-building-intuition">Building intuition</a></li>
@@ -443,7 +546,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch4">Chapter 3. The Agent&#x27;s Body and Fence — The Harness</a></summary>
+<a href="#ch4">Chapter 3. The agent&#x27;s body and fence — the harness</a></summary>
 <ol class="subs">
 <li><a href="#c4-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c4-building-intuition">Building intuition</a></li>
@@ -458,7 +561,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch5">Chapter 4. Getting the Model to Write Out Its Thinking — Chain-of-Thought</a></summary>
+<a href="#ch5">Chapter 4. Getting the model to write out its thinking — Chain-of-Thought</a></summary>
 <ol class="subs">
 <li><a href="#c5-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c5-building-intuition">Building intuition</a></li>
@@ -473,7 +576,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch6">Chapter 5. Planning and Search — Tree of Thoughts</a></summary>
+<a href="#ch6">Chapter 5. Planning and search — Tree of Thoughts</a></summary>
 <ol class="subs">
 <li><a href="#c6-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c6-building-intuition">Building intuition</a></li>
@@ -488,7 +591,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch7">Chapter 6. Thinking and Acting in Turn — ReAct</a></summary>
+<a href="#ch7">Chapter 6. Thinking and acting in turn — ReAct</a></summary>
 <ol class="subs">
 <li><a href="#c7-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c7-building-intuition">Building intuition</a></li>
@@ -503,7 +606,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch8">Chapter 7. Tools — Self-Taught Tool Use and a Standard Protocol</a></summary>
+<a href="#ch8">Chapter 7. Tools — self-taught tool use and a standard protocol</a></summary>
 <ol class="subs">
 <li><a href="#c8-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c8-building-intuition">Building intuition</a></li>
@@ -518,7 +621,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch9">Chapter 8. Bringing In Outside Knowledge — RAG</a></summary>
+<a href="#ch9">Chapter 8. Bringing in outside knowledge — RAG</a></summary>
 <ol class="subs">
 <li><a href="#c9-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c9-building-intuition">Building intuition</a></li>
@@ -533,7 +636,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch10">Chapter 9. Is More Context Always Better? — Lost in the Middle and Context Engineering</a></summary>
+<a href="#ch10">Chapter 9. Is more context always better? — Lost in the Middle and context engineering</a></summary>
 <ol class="subs">
 <li><a href="#c10-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c10-building-intuition">Building intuition</a></li>
@@ -548,7 +651,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch11">Chapter 10. RAG That Decides When to Retrieve — Self-RAG</a></summary>
+<a href="#ch11">Chapter 10. RAG that decides when to retrieve — Self-RAG</a></summary>
 <ol class="subs">
 <li><a href="#c11-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c11-building-intuition">Building intuition</a></li>
@@ -563,7 +666,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch12">Chapter 11. Revision and Reflection — RARR and Reflexion</a></summary>
+<a href="#ch12">Chapter 11. Revision and reflection — RARR and Reflexion</a></summary>
 <ol class="subs">
 <li><a href="#c12-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c12-building-intuition">Building intuition</a></li>
@@ -593,7 +696,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch14">Chapter 13. Working Together — MetaGPT</a></summary>
+<a href="#ch14">Chapter 13. Working together — MetaGPT</a></summary>
 <ol class="subs">
 <li><a href="#c14-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c14-building-intuition">Building intuition</a></li>
@@ -608,7 +711,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch15">Chapter 14. Coding Agents — SWE-agent</a></summary>
+<a href="#ch15">Chapter 14. Coding agents — SWE-agent</a></summary>
 <ol class="subs">
 <li><a href="#c15-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c15-building-intuition">Building intuition</a></li>
@@ -623,7 +726,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch16">Chapter 15. When Data Becomes a Command — Indirect Prompt Injection</a></summary>
+<a href="#ch16">Chapter 15. When data becomes a command — indirect prompt injection</a></summary>
 <ol class="subs">
 <li><a href="#c16-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c16-building-intuition">Building intuition</a></li>
@@ -638,7 +741,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch17">Chapter 16. Alignment — Why Models Follow Instructions</a></summary>
+<a href="#ch17">Chapter 16. Alignment — why models follow instructions</a></summary>
 <ol class="subs">
 <li><a href="#c17-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c17-building-intuition">Building intuition</a></li>
@@ -653,7 +756,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch18">Chapter 17. What to Measure and How — A Map of Agent Evaluation</a></summary>
+<a href="#ch18">Chapter 17. What to measure and how — a map of agent evaluation</a></summary>
 <ol class="subs">
 <li><a href="#c18-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c18-building-intuition">Building intuition</a></li>
@@ -668,7 +771,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch19">Chapter 18. Can We Trust the Scores? — A Statistician&#x27;s Eye on Evaluation</a></summary>
+<a href="#ch19">Chapter 18. Can we trust the scores? — A statistician&#x27;s eye on evaluation</a></summary>
 <ol class="subs">
 <li><a href="#c19-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c19-building-intuition">Building intuition</a></li>
@@ -683,7 +786,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch20">Chapter 19. Fixing the Harness from Failed Trajectories — HarnessFix</a></summary>
+<a href="#ch20">Chapter 19. Fixing the harness from failed trajectories — HarnessFix</a></summary>
 <ol class="subs">
 <li><a href="#c20-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c20-building-intuition">Building intuition</a></li>
@@ -698,7 +801,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch21">Chapter 20. Synthesis — LLM Wiki, an Agent That Compiles Knowledge</a></summary>
+<a href="#ch21">Chapter 20. Synthesis — LLM Wiki, an agent that compiles knowledge</a></summary>
 <ol class="subs">
 <li><a href="#c21-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c21-building-intuition">Building intuition</a></li>
@@ -732,7 +835,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch24">Appendix III — Bibliography and Links</a></summary>
+<a href="#ch24">Appendix III — Bibliography and links</a></summary>
 <ol class="subs">
 <li><a href="#c24-1-the-list-first-proposed-l">1. The list first proposed (L)</a></li>
 <li><a href="#c24-2-supplementary-items-s">2. Supplementary items (S)</a></li>
@@ -742,7 +845,7 @@ th{white-space:normal}
 </ol>
 </details></li>
 <li class="ch"><details open><summary>
-<a href="#ch25">Appendix IV — Video List</a></summary>
+<a href="#ch25">Appendix IV — Video list</a></summary>
 <ol class="subs">
 <li><a href="#c25-chapter-0--preliminaries">Chapter 0 — Preliminaries</a></li>
 <li><a href="#c25-chapter-1--building-effective-agents">Chapter 1 — Building effective agents</a></li>
@@ -780,13 +883,13 @@ th{white-space:normal}
 </aside>
 <main>
 <section class="cover">
-<p class="kicker">Sunday AI · Agent Study</p>
+<p class="kicker">Sunday AI · agent study</p>
 <h1>Machines That Think, Act, and Revise</h1>
 <p class="lede">Reading Agentic AI Papers, from ReAct to LLM Wiki</p>
-<div class="meta"><p style="font-size:1.06em;margin-bottom:18px">Edited by <b>Bowon Kwon</b>, Presiding Judge, Daegu District Court</p><p><b>Contents</b> · How to use + Chapter 0 + 20 chapters + 4 appendices<br><b>Each chapter</b> · Presenter's guide (50 min) · Building intuition · The paper in detail · Rereading with a statistician's eye · Side papers · Back to the surveys · Common misreadings · Discussion · Videos<br><b>Suggested pace</b> · One meeting a week: all 20 chapters (about 5 months) / 15 core chapters / minimum 13 meetings<br><b>Companion volume</b> · <i>Harness in Hand</i></p><p style="margin-top:14px"><b>Printing</b> · Press Ctrl+P and save as PDF; all folded solutions open automatically.<br><b>Offline</b> · This one file is complete. Links open when you are online.</p><p style="margin-top:14px;font-size:.94em">Edition 1.0-en · translated from Korean edition 1.0 (October 5, 2026) · Made with generative AI. Errors may remain, and the book will keep being corrected.</p></div>
+<div class="meta"><p style="font-size:1.06em;margin-bottom:18px">Edited by <b>Bowon Kwon</b>, Presiding Judge, Daegu District Court</p><p><b>Contents</b> · How to use + Chapter 0 + 20 chapters + 4 appendices<br><b>Each chapter</b> · Presenter's guide (50 min) · Building intuition · The paper in detail · Rereading with a statistician's eye · Side papers · Back to the surveys · Common misreadings · Discussion · Videos<br><b>Suggested pace</b> · One meeting a week: all 20 chapters (about 5 months) / 15 core chapters / minimum 13 meetings<br><b>Companion volume</b> · <i>Harness in Hand</i></p><p style="margin-top:14px"><b>Printing</b> · Press Ctrl+P and save as PDF; all folded solutions open automatically.<br><b>Offline</b> · This one file is complete. Links open when you are online.</p><p style="margin-top:14px;font-size:.94em">Edition 1.0.1-en · translated from Korean edition 1.0 (October 5, 2026) · Made with generative AI. Errors may remain, and the book will keep being corrected.</p></div>
 </section>
 <section class="printtoc"><h2>Contents</h2><ol>
-<li><a href="#ch0">How to Use This Book</a>
+<li><a href="#ch0">How to use this book</a>
 <ol class="subs">
 <li><a href="#c0-1-how-a-meeting-runs">1. How a meeting runs</a></li>
 <li><a href="#c0-2-how-many-meetings--schedules">2. How many meetings? — Schedules</a></li>
@@ -797,7 +900,7 @@ th{white-space:normal}
 <li><a href="#c0-7-for-presenters">7. For presenters</a></li>
 </ol>
 </li>
-<li><a href="#ch1">Chapter 0. Preliminaries — Language Models, Tokens, In-Context Learning, and Reinforcement-Learning Terms</a>
+<li><a href="#ch1">Chapter 0. Preliminaries — language models, tokens, in-context learning, and reinforcement-learning terms</a>
 <ol class="subs">
 <li><a href="#c1-1-reading-a-language-model-as-a-conditional-distribution">1. Reading a language model as a conditional distribution</a></li>
 <li><a href="#c1-2-in-context-learning--learning-that-does-not-change-the-weights">2. In-context learning — learning that does not change the weights</a></li>
@@ -810,7 +913,7 @@ th{white-space:normal}
 <li><a href="#c1-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch2">Chapter 1. What Is an Agent? — A Practitioner&#x27;s Map</a>
+<li><a href="#ch2">Chapter 1. What is an agent? — A practitioner&#x27;s map</a>
 <ol class="subs">
 <li><a href="#c2-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c2-building-intuition">Building intuition</a></li>
@@ -824,7 +927,7 @@ th{white-space:normal}
 <li><a href="#c2-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch3">Chapter 2. The Agent&#x27;s Head — Thinking, Acting, and Learning in One Frame</a>
+<li><a href="#ch3">Chapter 2. The agent&#x27;s head — thinking, acting, and learning in one frame</a>
 <ol class="subs">
 <li><a href="#c3-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c3-building-intuition">Building intuition</a></li>
@@ -838,7 +941,7 @@ th{white-space:normal}
 <li><a href="#c3-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch4">Chapter 3. The Agent&#x27;s Body and Fence — The Harness</a>
+<li><a href="#ch4">Chapter 3. The agent&#x27;s body and fence — the harness</a>
 <ol class="subs">
 <li><a href="#c4-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c4-building-intuition">Building intuition</a></li>
@@ -852,7 +955,7 @@ th{white-space:normal}
 <li><a href="#c4-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch5">Chapter 4. Getting the Model to Write Out Its Thinking — Chain-of-Thought</a>
+<li><a href="#ch5">Chapter 4. Getting the model to write out its thinking — Chain-of-Thought</a>
 <ol class="subs">
 <li><a href="#c5-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c5-building-intuition">Building intuition</a></li>
@@ -866,7 +969,7 @@ th{white-space:normal}
 <li><a href="#c5-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch6">Chapter 5. Planning and Search — Tree of Thoughts</a>
+<li><a href="#ch6">Chapter 5. Planning and search — Tree of Thoughts</a>
 <ol class="subs">
 <li><a href="#c6-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c6-building-intuition">Building intuition</a></li>
@@ -880,7 +983,7 @@ th{white-space:normal}
 <li><a href="#c6-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch7">Chapter 6. Thinking and Acting in Turn — ReAct</a>
+<li><a href="#ch7">Chapter 6. Thinking and acting in turn — ReAct</a>
 <ol class="subs">
 <li><a href="#c7-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c7-building-intuition">Building intuition</a></li>
@@ -894,7 +997,7 @@ th{white-space:normal}
 <li><a href="#c7-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch8">Chapter 7. Tools — Self-Taught Tool Use and a Standard Protocol</a>
+<li><a href="#ch8">Chapter 7. Tools — self-taught tool use and a standard protocol</a>
 <ol class="subs">
 <li><a href="#c8-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c8-building-intuition">Building intuition</a></li>
@@ -908,7 +1011,7 @@ th{white-space:normal}
 <li><a href="#c8-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch9">Chapter 8. Bringing In Outside Knowledge — RAG</a>
+<li><a href="#ch9">Chapter 8. Bringing in outside knowledge — RAG</a>
 <ol class="subs">
 <li><a href="#c9-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c9-building-intuition">Building intuition</a></li>
@@ -922,7 +1025,7 @@ th{white-space:normal}
 <li><a href="#c9-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch10">Chapter 9. Is More Context Always Better? — Lost in the Middle and Context Engineering</a>
+<li><a href="#ch10">Chapter 9. Is more context always better? — Lost in the Middle and context engineering</a>
 <ol class="subs">
 <li><a href="#c10-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c10-building-intuition">Building intuition</a></li>
@@ -936,7 +1039,7 @@ th{white-space:normal}
 <li><a href="#c10-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch11">Chapter 10. RAG That Decides When to Retrieve — Self-RAG</a>
+<li><a href="#ch11">Chapter 10. RAG that decides when to retrieve — Self-RAG</a>
 <ol class="subs">
 <li><a href="#c11-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c11-building-intuition">Building intuition</a></li>
@@ -950,7 +1053,7 @@ th{white-space:normal}
 <li><a href="#c11-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch12">Chapter 11. Revision and Reflection — RARR and Reflexion</a>
+<li><a href="#ch12">Chapter 11. Revision and reflection — RARR and Reflexion</a>
 <ol class="subs">
 <li><a href="#c12-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c12-building-intuition">Building intuition</a></li>
@@ -978,7 +1081,7 @@ th{white-space:normal}
 <li><a href="#c13-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch14">Chapter 13. Working Together — MetaGPT</a>
+<li><a href="#ch14">Chapter 13. Working together — MetaGPT</a>
 <ol class="subs">
 <li><a href="#c14-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c14-building-intuition">Building intuition</a></li>
@@ -992,7 +1095,7 @@ th{white-space:normal}
 <li><a href="#c14-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch15">Chapter 14. Coding Agents — SWE-agent</a>
+<li><a href="#ch15">Chapter 14. Coding agents — SWE-agent</a>
 <ol class="subs">
 <li><a href="#c15-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c15-building-intuition">Building intuition</a></li>
@@ -1006,7 +1109,7 @@ th{white-space:normal}
 <li><a href="#c15-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch16">Chapter 15. When Data Becomes a Command — Indirect Prompt Injection</a>
+<li><a href="#ch16">Chapter 15. When data becomes a command — indirect prompt injection</a>
 <ol class="subs">
 <li><a href="#c16-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c16-building-intuition">Building intuition</a></li>
@@ -1020,7 +1123,7 @@ th{white-space:normal}
 <li><a href="#c16-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch17">Chapter 16. Alignment — Why Models Follow Instructions</a>
+<li><a href="#ch17">Chapter 16. Alignment — why models follow instructions</a>
 <ol class="subs">
 <li><a href="#c17-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c17-building-intuition">Building intuition</a></li>
@@ -1034,7 +1137,7 @@ th{white-space:normal}
 <li><a href="#c17-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch18">Chapter 17. What to Measure and How — A Map of Agent Evaluation</a>
+<li><a href="#ch18">Chapter 17. What to measure and how — a map of agent evaluation</a>
 <ol class="subs">
 <li><a href="#c18-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c18-building-intuition">Building intuition</a></li>
@@ -1048,7 +1151,7 @@ th{white-space:normal}
 <li><a href="#c18-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch19">Chapter 18. Can We Trust the Scores? — A Statistician&#x27;s Eye on Evaluation</a>
+<li><a href="#ch19">Chapter 18. Can we trust the scores? — A statistician&#x27;s eye on evaluation</a>
 <ol class="subs">
 <li><a href="#c19-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c19-building-intuition">Building intuition</a></li>
@@ -1062,7 +1165,7 @@ th{white-space:normal}
 <li><a href="#c19-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch20">Chapter 19. Fixing the Harness from Failed Trajectories — HarnessFix</a>
+<li><a href="#ch20">Chapter 19. Fixing the harness from failed trajectories — HarnessFix</a>
 <ol class="subs">
 <li><a href="#c20-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c20-building-intuition">Building intuition</a></li>
@@ -1076,7 +1179,7 @@ th{white-space:normal}
 <li><a href="#c20-sources">Sources</a></li>
 </ol>
 </li>
-<li><a href="#ch21">Chapter 20. Synthesis — LLM Wiki, an Agent That Compiles Knowledge</a>
+<li><a href="#ch21">Chapter 20. Synthesis — LLM Wiki, an agent that compiles knowledge</a>
 <ol class="subs">
 <li><a href="#c21-presenters-guide">Presenter&#x27;s guide</a></li>
 <li><a href="#c21-building-intuition">Building intuition</a></li>
@@ -1107,7 +1210,7 @@ th{white-space:normal}
 <li><a href="#c23-terms-added-by-each-chapter">Terms added by each chapter</a></li>
 </ol>
 </li>
-<li><a href="#ch24">Appendix III — Bibliography and Links</a>
+<li><a href="#ch24">Appendix III — Bibliography and links</a>
 <ol class="subs">
 <li><a href="#c24-1-the-list-first-proposed-l">1. The list first proposed (L)</a></li>
 <li><a href="#c24-2-supplementary-items-s">2. Supplementary items (S)</a></li>
@@ -1116,7 +1219,7 @@ th{white-space:normal}
 <li><a href="#c24-5-what-could-not-be-settled">5. What could not be settled</a></li>
 </ol>
 </li>
-<li><a href="#ch25">Appendix IV — Video List</a>
+<li><a href="#ch25">Appendix IV — Video list</a>
 <ol class="subs">
 <li><a href="#c25-chapter-0--preliminaries">Chapter 0 — Preliminaries</a></li>
 <li><a href="#c25-chapter-1--building-effective-agents">Chapter 1 — Building effective agents</a></li>
@@ -1152,7 +1255,7 @@ th{white-space:normal}
 </ol></section>
 <section class="chapter" id="sec0">
 <p class="eyebrow">Introduction</p>
-<h1 id="ch0">How to Use This Book</h1>
+<h1 id="ch0">How to use this book</h1>
 <aside class="callout note key">
 <p class="ctitle">Before you start</p>
 <p>The editor compiled this book with a generative AI system (Claude). Each chapter was checked against the original papers several times, but errors may remain. Please confirm figures and quotations against the originals. The book will keep being revised; the edition and date you are reading are on the cover and in the colophon (edition 1.0-en, translated from Korean edition 1.0 of October 5, 2026).</p>
@@ -1308,7 +1411,7 @@ th{white-space:normal}
 </tr>
 <tr>
 <td>4</td>
-<td>II Thinking and Acting</td>
+<td>II Thinking and acting</td>
 <td>Why does having the model write intermediate steps raise accuracy, and when does it not?</td>
 <td>Chain-of-Thought</td>
 <td>Optional</td>
@@ -1316,7 +1419,7 @@ th{white-space:normal}
 </tr>
 <tr>
 <td>5</td>
-<td>II Thinking and Acting</td>
+<td>II Thinking and acting</td>
 <td>What changes when you spread out several branches and choose among them, and what does it cost?</td>
 <td>Tree of Thoughts</td>
 <td>Optional</td>
@@ -1324,7 +1427,7 @@ th{white-space:normal}
 </tr>
 <tr>
 <td>6</td>
-<td>II Thinking and Acting</td>
+<td>II Thinking and acting</td>
 <td>When a model acts while observing the outside world, where does "thinking" come in?</td>
 <td>ReAct</td>
 <td>Core</td>
@@ -1388,7 +1491,7 @@ th{white-space:normal}
 </tr>
 <tr>
 <td>14</td>
-<td>VIII Coding Agents</td>
+<td>VIII Coding agents</td>
 <td>Does performance change if you keep the model and change only the interface?</td>
 <td>SWE-agent</td>
 <td>Optional</td>
@@ -1412,7 +1515,7 @@ th{white-space:normal}
 </tr>
 <tr>
 <td>17</td>
-<td>X Evaluation and Operations</td>
+<td>X Evaluation and operations</td>
 <td>What does agent evaluation measure, and how?</td>
 <td>Evaluation survey + GAIA</td>
 <td>Core</td>
@@ -1420,7 +1523,7 @@ th{white-space:normal}
 </tr>
 <tr>
 <td>18</td>
-<td>X Evaluation and Operations</td>
+<td>X Evaluation and operations</td>
 <td>Is first place on the leaderboard really better?</td>
 <td>AI Agents That Matter + Error Bars</td>
 <td>Optional</td>
@@ -1428,7 +1531,7 @@ th{white-space:normal}
 </tr>
 <tr>
 <td>19</td>
-<td>X Evaluation and Operations</td>
+<td>X Evaluation and operations</td>
 <td>How do you tell whether a failure comes from the model or the harness, and how do you fix it?</td>
 <td>HarnessFix</td>
 <td>Core</td>
@@ -1498,7 +1601,7 @@ th{white-space:normal}
 
 <section class="chapter" id="sec1">
 <p class="eyebrow">Chapter 0 · not a meeting</p>
-<h1 id="ch1">Chapter 0. Preliminaries — Language Models, Tokens, In-Context Learning, and Reinforcement-Learning Terms</h1>
+<h1 id="ch1">Chapter 0. Preliminaries — language models, tokens, in-context learning, and reinforcement-learning terms</h1>
 <blockquote>
 <p>The question this chapter answers: what do you need to know to read a language model as a probability model, and which terms do the later chapters take for granted?</p>
 </blockquote>
@@ -1638,7 +1741,7 @@ th{white-space:normal}
 <p>"… using the text input of a pretrained language model as a form of task specification: the model is conditioned on a natural language instruction and/or a few demonstrations of the task and is then expected to complete further instances of the task simply by predicting what comes next."</p>
 </blockquote>
 <p>The task is specified in the input text. The model takes an instruction or a few examples as the condition and carries on the rest as if predicting the next token. The weights stay the same. In the language of section 1, the <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi></mrow></math></span> of the conditional distribution <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>p</mi><mi>&#x003B8;</mi></msub><mo stretchy="false">&#x00028;</mo><mo>&#x000B7;</mo><mo>&#x02223;</mo><msub><mi>x</mi><mrow><mo>&#x0003C;</mo><mi>t</mi></mrow></msub><mo stretchy="false">&#x00029;</mo></mrow></math></span> is held fixed and only <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>x</mi><mrow><mo>&#x0003C;</mo><mi>t</mi></mrow></msub></mrow></math></span> changes.</p>
-<p><strong class="lng">Outer loop and inner loop — Figure 1.1.</strong> The paper places this within the frame of meta-learning. Changing the weights by SGD during pre-training is the outer loop, and what happens within the forward pass over a single sequence is the inner loop, that is, in-context learning. SGD (stochastic gradient descent) draws part of the data, computes the gradient of the loss, and moves the weights a little in the opposite direction. A forward pass computes the output distribution from the input with the current weights held as they are. In the inner loop no gradient is computed and no weight is moved. When the examples placed in front change, the output computed with the same weights simply changes. The sequences in the figure repeat additions such as <code>5 + 8 = 13</code>, spelling corrections such as <code>gaot =&gt; goat</code>, and translations such as <code>thanks =&gt; merci</code> within one sequence.</p>
+<p><strong class="lng">Outer loop and inner loop — Figure 1.1.</strong> The paper places this within the frame of meta-learning. Changing the weights by SGD during pretraining is the outer loop, and what happens within the forward pass over a single sequence is the inner loop, that is, in-context learning. SGD (stochastic gradient descent) draws part of the data, computes the gradient of the loss, and moves the weights a little in the opposite direction. A forward pass computes the output distribution from the input with the current weights held as they are. In the inner loop no gradient is computed and no weight is moved. When the examples placed in front change, the output computed with the same weights simply changes. The sequences in the figure repeat additions such as <code>5 + 8 = 13</code>, spelling corrections such as <code>gaot =&gt; goat</code>, and translations such as <code>thanks =&gt; merci</code> within one sequence.</p>
 <p><strong class="lng">Four settings — Figure 2.1.</strong> §2 sets out four settings side by side by how much task-specific data they use, and draws them with a single English→French translation example.</p>
 <div class="tw"><table>
 <thead>
@@ -1712,11 +1815,11 @@ cheese =&gt;                         ← prompt
 <blockquote>
 <p>"We emphasize that these 'learning' curves involve no gradient updates or fine-tuning, just increasing numbers of demonstrations given as conditioning."</p>
 </blockquote>
-<p><strong class="lng">How do the examples work? — what the paper says.</strong> The paper does not explain the mechanism; it deliberately leaves it open. Footnote 1 says that the names zero-, one- and few-shot "are intended to remain agnostic on the question of whether the model learns new tasks from scratch at inference time or simply recognizes patterns seen during training". §5 lays out that question as a spectrum. The model may already have seen examples from the same distribution during training, or the same task in a different format, or it may really be learning a new skill, and where on that spectrum it falls differs from task to task. The paper's guess is that artificial tasks such as letter scrambling are learned from scratch, while translation was learned in pre-training. As evidence, §3.9.2 points to the results that on the scrambling tasks the one-shot score drops to half or less of the few-shot score and that the model can rarely do them zero-shot, while adding the caveat that this cannot be confirmed with certainty.</p>
+<p><strong class="lng">How do the examples work? — what the paper says.</strong> The paper does not explain the mechanism; it deliberately leaves it open. Footnote 1 says that the names zero-, one- and few-shot "are intended to remain agnostic on the question of whether the model learns new tasks from scratch at inference time or simply recognizes patterns seen during training". §5 lays out that question as a spectrum. The model may already have seen examples from the same distribution during training, or the same task in a different format, or it may really be learning a new skill, and where on that spectrum it falls differs from task to task. The paper's guess is that artificial tasks such as letter scrambling are learned from scratch, while translation was learned in pretraining. As evidence, §3.9.2 points to the results that on the scrambling tasks the one-shot score drops to half or less of the few-shot score and that the model can rarely do them zero-shot, while adding the caveat that this cannot be confirmed with certainty.</p>
 <aside class="callout tip">
 <p class="ctitle">A bridge from the editor</p>
 <p>The analogy below is meant to help understanding. It is not a claim of the paper.</p>
-<p>In statistics, "learning" usually means estimating parameters: you look at data and revise <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover accent="true"><mrow><mi>&#x003B8;</mi></mrow><mo>&#x0005E;</mo></mover></mrow></math></span>. Fine-tuning and GPT-3's pre-training (the outer loop) are of this kind. To people who use Bayesian models, another sense is familiar too. When you compute the posterior predictive distribution <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo stretchy="false">&#x00028;</mo><msub><mi>y</mi><mrow><mtext>new</mtext></mrow></msub><mo>&#x02223;</mo><msub><mi>x</mi><mrow><mtext>new</mtext></mrow></msub><mo>&#x0002C;</mo><mi>D</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>, the model stays as it is and you only put the data <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math></span> into the condition, yet the prediction adapts to that data. In-context learning looks like this from the outside. The <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> examples take the place of <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math></span>, and what changes is the condition, not the model.</p>
+<p>In statistics, "learning" usually means estimating parameters: you look at data and revise <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mover accent="true"><mrow><mi>&#x003B8;</mi></mrow><mo>&#x0005E;</mo></mover></mrow></math></span>. Fine-tuning and GPT-3's pretraining (the outer loop) are of this kind. To people who use Bayesian models, another sense is familiar too. When you compute the posterior predictive distribution <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>p</mi><mo stretchy="false">&#x00028;</mo><msub><mi>y</mi><mrow><mtext>new</mtext></mrow></msub><mo>&#x02223;</mo><msub><mi>x</mi><mrow><mtext>new</mtext></mrow></msub><mo>&#x0002C;</mo><mi>D</mi><mo stretchy="false">&#x00029;</mo></mrow></math></span>, the model stays as it is and you only put the data <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math></span> into the condition, yet the prediction adapts to that data. In-context learning looks like this from the outside. The <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>K</mi></mrow></math></span> examples take the place of <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>D</mi></mrow></math></span>, and what changes is the condition, not the model.</p>
 <p>There are places where the analogy fails. In a Bayesian model the prior and likelihood are explicit, so the result of conditioning can be worked out by calculation. What a language model computes when it receives examples is not known, and the paper stays neutral on that question (footnote 1, §5).</p>
 </aside>
 <p><strong class="lng">How this connects to later chapters.</strong> CoT in <a href="#ch5">Chapter 4</a>, ToT in <a href="#ch6">Chapter 5</a> and ReAct in <a href="#ch7">Chapter 6</a> all sit on top of this setting. A model with frozen weights is shown a few worked examples written by people and made to follow their format (ReAct's HotpotQA prompt has 6 examples and its FEVER prompt has 3). The first optimization target the survey in <a href="#ch3">Chapter 2</a> names, "in-context reasoning", belongs to this line: the parameters <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi></mrow></math></span> are held fixed and only the reasoning trace <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span> changes (Appendix I, section 4).</p>
@@ -2005,7 +2108,7 @@ cheese =&gt;                         ← prompt
 
 <section class="chapter" id="sec2">
 <p class="eyebrow">Chapter 1 · Core · ★★★</p>
-<h1 id="ch2">Chapter 1. What Is an Agent? — A Practitioner&#x27;s Map</h1>
+<h1 id="ch2">Chapter 1. What is an agent? — A practitioner&#x27;s map</h1>
 <blockquote>
 <p>The question this chapter answers: is every LLM with tools attached an agent? When should you not use an agent?</p>
 </blockquote>
@@ -2555,7 +2658,7 @@ The evaluation criteria must be clear, a response must improve when a person giv
 
 <section class="chapter" id="sec3">
 <p class="eyebrow">Chapter 2 · Core · ★★★</p>
-<h1 id="ch3">Chapter 2. The Agent&#x27;s Head — Thinking, Acting, and Learning in One Frame</h1>
+<h1 id="ch3">Chapter 2. The agent&#x27;s head — thinking, acting, and learning in one frame</h1>
 <blockquote>
 <p>The question this chapter answers: how do we separate "thinking", "acting" and "learning" within one probability model?</p>
 </blockquote>
@@ -3340,7 +3443,7 @@ The survey writes that Table 5 is a reading of a fast-moving and often confounde
 
 <section class="chapter" id="sec4">
 <p class="eyebrow">Chapter 3 · Core · ★★★</p>
-<h1 id="ch4">Chapter 3. The Agent&#x27;s Body and Fence — The Harness</h1>
+<h1 id="ch4">Chapter 3. The agent&#x27;s body and fence — the harness</h1>
 <blockquote>
 <p>The question this chapter answers: why do performance and safety differ from system to system when the model is the same?</p>
 </blockquote>
@@ -4132,7 +4235,7 @@ Coding agents are overrepresented because they leave many public traces (§2.8).
 
 <section class="chapter" id="sec5">
 <p class="eyebrow">Chapter 4 · Optional · ★★</p>
-<h1 id="ch5">Chapter 4. Getting the Model to Write Out Its Thinking — Chain-of-Thought</h1>
+<h1 id="ch5">Chapter 4. Getting the model to write out its thinking — Chain-of-Thought</h1>
 <blockquote>
 <p>The question this chapter answers: why does accuracy go up when the model is made to write intermediate steps before answering, and when does it not?</p>
 </blockquote>
@@ -4941,7 +5044,7 @@ Every main experiment sampled once with greedy decoding (§3.1). Majority voting
 
 <section class="chapter" id="sec6">
 <p class="eyebrow">Chapter 5 · Optional · ★</p>
-<h1 id="ch6">Chapter 5. Planning and Search — Tree of Thoughts</h1>
+<h1 id="ch6">Chapter 5. Planning and search — Tree of Thoughts</h1>
 <blockquote>
 <p>The question this chapter answers: what changes when the model spreads out several branches and chooses among them instead of thinking in a single line, and what does it cost?</p>
 </blockquote>
@@ -5656,7 +5759,7 @@ The paper uses only BFS and DFS and leaves A* and MCTS for future work (§3). Th
 
 <section class="chapter" id="sec7">
 <p class="eyebrow">Chapter 6 · Core · ★★★</p>
-<h1 id="ch7">Chapter 6. Thinking and Acting in Turn — ReAct</h1>
+<h1 id="ch7">Chapter 6. Thinking and acting in turn — ReAct</h1>
 <blockquote>
 <p>The question this chapter answers: for a language model to act while observing the outside world, where should "thinking" come in?</p>
 </blockquote>
@@ -6419,7 +6522,7 @@ The paper itself names Inner Monologue as the first work to demonstrate a closed
 
 <section class="chapter" id="sec8">
 <p class="eyebrow">Chapter 7 · Core · ★★★</p>
-<h1 id="ch8">Chapter 7. Tools — Self-Taught Tool Use and a Standard Protocol</h1>
+<h1 id="ch8">Chapter 7. Tools — self-taught tool use and a standard protocol</h1>
 <blockquote>
 <p>The question this chapter answers: how does a model know when to call a tool, and why did the way tools are attached come to need a standard?</p>
 </blockquote>
@@ -7208,7 +7311,7 @@ MCP is not a training method; it is a communication protocol between host and se
 
 <section class="chapter" id="sec9">
 <p class="eyebrow">Chapter 8 · Core · ★★★</p>
-<h1 id="ch9">Chapter 8. Bringing In Outside Knowledge — RAG</h1>
+<h1 id="ch9">Chapter 8. Bringing in outside knowledge — RAG</h1>
 <blockquote>
 <p>The question this chapter answers: what is the simplest probabilistic way to put knowledge that is not in a model's weights into its answers?</p>
 </blockquote>
@@ -7987,7 +8090,7 @@ In Figure 2, the document posterior flattens after the first token of each title
 
 <section class="chapter" id="sec10">
 <p class="eyebrow">Chapter 9 · Core · ★★★</p>
-<h1 id="ch10">Chapter 9. Is More Context Always Better? — Lost in the Middle and Context Engineering</h1>
+<h1 id="ch10">Chapter 9. Is more context always better? — Lost in the Middle and context engineering</h1>
 <blockquote>
 <p>The question this chapter answers: does the answer change depending on where in the context the same information is placed?</p>
 </blockquote>
@@ -8589,7 +8692,7 @@ Answer:
 <h2 id="c10-side-papers--how-they-differ-from-the-main-paper">Side papers — how they differ from the main paper</h2>
 <p>This chapter has three side readings (S15, S13 and S14): one technical report and two company blog posts, one prescriptive and one an account of operations. All three come from experience building the companies' own products and have not been peer-reviewed. Read them as design guidance, not as generalized empirical findings. Added to them are three papers from other chapters of this book.</p>
 <p><strong>Context Rot</strong> (<a href="https://www.trychroma.com/research/context-rot">Hong et al. 2025</a> · Chroma technical report). Where the main paper manipulated position, this report manipulates length. It fixed task difficulty, increased only the input length and measured 18 models (GPT-4.1, Claude 4, Gemini 2.5, Qwen3 and others). Performance fell as inputs grew on variants of needle in a haystack, on LongMemEval conversational question answering (a focused input of about 300 tokens against the full input of about 113k tokens, 306 questions) and on repeated-word copying. The first two were graded by a GPT-4.1 judge calibrated to agree with human judgments more than 0.99 of the time. The results on position differ. Across the 11 needle positions there was "no notable variation in performance for this specific NIAH task", and on repeated-word copying, position accuracy was highest when the unique word was near the beginning. The tasks, model generations and metrics all differ, so it is hard to read this as a refutation of the main paper. The main paper does not appear in the report's references.</p>
-<p><strong class="lng">Effective context engineering for AI agents</strong> (<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Rajasekaran et al. 2025</a> · Anthropic blog). A prescription. Citing "context rot", a concept from research in the needle-in-a-haystack line, it tells readers to treat context as "a finite resource with diminishing marginal returns", the model's "attention budget." The guiding principle is to "find the smallest set of high-signal tokens that maximize the likelihood of your desired outcome." For long tasks it gives three techniques: compaction, which summarizes the conversation as the window fills and starts a new window; structured note-taking, which writes notes outside the window and reads them back; and sub-agent architecture, in which sub-agents with clean windows explore and return only a 1,000–2,000-token summary. There are no measurements. It can be read as turning the main paper's §5 finding, that adding more does not help, into a design principle (this book's reading).</p>
+<p><strong class="lng">Effective context engineering for AI agents</strong> (<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Rajasekaran et al. 2025</a> · Anthropic blog). A prescription. Citing "context rot", a concept from research in the needle-in-a-haystack line, it tells readers to treat context as "a finite resource with diminishing marginal returns", the model's "attention budget." The guiding principle is to "find the smallest set of high-signal tokens that maximize the likelihood of your desired outcome." For long tasks it gives three techniques: compaction, which summarizes the conversation as the window fills and starts a new window; structured note-taking, which writes notes outside the window and reads them back; and subagent architecture, in which subagents with clean windows explore and return only a 1,000–2,000-token summary. There are no measurements. It can be read as turning the main paper's §5 finding, that adding more does not help, into a design principle (this book's reading).</p>
 <p><strong class="lng">Context Engineering for AI Agents: Lessons from Building Manus</strong> (<a href="https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus">Ji 2025</a> · Manus blog). An account of operations. First, two terms. A KV cache stores the internal computations for the front part (prefix) of an input the model has already processed, so that the next call with the same prefix can reuse them instead of recomputing. The post notes that a difference of even one token invalidates the cache from that point on. USD/MTok is the price in dollars per million tokens. The post calls KV-cache hit rate "the single most important metric for a production-stage AI agent." The ratio of input to output tokens averages around 100:1, and with Claude Sonnet cached input costs 0.30 USD/MTok against 3 USD/MTok uncached, a tenfold difference. So it recommends keeping the front fixed and making the context append-only, and moving large observations out to the file system, keeping only a path or URL in context. The point that touches the main paper directly is todo.md. In tasks that call tools about 50 times on average, constantly rewriting the to-do list is explained as "reciting its objectives into the end of the context", which avoids "'lost-in-the-middle' issues". It turns the measured recency bias to its own use. The main paper's §5 recommends moving relevant documents to the front, but protecting the cache means not touching the front; fixing the front and rewriting what matters at the end is Manus's answer (this contrast is this book's reading).</p>
 <p><strong>RAG</strong> (<a href="https://arxiv.org/abs/2005.11401">Lewis et al. 2020</a> · <a href="#ch9">Chapter 8</a> of this book). §1 of the main paper says that multi-document question answering mimics the reading step of retrieval-augmented generation (meaning the common setup of systems like Bing Chat; it does not cite Lewis et al. 2020). But the readers are built differently. RAG's generator processes the input <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span> concatenated with a single document <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span> (§2.3) and marginalizes the probability over the top <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> documents (5 or 10 in training, §3). The documents are not lined up inside one input, so by the structure of the formula the order among documents does not change the result. The main paper's reader puts all <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> documents into one prompt, so there is room for a position effect. The results contrast too. In RAG §4.5, retrieving more documents raised RAG-Sequence's NQ performance monotonically; in the main paper's §5, it was nearly flat beyond 20.</p>
 <p><strong>MemGPT</strong> (<a href="https://arxiv.org/abs/2310.08560">Packer et al. 2023</a> · <a href="#ch13">Chapter 12</a> of this book). A follow-up that cites the main paper directly and reuses its tasks. §1 cites it as evidence that long-context models do not use additional context effectively, and §3.2 cites its finding of "uneven attention distributions in large context models", better recall at the beginning or end than in the middle, as grounds for doubting approaches that only scale up context. §3.2.1 samples 50 questions from the same retriever-reader question answering and grades them with an LLM judge, and §3.2.2 turns key–value retrieval into nested key–value retrieval, where a value can itself be a key (140 pairs, about 8k tokens, 0 to 4 levels of nesting). The questions differ. The main paper asks how a model uses a fixed window; MemGPT asks what to keep and what to evict when the window fills. When the window is, say, 70% full it inserts a "memory pressure" warning, and at 100% it flushes the queue and leaves a recursive summary (§2.2).</p>
@@ -8637,8 +8740,8 @@ Answer:
 <ul>
 <li><strong class="lng">§5.1 Why context must be engineered.</strong> It cites the quadratic cost of self-attention, the main paper's U-shaped curve and the length effect of Context Rot. It summarizes the U-shaped curve as "on multi-document question answering with 20 input documents, accuracy drops by more than 30% when the relevant document sits in the middle of the context, compared to placing it at the start or end", says that it "holds across models, tasks, and context lengths, including models trained specifically on long contexts", and draws the implication that "information placement matters as much as information presence."</li>
 <li><strong class="lng">§5.2–5.3 Context engineering and short-term management.</strong> It cites the definition in the Anthropic post (S13) and says that the system prompt, tool definitions, prior turns, tool results and retrieved documents all compete for the same attention budget. As short-term techniques it covers just-in-time retrieval and the KV-cache design rules from the Manus post (S14).</li>
-<li><strong class="lng">§5.6 Long tasks of more than 100 turns.</strong> It covers compaction, context isolation through sub-agents, and a decision framework: "pre-load content that is always needed, retrieve just-in-time content that is conditionally needed, compact history when the window approaches saturation, and spawn sub-agents when a subtask requires exploration that would pollute the orchestrator's context." It says that "Context management should be the infrastructure's job, not the agent's."</li>
-<li><strong class="lng">§5.7 Context drift.</strong> It distinguishes context rot (a property of a single inference step, in which quality falls as tokens are added) from context drift (a property of a long trajectory, in which behavior moves away from the original intent). Its conclusion is that none of compaction, retrieval or sub-agents prevents drift.</li>
+<li><strong class="lng">§5.6 Long tasks of more than 100 turns.</strong> It covers compaction, context isolation through subagents, and a decision framework: "pre-load content that is always needed, retrieve just-in-time content that is conditionally needed, compact history when the window approaches saturation, and spawn sub-agents when a subtask requires exploration that would pollute the orchestrator's context." It says that "Context management should be the infrastructure's job, not the agent's."</li>
+<li><strong class="lng">§5.7 Context drift.</strong> It distinguishes context rot (a property of a single inference step, in which quality falls as tokens are added) from context drift (a property of a long trajectory, in which behavior moves away from the original intent). Its conclusion is that none of compaction, retrieval or subagents prevents drift.</li>
 </ul>
 <p>The main paper measured single question–answer exchanges, so in this framework it sits on the side of rot, not drift. The survey's summary has two points to check against the original. The original says "by more than 20%", and computed from Table 6, the gap between the 1st and 10th positions for GPT-3.5-Turbo with 20 documents is 22.0 points absolute and 29.0% relative. The relative drop exceeds 30% for the 16K version with 30 documents (73.4 → 50.5, 31.2% relative), so which number the survey's "accuracy drops by more than 30%" for 20 documents carries over is an open question. And as Exercise 2 shows, most models were L-shaped with 10 documents, and the Claude-1.3 models were nearly perfect on key–value retrieval regardless of position, so "holds across … context lengths" may be read more broadly than the original tables support. The §5.1 sentence "A model rated for 200K tokens may show significant performance loss at 50K." has no citation of its own. The paragraph opens with the experiments of Hong et al. (2025, Chroma's Context Rot report) and refers to that report again in the next sentence, but neither 200K nor 50K appears anywhere in the report's full text (rechecked on October 5, 2026). Read this figure as a sentence whose basis has not been confirmed.</p>
 <p>Seen through the definition of a harness in <a href="#ch4">Chapter 3</a>, query-aware contextualization in §4.2 and the reranking that §5 proposes only as a direction are harness-side interventions that leave the model alone and change only the arrangement of the input. Only the first was actually measured, and that intervention made key–value retrieval nearly perfect while barely changing multi-document question answering. It can be read as a case showing that the same intervention can have entirely different effects depending on the task (this is not the paper's explanation).</p>
@@ -8713,7 +8816,7 @@ The main paper set length at three levels and manipulated position finely within
 
 <section class="chapter" id="sec11">
 <p class="eyebrow">Chapter 10 · Core · ★★</p>
-<h1 id="ch11">Chapter 10. RAG That Decides When to Retrieve — Self-RAG</h1>
+<h1 id="ch11">Chapter 10. RAG that decides when to retrieve — Self-RAG</h1>
 <blockquote>
 <p>The question this chapter answers: how do you get a model to decide for itself when to retrieve, and to evaluate the documents it fetched and its own answer?</p>
 </blockquote>
@@ -9741,7 +9844,7 @@ ISSUP checks whether the fetched passage supports the sentence. If the passage i
 
 <section class="chapter" id="sec12">
 <p class="eyebrow">Chapter 11 · Core · ★★★</p>
-<h1 id="ch12">Chapter 11. Revision and Reflection — RARR and Reflexion</h1>
+<h1 id="ch12">Chapter 11. Revision and reflection — RARR and Reflexion</h1>
 <blockquote>
 <p>The question this chapter answers: how does fixing a wrong answer "within a single output" differ from fixing it "on the next attempt"?</p>
 </blockquote>
@@ -10297,7 +10400,7 @@ Status: Success
 <p>The CoT (GT) baseline of 61% in the text (wrong on 39%) matches none of the rows in Table 5 (0.60, 0.57, 0.68). The paper does not say which model the main experiment (Figure 4) used. Do not mix the numbers from the two places.</p>
 <p><strong class="lng">Actual reflections (Appendix D).</strong> In D.1, the ReAct actor answers with the role of the lead actor Gorden Kaye on the first attempt and is wrong; on the second attempt it searches for Sam Kelly among the cast of Grown-Ups and gets it right. The example in D.4.1 can be read differently. The first attempt says "Jonny Craig has been a member of six bands, … Pete Doherty has been a member of seven bands," answers Pete Doherty and is wrong. The second attempt, with no search tool, writes "After researching, I have found that" and then states that both have been members of seven bands, yet concludes that Jonny Craig has been in more, and is right. On a question that picks one of two, the single bit "the first answer was wrong" settles the right answer. The reflection can also be read as passing on that signal rather than fixing the reasoning. That is not the paper's interpretation.</p>
 <h3 id="c12-8-reflexion--programming-43">8. Reflexion — programming (§4.3)</h3>
-<p><strong>Setup.</strong> HumanEval and MBPP are run in Python and in Rust (translated with MultiPL-E), and a new benchmark, LeetcodeHardGym, was built from 40 Leetcode "hard" problems released after GPT-4's pre-training cutoff (October 8, 2022). The evaluator is not a hidden set of reference tests but unit tests the actor writes itself. Tests are generated with CoT, filtered to the syntactically valid ones with an abstract syntax tree (AST), and up to 6 are sampled. Because it does not look at hidden tests, the paper argues that it is eligible to report pass@1 (§2 judges that AlphaCode, Self-Debugging and CodeRL rely on reference tests and so are not). The memory holds 1 reflection.</p>
+<p><strong>Setup.</strong> HumanEval and MBPP are run in Python and in Rust (translated with MultiPL-E), and a new benchmark, LeetcodeHardGym, was built from 40 Leetcode "hard" problems released after GPT-4's pretraining cutoff (October 8, 2022). The evaluator is not a hidden set of reference tests but unit tests the actor writes itself. Tests are generated with CoT, filtered to the syntactically valid ones with an abstract syntax tree (AST), and up to 6 are sampled. Because it does not look at hidden tests, the paper argues that it is eligible to report pass@1 (§2 judges that AlphaCode, Self-Debugging and CodeRL rely on reference tests and so are not). The memory holds 1 reflection.</p>
 <p><strong class="lng">Scoreboard — Table 1</strong></p>
 <div class="tw"><table>
 <thead>
@@ -11231,7 +11334,7 @@ Table 3 measures only similarity to the persona and to the human opener; it has 
 
 <section class="chapter" id="sec14">
 <p class="eyebrow">Chapter 13 · Core · ★★</p>
-<h1 id="ch14">Chapter 13. Working Together — MetaGPT</h1>
+<h1 id="ch14">Chapter 13. Working together — MetaGPT</h1>
 <blockquote>
 <p>The question this chapter answers: why do errors spread when several agents are chained together, and how does the standard operating procedure (SOP) of a human organization stop them?</p>
 </blockquote>
@@ -11933,7 +12036,7 @@ The paper says the documents contain all necessary information and prevent irrel
 
 <section class="chapter" id="sec15">
 <p class="eyebrow">Chapter 14 · Optional · ★★</p>
-<h1 id="ch15">Chapter 14. Coding Agents — SWE-agent</h1>
+<h1 id="ch15">Chapter 14. Coding agents — SWE-agent</h1>
 <blockquote>
 <p>The question this chapter answers: if we leave the model as it is and change only the "interface for using the computer", does performance change?</p>
 </blockquote>
@@ -12868,7 +12971,7 @@ It is the share of problems solved at least once in six runs, and it means somet
 
 <section class="chapter" id="sec16">
 <p class="eyebrow">Chapter 15 · Core · ★★★</p>
-<h1 id="ch16">Chapter 15. When Data Becomes a Command — Indirect Prompt Injection</h1>
+<h1 id="ch16">Chapter 15. When data becomes a command — indirect prompt injection</h1>
 <blockquote>
 <p>The question this chapter answers: why are sentences in the web pages, emails and documents an agent reads carried out as "commands"?</p>
 </blockquote>
@@ -13300,7 +13403,7 @@ Model-level alignment is the level least able to stop an agent that composes ind
 
 <section class="chapter" id="sec17">
 <p class="eyebrow">Chapter 16 · Optional · ★</p>
-<h1 id="ch17">Chapter 16. Alignment — Why Models Follow Instructions</h1>
+<h1 id="ch17">Chapter 16. Alignment — why models follow instructions</h1>
 <blockquote>
 <p>The question this chapter answers: how was the "model that follows instructions well" made, and what risk does that property turn into in autonomous agents?</p>
 </blockquote>
@@ -14002,7 +14105,7 @@ All behavior took place in fictional scenarios, and the prompts were written so 
 
 <section class="chapter" id="sec18">
 <p class="eyebrow">Chapter 17 · Core · ★★★</p>
-<h1 id="ch18">Chapter 17. What to Measure and How — A Map of Agent Evaluation</h1>
+<h1 id="ch18">Chapter 17. What to measure and how — a map of agent evaluation</h1>
 <blockquote>
 <p>The question this chapter answers: how does evaluating an agent differ from evaluating a model? What do we measure, and how?</p>
 </blockquote>
@@ -14306,7 +14409,7 @@ Ground truth: White; 5876
 </code></pre>
 <p><em>The three questions in Figure 1 of GAIA. The note in parentheses was written by the editor from the photo in the figure. The Level 3 question asks for a thousands separator, but the ground truth in the original figure has no comma: "White; 5876". The system prompt in Figure 2 of the same paper says not to use commas in numbers, and grading is a quasi exact match after a normalization tied to the type of the ground truth (§3.2). The comma difference reads as absorbed by that normalization, but the paper does not give the detailed rules of the normalization.</em></p>
 <p>Level 1 only requires reading the enrollment from the NIH site (8 steps, 8 minutes and one web browser in the annotator's record in Appendix Table 1). Level 3 starts from a single photo, requires comparing the time in space of an entire astronaut group, and then matching the format. The questions are unnaturally long on purpose. To make the answer unique, they pin down a reference date ("As of August 2023," "in 2020") and an output format.</p>
-<p><strong class="lng">Four design principles (§3.1).</strong> (1) Questions rooted in the real world that are conceptually simple for humans. They call for quick adaptation via reasoning, multi-modality understanding and tool use rather than specialized skills. (2) Interpretability. There are few, highly curated questions, and a person can easily follow and check the reasoning trace. (3) Robustness against memorization. By design the answer is absent in plain text from pre-training data and comes out only after a number of steps. The contrast is with multiple choice (MMLU), where a wrong reasoning trace can still reach the correct choice. (4) Ease of use. Questions are answered in zero shot, limiting the influence of evaluation setup such as the number and nature of examples.</p>
+<p><strong class="lng">Four design principles (§3.1).</strong> (1) Questions rooted in the real world that are conceptually simple for humans. They call for quick adaptation via reasoning, multi-modality understanding and tool use rather than specialized skills. (2) Interpretability. There are few, highly curated questions, and a person can easily follow and check the reasoning trace. (3) Robustness against memorization. By design the answer is absent in plain text from pretraining data and comes out only after a number of steps. The contrast is with multiple choice (MMLU), where a wrong reasoning trace can still reach the correct choice. (4) Ease of use. Questions are answered in zero shot, limiting the influence of evaluation setup such as the number and nature of examples.</p>
 <h3 id="c18-7-scoring-composition-and-validation-gaia-3234">7. Scoring, composition and validation (GAIA §3.2–3.4)</h3>
 <p><strong>Scoring (§3.2).</strong> An answer is a string (one or a few words), a number, or a comma-separated list. There is only one correct answer, and grading is a quasi exact match after a normalization tied to the "type" of the ground truth. The system prompt that sets the format reads:</p>
 <pre><code class="language-text">You are a general AI assistant. I will ask you a question. Report your thoughts, and
@@ -14812,7 +14915,7 @@ GAIA grades only the final answer (§6). According to the caption of Figure 5, m
 
 <section class="chapter" id="sec19">
 <p class="eyebrow">Chapter 18 · Optional · ★★</p>
-<h1 id="ch19">Chapter 18. Can We Trust the Scores? — A Statistician&#x27;s Eye on Evaluation</h1>
+<h1 id="ch19">Chapter 18. Can we trust the scores? — A statistician&#x27;s eye on evaluation</h1>
 <blockquote>
 <p>The question this chapter answers: is the top of the leaderboard really better? What changes when we look at cost, variance and sample size together?</p>
 </blockquote>
@@ -15793,7 +15896,7 @@ In model evaluation, yes; in downstream evaluation, proxies mislead (the Mixtral
 
 <section class="chapter" id="sec20">
 <p class="eyebrow">Chapter 19 · Core · ★★</p>
-<h1 id="ch20">Chapter 19. Fixing the Harness from Failed Trajectories — HarnessFix</h1>
+<h1 id="ch20">Chapter 19. Fixing the harness from failed trajectories — HarnessFix</h1>
 <blockquote>
 <p>The question this chapter answers: when an agent fails, how do we tell "the model's fault" from "the harness's fault", and how do we decide what to fix?</p>
 </blockquote>
@@ -16773,7 +16876,7 @@ It is the rate of agreement with gold labels made by three annotators (80 trajec
 
 <section class="chapter" id="sec21">
 <p class="eyebrow">Chapter 20 · Core · ★★★</p>
-<h1 id="ch21">Chapter 20. Synthesis — LLM Wiki, an Agent That Compiles Knowledge</h1>
+<h1 id="ch21">Chapter 20. Synthesis — LLM Wiki, an agent that compiles knowledge</h1>
 <blockquote>
 <p>The question this chapter answers: if, instead of retrieving at every query, we organize knowledge in advance and let it accumulate, how are the parts we have seen so far rearranged?</p>
 </blockquote>
@@ -17136,7 +17239,7 @@ It is the rate of agreement with gold labels made by three annotators (80 trajec
 <p><strong class="lng">Treatment and control.</strong> The treatment is a gist-style wiki (revise pages each time a source is ingested; at query time go from the index into pages), and the control is RAG that chunks and indexes the same raw sources. Match the model, context window, query prompt and token cap per query. A third arm, "wiki + retrieval over raw sources", lets you tell whether the wiki replaces RAG or complements it. The gist itself says to add search as scale grows, so the third arm is closest to practice.</p>
 <p><strong class="lng">Outcome measures.</strong> Accuracy (binary per question), citation accuracy (whether the cited source actually supports the claim in the raw source — the attribution of <a href="#ch12">Chapter 11</a>. In the wiki arm too, count it correct only when it traces back to the raw source. If wiki pages are accepted as citations, errors in the summary layer pass), update delay (the number of sources from ingesting a source that changes the right answer until the new answer first appears), and cost (measure ingest and query tokens separately and estimate the break-even number of queries).</p>
 <p><strong class="lng">Unit and size of the sample.</strong> The unit is "question × knowledge time point". Ingest the raw sources in chronological order, stop at about 8 time points, and at each one put the same questions to both arms. It is a paired comparison with binary outcomes, so the McNemar test. If 30% of questions get discordant answers from the two arms and the difference in accuracy is 10 percentage points, about 234 items are needed at a 5% significance level and 80% power (155 with 20% discordant, 940 with a 5-point difference). Since questions cluster within time points, with 30 items per time point and an intraclass correlation of 0.05 the design effect is <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x0002B;</mo><mn>29</mn><mo>&#x000D7;</mo><mn>0.05</mn><mo>&#x0003D;</mo><mn>2.45</mn></mrow></math></span> (the clustered standard error of <a href="#ch19">Chapter 18</a>). Then about <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>234</mn><mo>&#x000D7;</mo><mn>2.45</mn><mo>&#x02248;</mo><mn>573</mn></mrow></math></span> pairs are needed. Eight time points × 30 items (240 pairs) is not enough; with 30 items per time point, about 20 time points are needed. If you keep to 8 time points, the effective sample cannot exceed <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>8</mn><mo>&#x0002F;</mo><mn>0.05</mn><mo>&#x0003D;</mo><mn>160</mn></mrow></math></span> however many items you add. There is one more correlation. If the same questions are asked again at every time point, the results also cluster by question (crossed clustering of time point and question), so decide first whether to use new questions at each time point or repeat the same ones, and fit the analysis model to that choice.</p>
-<p><strong>Confounders.</strong> Corpus size (the gist says the index is enough up to about 100 sources, so cross size with the treatment), how often contradictions occur (the wiki's advantage is likely larger in fields where sources often disagree), question type (a factual question about one document against a synthesis across several — whether the type changes the effect is the core of the design), human involvement (mixing wikis people revised with wikis only the LLM wrote makes two treatments), and feedback from queries (if good answers are filed back into the wiki, earlier questions change the conditions of later ones, so either do not file back evaluation questions or make filing back a separate treatment).</p>
+<p><strong>Confounders.</strong> Corpus size (the gist says the index is enough up to about 100 sources, so cross size with the treatment), how often contradictions occur (the wiki's advantage is likely larger in fields where sources often disagree), question type (a factual question about one document versus a synthesis across several — whether the type changes the effect is the core of the design), human involvement (mixing wikis people revised with wikis only the LLM wrote makes two treatments), and feedback from queries (if good answers are filed back into the wiki, earlier questions change the conditions of later ones, so either do not file back evaluation questions or make filing back a separate treatment).</p>
 <p><strong class="lng">What this design still cannot answer.</strong> Whether errors in the wiki accumulate over months, and the understanding people gain by reading the wiki, are not captured by accuracy. If the right answer changes over time, the grading key has to be rebuilt for each time point (Appendix A.2 of ReAct, seen in <a href="#ch7">Chapter 6</a>, where an out-of-date dataset answer made a right answer count as wrong). And §7.3 of the revised AR survey writes that every benchmark the survey tabulates is confined to a single session. Multi-session evaluation of this kind has to be built from scratch.</p>
 </details>
 <p><strong class="lng">How solid is WikiSkill's ablation result?</strong> There are no per-item results, so treat the two configurations as independent samples and approximate with binomial standard errors. Since the comparison is on the same items, a paired analysis could shrink the standard errors. On the other hand, the variation among the three evolution runs enters neither this approximation nor the paper's bootstrap, which resamples only the test items (Appendix C). The paper itself acknowledges that with validation sets of 10 to 40 items the gating decisions are noisy (Appendix B). The approximation carries errors in both directions.</p>
@@ -18533,7 +18636,7 @@ In WikiSkill Table 3, showing the wiki to the execution agent lowered the averag
 <td>15</td>
 </tr>
 <tr>
-<td>structured note-taking / sub-agent architecture</td>
+<td>structured note-taking / subagent architecture</td>
 <td>—</td>
 <td>9</td>
 </tr>
@@ -18574,7 +18677,7 @@ In WikiSkill Table 3, showing the wiki to the execution agent lowered the averag
 
 <section class="chapter" id="sec24">
 <p class="eyebrow">Appendix</p>
-<h1 id="ch24">Appendix III — Bibliography and Links</h1>
+<h1 id="ch24">Appendix III — Bibliography and links</h1>
 <p>These are the bibliographic details of the papers and materials this book cites. In the numbering, <code>L</code> marks items on the list first proposed for the study and <code>S</code> marks items this book added. Each chapter's "Sources" section refers to them by these numbers. Every row was checked on October 4, 2026. Titles, authors and submission dates were checked against arXiv metadata, venues against the official conference lists (NeurIPS and ICLR proceedings, the ACL Anthology, the TMLR list on jmlr.org, Crossref DOIs), and only links that were opened directly and showed the right title were kept. Section 3 lists the prior work each chapter added, section 4 materials whose names overlap and are easily confused, and section 5 what could not be settled.</p>
 <h2 id="c24-1-the-list-first-proposed-l">1. The list first proposed (L)</h2>
 <div class="tw"><table>
@@ -19212,7 +19315,7 @@ In WikiSkill Table 3, showing the wiki to the execution agent lowered the averag
 
 <section class="chapter" id="sec25">
 <p class="eyebrow">Appendix</p>
-<h1 id="ch25">Appendix IV — Video List</h1>
+<h1 id="ch25">Appendix IV — Video list</h1>
 <p>This appendix gathers the lists from each chapter's "Videos" section in chapter order. There are three labels. [Author] marks a talk by an author of the paper or from an official channel, [Review] a paper review by a research lab or study group, and [Secondary] a third party's summary, a talk on the same theme, or a summary that appears to be automatically generated. Watch [Secondary] videos alongside the original. The title and channel of every video were checked through YouTube oEmbed. The 57 links checked on October 4, 2026 were queried again on October 5, 2026, and all their titles matched; the 11 added that day were checked the same day (68 in all). The check covers titles and channels only; the editor did not watch the videos themselves. Videos may disappear or change address.</p>
 <p>Videos in Korean are kept and marked (in Korean). As in each chapter, titles and channel names in Korean are given in English, translated or romanized by the editor.</p>
 <h2 id="c25-chapter-0--preliminaries">Chapter 0 — Preliminaries</h2>
@@ -19384,15 +19487,15 @@ In WikiSkill Table 3, showing the wiki to the execution agent lowered the averag
 </tr>
 <tr>
 <td>Edition</td>
-<td>Edition 1.0-en · translated from Korean edition 1.0 (2026-10-05), including the correction of 2026-10-13</td>
+<td>Edition 1.0.1-en · translated from Korean edition 1.0 (2026-10-05), including the correction of 2026-10-13; the corrections of facts, quotations and bibliography made in Korean edition 1.1 (2026-10-23) are reflected</td>
 </tr>
 <tr>
 <td>License</td>
-<td>To the extent the editor holds rights in it, this book is released under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> (Creative Commons Attribution-NonCommercial 4.0 International). A summary is in the first box of "How to Use This Book"; the license text governs. Tables, quotations and figures reproduced or redrawn from original works are not covered by this license and remain subject to the rights of their authors. If a rights holder tells us, we will correct or remove the material</td>
+<td>To the extent the editor holds rights in it, this book is released under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> (Creative Commons Attribution-NonCommercial 4.0 International). A summary is in the first box of "How to use this book"; the license text governs. Tables, quotations and figures reproduced or redrawn from original works are not covered by this license and remain subject to the rights of their authors. If a rights holder tells us, we will correct or remove the material</td>
 </tr>
 <tr>
 <td>Contents</td>
-<td>How to Use This Book · Chapter 0 (preliminaries) · Chapters 1–20 · four appendices (notation, glossary, bibliography and links, video list) · colophon</td>
+<td>How to use this book · Chapter 0 (preliminaries) · Chapters 1–20 · four appendices (notation, glossary, bibliography and links, video list) · colophon</td>
 </tr>
 <tr>
 <td>Originals</td>
@@ -19425,7 +19528,7 @@ In WikiSkill Table 3, showing the wiki to the execution agent lowered the averag
 <tr>
 <td>Edition 1.0</td>
 <td>2026-10-05</td>
-<td><strong>Korean edition.</strong> How to Use This Book, Chapter 0, Chapters 1–20, four appendices and the colophon</td>
+<td><strong>Korean edition.</strong> How to use this book, Chapter 0, Chapters 1–20, four appendices and the colophon</td>
 </tr>
 <tr>
 <td>Edition 1.0, corrected</td>
@@ -19436,6 +19539,11 @@ In WikiSkill Table 3, showing the wiki to the execution agent lowered the averag
 <td>Edition 1.0-en</td>
 <td>2026-10-22</td>
 <td><strong>English edition.</strong> Translated from Korean edition 1.0 (2026-10-05), including the correction of 2026-10-13. Content follows the Korean edition, with corrections where it differed from the originals; quotations originally in English were restored from the originals. Compared against the Korean edition by OpenAI Codex before publication.</td>
+</tr>
+<tr>
+<td>Edition 1.0.1-en</td>
+<td>2026-11-10</td>
+<td>Set chapter titles and running heads in sentence case and unified spelling in the editor's own text (pretraining, subagent). The corrections of facts, quotations and bibliography made in Korean edition 1.1 (2026-10-23) were found while this translation was being made and were already in it. The content of the book did not change</td>
 </tr>
 </tbody>
 </table></div>
@@ -19452,7 +19560,7 @@ In WikiSkill Table 3, showing the wiki to the execution agent lowered the averag
 <li><strong class="lng">Errors and revisions.</strong> This book will keep being revised. If you find a statement that differs from its source, please report it through the issue tracker (Issues) of the public repository or to the editor. Corrections will be made in a new edition with a new date.</li>
 <li><strong class="lng">A personal study resource.</strong> The editor compiled this book as part of personal study. It is unrelated to the views or work of any institution the editor belongs to.</li>
 </ul>
-<p><em>Sunday AI</em> · agent study · edited by Bowon Kwon · edition 1.0-en · translated from Korean edition 1.0 (October 5, 2026)</p>
+<p><em>Sunday AI</em> · agent study · edited by Bowon Kwon · edition 1.0.1-en · translated from Korean edition 1.0 (October 5, 2026)</p>
 </section>
 </main>
 </div>

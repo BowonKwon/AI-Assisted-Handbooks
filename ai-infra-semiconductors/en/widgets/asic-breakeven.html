@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ASIC Break-Even Calculator</title>
+<title>ASIC break-even calculator</title>
 <script>window.BOOK_DATA={"chips": [{"id": "a100", "name": "A100", "label": "A100 80GB SXM", "P": 312, "B": 2.04, "cap": 80}, {"id": "h100", "name": "H100", "label": "H100 SXM", "P": 989, "B": 3.35, "cap": 80, "tdp_kw": 0.7}, {"id": "b200", "name": "B200", "label": "B200", "P": 2250, "B": 7.7, "cap": 192, "sys": {"label": "DGX B200 system (per GPU)", "B": 8.0, "cap": 180}}], "kv_model": {"P": 70, "L": 80, "headDim": 128, "kvHeadsGQA": 8, "kvHeadsMHA": 64}, "tpu_v1": {"array": 256}, "hbm_bus_bits": {"narrow": 1024, "wide": 2048}, "wafer": {"d_mm": 300}, "systems": {"dgx_h100": {"label": "DGX H100", "gpus": 8, "kw": 10.2}, "dgx_b200": {"label": "DGX B200", "gpus": 8, "kw": 14.3, "mem_gb": 1440}, "dgx_b300": {"label": "DGX B300", "gpus": 8, "kw": 14, "mem_gb": 2100}}};window.WIDGET_ID="asic-breakeven";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
 <style>
 html,body{margin:0}
@@ -100,7 +100,7 @@ footer { font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top
 <div class="wrap">
 <header class="standalone-only">
   <div class="eyebrow">Session 2, Exercise 4 · Session 4, Exercise 5</div>
-  <h1>ASIC Break-Even Calculator</h1>
+  <h1>ASIC break-even calculator</h1>
   <p class="lede">Whether to build a custom chip or buy one is a decision you can quantify. Divide the development cost C<sub>NRE</sub> by the per-unit cost difference and you get the break-even volume N*. Session 2, Exercise 4 asks where power cost is measured (chip, server or facility) and recounts N*. Session 4, Exercise 5 computes N* separately from other assumed values and asks which kind of organization buys that volume.</p>
   <div class="formula">N* = C<sub>NRE</sub> / [(c<sub>G</sub> + o<sub>G</sub>) − (c<sub>A</sub> + o<sub>A</sub>)]　·　o = kW per unit × PUE × 8,760 × years × utilization × electricity price</div>
 </header>

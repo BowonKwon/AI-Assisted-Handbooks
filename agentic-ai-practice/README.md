@@ -41,13 +41,13 @@ GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일
 
 ## English edition
 
-*Harness in Hand: Building AI Agents with Claude Code and Codex* · Sunday AI agent study · hands-on volume · edited by Bowon Kwon · edition 1.0-en (October 22, 2026), translated from Korean edition 1.0
+*Harness in Hand: Building AI Agents with Claude Code and Codex* · Sunday AI agent study · hands-on volume · edited by Bowon Kwon · edition 1.0.1-en (November 10, 2026; lesson titles in sentence case, spelling unified), translated from Korean edition 1.0
 
 - [Read online (HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/agentic-ai-practice/en/)
-- [Print edition (PDF, 156 pages)](en/agentic-ai-practice-v1.0-en.pdf)
+- [Print edition (PDF, 156 pages)](en/agentic-ai-practice-v1.0.1-en.pdf)
 
 The editor translated the book working with Claude Code. The practice results were not translated: the agents were given the same tasks again with English instructions and English practice materials on October 22, 2026, and the text reports those runs, so results differ from the Korean edition in places. Quotations that were originally in English were restored from the original sources. Before publication, OpenAI Codex, given the two editions, the run records and the sources they cite, compared them; each finding was rechecked against the originals. Details are in the colophon at the end of the book.
 
-**Citation:** Bowon Kwon (ed.), *Harness in Hand: Building AI Agents with Claude Code and Codex*, edition 1.0-en (October 22, 2026), https://github.com/BowonKwon/AI-Assisted-Handbooks
+**Citation:** Bowon Kwon (ed.), *Harness in Hand: Building AI Agents with Claude Code and Codex*, edition 1.0.1-en (November 10, 2026), https://github.com/BowonKwon/AI-Assisted-Handbooks
 
 **License:** To the extent the editor holds rights in it, the text is licensed under [CC BY-NC 4.0](../LICENSE). Quoted originals and sentences from official documentation are not covered by this license and remain subject to the rights of their authors. The fonts in `en/fonts/` are modified (instanced, subset and renamed) versions of Source Serif 4, Source Sans 3, Source Code Pro and Noto Sans KR, licensed under the SIL Open Font License 1.1 (license files in the same folder).

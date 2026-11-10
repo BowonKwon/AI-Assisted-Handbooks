@@ -875,7 +875,7 @@ hr{border-top-color:var(--accent-line)!important}
 <p class="kicker">일요일은 AI · 에이전트 스터디</p>
 <h1>생각하고, 행동하고, 고쳐 쓰는 기계</h1>
 <p class="lede">ReAct에서 LLM Wiki까지, Agentic AI 논문 읽기</p>
-<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>권보원</b>(대구지방법원 부장판사) 엮음</p><p><b>구성</b> · 사용법 + 0장 + 20회 + 부록 4종<br><b>회차마다</b> · 발제 가이드(50분) · 직관 잡기 · 본론 · 통계의 눈으로 다시 읽기 · 곁가지 · 서베이로 돌아가기 · 오해 · 토론 · 영상<br><b>권장 진행</b> · 매주 1회, 전체 20회(약 5개월) / 필수 15회 / 최소 13회</p><p style="margin-top:14px"><b>인쇄</b> · Ctrl+P → PDF로 저장하면 접이식 풀이가 자동으로 모두 펼쳐집니다.<br><b>오프라인</b> · 이 파일 하나로 완결됩니다. 링크는 인터넷이 있을 때 열립니다.</p><p style="margin-top:14px;font-size:.94em">1.1판 · 2026. 10. 23. · 생성형 AI와 함께 엮었습니다. 틀린 곳이 있을 수 있으며 앞으로도 계속 고쳐 나가겠습니다.</p></div>
+<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>권보원</b>(대구지방법원 부장판사) 엮음</p><p><b>구성</b> · 사용법 + 0장 + 20회 + 부록 4종<br><b>회차마다</b> · 발제 가이드(50분) · 직관 잡기 · 본론 · 통계의 눈으로 다시 읽기 · 곁가지 · 서베이로 돌아가기 · 오해 · 토론 · 영상<br><b>권장 진행</b> · 매주 1회, 전체 20회(약 5개월) / 필수 15회 / 최소 13회</p><p style="margin-top:14px"><b>인쇄</b> · Ctrl+P → PDF로 저장하면 접이식 풀이가 자동으로 모두 펼쳐집니다.<br><b>오프라인</b> · 이 파일 하나로 완결됩니다. 링크는 인터넷이 있을 때 열립니다.</p><p style="margin-top:14px;font-size:.94em">1.1.1판 · 2026. 11. 10. · 생성형 AI와 함께 엮었습니다. 틀린 곳이 있을 수 있으며 앞으로도 계속 고쳐 나가겠습니다.</p></div>
 </section>
 <section class="printtoc"><h2>차례</h2><ol>
 <li><a href="#ch0">이 책의 사용법</a>
@@ -2429,7 +2429,7 @@ cheese =&gt;                         ← prompt
 <p>이 회차의 곁가지는 Weng의 글과 OpenAI 안내서다. 같은 회사의 후속 글 하나와, 패턴별로 뒤 회차에서 만날 논문 셋을 더한다.</p>
 <p><strong class="lng">LLM Powered Autonomous Agents</strong> (<a href="https://lilianweng.github.io/posts/2023-06-23-agent/">Weng 2023</a> · 이 회차의 보조 자료). 2023-06-23의 개인 블로그 글이다. LLM을 두뇌로 두고 계획(하위 목표로 쪼개기, 반성과 수정), 기억(단기는 문맥 내 학습, 장기는 외부 벡터 저장소), 도구 사용의 세 구성 요소가 받친다고 본다. Weng은 무엇으로 이루어지는가로 나누고 L21은 누가 경로를 정하는가로 나눈다. 그래서 Weng의 지도에는 워크플로와 에이전트의 구분이 없다. Weng이 도구 사용 사례로 드는 HuggingGPT는 과제 계획·모델 선택·실행·응답 생성의 네 단계가 고정되어 있고 입력을 보고 정하는 것은 과제 목록과 과제별 모델 배정이니, L21의 말로는 오케스트레이터–워커 워크플로에 가깝다(이 책의 읽기). 끝의 과제 셋 가운데 자연어 인터페이스의 신뢰성(데모 코드의 상당 부분이 모델 출력 파싱에 쓰인다)은 L21 Appendix 2와 같은 곳을 가리킨다.</p>
 <p><strong class="lng">A practical guide to building agents</strong> (<a href="https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf">OpenAI 2025</a>). 같은 주제를 다른 회사가 정리한 34쪽 PDF다(발행일 표기 없음, PDF 생성일 2025-04-07). 같은 낱말을 다른 뜻으로 쓴다. 이 안내서의 workflow는 사용자의 목표를 이루려고 실행할 단계의 연쇄, 곧 일 자체이고, 에이전트는 그 일을 높은 독립성으로 대신 수행하는 시스템이다(4쪽). LLM으로 워크플로 실행을 통제하지 않는 응용은 에이전트가 아니라고 하니, L21의 워크플로는 대개 이 정의의 에이전트 바깥에 놓일 것이다. 단일 에이전트를 먼저 최대로 키우라(16쪽), 결정론적 해법으로 충분할 수 있다(6쪽)는 처방은 L21의 「가장 단순한 해법부터」와 겹친다. 모델 선택은 안내서만 따로 다룬다. 가장 유능한 모델로 기준선을 세운 뒤 작은 모델로 바꿔 보라고 한다(8쪽). L21의 「단순함」은 시스템 구조의 단순함이고 작은 모델에서 시작하라는 말이 아니다. 모델 크기는 L21에서 라우팅 예시(쉬운 질의는 작은 모델, 어려운 질의는 큰 모델)로만 나온다. 관리자 패턴과 탈중앙(핸드오프) 패턴은 각각 L21의 오케스트레이터–워커, 라우팅과 모양이 닮았다. 31쪽 본문은 앞의 예시가 math_homework_tripwire 가드레일을 쓴다고 설명하지만 28~30쪽 코드의 가드레일은 churn_detection_tripwire다.</p>
-<p><strong class="lng">How we built our multi-agent research system</strong> (<a href="https://www.anthropic.com/engineering/multi-agent-research-system">Hadfield 외 2025</a>). Anthropic이 반년 뒤 자사 Research 기능을 「orchestrator-worker pattern」으로 짰다고 밝힌 글이다. 워커가 스스로 도구를 여러 번 쓰는 하위 에이전트여서 본론 3절의 「블록 안의 에이전트」가 실제로 나타나고, 숫자가 있다. Claude Opus 4 주 에이전트와 Sonnet 4 하위 에이전트의 조합이 내부 연구 평가에서 단일 Opus 4보다 90.2% 나았고(문항 수와 지표 정의는 없다), BrowseComp에서는 토큰 사용량 하나가 성능 분산의 80%를 설명했으며, 에이전트는 채팅보다 토큰을 약 4배, 다중 에이전트는 약 15배 쓴다. 병렬화할 일이 적은 대부분의 코딩 과제에는 아직 맞지 않는다는 단서도 붙어 있다.</p>
+<p><strong class="lng">How we built our multi-agent research system</strong> (<a href="https://www.anthropic.com/engineering/multi-agent-research-system">Hadfield 외 2025</a>). Anthropic이 반년 뒤 자사 Research 기능을 「orchestrator-worker pattern」으로 짰다고 밝힌 글이다. 워커가 스스로 도구를 여러 번 쓰는 서브에이전트여서 본론 3절의 「블록 안의 에이전트」가 실제로 나타나고, 숫자가 있다. Claude Opus 4 주 에이전트와 Sonnet 4 서브에이전트의 조합이 내부 연구 평가에서 단일 Opus 4보다 90.2% 나았고(문항 수와 지표 정의는 없다), BrowseComp에서는 토큰 사용량 하나가 성능 분산의 80%를 설명했으며, 에이전트는 채팅보다 토큰을 약 4배, 다중 에이전트는 약 15배 쓴다. 병렬화할 일이 적은 대부분의 코딩 과제에는 아직 맞지 않는다는 단서도 붙어 있다.</p>
 <p><strong>Reflexion</strong> (<a href="https://arxiv.org/abs/2303.11366">Shinn 외 2023</a> · 이 책 <a href="#ch12">11회</a>). 평가자–최적화자를 시행(trial) 사이로 늘린 것이다. 행위자(Actor)가 궤적을 만들고, 평가자(Evaluator)가 점수를 매기고(정확 일치·휴리스틱·다른 LLM 가운데 하나), 자기 반성 모델이 그것을 반성문으로 바꿔 기억에 쌓는다(§3). L21의 루프는 답안 하나를 다듬고 끝나면 아무것도 남기지 않는다. AR 서베이 개정판 Table 4가 이 차이를 기호로 적는다. 한 답 안에서 고치는 <a href="https://arxiv.org/abs/2303.17651">Self-Refine</a>은 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span>, 반성문을 다음 시도로 넘기는 Reflexion은 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 다.</p>
 <p><strong>MetaGPT</strong> (<a href="https://arxiv.org/abs/2308.00352">Hong 외 2024</a> · 이 책 <a href="#ch14">13회</a>). 초록이 겨냥하는 문제가 「LLM을 순진하게 이어 붙여 생기는 연쇄적 환각(cascading hallucinations)」, 곧 관문 없는 프롬프트 체이닝의 실패다. 답은 표준작업절차(SOP)를 프롬프트 연쇄로 부호화하고, 제품 관리자·설계자·엔지니어 같은 역할이 구조화된 산출물을 공유 메시지 풀(발행–구독)로 주고받으며 중간 결과를 검증하게 하는 것이다(§3). 역할과 순서가 SOP로 고정되어 있으니 L21의 지도에서는 관문 달린 체이닝에 가깝고, 일을 나눠 준다는 점에서 오케스트레이터–워커에도 걸친다. AR 서베이 개정판 §5.2.1은 「사람이 짠 파이프라인」으로 분류한다.</p>
 <p><strong>SWE-agent</strong> (<a href="https://arxiv.org/abs/2405.15793">Yang 외 2024</a> · 이 책 <a href="#ch15">14회</a>). L21 Appendix 2가 일화와 조언으로 말한 에이전트–컴퓨터 인터페이스(ACI)를 절제 실험으로 잰 논문이다(2024년 5월 arXiv, L21은 인용하지 않는다). GPT-4 Turbo를 쓴 SWE-agent는 SWE-bench 2,294개 과제의 12.47%(286개), 300개짜리 SWE-bench Lite의 18.00%(54개)를 풀었다(§5). Lite에서 인터페이스를 하나씩 바꾼 Table 3을 보면, 편집 명령을 빼면 18.0이 10.3으로, 파일 전체를 보여 주면 12.7로 떨어졌고, 결과를 하나씩 넘겨 보는 반복형 검색(12.0)은 검색 도구가 없을 때(15.7)보다도 낮았다. 「도구 설계에 프롬프트만큼 공을 들이라」는 조언이 같은 모델에서 수 %p의 차이로 나타난다는 측정이다.</p>
@@ -8678,7 +8678,7 @@ Answer:
 <h2 id="c10-곁가지--주제-논문과-다른-점">곁가지 — 주제 논문과 다른 점</h2>
 <p>이 회차의 곁가지 글은 셋이다(S15·S13·S14). 기술 보고서 하나와 회사 블로그의 처방·운영기 둘로, 모두 자사 제품을 만든 경험에서 나왔고 동료심사를 거치지 않았다. 설계 지침으로 읽되 일반화된 실증으로 읽지 않는다. 여기에 이 책의 다른 회차 논문 셋을 더한다.</p>
 <p><strong>Context Rot</strong> (<a href="https://www.trychroma.com/research/context-rot">Hong 외 2025</a> · Chroma 기술 보고서). 주제 논문이 위치를 조작했다면 이 보고서는 길이를 조작한다. 과제 난도를 고정하고 입력 길이만 늘려 18개 모델(GPT-4.1, Claude 4, Gemini 2.5, Qwen3 등)을 쟀다. 바늘–건초더미의 변형, LongMemEval 대화 질의응답(관련 부분만 준 약 300토큰 대 전체 약 113k토큰, 306문항), 반복 단어 복사에서 모두 입력이 길수록 성능이 떨어졌다. 앞의 둘은 사람 판정과 0.99 넘게 일치하도록 맞춘 GPT-4.1 판정자가 채점한다. 위치에 관한 결과는 다르다. 바늘–건초더미의 11개 위치 사이에는 "no notable variation in performance for this specific NIAH task"였고, 반복 단어 복사에서는 유일한 단어가 앞쪽에 있을 때 위치 정확도가 가장 높았다. 과제·모델 세대·지표가 모두 달라 주제 논문을 반박하는 결과로 읽기는 어렵다. 보고서의 참고문헌에는 주제 논문이 없다.</p>
-<p><strong class="lng">Effective context engineering for AI agents</strong> (<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Rajasekaran 외 2025</a> · Anthropic 블로그). 처방이다. 바늘–건초더미 계열 연구에서 나온 「컨텍스트 부패(context rot)」를 근거로 컨텍스트를 한계 수익이 줄어드는 유한 자원, 모델의 「주의 예산(attention budget)」으로 다루라고 한다. 원칙은 원하는 결과의 가능성을 최대화하는 가장 작은 고신호 토큰 집합을 찾으라는 것이다. 긴 작업에는 기법 셋을 든다. 창이 차 갈 때 대화를 요약해 새 창을 여는 압축(compaction), 창 밖에 노트를 써 두고 다시 읽는 구조화된 노트 쓰기(structured note-taking), 깨끗한 창의 하위 에이전트가 탐색하고 1,000~2,000토큰 요약만 돌려주는 하위 에이전트 구조(sub-agent architecture)다. 측정은 없다. 주제 논문 §5의 「더 넣어도 소용없다」를 설계 원칙으로 뒤집어 쓴 글로 읽을 수 있다(이 책의 읽기).</p>
+<p><strong class="lng">Effective context engineering for AI agents</strong> (<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Rajasekaran 외 2025</a> · Anthropic 블로그). 처방이다. 바늘–건초더미 계열 연구에서 나온 「컨텍스트 부패(context rot)」를 근거로 컨텍스트를 한계 수익이 줄어드는 유한 자원, 모델의 「주의 예산(attention budget)」으로 다루라고 한다. 원칙은 원하는 결과의 가능성을 최대화하는 가장 작은 고신호 토큰 집합을 찾으라는 것이다. 긴 작업에는 기법 셋을 든다. 창이 차 갈 때 대화를 요약해 새 창을 여는 압축(compaction), 창 밖에 노트를 써 두고 다시 읽는 구조화된 노트 쓰기(structured note-taking), 깨끗한 창의 서브에이전트가 탐색하고 1,000~2,000토큰 요약만 돌려주는 서브에이전트 구조(sub-agent architecture)다. 측정은 없다. 주제 논문 §5의 「더 넣어도 소용없다」를 설계 원칙으로 뒤집어 쓴 글로 읽을 수 있다(이 책의 읽기).</p>
 <p><strong class="lng">Context Engineering for AI Agents: Lessons from Building Manus</strong> (<a href="https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus">Ji 2025</a> · Manus 블로그). 운영기다. 먼저 용어 둘. KV 캐시는 모델이 이미 처리한 입력 앞부분(접두)의 내부 계산값을 저장해 두었다가, 접두가 같은 다음 호출에서 다시 계산하지 않고 쓰는 장치다. 글은 토큰 하나만 달라져도 그 자리부터 뒤의 캐시가 무효가 된다고 적는다. USD/MTok은 백만 토큰당 달러 가격이다. 글은 운영 단계 에이전트의 가장 중요한 지표로 KV 캐시 적중률(KV-cache hit rate)을 꼽는다. 입력과 출력 토큰의 비율이 평균 100:1 안팎이고, Claude Sonnet에서 캐시된 입력은 0.30 USD/MTok, 캐시되지 않은 입력은 3 USD/MTok로 10배 차이가 나기 때문이다. 그래서 앞부분을 고정하고 컨텍스트를 덧붙이기만(append-only) 하며, 큰 관찰은 경로나 URL만 남기고 파일 시스템으로 내보내라고 권한다. 주제 논문과 직접 닿는 곳은 todo.md다. 평균 50번쯤 도구를 부르는 작업에서 할 일 목록을 계속 다시 쓰는 것은 목표를 컨텍스트 끝에 「암송」해 "lost-in-the-middle" 문제를 피하는 장치라고 설명한다. 측정된 최신 편향을 거꾸로 이용하는 셈이다. 주제 논문 §5는 관련 문서를 앞으로 올리라고 권하는데 캐시를 지키려면 앞을 건드리면 안 되니, 앞을 고정하고 중요한 것을 뒤에 다시 쓰는 것이 Manus의 답이다(이 대비는 이 책의 읽기다).</p>
 <p><strong>RAG</strong> (<a href="https://arxiv.org/abs/2005.11401">Lewis 외 2020</a> · 이 책 <a href="#ch9">8회</a>). 주제 논문 §1은 다중 문서 질의응답이 검색 증강 생성(Bing Chat 같은 일반적인 구성을 가리키며, Lewis 외 2020을 인용하지는 않는다)의 독해 단계를 흉내 낸 것이라고 밝힌다. 그런데 독해기 구조가 다르다. RAG의 생성기는 입력 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>x</mi></mrow></math></span> 와 문서 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>z</mi></mrow></math></span> 하나를 이어 붙여 처리하고(§2.3), 상위 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> 개 문서(학습 때 5나 10, §3)에 대해 확률을 주변화한다. 문서들이 한 입력 안에 줄지어 서지 않으니 식의 구조상 문서 사이의 순서가 결과를 바꾸지 않는다. 주제 논문의 독해기는 <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math></span> 개를 프롬프트 하나에 넣으므로 위치 효과가 생길 자리가 있다. 결과도 대비된다. RAG §4.5에서는 문서를 더 가져올수록 RAG-Sequence의 NQ 성능이 단조롭게 올랐고, 주제 논문 §5에서는 20개를 넘어서면 거의 평평했다.</p>
 <p><strong>MemGPT</strong> (<a href="https://arxiv.org/abs/2310.08560">Packer 외 2023</a> · 이 책 <a href="#ch13">12회</a>). 주제 논문을 직접 인용하고 그 과제를 가져다 쓴 후속 연구다. §1은 긴 컨텍스트 모델이 추가 컨텍스트를 잘 쓰지 못한다는 근거로, §3.2는 처음이나 끝을 가운데보다 잘 떠올리는 「고르지 않은 주의 분포」를 컨텍스트를 키우기만 하는 접근을 의심하는 근거로 주제 논문을 든다. §3.2.1은 같은 검색기–독해기 질의응답에서 50문항을 뽑아 LLM 판정자로 채점하고, §3.2.2는 키–값 검색을 값이 다시 키가 되는 중첩 키–값 검색으로 바꿨다(140쌍, 약 8k토큰, 중첩 0~4단계). 질문이 다르다. 주제 논문은 고정된 창을 모델이 어떻게 쓰는지 묻고, MemGPT는 창이 차면 무엇을 남기고 내보낼지 묻는다. 창의 예컨대 70%가 차면 「메모리 압박」 경고를 넣고 100%가 차면 큐를 비우며 재귀 요약을 남긴다(§2.2).</p>
@@ -8726,8 +8726,8 @@ Answer:
 <ul>
 <li><strong class="lng">§5.1 왜 컨텍스트를 설계해야 하나.</strong> 셀프 어텐션의 제곱 비용, 주제 논문의 U자 곡선, Context Rot의 길이 효과를 근거로 든다. U자 곡선은 20문서에서 관련 문서가 가운데에 있으면 처음이나 끝보다 정확도가 30% 넘게 떨어지고, 모델·과제·컨텍스트 길이에 걸쳐 장문 컨텍스트 모델에서도 성립한다고 요약하고, 「정보가 있느냐만큼 어디에 놓이느냐가 중요하다」는 함의를 끌어낸다.</li>
 <li><strong class="lng">§5.2–5.3 컨텍스트 엔지니어링과 단기 관리.</strong> Anthropic 글(S13)의 정의를 인용하고, 시스템 프롬프트·도구 정의·이전 대화·도구 결과·검색 문서가 같은 주의 예산을 두고 경쟁한다고 적는다. 단기 기법으로 필요할 때 불러오는 검색(just-in-time retrieval)과 Manus 글(S14)의 KV 캐시 설계 규칙을 정리한다.</li>
-<li><strong class="lng">§5.6 100턴 넘는 장기 작업.</strong> 압축, 하위 에이전트의 컨텍스트 격리, 그리고 「항상 필요한 것은 미리 싣고, 조건부로 필요한 것은 그때 불러오고, 창이 차면 압축하고, 탐색이 오케스트레이터를 오염시키면 하위 에이전트를 띄운다」는 판단 틀이다. 컨텍스트 관리는 에이전트가 아니라 기반시설의 일이어야 한다고 적는다.</li>
-<li><strong>§5.7 컨텍스트 표류.</strong> 컨텍스트 부패(한 번의 추론에서 토큰이 늘면 질이 떨어지는 성질)와 컨텍스트 표류(context drift, 긴 궤적에서 행동이 원래 의도에서 멀어지는 성질)를 구별한다. 압축·검색·하위 에이전트 어느 것도 표류를 막지 못한다는 것이 결론이다.</li>
+<li><strong class="lng">§5.6 100턴 넘는 장기 작업.</strong> 압축, 서브에이전트의 컨텍스트 격리, 그리고 「항상 필요한 것은 미리 싣고, 조건부로 필요한 것은 그때 불러오고, 창이 차면 압축하고, 탐색이 오케스트레이터를 오염시키면 서브에이전트를 띄운다」는 판단 틀이다. 컨텍스트 관리는 에이전트가 아니라 기반시설의 일이어야 한다고 적는다.</li>
+<li><strong>§5.7 컨텍스트 표류.</strong> 컨텍스트 부패(한 번의 추론에서 토큰이 늘면 질이 떨어지는 성질)와 컨텍스트 표류(context drift, 긴 궤적에서 행동이 원래 의도에서 멀어지는 성질)를 구별한다. 압축·검색·서브에이전트 어느 것도 표류를 막지 못한다는 것이 결론이다.</li>
 </ul>
 <p>주제 논문은 한 번의 질문–답변에서 쟀으므로 이 틀에서 표류가 아니라 부패 쪽에 놓인다. 서베이의 요약에는 원문과 맞춰 볼 대목이 둘 있다. 원문은 「20% 넘게」라고 적고, Table 6으로 계산하면 GPT-3.5-Turbo 20문서의 1번째와 10번째 차이는 절대 22.0%p, 상대 29.0%다. 상대 하락이 30%를 넘는 것은 30문서의 16K판(73.4 → 50.5, 상대 31.2%)이니, 「20문서에서 30% 넘게」가 어느 숫자를 옮긴 것인지는 열려 있다. 또 실습 2에서 보듯 10문서에서는 대부분의 모델이 L자였고 키–값 검색의 Claude-1.3 계열은 위치와 무관하게 거의 완벽했으니, 「컨텍스트 길이에 걸쳐 성립한다」는 원문의 표보다 넓게 읽힐 여지가 있다. §5.1의 「200K 토큰 모델이 50K에서 이미 성능을 크게 잃을 수 있다」는 문장 자체에는 인용이 없다. 단락은 Hong 외(2025, Chroma의 Context Rot 보고서)의 실험으로 시작하고 다음 문장에서 다시 그 보고서를 가리키지만, 보고서 전문에는 200K도 50K도 나오지 않는다(2026-10-05 재확인). 이 수치는 근거가 확인되지 않은 문장으로 읽는다.</p>
 <p><a href="#ch4">3회</a>의 하네스 정의로 보면 §4.2의 질의 인식 컨텍스트화와 §5가 방향으로만 제안한 재순위화는 모델을 그대로 두고 입력의 배치만 바꾸는 하네스 쪽 개입이다. 효과가 실제로 측정된 것은 앞의 것뿐이고, 그 개입이 키–값 검색에서는 성능을 거의 완벽하게 만들었고 다중 문서 질의응답에서는 거의 바꾸지 못했다. 같은 개입도 과제에 따라 효과가 전혀 다를 수 있다는 사례로 읽을 수 있다(논문의 설명은 아니다).</p>
@@ -8774,7 +8774,7 @@ GPT-3.5-Turbo와 LongChat은 앞쪽이 훨씬 높고, Claude-1.3과 MPT-30B-Inst
 <li><strong>원문의 나머지.</strong> 부록 A–G. 특히 부록 C(방해 문서 순서 무작위화)와 부록 E(Llama-2 크기별)는 위치 효과의 원인에 관한 논의를 넓힌다.</li>
 <li><strong>코드와 데이터.</strong> <a href="https://github.com/nelson-liu/lost-in-the-middle">저장소</a>. 7절의 대응 분석(맥니마 검정, 혼합효과 로지스틱 모형)을 실제로 하려면 이 데이터로 모델 출력을 다시 만들어야 한다.</li>
 <li><strong>서베이에서 이어 읽기.</strong> <a href="https://picrew.github.io/LLM-Harness/">Harness 서베이</a> §5.4–5.5(중기·장기 기억 — <a href="#ch13">12회</a>에서 읽는다). <a href="https://openreview.net/forum?id=2HIxxXIq2u">AR 서베이 개정판</a> §4.2와 Table 10(기억의 분류 — 역시 <a href="#ch13">12회</a>).</li>
-<li><strong>이 책 안에서.</strong> <a href="#ch9">8회</a>(RAG — 문서를 따로 처리하고 주변화하는 독해기), <a href="#ch11">10회</a>(Self-RAG — 검색 여부와 문서의 쓸모를 모델이 판단), <a href="#ch13">12회</a>(MemGPT — 창이 차면 무엇을 내보내나, 이 논문의 과제를 그대로 가져다 씀), <a href="#ch14">13회</a>(여럿이 일하기 — 하위 에이전트로 컨텍스트를 나누는 다른 길), <a href="#ch19">18회</a>(평가의 통계 — 이 장 7절의 연장), <a href="#ch21">20회</a>(LLM Wiki — 미리 컴파일한 지식).</li>
+<li><strong>이 책 안에서.</strong> <a href="#ch9">8회</a>(RAG — 문서를 따로 처리하고 주변화하는 독해기), <a href="#ch11">10회</a>(Self-RAG — 검색 여부와 문서의 쓸모를 모델이 판단), <a href="#ch13">12회</a>(MemGPT — 창이 차면 무엇을 내보내나, 이 논문의 과제를 그대로 가져다 씀), <a href="#ch14">13회</a>(여럿이 일하기 — 서브에이전트로 컨텍스트를 나누는 다른 길), <a href="#ch19">18회</a>(평가의 통계 — 이 장 7절의 연장), <a href="#ch21">20회</a>(LLM Wiki — 미리 컴파일한 지식).</li>
 </ul>
 <hr>
 <h2 id="c10-출처">출처</h2>
@@ -11857,7 +11857,7 @@ send_to:          Engineer
 <hr>
 <h2 id="c14-곁가지--주제-논문과-다른-점">곁가지 — 주제 논문과 다른 점</h2>
 <p>이 회차의 곁가지는 둘(Anthropic 멀티에이전트 연구 시스템 S18, HuggingGPT)이다. 여기에 MetaGPT가 직접 비교한 ChatDev와 이 책의 앞뒤 회차가 다루는 연구를 더한다.</p>
-<p><strong class="lng">Anthropic의 멀티에이전트 연구 시스템</strong> (<a href="https://www.anthropic.com/engineering/multi-agent-research-system">Hadfield 외 2025</a>). 오케스트레이터–워커 구조로, 지휘 에이전트가 질의를 분석해 하위 에이전트를 병렬로 띄우고, 하위 에이전트는 각자의 컨텍스트 창에서 검색해 압축한 결과를 돌려준다. 차이는 분업을 누가 언제 정하느냐다. MetaGPT의 역할과 순서는 사람이 미리 정한 조립 라인이고, 이쪽은 지휘 에이전트가 과제마다 정한다. 수치는 조건과 함께 읽는다. Claude Opus 4 지휘 + Sonnet 4 하위 에이전트 구성이 단일 Opus 4보다 내부 연구 평가에서 90.2% 나았다(문항 수와 비율의 기준은 적혀 있지 않다). BrowseComp에서는 토큰 사용량 하나가 성능 분산의 80%를 설명했다. 에이전트는 채팅보다 토큰을 약 4배, 멀티에이전트는 약 15배 쓴다. 그리고 대부분의 코딩 과제는 병렬로 나눌 부분이 연구보다 적어 지금의 멀티에이전트에 잘 맞지 않는다고 적는다. 부록은 「전화 게임」을 줄이려면 결과를 파일 시스템에 남기고 참조만 넘기라고 권한다. MetaGPT의 문서 발행과 같은 방향이다. 자사 제품의 경험에서 나온 처방이고 동료심사를 거치지 않았다.</p>
+<p><strong class="lng">Anthropic의 멀티에이전트 연구 시스템</strong> (<a href="https://www.anthropic.com/engineering/multi-agent-research-system">Hadfield 외 2025</a>). 오케스트레이터–워커 구조로, 지휘 에이전트가 질의를 분석해 서브에이전트를 병렬로 띄우고, 서브에이전트는 각자의 컨텍스트 창에서 검색해 압축한 결과를 돌려준다. 차이는 분업을 누가 언제 정하느냐다. MetaGPT의 역할과 순서는 사람이 미리 정한 조립 라인이고, 이쪽은 지휘 에이전트가 과제마다 정한다. 수치는 조건과 함께 읽는다. Claude Opus 4 지휘 + Sonnet 4 서브에이전트 구성이 단일 Opus 4보다 내부 연구 평가에서 90.2% 나았다(문항 수와 비율의 기준은 적혀 있지 않다). BrowseComp에서는 토큰 사용량 하나가 성능 분산의 80%를 설명했다. 에이전트는 채팅보다 토큰을 약 4배, 멀티에이전트는 약 15배 쓴다. 그리고 대부분의 코딩 과제는 병렬로 나눌 부분이 연구보다 적어 지금의 멀티에이전트에 잘 맞지 않는다고 적는다. 부록은 「전화 게임」을 줄이려면 결과를 파일 시스템에 남기고 참조만 넘기라고 권한다. MetaGPT의 문서 발행과 같은 방향이다. 자사 제품의 경험에서 나온 처방이고 동료심사를 거치지 않았다.</p>
 <p><strong>HuggingGPT</strong> (<a href="https://arxiv.org/abs/2303.17580">Shen 외 2023</a> · 이 책 <a href="#ch8">7회</a>). 초록의 범위에서 정리한다. LLM이 기존 AI 모델들을 관리하는 관제자(controller)가 되고 언어가 일반 인터페이스가 된다. ChatGPT가 과제를 계획하고, Hugging Face의 기능 설명을 보고 모델을 고르고, 고른 모델로 하위 과제를 실행하고, 결과를 요약한다. 관제 LLM 하나가 계획과 배정을 다 하는 위계형이고, 일하는 쪽은 LLM 에이전트가 아니라 전문 모델이다. 동료 역할도, 서로 넘기는 문서도 없다. 관제자의 계획이 틀리면 아래 단계가 모두 그 계획을 따를 것이라는 점에서 이 장의 질문이 그대로 걸린다(이 책의 읽기).</p>
 <p><strong>ChatDev</strong> (<a href="https://arxiv.org/abs/2307.07924">Qian 외 2023</a>). MetaGPT가 Table 1·4에서 비교한 상대다. 초록에 따르면 에이전트들이 설계·코딩·시험 단계에 참여하고, 무엇을 말할지는 대화 사슬(chat chain)이, 어떻게 말할지는 「소통에 의한 환각 제거(communicative dehallucination)」가 정하며, 해법은 여러 차례의 대화에서 나온다. MetaGPT가 내세우는 차이는 대화 대 문서다(§3.2). ChatDev도 단계를 따르고 환각을 줄이는 장치를 두므로, 차이를 「단계 사이를 대화로 잇느냐 서식 있는 문서로 잇느냐」로 읽을 여지도 있다.</p>
 <p><strong class="lng">프롬프트 체이닝과 오케스트레이터–워커</strong> (<a href="https://www.anthropic.com/engineering/building-effective-agents">Erik S.·Barry Zhang 2024</a> · 이 책 <a href="#ch2">1회</a>). 프롬프트 체이닝은 과제를 정해진 단계로 쪼개 각 호출이 앞 호출의 출력을 처리하게 하고 중간에 프로그램 점검(gate)을 둘 수 있다. 오케스트레이터–워커는 중앙 LLM이 하위 과제를 그때그때 정한다. MetaGPT는 앞의 것에, Anthropic 연구 시스템(S18)은 뒤의 것에 가깝다. MetaGPT에서는 체인의 고리 하나하나가 LLM 호출이 아니라 ReAct식 에이전트이고 고리 사이를 문서 서식이 잇는다. <a href="#ch2">1회</a>의 글은 에이전트의 자율성이 오류가 쌓일(compounding errors) 가능성을 키운다고 경고한다.</p>
@@ -11938,7 +11938,7 @@ send_to:          Engineer
 </tbody>
 </table></div>
 <p><em>AR 서베이 개정판 Table 11의 MetaGPT 행. 같은 블록(I. 문맥 내 협업)에 AgentVerse, AutoGen, SMoA, Magentic-One이 있다.</em></p>
-<p>§5.2.1 본문은 MetaGPT를 손으로 만든 파이프라인 가운데 계층형, 곧 중앙의 계획자가 하위 에이전트를 이끄는 시스템으로 분류한다. MetaGPT 논문은 모든 에이전트가 순차적으로 일한다고 적고 지휘 에이전트를 따로 두지 않으므로, 연쇄형이나 역할 기반에 가깝게 읽을 여지도 있다. 분류의 경계가 흐린 자리라 발제에서 짚어 둘 만하다. <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 모드의 연구들(역할 프롬프트 최적화, AFlow·GPTSwarm 같은 위상 탐색)이 자동으로 찾으려는 것을 MetaGPT는 사람이 하나 골라 고정했다.</p>
+<p>§5.2.1 본문은 MetaGPT를 손으로 만든 파이프라인 가운데 계층형, 곧 중앙의 계획자가 서브에이전트를 이끄는 시스템으로 분류한다. MetaGPT 논문은 모든 에이전트가 순차적으로 일한다고 적고 지휘 에이전트를 따로 두지 않으므로, 연쇄형이나 역할 기반에 가깝게 읽을 여지도 있다. 분류의 경계가 흐린 자리라 발제에서 짚어 둘 만하다. <span class="mi"><math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>S</mi></mrow></math></span> 모드의 연구들(역할 프롬프트 최적화, AFlow·GPTSwarm 같은 위상 탐색)이 자동으로 찾으려는 것을 MetaGPT는 사람이 하나 골라 고정했다.</p>
 <h3 id="c14-5254의-토론--무엇이-교란되어-있나">§5.2·§5.4의 토론 — 무엇이 교란되어 있나</h3>
 <ul>
 <li><strong>토큰 예산(§5.2 끝).</strong> 「이긴」 위상이 그저 토큰을 더 쓴 것일 수 있고, 여러 성과에는 같은 총예산의 단일 에이전트 기준선이 없다. Table 1에서 MetaGPT는 ChatDev보다 토큰을 1.28~1.62배 썼고, Figure 4에는 같은 예산의 단일 GPT-4 에이전트가 없다.</li>
@@ -18521,8 +18521,8 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 <td>9, 3</td>
 </tr>
 <tr>
-<td>구조화된 노트 쓰기 · 하위 에이전트 구조</td>
-<td>structured note-taking · sub-agent architecture</td>
+<td>구조화된 노트 쓰기 · 서브에이전트 구조</td>
+<td>structured note-taking · subagent architecture</td>
 <td>9</td>
 </tr>
 <tr>
@@ -19581,13 +19581,23 @@ WikiSkill Table 3에서 실행 에이전트에게 위키를 보여 주자 평균
 <td>첫 공개판. 사용법·0장·1~20회·부록 4종</td>
 </tr>
 <tr>
+<td>1.0판 정정</td>
+<td>2026. 10. 13.</td>
+<td>이용 허락 문구 정비, 차례의 회차 번호와 휴대전화 화면에서 글이 넘치던 곳 수정. 책의 내용은 바뀌지 않았다</td>
+</tr>
+<tr>
 <td>1.1판</td>
 <td>2026. 10. 23.</td>
 <td>디자인 개편(시리즈 디자인 B). 영문판을 번역·대조하는 중에 확인된 사실·인용·서지 정정 34건과 조판 정정 3건 반영</td>
 </tr>
+<tr>
+<td>1.1.1판</td>
+<td>2026. 11. 10.</td>
+<td>용어 「하위 에이전트」를 실전편과 같은 「서브에이전트」로 통일. 판 이력에 1.0판 정정 줄 추가. 책의 내용은 바뀌지 않았다</td>
+</tr>
 </tbody>
 </table></div>
-<p>일요일은 AI · 에이전트 스터디 · 권보원 엮음 · 1.1판 · 2026. 10. 23.</p>
+<p>일요일은 AI · 에이전트 스터디 · 권보원 엮음 · 1.1.1판 · 2026. 11. 10.</p>
 </section>
 </main>
 </div>
