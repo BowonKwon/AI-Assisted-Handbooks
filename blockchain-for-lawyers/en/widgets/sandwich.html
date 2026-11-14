@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sandwich attack — what the victim loses</title>
+<script>window.BOOK_DATA={"as_of": "2026-10-25", "bitcoin": {"difficulty_adjustment": {"interval_blocks": 2016, "target_timespan_s": 1209600, "target_spacing_s": 600, "max_factor_per_adjustment": 4}, "subsidy": {"halving_interval_blocks": 210000, "initial_subsidy_btc": 50, "initial_subsidy_sat": 5000000000}, "max_block_weight": {"value_wu": 4000000, "witness_scale_factor": 4, "observed_tip_weight": {"height": 972958, "weight_wu": 3993715}}, "genesis_header": {"hex": "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c", "block_hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", "nVersion": 1, "nTime": 1231006505, "nBits": "0x1d00ffff", "nNonce": 2083236893}, "hashrate_snapshot": {"as_of": "2026-10-25", "observed_utc": "2026-10-24T18:17:18Z/18:17:34Z", "chain_tip_height": 972958, "last_retarget_height": 971712, "nBits": "0x17020093", "difficulty": 140577680051919.62, "hashrate_H_per_s": 1.0062942306175772e+21, "formula": "D = target(0x1d00ffff)/target(nBits); H = D × 2^32 / 600 (an estimate resting on the assumption of one block every 600 seconds on average, not a measurement)", "comparison_only_mempool_currentHashrate_H_per_s": 1.077240378672487e+21}}, "ethereum": {"active_fork": {"consensus": "Fulu", "execution": "Osaka", "combined_name": "Fusaka", "fulu_fork_epoch": 411392, "fork_version": "0x06000000", "osaka_time_unix": 1764798551, "activated_utc": "2025-12-03T21:49:11Z", "next_fork_scheduled_on_mainnet": false}, "eip1559": {"ELASTICITY_MULTIPLIER": 2, "BASE_FEE_MAX_CHANGE_DENOMINATOR": 8, "INITIAL_BASE_FEE_wei": 1000000000, "gas_target_rule": "gas_target = parent.gas_limit // ELASTICITY_MULTIPLIER", "observed_latest_block": {"number": 26264275, "hash": "0x3f75ce9e8634bfac938e192b011f202fc2f10555d1ee7f78cc033b6814fd695c", "timestamp_unix": 1792866179, "gas_limit": 60000000, "gas_used": 32652385, "gas_target_computed": 30000000, "base_fee_per_gas_wei": 68997174}}, "staking": {"MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000, "MIN_SLASHING_PENALTY_QUOTIENT_ELECTRA": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT_ELECTRA": 4096, "PROPORTIONAL_SLASHING_MULTIPLIER_BELLATRIX": 3, "EPOCHS_PER_SLASHINGS_VECTOR": 8192, "history": [{"fork": "Phase0 (2020-12-01)", "MIN_SLASHING_PENALTY_QUOTIENT": 128, "WHISTLEBLOWER_REWARD_QUOTIENT": 512, "PROPORTIONAL_SLASHING_MULTIPLIER": 1, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000}, {"fork": "Altair (epoch 74240, 2021-10-27)", "MIN_SLASHING_PENALTY_QUOTIENT": 64, "PROPORTIONAL_SLASHING_MULTIPLIER": 2}, {"fork": "Bellatrix (epoch 144896, 2022-09-06)", "MIN_SLASHING_PENALTY_QUOTIENT": 32, "PROPORTIONAL_SLASHING_MULTIPLIER": 3}, {"fork": "Electra (epoch 364032, 2025-05-07)", "MIN_SLASHING_PENALTY_QUOTIENT": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT": 4096, "MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "note": "PROPORTIONAL_SLASHING_MULTIPLIER stays at the Bellatrix value of 3"}, {"fork": "Fulu (epoch 411392, 2025-12-03)", "note": "No change to the constants above"}]}}, "timeline": {"as_of": "2026-10-25", "range": {"start": "1976", "end": "2023"}, "anchor_ids": {"01-블록체인이푸는문제": "ch0", "02-30년전사": "ch1", "03-이책을읽는법": "ch2", "04-해시함수": "ch3", "05-공개키서명": "ch4", "06-머클트리": "ch5", "07-블록과체인": "ch6", "08-작업증명": "ch7", "09-최종성의확률적성격": "ch8", "10-지분증명": "ch9", "11-UTXO와계정": "ch10", "12-진짜블록해부": "ch11", "13-이더리움가상머신과가스": "ch12", "14-토큰표준": "ch13", "15-탈중앙거래소와AMM": "ch14", "16-오라클문제": "ch15", "17-MEV와거래순서": "ch16", "18-확장성": "ch17", "19-화폐의기능론": "ch18", "20-보안예산": "ch19", "21-수수료시장": "ch20", "22-토큰설계의경제학": "ch21", "23-게임이론": "ch22", "24-스테이블코인": "ch23", "25-버블의계량검정": "ch24", "26-네사건": "ch25", "27-기술과법의다리-1": "ch26", "28-기술과법의다리-2": "ch27", "29-양자전환": "ch28", "30-명명문제": "ch29", "9A-동향노트-색인": "ch30", "9B-오해판정표": "ch31", "9C-대역표": "ch32", "9D-연표": "ch33", "9E-수학보충": "ch34", "9F-용어집-목록-판권": "ch35"}, "events": [{"date": "1976-11", "precision": "month", "title": "Diffie and Hellman, \"New Directions in Cryptography\": public-key cryptography", "chapter": 5, "anchor": "05-공개키서명", "_src": "IEEE Trans. Inform. Theory IT-22(6): 644-654, November 1976"}, {"date": "1980-04", "precision": "month", "title": "Merkle, \"Protocols for Public Key Cryptosystems\": tree authentication of a list of public keys", "chapter": 6, "anchor": "06-머클트리", "_src": "Proc. 1980 IEEE Symposium on Security and Privacy, pp. 122-134 (DOI 10.1109/SP.1980.10006), at pp. 126-127", "note": "Detailed discussion deferred to reference [13], \"A certified digital signature\""}, {"date": "1982-07", "precision": "month", "title": "Lamport, Shostak and Pease, \"The Byzantine Generals Problem\"", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "ACM TOPLAS 4(3): 382-401, July 1982"}, {"date": "1983", "precision": "year", "title": "Chaum, \"Blind Signatures for Untraceable Payments\": blind-signature electronic cash", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "Advances in Cryptology: Proceedings of Crypto 82, pp. 199-203 (Springer, 1983)", "year_note": "Conference 1982 (Crypto 82), published 1983"}, {"date": "1988", "precision": "year", "title": "Merkle, \"A Digital Signature Based on a Conventional Encryption Function\": tree signatures", "chapter": 6, "anchor": "06-머클트리", "_src": "CRYPTO 87, LNCS 293, pp. 369-378 (Springer, 1988)", "year_note": "Conference 1987 (CRYPTO 87), published 1988"}, {"date": "1991", "precision": "year", "title": "Haber and Stornetta, \"How To Time-Stamp a Digital Document\": a chain of time stamps", "chapter": 7, "anchor": "07-블록과체인", "_src": "J. Cryptology 3(2): 99-111 (1991)"}, {"date": "1993", "precision": "year", "title": "Bayer, Haber and Stornetta, \"Improving the Efficiency and Reliability of Digital Time-Stamping\": the chain turned into a tree", "chapter": 7, "anchor": "07-블록과체인", "_src": "Sequences II, pp. 329-334 (Springer, 1993)", "note": "The authors' typeset version is marked \"March 1992\"; published 1993"}, {"date": "1997-03-28", "precision": "day", "title": "Back, Hashcash announcement (cypherpunks): a stamp whose cost is paid in computation", "chapter": 8, "anchor": "08-작업증명", "_src": "http://www.hashcash.org/papers/announce.txt (Fri, 28 Mar 1997); the Back (2002) paper gives \"May 1997\" (the discrepancy is discussed in a footnote to Chapter 2)"}, {"date": "1998", "precision": "year", "title": "Dai, \"b-money\": a picture in which money is created by computation and everyone holds the ledger", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "http://www.weidai.com/bmoney.txt; 1998 is the date given in reference [1] of Nakamoto (2008)", "note": "No date in the document; month and day not given"}, {"date": "2005-12-29", "precision": "day", "title": "Szabo, \"Bit gold\": proof of work, time stamps and a registry of ownership", "chapter": 8, "anchor": "08-작업증명", "_src": "https://unenumerated.blogspot.com/2005/12/bit-gold.html; the posting date is the date shown in the Wayback snapshot of 2006-03-29; how the date now displayed on the page came to be 2008-12-27 was not verified"}, {"date": "2008-10-31", "precision": "day", "title": "Nakamoto, \"Bitcoin P2P e-cash paper\": the white paper is released", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "https://www.metzdowd.com/pipermail/cryptography/2008-October/014810.html (Fri Oct 31 14:10:00 EDT 2008); white paper PDF"}, {"date": "2009-01-03", "precision": "day", "title": "The genesis block (nTime 1231006505 = 2009-01-03T18:15:05Z)", "chapter": 12, "anchor": "12-진짜블록해부", "_src": "data/genesis_block.hex·genesis_block.meta.json; Bitcoin Core v31.1 chainparams.cpp L134-L137"}, {"date": "2014", "precision": "year", "title": "Buterin, the Ethereum white paper (draft 2013, official version 2014)", "chapter": 13, "anchor": "13-이더리움가상머신과가스", "_src": "Official PDF at ethereum.org; earliest Wayback capture 2013-12-19 (footnote to Chapter 2)", "year_note": "Draft 2013, official version 2014"}, {"date": "2014-02-28", "precision": "day", "title": "Mt.Gox files a petition for civil rehabilitation (Tokyo District Court (東京地裁), 平成26年(再)第12号)", "chapter": 26, "anchor": "26-네사건", "_src": "Debtor's announcement (Japanese and English)"}, {"date": "2014-04-24", "precision": "day", "title": "Order commencing bankruptcy proceedings against Mt.Gox (Tokyo District Court (東京地裁), 平成26年(フ)第3830号)", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo District Court (東京地裁), 平成26年(フ)第3830号, original text of the order commencing bankruptcy proceedings"}, {"date": "2016-04-30", "precision": "day", "title": "The DAO token sale begins (to 2016-05-28)", "chapter": 26, "anchor": "26-네사건", "_src": "SEC Release No. 81207 (2017-07-25), p. 2"}, {"date": "2016-06-17", "precision": "day", "title": "The DAO attack (a recursive-call flaw)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-06-17 CRITICAL UPDATE Re: DAO Vulnerability; SEC Release No. 81207, p. 9"}, {"date": "2016-07-20", "precision": "day", "title": "Ethereum hard fork (block 1,920,000, irregular state change)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-07-20 Hard Fork Completed; EIP-779; SEC Release No. 81207, p. 9"}, {"date": "2017-07-25", "precision": "day", "title": "SEC, \"Report of Investigation … The DAO\": DAO Tokens are securities", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "SEC Release No. 81207"}, {"date": "2019-03-15", "precision": "day", "title": "Tokyo District Court (東京地裁), first-instance criminal judgment against Mt.Gox's representative director", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo District Court (東京地裁), judgment of March 15, 2019, full text (平成27年(刑わ)第2274号 and others)"}, {"date": "2020-03", "precision": "month", "title": "Adams, Zinsmeister and Robinson, \"Uniswap v2 Core\": a constant-product automated market", "chapter": 15, "anchor": "15-탈중앙거래소와AMM", "_src": "Adams, Zinsmeister & Robinson, Uniswap v2 Core white paper (March 2020)"}, {"date": "2020-06-11", "precision": "day", "title": "Tokyo High Court (東京高裁), criminal judgment on appeal against Mt.Gox's representative director (appeal dismissed)", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo High Court (東京高裁), judgment of June 11, 2020 (令和元年(う)第948号), judgment PDF at courts.go.jp"}, {"date": "2021-08-05", "precision": "day", "title": "Ethereum's London fork (EIP-1559, block 12,965,000, 2021-08-05T12:33:42Z)", "chapter": 21, "anchor": "21-수수료시장", "_src": "Header of block 12,965,000 (public RPC, timestamp 1628166822); go-ethereum v1.17.10 params/chainspecs/mainnet.json londonBlock (footnote to Chapter 21)"}, {"date": "2021-11", "precision": "month", "title": "Bitcoin's Taproot activation (minimum activation height 709,632)", "chapter": 5, "anchor": "05-공개키서명", "_src": "Bitcoin Core v31.1 src/kernel/chainparams.cpp (\"Approximately November 12th, 2021\"); Appendix A-8"}, {"date": "2022-05", "precision": "month", "title": "The collapse of Terra", "chapter": 26, "anchor": "26-네사건", "_src": "BIS Annual Economic Report 2022 ch. III Box A (mechanism); verdict and final judgment in SEC v. Terraform (Chapter 26)"}, {"date": "2022-09-15", "precision": "day", "title": "Ethereum's transition to proof of stake (The Merge; estimated date the TTD was reached)", "chapter": 10, "anchor": "10-지분증명", "_src": "consensus-specs configs/mainnet.yaml, comment \"Estimated on Sept 15, 2022\"; Appendix A-7", "note": "Estimated date"}, {"date": "2022-11-11", "precision": "day", "title": "FTX files under Chapter 11 (Petition Date; West Realm Shires on 11-14)", "chapter": 26, "anchor": "26-네사건", "_src": "Declaration of John J. Ray III, In re FTX Trading Ltd., D.I. 24, ¶40"}, {"date": "2023-02-03", "precision": "day", "title": "Court of Appeal of England and Wales, Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83, judgment PDF"}, {"date": "2023-06-09", "precision": "day", "title": "EU MiCA published in the Official Journal (OJ L 150; applies from 2024-12-30)", "chapter": 30, "anchor": "30-명명문제", "_src": "Regulation (EU) 2023/1114 (MiCA), OJ L 150 (2023-06-09)"}]}};window.WIDGET_ID="sandwich";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #4b5f78; --accent2: #8b7f6f; --mark: #f3f1ed; --soft: #eef1f4;
+  --ok: #4f7d5e; --warn: #9a5b4f;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; min-width: 0; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 36px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 20px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { min-width: 0; font-family: var(--mono); font-size: 13.5px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 6px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.big dd { font-size: 22px; color: var(--accent); font-weight: 500; }
+.bad dd { color: var(--warn); }
+.okc dd { color: var(--ok); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+.step { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 13px; display: grid; gap: 2px; background: var(--card); }
+.step .t { font-weight: 600; }
+.step .v { font-family: var(--mono); font-size: 12.5px; color: var(--mut); }
+.step.victim { border-color: var(--accent); }
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 480px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 12.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend svg { vertical-align: -2px; margin-right: 6px; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 5px 9px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr.now td { background: var(--soft); }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { min-width: 0; overflow-wrap: anywhere; font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--accent); }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Chapter 17 · MEV and transaction ordering</div>
+  <h1>Slip one in front and one behind — the sandwich seen from the victim's side</h1>
+  <p class="lede">Three trades go, in order, into Chapter 15's constant-product pool: ① the attacker buys X with Y, ② the victim buys X at the already raised price, ③ the attacker sells the X back. This figure shows only what the victim receives less of, and by how much. The units are numbers of tokens in the pool, not currency.</p>
+  <div class="formula">Alone: x·(1−γ)v / (y + (1−γ)v) · sandwiched: the same formula with (x′, y′) after the front trade · loss = alone − received · tolerance t: the trade goes through only if received ≥ alone × (1−t)</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">How much less does the victim receive?</h2>
+  <div class="bench" id="figure">
+    <div class="controls">
+      <div class="ctl">
+        <label for="px"><span>Pool reserve X = Y (symmetric)</span> <output id="pxOut"></output></label>
+        <input type="range" id="px" min="100" max="100000" step="100" value="1000">
+      </div>
+      <div class="ctl">
+        <label for="vy"><span>Victim order Y (buys X)</span> <output id="vyOut"></output></label>
+        <input type="range" id="vy" min="1" max="2000" step="1" value="100">
+      </div>
+      <div class="ctl">
+        <label for="ay"><span>Attacker's front-trade input Y</span> <output id="ayOut"></output></label>
+        <input type="range" id="ay" min="0" max="5000" step="1" value="100">
+        <div class="seg" id="aySeg" role="group" aria-label="Inputs in the text table">
+          <button type="button" data-v="0" aria-pressed="false">0</button>
+          <button type="button" data-v="50" aria-pressed="false">50</button>
+          <button type="button" data-v="100" aria-pressed="true">100</button>
+          <button type="button" data-v="400" aria-pressed="false">400</button>
+          <button type="button" data-v="2000" aria-pressed="false">2000</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="tol"><span>Victim's slippage tolerance (minimum-received condition)</span> <output id="tolOut"></output></label>
+        <input type="range" id="tol" min="0" max="100" step="0.1" value="100">
+        <div class="seg" id="tolSeg" role="group" aria-label="Tolerance shortcuts">
+          <button type="button" data-v="0.5" aria-pressed="false">0.5%</button>
+          <button type="button" data-v="2" aria-pressed="false">2%</button>
+          <button type="button" data-v="10" aria-pressed="false">10%</button>
+          <button type="button" data-v="50" aria-pressed="false">50%</button>
+          <button type="button" data-v="100" aria-pressed="true">No condition (text table)</button>
+        </div>
+      </div>
+    </div>
+    <div class="steps" id="steps"></div>
+    <dl class="readout">
+      <div><dt>X it would have received alone</dt><dd id="oAlone"></dd></div>
+      <div class="big"><dt>X received when sandwiched</dt><dd id="oVx"></dd></div>
+      <div class="big bad"><dt>Victim loss X / ratio</dt><dd id="oLoss"></dd></div>
+      <div><dt>Price the victim paid (Y/X) — alone vs sandwiched</dt><dd id="oPrice"></dd></div>
+      <div id="tolBox"><dt>Minimum-received condition (alone × (1−t))</dt><dd id="oMinOut"></dd></div>
+    </dl>
+    <div class="chart" id="chart" role="img" aria-label="Curve of the victim's loss ratio by attacker input, with the tolerance ceiling"></div>
+    <div class="legend" id="legend"></div>
+    <div class="tbl"><table aria-label="Victim columns of table NB17-1 in the text"><thead><tr><th>Attacker input Y</th><th>Victim got X</th><th>X if alone</th><th>Victim loss X</th><th>Victim loss ratio</th><th>Within tolerance?</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>Check against the text (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Text" column is the output of the victim columns of table NB17-1 in Chapter 17 (victim got X, X if alone, victim loss X, victim loss ratio) and of the "victim min X" column of table NB17-2, as printed. The table's "attacker net profit" column is not in this figure.</caption>
+        <thead><tr><th>Item</th><th>Computed</th><th>Text</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What is not in this figure</h2>
+  <ul class="limits">
+    <li>How much the attacker takes. Chapter 17's NB17-1 keeps that column to show the structure, but this figure draws only the victim's side. What the attacker takes is in the end the Y the victim paid, and putting in capital larger than the victim's order leaves nothing more to take (Chapter 17, Section 5).</li>
+    <li>The auction that buys and sells gas, priority fees and the order within a block. Who sets the order is in Chapter 17, Section 3; proposer–builder separation is in Section 4.</li>
+    <li>Narrowing the tolerance shrinks the attack that can be slipped in, but it also raises the chance that one's own trade fails. That trade-off is in the victim's hands (NB17-2).</li>
+    <li>These are not the values of any real market. Only structural variables in pool units move.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>Formulas: Blockchain for Lawyers, Chapter 17, Section 5, NB17-1 and NB17-2 (the constant-product pool of Chapter 15's NB15-1, fee 0.3%). The only output is the victim's side — this book does not make "who made how much" the axis of its account.</div>
+  <div>Blockchain for Lawyers: A Reading Through Technology and Economics · interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) and the explanatory text are under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through a <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issue</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#9a5b4f;padding:16px'>Shared constants (BOOK_DATA) not found. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  //
+  var FEE = 0.003;
+  var EXAMPLE = { px: 1000, vy: 100, ay: 100, tol: 100 };   //
+  var state = { px: EXAMPLE.px, vy: EXAMPLE.vy, ay: EXAMPLE.ay, tol: EXAMPLE.tol };
+  var INIT = { px: state.px, vy: state.vy, ay: state.ay };
+
+  function Pool(x, y) { this.x = x; this.y = y; }
+  Pool.prototype.price = function () { return this.y / this.x; };
+  Pool.prototype.swapXY = function (dx) { var eff = dx * (1 - FEE), dy = this.y * eff / (this.x + eff); this.x += dx; this.y -= dy; return dy; };
+  Pool.prototype.swapYX = function (dy) { var eff = dy * (1 - FEE), dx = this.x * eff / (this.y + eff); this.y += dy; this.x -= dx; return dx; };
+  //
+  function victimSide(px, py, vy, ay) {
+    var alone = new Pool(px, py).swapYX(vy), p = new Pool(px, py), p0 = p.price();
+    var frontX = ay > 0 ? p.swapYX(ay) : 0, pAfterFront = p.price();
+    var vx = p.swapYX(vy);
+    if (ay > 0) p.swapXY(frontX);
+    return { alone: alone, vx: vx, loss: alone - vx, lossPct: 1 - vx / alone, p0: p0, pFront: pAfterFront, paidAlone: vy / alone, paid: vy / vx };
+  }
+  function minOut(px, py, vy, tol) { return new Pool(px, py).swapYX(vy) * (1 - tol); }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: d === undefined ? 0 : d }); }
+  function pct(x, d) { return (100 * x).toFixed(d === undefined ? 2 : d) + "%"; }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (tag === "text" && attrs.fill) e.style.fill = attrs.fill; if (text !== undefined) e.textContent = text; return e; }
+  function drawChart() {
+    var W = 720, H = 250, L = 56, R = 20, T = 18, Bm = 44, svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    var amax = Math.max(500, Math.min(5000, state.px * 2)), t = state.tol / 100;
+    function sx(a) { return L + a / amax * (W - L - R); }
+    function sy(v) { return H - Bm - v * (H - T - Bm); }
+    for (var i = 0; i <= 5; i++) { var a = amax * i / 5; g.appendChild(el("line", { x1: sx(a), x2: sx(a), y1: T, y2: H - Bm })); svg.appendChild(el("text", { x: sx(a), y: H - Bm + 16, "text-anchor": "middle", "class": "tick" }, fmt(a))); }
+    for (var v = 0; v <= 1; v += 0.2) { g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) })); svg.appendChild(el("text", { x: L - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, Math.round(v * 100) + "%")); }
+    svg.appendChild(g);
+    var d = "", bound = null;
+    for (i = 0; i <= 120; i++) { a = amax * i / 120; var r = victimSide(state.px, state.px, state.vy, a); d += (i ? "L" : "M") + sx(a).toFixed(1) + "," + sy(r.lossPct).toFixed(1); if (bound === null && r.lossPct > t) bound = a; }
+    if (t < 0.9999) { svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(t), y2: sy(t), stroke: "var(--accent2)", "stroke-width": 1.4, "stroke-dasharray": "5 4" })); svg.appendChild(el("text", { x: W - R - 4, y: sy(t) - 5, "text-anchor": "end", "font-size": 11.5, fill: "var(--accent2)" }, "Tolerance " + state.tol + "% — above this line the victim's trade is reverted")); }
+    svg.appendChild(el("path", { d: d, fill: "none", stroke: "var(--accent)", "stroke-width": 2.6 }));
+    var cur = victimSide(state.px, state.px, state.vy, state.ay);
+    if (state.ay <= amax) { svg.appendChild(el("circle", { cx: sx(state.ay), cy: sy(cur.lossPct), r: 5.5, fill: cur.lossPct > t ? "var(--warn)" : "var(--accent)", stroke: "var(--card)", "stroke-width": 1.5 })); svg.appendChild(el("text", { x: sx(state.ay) + 8, y: sy(cur.lossPct) - 8, "font-size": 12.5, "font-weight": 700, fill: cur.lossPct > t ? "var(--warn)" : "var(--accent)" }, "now " + pct(cur.lossPct))); }
+    svg.appendChild(el("text", { x: W - R, y: H - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "Attacker's front-trade input Y"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Victim loss ratio"));
+    $("chart").replaceChildren(svg);
+    var solid = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--accent)' stroke-width='2.6'/></svg>";
+    $("legend").innerHTML = "<span>" + solid + "Victim loss ratio = 1 − X received / X if alone</span><span>Pool " + fmt(state.px) + " : " + fmt(state.px) + ", victim order Y " + fmt(state.vy) + "</span>";
+  }
+
+  function update() {
+    var r = victimSide(state.px, state.px, state.vy, state.ay), t = state.tol / 100, mo = minOut(state.px, state.px, state.vy, t), okTol = r.vx >= mo;
+    $("pxOut").textContent = fmt(state.px); $("vyOut").textContent = fmt(state.vy); $("ayOut").textContent = fmt(state.ay); $("tolOut").textContent = state.tol >= 100 ? "no condition" : state.tol + "%";
+    $("px").value = state.px; $("vy").value = state.vy; $("ay").value = Math.min(state.ay, 5000); $("tol").value = state.tol;
+    $("aySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === state.ay)); });
+    $("tolSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === state.tol)); });
+    $("steps").innerHTML = "<div class='step'><span class='t'>① Front — the attacker buys X with Y " + fmt(state.ay) + "</span><span class='v'>marginal price Y/X: " + r.p0.toFixed(4) + " → " + r.pFront.toFixed(4) + "</span></div>" +
+      "<div class='step victim'><span class='t'>② The victim buys X with Y " + fmt(state.vy) + "</span><span class='v'>X received " + fmt(r.vx, 3) + " (alone: " + fmt(r.alone, 3) + ")</span></div>" +
+      "<div class='step'><span class='t'>③ Back — the attacker sells all its X back</span><span class='v'>the pool moves in the opposite direction to ①</span></div>";
+    $("oAlone").textContent = fmt(r.alone, 3); $("oVx").textContent = fmt(r.vx, 3) + (okTol ? "" : " (trade reverted)");
+    $("oLoss").textContent = fmt(r.loss, 3) + " / " + pct(r.lossPct);
+    $("oPrice").textContent = r.paidAlone.toFixed(4) + " → " + r.paid.toFixed(4);
+    $("oMinOut").textContent = fmt(mo, 3) + (okTol ? " — goes through" : " — trade reverted"); $("tolBox").className = okTol ? "okc" : "bad";
+    drawChart();
+    $("rows").innerHTML = [0, 50, 100, 200, 400, 800, 2000, 5000, 20000, 100000].map(function (a) { var s = victimSide(state.px, state.px, state.vy, a); var ok = s.vx >= mo; return "<tr" + (a === state.ay ? " class='now'" : "") + "><td class='num'>" + fmt(a) + "</td><td class='num'>" + fmt(s.vx, 3) + "</td><td class='num'>" + fmt(s.alone, 3) + "</td><td class='num'>" + fmt(s.loss, 3) + "</td><td class='num'>" + pct(s.lossPct) + "</td><td class='" + (ok ? "" : "miss") + "'>" + (ok ? "yes" : "no") + "</td></tr>"; }).join("");
+    $("msg").innerHTML = (state.ay === 0 ? "With no attacker, the victim receives the same " + fmt(r.alone, 3) + " as it would alone." : "The front trade of " + fmt(state.ay) + " raised the price from " + r.p0.toFixed(4) + " to " + r.pFront.toFixed(4) + ", so instead of the " + fmt(r.alone, 3) + " it would have received alone, the victim receives <b>" + fmt(r.vx, 3) + "</b> — a loss of " + fmt(r.loss, 3) + " (" + pct(r.lossPct) + ").") +
+      (t < 0.9999 ? (okTol ? " Against a tolerance of " + state.tol + "%, the loss is within it and the trade goes through." : " Against a tolerance of " + state.tol + "%, the loss exceeds it, so the victim's trade is reverted and the sandwich does not go through (only the front trade remains).") : " Without a tolerance, the larger the attacker's input, the closer the loss comes to the victim's whole order — what sets the ceiling is not the attacker's capital but the structural variables: pool size, victim order and tolerance.");
+  }
+
+  //
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected, d) { var g = Number(got.toFixed(d)); rows.push({ name: name, got: g, expected: expected, status: g === expected ? "match" : "miss", d: d }); }
+    var initSame = INIT.px === 1000 && INIT.vy === 100 && INIT.ay === 100, r0 = victimSide(INIT.px, INIT.px, INIT.vy, INIT.ay), g0 = Number(r0.vx.toFixed(3));
+    rows.push({ name: "Starting state · pool 1,000:1,000 · victim 100 · attacker 100 · victim got X", got: g0, expected: 75.570, status: initSame && g0 === 75.570 ? "match" : "miss", d: 3 });
+    add("NB17-1 · X if alone", r0.alone, 90.661, 3);
+    var tbl = { 0: [90.661, 0.000, 0.00], 50: [82.601, 8.060, 8.89], 100: [75.570, 15.091, 16.65], 200: [63.957, 26.704, 29.45], 400: [47.526, 43.135, 47.58], 800: [29.196, 61.466, 67.80], 2000: [10.743, 79.918, 88.15], 5000: [2.731, 87.930, 96.99], 20000: [0.226, 90.435, 99.75], 100000: [0.010, 90.651, 99.99] };
+    [0, 50, 100, 200, 400, 800, 2000, 5000, 20000, 100000].forEach(function (a) { var s = victimSide(1000, 1000, 100, a), w = tbl[a]; add("NB17-1 · input " + fmt(a) + " · victim got X", s.vx, w[0], 3); add("NB17-1 · input " + fmt(a) + " · victim loss X", s.loss, w[1], 3); add("NB17-1 · input " + fmt(a) + " · loss ratio (%)", 100 * s.lossPct, w[2], 2); });
+    var tolTbl = [[0.001, 90.570], [0.005, 90.208], [0.01, 89.754], [0.02, 88.848], [0.05, 86.128], [0.10, 81.595], [0.50, 45.331]];
+    tolTbl.forEach(function (w) { add("NB17-2 · tolerance " + (100 * w[0]).toFixed(1) + "% · victim min X", minOut(1000, 1000, 100, w[0]), w[1], 3); });
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding difference</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) { return "<tr><td>" + r.name + "</td><td class='num'>" + r.got.toFixed(r.d) + "</td><td class='num'>" + r.expected.toFixed(r.d) + "</td><td>" + tag[r.status] + "</td></tr>"; }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  //
+  $("px").addEventListener("input", function (e) { state.px = Number(e.target.value); update(); });
+  $("vy").addEventListener("input", function (e) { state.vy = Number(e.target.value); update(); });
+  $("ay").addEventListener("input", function (e) { state.ay = Number(e.target.value); update(); });
+  $("tol").addEventListener("input", function (e) { state.tol = Number(e.target.value); update(); });
+  $("aySeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.ay = Number(b.dataset.v); update(); });
+  $("tolSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.tol = Number(b.dataset.v); update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

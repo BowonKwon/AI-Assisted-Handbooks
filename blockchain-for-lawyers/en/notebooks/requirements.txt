@@ -1,0 +1,7 @@
+# Notebook environment for "Blockchain for Lawyers" (English edition). Runs confirmed on Python 3.13.17 (2026-10-25).
+# NB00, NB04-NB24 and NB29 use the standard library only.
+# NB25 (Chapter 25, econometric tests for bubbles) alone uses the one package below. Computing the ADF statistics of
+# every window [r1, r2] at once with cumulative sums, and running 2,000 Monte Carlo draws and the wild bootstrap,
+# needs vector operations (a pure-Python double loop takes tens of minutes).
+# Install: pip install numpy==2.5.4
+numpy==2.5.4

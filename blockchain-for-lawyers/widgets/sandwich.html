@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>샌드위치 공격 — 피해자가 잃는 것</title>
+<script>window.BOOK_DATA={"as_of": "2026-10-25", "bitcoin": {"_src_release": "Bitcoin Core v31.1 (태그 커밋 9be056a8a72b624dae9623b2f7bded92c2a21c91), https://github.com/bitcoin/bitcoin/releases/tag/v31.1, 접근 2026-10-25 (UTC 2026-10-24)", "difficulty_adjustment": {"interval_blocks": 2016, "target_timespan_s": 1209600, "target_spacing_s": 600, "max_factor_per_adjustment": 4, "_note": "상한·하한은 목표 난이도(target)에 곱해지는 배수의 범위다. 난이도로 말하면 한 번에 최대 4배 오르거나 1/4로 내린다."}, "subsidy": {"halving_interval_blocks": 210000, "initial_subsidy_btc": 50, "initial_subsidy_sat": 5000000000}, "max_block_weight": {"value_wu": 4000000, "witness_scale_factor": 4, "observed_tip_weight": {"height": 972958, "weight_wu": 3993715}}, "genesis_header": {"hex": "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c", "block_hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", "nVersion": 1, "nTime": 1231006505, "nBits": "0x1d00ffff", "nNonce": 2083236893, "_note": "W12 블록 헤더 해부기의 입력. 위젯은 이 80바이트의 이중 SHA-256 을 다시 계산해 block_hash 와 대조한다(12장 NB12-1·NB12-2 와 같은 바이트)."}, "hashrate_snapshot": {"as_of": "2026-10-25", "observed_utc": "2026-10-24T18:17:18Z/18:17:34Z", "chain_tip_height": 972958, "last_retarget_height": 971712, "nBits": "0x17020093", "difficulty": 140577680051919.62, "hashrate_H_per_s": 1.0062942306175772e+21, "formula": "D = target(0x1d00ffff)/target(nBits); H = D × 2^32 / 600 (블록이 평균 600초마다 하나라는 가정 위의 추정, 측정이 아님)", "comparison_only_mempool_currentHashrate_H_per_s": 1.077240378672487e+21, "_note": "W6 51% 공격 비용 계산기의 기준 해시율. 코인 가격·전력 단가는 넣지 않는다(이 책은 가격을 다루지 않는다) — 단가는 사용자가 입력한다. 20장 NB20-3 과 같은 값."}}, "ethereum": {"active_fork": {"consensus": "Fulu", "execution": "Osaka", "combined_name": "Fusaka", "fulu_fork_epoch": 411392, "fork_version": "0x06000000", "osaka_time_unix": 1764798551, "activated_utc": "2025-12-03T21:49:11Z", "next_fork_scheduled_on_mainnet": false}, "eip1559": {"ELASTICITY_MULTIPLIER": 2, "BASE_FEE_MAX_CHANGE_DENOMINATOR": 8, "INITIAL_BASE_FEE_wei": 1000000000, "gas_target_rule": "gas_target = parent.gas_limit // ELASTICITY_MULTIPLIER", "_note": "기준일 메인넷 활성 포크(Osaka)까지 이 두 상수를 바꾼 개정은 없다: go-ethereum v1.17.10 이 포크 분기 없이 상수를 쓴다. 블록 가스 한도는 프로토콜 상수가 아니라 검증자가 블록마다 부모의 ±1/1024 범위에서 움직이는 값이다(GasLimitBoundDivisor = 1024, https://github.com/ethereum/go-ethereum/blob/1df30b18d9ed35ee9d28ffd4648442c2204554ad/params/protocol_params.go#L26).", "observed_latest_block": {"number": 26264275, "hash": "0x3f75ce9e8634bfac938e192b011f202fc2f10555d1ee7f78cc033b6814fd695c", "timestamp_unix": 1792866179, "gas_limit": 60000000, "gas_used": 32652385, "gas_target_computed": 30000000, "base_fee_per_gas_wei": 68997174}}, "staking": {"MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000, "MIN_SLASHING_PENALTY_QUOTIENT_ELECTRA": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT_ELECTRA": 4096, "PROPORTIONAL_SLASHING_MULTIPLIER_BELLATRIX": 3, "EPOCHS_PER_SLASHINGS_VECTOR": 8192, "_note": "현행 규칙(Electra 이후): 슬래싱 즉시 벌금 = 유효잔고/4096, 신고자 보상 = 유효잔고/4096, 약 18일 뒤(EPOCHS_PER_SLASHINGS_VECTOR/2 에포크) 상관 벌금 = 유효잔고 × min(최근 슬래싱 합계 × 3, 총 활성 잔고) / 총 활성 잔고(명세는 1 ETH 단위 정수 나눗셈 순서로 계산). MAX_EFFECTIVE_BALANCE(32 ETH)는 0x01 출금 자격 검증자에, _ELECTRA(2048 ETH)는 0x02 복리 자격 검증자에 적용된다.", "history": [{"fork": "Phase0 (2020-12-01)", "MIN_SLASHING_PENALTY_QUOTIENT": 128, "WHISTLEBLOWER_REWARD_QUOTIENT": 512, "PROPORTIONAL_SLASHING_MULTIPLIER": 1, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000}, {"fork": "Altair (epoch 74240, 2021-10-27)", "MIN_SLASHING_PENALTY_QUOTIENT": 64, "PROPORTIONAL_SLASHING_MULTIPLIER": 2}, {"fork": "Bellatrix (epoch 144896, 2022-09-06)", "MIN_SLASHING_PENALTY_QUOTIENT": 32, "PROPORTIONAL_SLASHING_MULTIPLIER": 3}, {"fork": "Electra (epoch 364032, 2025-05-07)", "MIN_SLASHING_PENALTY_QUOTIENT": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT": 4096, "MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "note": "PROPORTIONAL_SLASHING_MULTIPLIER 는 Bellatrix 값 3 유지"}, {"fork": "Fulu (epoch 411392, 2025-12-03)", "note": "위 상수 변경 없음"}], "_src_history": "https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/phase0.yaml#L62-L70, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/altair.yaml#L8-L10, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/bellatrix.yaml#L8-L10, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/electra.yaml#L6-L15; 포크 에포크·날짜는 https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/configs/mainnet.yaml#L41-L57. Phase0 시작은 https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/configs/mainnet.yaml#L28 MIN_GENESIS_TIME 1606824000 (2020-12-01T12:00:00Z) 기준."}}, "timeline": {"as_of": "2026-10-25", "range": {"start": "1976", "end": "2023"}, "anchor_ids": {"01-블록체인이푸는문제": "ch0", "02-30년전사": "ch1", "03-이책을읽는법": "ch2", "04-해시함수": "ch3", "05-공개키서명": "ch4", "06-머클트리": "ch5", "07-블록과체인": "ch6", "08-작업증명": "ch7", "09-최종성의확률적성격": "ch8", "10-지분증명": "ch9", "11-UTXO와계정": "ch10", "12-진짜블록해부": "ch11", "13-이더리움가상머신과가스": "ch12", "14-토큰표준": "ch13", "15-탈중앙거래소와AMM": "ch14", "16-오라클문제": "ch15", "17-MEV와거래순서": "ch16", "18-확장성": "ch17", "19-화폐의기능론": "ch18", "20-보안예산": "ch19", "21-수수료시장": "ch20", "22-토큰설계의경제학": "ch21", "23-게임이론": "ch22", "24-스테이블코인": "ch23", "25-버블의계량검정": "ch24", "26-네사건": "ch25", "27-기술과법의다리-1": "ch26", "28-기술과법의다리-2": "ch27", "29-양자전환": "ch28", "30-명명문제": "ch29", "9A-동향노트-색인": "ch30", "9B-오해판정표": "ch31", "9C-대역표": "ch32", "9D-연표": "ch33", "9E-수학보충": "ch34", "9F-용어집-목록-판권": "ch35"}, "_anchor_ids_note": "화면본 책 안의 장 머리 id(장 순서대로 0부터). 항목을 누르면 이 id 로 간다.", "events": [{"date": "1976-11", "precision": "month", "title": "디피·헬먼 「New Directions in Cryptography」 — 공개키 암호", "chapter": 5, "anchor": "05-공개키서명", "_src": "IEEE Trans. Inform. Theory IT-22(6): 644-654, November 1976"}, {"date": "1980-04", "precision": "month", "title": "머클 「Protocols for Public Key Cryptosystems」 — 공개키 목록의 트리 인증", "chapter": 6, "anchor": "06-머클트리", "_src": "Proc. 1980 IEEE Symposium on Security and Privacy, pp. 122-134 (DOI 10.1109/SP.1980.10006), 126-127쪽", "note": "자세한 논의는 참고문헌 [13] 「A certified digital signature」로 넘김"}, {"date": "1982-07", "precision": "month", "title": "램포트·쇼스택·피즈 「The Byzantine Generals Problem」", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "ACM TOPLAS 4(3): 382-401, July 1982"}, {"date": "1983", "precision": "year", "title": "차움 「Blind Signatures for Untraceable Payments」 — 은닉 서명 전자현금", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "Advances in Cryptology: Proceedings of Crypto 82, pp. 199-203 (Springer, 1983)", "year_note": "학회 1982(Crypto 82), 출판 1983"}, {"date": "1988", "precision": "year", "title": "머클 「A Digital Signature Based on a Conventional Encryption Function」 — 트리 서명", "chapter": 6, "anchor": "06-머클트리", "_src": "CRYPTO 87, LNCS 293, pp. 369-378 (Springer, 1988)", "year_note": "학회 1987(CRYPTO 87), 출판 1988"}, {"date": "1991", "precision": "year", "title": "하버·스토네타 「How To Time-Stamp a Digital Document」 — 타임스탬프 사슬", "chapter": 7, "anchor": "07-블록과체인", "_src": "J. Cryptology 3(2): 99-111 (1991)"}, {"date": "1993", "precision": "year", "title": "베이어·하버·스토네타 「Improving the Efficiency and Reliability of Digital Time-Stamping」 — 사슬을 트리로", "chapter": 7, "anchor": "07-블록과체인", "_src": "Sequences II, pp. 329-334 (Springer, 1993)", "note": "저자 조판본은 「March 1992」 표기; 출판 1993"}, {"date": "1997-03-28", "precision": "day", "title": "백, 해시캐시 공지(cypherpunks) — 계산으로 비용을 매기는 우표", "chapter": 8, "anchor": "08-작업증명", "_src": "http://www.hashcash.org/papers/announce.txt (Fri, 28 Mar 1997); Back (2002) 논문은 「May 1997」 — 불일치는 2장 각주"}, {"date": "1998", "precision": "year", "title": "다이 「b-money」 — 계산으로 돈을 만들고 모두가 장부를 갖는 그림", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "http://www.weidai.com/bmoney.txt; 1998은 Nakamoto (2008) 참고문헌 [1] 기재", "note": "문서에 날짜 없음, 월·일 미기재"}, {"date": "2005-12-29", "precision": "day", "title": "사보 「Bit gold」 — 작업증명·타임스탬프·소유권 등기", "chapter": 8, "anchor": "08-작업증명", "_src": "https://unenumerated.blogspot.com/2005/12/bit-gold.html; 게시일은 Wayback 2006-03-29 보존본의 표시일; 현 페이지 표시일 2008-12-27로 달라진 경위는 미확인"}, {"date": "2008-10-31", "precision": "day", "title": "나카모토 「Bitcoin P2P e-cash paper」 — 백서 공개", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "https://www.metzdowd.com/pipermail/cryptography/2008-October/014810.html (Fri Oct 31 14:10:00 EDT 2008); 백서 PDF"}, {"date": "2009-01-03", "precision": "day", "title": "제네시스 블록(nTime 1231006505 = 2009-01-03T18:15:05Z)", "chapter": 12, "anchor": "12-진짜블록해부", "_src": "data/genesis_block.hex·genesis_block.meta.json; Bitcoin Core v31.1 chainparams.cpp L134-L137"}, {"date": "2014", "precision": "year", "title": "부테린, 이더리움 백서(초고 2013, 공식 판 2014)", "chapter": 13, "anchor": "13-이더리움가상머신과가스", "_src": "ethereum.org 공식 PDF; Wayback 최초 캡처 2013-12-19(2장 각주)", "year_note": "초고 2013, 공식 판 2014"}, {"date": "2014-02-28", "precision": "day", "title": "Mt.Gox 민사재생 신청(東京地裁 平成26年(再)第12号)", "chapter": 26, "anchor": "26-네사건", "_src": "채무자 공지(일·영)"}, {"date": "2014-04-24", "precision": "day", "title": "Mt.Gox 파산절차 개시결정(東京地裁 平成26年(フ)第3830号)", "chapter": 26, "anchor": "26-네사건", "_src": "東京地裁 平成26年(フ)第3830号 파산절차 개시결정 원문"}, {"date": "2016-04-30", "precision": "day", "title": "The DAO 토큰 매각 시작(~2016-05-28)", "chapter": 26, "anchor": "26-네사건", "_src": "SEC Release No. 81207 (2017-07-25), 2쪽"}, {"date": "2016-06-17", "precision": "day", "title": "The DAO 공격(재귀 호출 결함)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-06-17 CRITICAL UPDATE Re: DAO Vulnerability; SEC Release No. 81207, 9쪽"}, {"date": "2016-07-20", "precision": "day", "title": "이더리움 하드포크(블록 1,920,000, irregular state change)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-07-20 Hard Fork Completed; EIP-779; SEC Release No. 81207, 9쪽"}, {"date": "2017-07-25", "precision": "day", "title": "SEC 「Report of Investigation … The DAO」 — DAO Tokens are securities", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "SEC Release No. 81207"}, {"date": "2019-03-15", "precision": "day", "title": "東京地裁 Mt.Gox 대표 형사 1심 판결", "chapter": 26, "anchor": "26-네사건", "_src": "東京地裁 2019. 3. 15. 판결 전문(平成27年(刑わ)第2274号 등)"}, {"date": "2020-03", "precision": "month", "title": "애덤스·진스마이스터·로빈슨 「Uniswap v2 Core」 — 상수곱 자동화 시장", "chapter": 15, "anchor": "15-탈중앙거래소와AMM", "_src": "Adams, Zinsmeister & Robinson, Uniswap v2 Core 백서 (March 2020)"}, {"date": "2020-06-11", "precision": "day", "title": "東京高裁 Mt.Gox 대표 형사 항소심 판결(항소 기각)", "chapter": 26, "anchor": "26-네사건", "_src": "東京高裁 2020. 6. 11. 판결(令和元年(う)第948号), courts.go.jp 판결 PDF"}, {"date": "2021-08-05", "precision": "day", "title": "이더리움 런던 포크(EIP-1559, 블록 12,965,000, 2021-08-05T12:33:42Z)", "chapter": 21, "anchor": "21-수수료시장", "_src": "블록 12,965,000 헤더(공개 RPC, timestamp 1628166822); go-ethereum v1.17.10 params/chainspecs/mainnet.json londonBlock — 21장 각주"}, {"date": "2021-11", "precision": "month", "title": "비트코인 탭루트 활성화(최소 활성화 높이 709,632)", "chapter": 5, "anchor": "05-공개키서명", "_src": "Bitcoin Core v31.1 src/kernel/chainparams.cpp (「Approximately November 12th, 2021」) — 부록 A-8"}, {"date": "2022-05", "precision": "month", "title": "Terra 붕괴", "chapter": 26, "anchor": "26-네사건", "_src": "BIS Annual Economic Report 2022 ch. III Box A(기제); SEC v. Terraform 평결·최종판결(26장)"}, {"date": "2022-09-15", "precision": "day", "title": "이더리움 지분증명 전환(The Merge; TTD 도달 추정일)", "chapter": 10, "anchor": "10-지분증명", "_src": "consensus-specs configs/mainnet.yaml 주석 「Estimated on Sept 15, 2022」 — 부록 A-7", "note": "추정일"}, {"date": "2022-11-11", "precision": "day", "title": "FTX 챕터 11 신청(Petition Date; West Realm Shires 는 11-14)", "chapter": 26, "anchor": "26-네사건", "_src": "Declaration of John J. Ray III, In re FTX Trading Ltd., D.I. 24, ¶40"}, {"date": "2023-02-03", "precision": "day", "title": "영국 항소법원 Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83 판결 PDF"}, {"date": "2023-06-09", "precision": "day", "title": "EU MiCA 관보 게재(OJ L 150; 적용 2024-12-30)", "chapter": 30, "anchor": "30-명명문제", "_src": "Regulation (EU) 2023/1114 (MiCA), OJ L 150 (2023-06-09)"}]}};window.WIDGET_ID="sandwich";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #4b5f78; --accent2: #8b7f6f; --mark: #f3f1ed; --soft: #eef1f4;
+  --ok: #4f7d5e; --warn: #9a5b4f;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; min-width: 0; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 36px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 20px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { min-width: 0; font-family: var(--mono); font-size: 13.5px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 6px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.big dd { font-size: 22px; color: var(--accent); font-weight: 500; }
+.bad dd { color: var(--warn); }
+.okc dd { color: var(--ok); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+.step { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 13px; display: grid; gap: 2px; background: var(--card); }
+.step .t { font-weight: 600; }
+.step .v { font-family: var(--mono); font-size: 12.5px; color: var(--mut); }
+.step.victim { border-color: var(--accent); }
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 480px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 12.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend svg { vertical-align: -2px; margin-right: 6px; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 5px 9px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr.now td { background: var(--soft); }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { min-width: 0; overflow-wrap: anywhere; font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--accent); }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">17장 · MEV 와 거래 순서</div>
+  <h1>앞에 끼우고, 뒤에 끼우면 — 피해자 쪽에서 본 샌드위치</h1>
+  <p class="lede">15장의 상수곱 풀에 세 거래를 순서대로 넣는다. ① 공격자가 Y 로 X 를 사고 ② 피해자가 이미 오른 가격으로 X 를 사고 ③ 공격자가 X 를 되판다. 이 그림은 피해자가 무엇을 얼마나 덜 받는지만 보인다. 단위는 풀 안의 토큰 개수이고 통화가 아니다.</p>
+  <div class="formula">혼자였다면: x·(1−γ)v / (y + (1−γ)v) · 끼이면: 앞 거래 뒤의 (x′, y′) 로 같은 식 · 손실 = 혼자였다면 − 받은 것 · 허용치 t: 받은 것 ≥ 혼자였다면 × (1−t) 이어야 거래 성립</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">피해자는 얼마를 덜 받나</h2>
+  <div class="bench" id="figure">
+    <div class="controls">
+      <div class="ctl">
+        <label for="px"><span>풀 준비금 X = Y (대칭)</span> <output id="pxOut"></output></label>
+        <input type="range" id="px" min="100" max="100000" step="100" value="1000">
+      </div>
+      <div class="ctl">
+        <label for="vy"><span>피해자 주문 Y (X 를 삼)</span> <output id="vyOut"></output></label>
+        <input type="range" id="vy" min="1" max="2000" step="1" value="100">
+      </div>
+      <div class="ctl">
+        <label for="ay"><span>공격자 앞 거래 투입 Y</span> <output id="ayOut"></output></label>
+        <input type="range" id="ay" min="0" max="5000" step="1" value="100">
+        <div class="seg" id="aySeg" role="group" aria-label="본문 표의 투입">
+          <button type="button" data-v="0" aria-pressed="false">0</button>
+          <button type="button" data-v="50" aria-pressed="false">50</button>
+          <button type="button" data-v="100" aria-pressed="true">100</button>
+          <button type="button" data-v="400" aria-pressed="false">400</button>
+          <button type="button" data-v="2000" aria-pressed="false">2000</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="tol"><span>피해자의 슬리피지 허용치 (최소 수취 조건)</span> <output id="tolOut"></output></label>
+        <input type="range" id="tol" min="0" max="100" step="0.1" value="100">
+        <div class="seg" id="tolSeg" role="group" aria-label="허용치 바로 가기">
+          <button type="button" data-v="0.5" aria-pressed="false">0.5%</button>
+          <button type="button" data-v="2" aria-pressed="false">2%</button>
+          <button type="button" data-v="10" aria-pressed="false">10%</button>
+          <button type="button" data-v="50" aria-pressed="false">50%</button>
+          <button type="button" data-v="100" aria-pressed="true">조건 없음 (본문 표)</button>
+        </div>
+      </div>
+    </div>
+    <div class="steps" id="steps"></div>
+    <dl class="readout">
+      <div><dt>혼자였다면 받았을 X</dt><dd id="oAlone"></dd></div>
+      <div class="big"><dt>끼여서 받은 X</dt><dd id="oVx"></dd></div>
+      <div class="big bad"><dt>피해자 손실 X / 비율</dt><dd id="oLoss"></dd></div>
+      <div><dt>피해자가 산 가격 (Y/X) — 혼자 vs 끼여서</dt><dd id="oPrice"></dd></div>
+      <div id="tolBox"><dt>최소 수취 조건 (혼자였다면 × (1−t))</dt><dd id="oMinOut"></dd></div>
+    </dl>
+    <div class="chart" id="chart" role="img" aria-label="공격자 투입에 따른 피해자 손실 비율 곡선과 허용치 상한"></div>
+    <div class="legend" id="legend"></div>
+    <div class="tbl"><table aria-label="본문 표 NB17-1 의 피해자 열"><thead><tr><th>공격자 투입 Y</th><th>피해자가 받은 X</th><th>혼자였다면 X</th><th>피해자 손실 X</th><th>피해자 손실 비율</th><th>허용치 안?</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>본문과 대조 (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">「본문」 열은 17장 NB17-1 표의 피해자 열(받은 X·혼자였다면 X·손실 X·손실 비율)과 NB17-2 표의 「피해자 최소 수취 X」 열 출력 그대로다. 공격자 이익 열은 이 그림에 두지 않는다.</caption>
+        <thead><tr><th>항목</th><th>계산</th><th>본문</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 그림에 없는 것</h2>
+  <ul class="limits">
+    <li>공격자가 얼마를 가져가는가. 17장 NB17-1 은 구조를 보이려고 그 열을 두지만, 이 그림은 피해자 쪽만 그린다. 공격자가 가져가는 것은 결국 피해자가 낸 Y 이고, 피해자 주문보다 큰 자본을 넣어도 더 가져갈 것이 없다(17장 5절).</li>
+    <li>가스·우선 수수료·블록 안 순서를 사고파는 경매. 누가 순서를 정하는지는 17장 3절, 제안자–빌더 분리는 4절.</li>
+    <li>허용치를 좁히면 끼울 수 있는 공격이 작아지지만 자기 거래가 실패할 확률도 커진다. 그 맞바꿈은 피해자 손에 있다(NB17-2).</li>
+    <li>어느 실제 시장의 값도 아니다. 풀 단위의 구조 변수만 움직인다.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>식: 『법률가를 위한 블록체인』 17장 5절 NB17-1·NB17-2 (15장 NB15-1 의 상수곱 풀, 수수료 0.3%). 출력은 피해자 쪽뿐이다 — 이 책은 「누가 얼마를 벌었나」를 서술의 축으로 삼지 않는다.</div>
+  <div>『법률가를 위한 블록체인 — 기술과 경제학으로 읽기』 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)와 설명 글은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">저장소 이슈</a>로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#9a5b4f;padding:16px'>공유 상수(BOOK_DATA)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  // 이 위젯은 공유 상수를 쓰지 않는다. 풀·세 거래는 17장 NB17-1 그대로(수수료 0.003).
+  var FEE = 0.003;
+  var EXAMPLE = { px: 1000, vy: 100, ay: 100, tol: 100 };   // 허용치 100% = 최소 수취 조건 없음(NB17-1 표의 상태)
+  var state = { px: EXAMPLE.px, vy: EXAMPLE.vy, ay: EXAMPLE.ay, tol: EXAMPLE.tol };
+  var INIT = { px: state.px, vy: state.vy, ay: state.ay };
+
+  function Pool(x, y) { this.x = x; this.y = y; }
+  Pool.prototype.price = function () { return this.y / this.x; };
+  Pool.prototype.swapXY = function (dx) { var eff = dx * (1 - FEE), dy = this.y * eff / (this.x + eff); this.x += dx; this.y -= dy; return dy; };
+  Pool.prototype.swapYX = function (dy) { var eff = dy * (1 - FEE), dx = this.x * eff / (this.y + eff); this.y += dy; this.x -= dx; return dx; };
+  // 피해자 쪽만 돌려준다. ③ 뒤 거래는 풀 상태를 위해 넣되 공격자의 수치는 계산하지 않는다.
+  function victimSide(px, py, vy, ay) {
+    var alone = new Pool(px, py).swapYX(vy), p = new Pool(px, py), p0 = p.price();
+    var frontX = ay > 0 ? p.swapYX(ay) : 0, pAfterFront = p.price();
+    var vx = p.swapYX(vy);
+    if (ay > 0) p.swapXY(frontX);
+    return { alone: alone, vx: vx, loss: alone - vx, lossPct: 1 - vx / alone, p0: p0, pFront: pAfterFront, paidAlone: vy / alone, paid: vy / vx };
+  }
+  function minOut(px, py, vy, tol) { return new Pool(px, py).swapYX(vy) * (1 - tol); }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: d === undefined ? 0 : d }); }
+  function pct(x, d) { return (100 * x).toFixed(d === undefined ? 2 : d) + "%"; }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (tag === "text" && attrs.fill) e.style.fill = attrs.fill; if (text !== undefined) e.textContent = text; return e; }
+  function drawChart() {
+    var W = 720, H = 250, L = 56, R = 20, T = 18, Bm = 44, svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    var amax = Math.max(500, Math.min(5000, state.px * 2)), t = state.tol / 100;
+    function sx(a) { return L + a / amax * (W - L - R); }
+    function sy(v) { return H - Bm - v * (H - T - Bm); }
+    for (var i = 0; i <= 5; i++) { var a = amax * i / 5; g.appendChild(el("line", { x1: sx(a), x2: sx(a), y1: T, y2: H - Bm })); svg.appendChild(el("text", { x: sx(a), y: H - Bm + 16, "text-anchor": "middle", "class": "tick" }, fmt(a))); }
+    for (var v = 0; v <= 1; v += 0.2) { g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) })); svg.appendChild(el("text", { x: L - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, Math.round(v * 100) + "%")); }
+    svg.appendChild(g);
+    var d = "", bound = null;
+    for (i = 0; i <= 120; i++) { a = amax * i / 120; var r = victimSide(state.px, state.px, state.vy, a); d += (i ? "L" : "M") + sx(a).toFixed(1) + "," + sy(r.lossPct).toFixed(1); if (bound === null && r.lossPct > t) bound = a; }
+    if (t < 0.9999) { svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(t), y2: sy(t), stroke: "var(--accent2)", "stroke-width": 1.4, "stroke-dasharray": "5 4" })); svg.appendChild(el("text", { x: W - R - 4, y: sy(t) - 5, "text-anchor": "end", "font-size": 11.5, fill: "var(--accent2)" }, "허용치 " + state.tol + "% — 이 위는 피해자 거래가 되돌려진다")); }
+    svg.appendChild(el("path", { d: d, fill: "none", stroke: "var(--accent)", "stroke-width": 2.6 }));
+    var cur = victimSide(state.px, state.px, state.vy, state.ay);
+    if (state.ay <= amax) { svg.appendChild(el("circle", { cx: sx(state.ay), cy: sy(cur.lossPct), r: 5.5, fill: cur.lossPct > t ? "var(--warn)" : "var(--accent)", stroke: "var(--card)", "stroke-width": 1.5 })); svg.appendChild(el("text", { x: sx(state.ay) + 8, y: sy(cur.lossPct) - 8, "font-size": 12.5, "font-weight": 700, fill: cur.lossPct > t ? "var(--warn)" : "var(--accent)" }, "지금 " + pct(cur.lossPct))); }
+    svg.appendChild(el("text", { x: W - R, y: H - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "공격자 앞 거래 투입 Y"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "피해자 손실 비율"));
+    $("chart").replaceChildren(svg);
+    var solid = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--accent)' stroke-width='2.6'/></svg>";
+    $("legend").innerHTML = "<span>" + solid + "피해자 손실 비율 = 1 − 받은 X / 혼자였다면 X</span><span>풀 " + fmt(state.px) + " : " + fmt(state.px) + ", 피해자 주문 Y " + fmt(state.vy) + "</span>";
+  }
+
+  function update() {
+    var r = victimSide(state.px, state.px, state.vy, state.ay), t = state.tol / 100, mo = minOut(state.px, state.px, state.vy, t), okTol = r.vx >= mo;
+    $("pxOut").textContent = fmt(state.px); $("vyOut").textContent = fmt(state.vy); $("ayOut").textContent = fmt(state.ay); $("tolOut").textContent = state.tol >= 100 ? "조건 없음" : state.tol + "%";
+    $("px").value = state.px; $("vy").value = state.vy; $("ay").value = Math.min(state.ay, 5000); $("tol").value = state.tol;
+    $("aySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === state.ay)); });
+    $("tolSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === state.tol)); });
+    $("steps").innerHTML = "<div class='step'><span class='t'>① 앞 — 공격자가 Y " + fmt(state.ay) + " 으로 X 매수</span><span class='v'>한계가격 Y/X: " + r.p0.toFixed(4) + " → " + r.pFront.toFixed(4) + "</span></div>" +
+      "<div class='step victim'><span class='t'>② 피해자가 Y " + fmt(state.vy) + " 으로 X 매수</span><span class='v'>받은 X " + fmt(r.vx, 3) + " (혼자였다면 " + fmt(r.alone, 3) + ")</span></div>" +
+      "<div class='step'><span class='t'>③ 뒤 — 공격자가 X 를 전부 되팖</span><span class='v'>풀이 ①의 반대 방향으로 움직인다</span></div>";
+    $("oAlone").textContent = fmt(r.alone, 3); $("oVx").textContent = fmt(r.vx, 3) + (okTol ? "" : " (거래 되돌려짐)");
+    $("oLoss").textContent = fmt(r.loss, 3) + " / " + pct(r.lossPct);
+    $("oPrice").textContent = r.paidAlone.toFixed(4) + " → " + r.paid.toFixed(4);
+    $("oMinOut").textContent = fmt(mo, 3) + (okTol ? " — 성립" : " — 거래 되돌려짐"); $("tolBox").className = okTol ? "okc" : "bad";
+    drawChart();
+    $("rows").innerHTML = [0, 50, 100, 200, 400, 800, 2000, 5000, 20000, 100000].map(function (a) { var s = victimSide(state.px, state.px, state.vy, a); var ok = s.vx >= mo; return "<tr" + (a === state.ay ? " class='now'" : "") + "><td class='num'>" + fmt(a) + "</td><td class='num'>" + fmt(s.vx, 3) + "</td><td class='num'>" + fmt(s.alone, 3) + "</td><td class='num'>" + fmt(s.loss, 3) + "</td><td class='num'>" + pct(s.lossPct) + "</td><td class='" + (ok ? "" : "miss") + "'>" + (ok ? "안" : "밖") + "</td></tr>"; }).join("");
+    $("msg").innerHTML = (state.ay === 0 ? "공격자가 없으면 피해자는 혼자였을 때와 같은 " + fmt(r.alone, 3) + " 을 받는다." : "앞 거래 " + fmt(state.ay) + " 이 가격을 " + r.p0.toFixed(4) + " 에서 " + r.pFront.toFixed(4) + " 로 올려 놓아, 피해자는 혼자였다면 받았을 " + fmt(r.alone, 3) + " 대신 <b>" + fmt(r.vx, 3) + "</b> 을 받는다 — 손실 " + fmt(r.loss, 3) + " (" + pct(r.lossPct) + ").") +
+      (t < 0.9999 ? (okTol ? " 허용치 " + state.tol + "% 안이라 거래는 성립한다." : " 허용치 " + state.tol + "% 를 넘으므로 피해자 거래는 되돌려지고, 샌드위치는 성립하지 않는다(앞 거래만 남는다).") : " 허용치를 두지 않으면 공격자 투입이 커질수록 손실은 피해자 주문 전부에 다가간다 — 상한을 정하는 것은 공격자 자본이 아니라 풀 크기·피해자 주문·허용치라는 구조 변수다.");
+  }
+
+  // ---- 본문 풀이와 대조 ----
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected, d) { var g = Number(got.toFixed(d)); rows.push({ name: name, got: g, expected: expected, status: g === expected ? "match" : "miss", d: d }); }
+    var initSame = INIT.px === 1000 && INIT.vy === 100 && INIT.ay === 100, r0 = victimSide(INIT.px, INIT.px, INIT.vy, INIT.ay), g0 = Number(r0.vx.toFixed(3));
+    rows.push({ name: "처음 상태 · 풀 1,000:1,000 · 피해자 100 · 공격자 100 · 피해자가 받은 X", got: g0, expected: 75.570, status: initSame && g0 === 75.570 ? "match" : "miss", d: 3 });
+    add("NB17-1 · 혼자였다면 X", r0.alone, 90.661, 3);
+    var tbl = { 0: [90.661, 0.000, 0.00], 50: [82.601, 8.060, 8.89], 100: [75.570, 15.091, 16.65], 200: [63.957, 26.704, 29.45], 400: [47.526, 43.135, 47.58], 800: [29.196, 61.466, 67.80], 2000: [10.743, 79.918, 88.15], 5000: [2.731, 87.930, 96.99], 20000: [0.226, 90.435, 99.75], 100000: [0.010, 90.651, 99.99] };
+    [0, 50, 100, 200, 400, 800, 2000, 5000, 20000, 100000].forEach(function (a) { var s = victimSide(1000, 1000, 100, a), w = tbl[a]; add("NB17-1 · 투입 " + fmt(a) + " · 피해자가 받은 X", s.vx, w[0], 3); add("NB17-1 · 투입 " + fmt(a) + " · 피해자 손실 X", s.loss, w[1], 3); add("NB17-1 · 투입 " + fmt(a) + " · 손실 비율 (%)", 100 * s.lossPct, w[2], 2); });
+    var tolTbl = [[0.001, 90.570], [0.005, 90.208], [0.01, 89.754], [0.02, 88.848], [0.05, 86.128], [0.10, 81.595], [0.50, 45.331]];
+    tolTbl.forEach(function (w) { add("NB17-2 · 허용치 " + (100 * w[0]).toFixed(1) + "% · 피해자 최소 수취 X", minOut(1000, 1000, 100, w[0]), w[1], 3); });
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", round: "<span class='round'>반올림 차</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) { return "<tr><td>" + r.name + "</td><td class='num'>" + r.got.toFixed(r.d) + "</td><td class='num'>" + r.expected.toFixed(r.d) + "</td><td>" + tag[r.status] + "</td></tr>"; }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : " · 모두 일치");
+  }
+
+  // ---- 조작 ----
+  $("px").addEventListener("input", function (e) { state.px = Number(e.target.value); update(); });
+  $("vy").addEventListener("input", function (e) { state.vy = Number(e.target.value); update(); });
+  $("ay").addEventListener("input", function (e) { state.ay = Number(e.target.value); update(); });
+  $("tol").addEventListener("input", function (e) { state.tol = Number(e.target.value); update(); });
+  $("aySeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.ay = Number(b.dataset.v); update(); });
+  $("tolSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.tol = Number(b.dataset.v); update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

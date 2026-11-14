@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>클릭 연표 1976~2023</title>
+<script>window.BOOK_DATA={"as_of": "2026-10-25", "bitcoin": {"_src_release": "Bitcoin Core v31.1 (태그 커밋 9be056a8a72b624dae9623b2f7bded92c2a21c91), https://github.com/bitcoin/bitcoin/releases/tag/v31.1, 접근 2026-10-25 (UTC 2026-10-24)", "difficulty_adjustment": {"interval_blocks": 2016, "target_timespan_s": 1209600, "target_spacing_s": 600, "max_factor_per_adjustment": 4, "_note": "상한·하한은 목표 난이도(target)에 곱해지는 배수의 범위다. 난이도로 말하면 한 번에 최대 4배 오르거나 1/4로 내린다."}, "subsidy": {"halving_interval_blocks": 210000, "initial_subsidy_btc": 50, "initial_subsidy_sat": 5000000000}, "max_block_weight": {"value_wu": 4000000, "witness_scale_factor": 4, "observed_tip_weight": {"height": 972958, "weight_wu": 3993715}}, "genesis_header": {"hex": "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c", "block_hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", "nVersion": 1, "nTime": 1231006505, "nBits": "0x1d00ffff", "nNonce": 2083236893, "_note": "W12 블록 헤더 해부기의 입력. 위젯은 이 80바이트의 이중 SHA-256 을 다시 계산해 block_hash 와 대조한다(12장 NB12-1·NB12-2 와 같은 바이트)."}, "hashrate_snapshot": {"as_of": "2026-10-25", "observed_utc": "2026-10-24T18:17:18Z/18:17:34Z", "chain_tip_height": 972958, "last_retarget_height": 971712, "nBits": "0x17020093", "difficulty": 140577680051919.62, "hashrate_H_per_s": 1.0062942306175772e+21, "formula": "D = target(0x1d00ffff)/target(nBits); H = D × 2^32 / 600 (블록이 평균 600초마다 하나라는 가정 위의 추정, 측정이 아님)", "comparison_only_mempool_currentHashrate_H_per_s": 1.077240378672487e+21, "_note": "W6 51% 공격 비용 계산기의 기준 해시율. 코인 가격·전력 단가는 넣지 않는다(이 책은 가격을 다루지 않는다) — 단가는 사용자가 입력한다. 20장 NB20-3 과 같은 값."}}, "ethereum": {"active_fork": {"consensus": "Fulu", "execution": "Osaka", "combined_name": "Fusaka", "fulu_fork_epoch": 411392, "fork_version": "0x06000000", "osaka_time_unix": 1764798551, "activated_utc": "2025-12-03T21:49:11Z", "next_fork_scheduled_on_mainnet": false}, "eip1559": {"ELASTICITY_MULTIPLIER": 2, "BASE_FEE_MAX_CHANGE_DENOMINATOR": 8, "INITIAL_BASE_FEE_wei": 1000000000, "gas_target_rule": "gas_target = parent.gas_limit // ELASTICITY_MULTIPLIER", "_note": "기준일 메인넷 활성 포크(Osaka)까지 이 두 상수를 바꾼 개정은 없다: go-ethereum v1.17.10 이 포크 분기 없이 상수를 쓴다. 블록 가스 한도는 프로토콜 상수가 아니라 검증자가 블록마다 부모의 ±1/1024 범위에서 움직이는 값이다(GasLimitBoundDivisor = 1024, https://github.com/ethereum/go-ethereum/blob/1df30b18d9ed35ee9d28ffd4648442c2204554ad/params/protocol_params.go#L26).", "observed_latest_block": {"number": 26264275, "hash": "0x3f75ce9e8634bfac938e192b011f202fc2f10555d1ee7f78cc033b6814fd695c", "timestamp_unix": 1792866179, "gas_limit": 60000000, "gas_used": 32652385, "gas_target_computed": 30000000, "base_fee_per_gas_wei": 68997174}}, "staking": {"MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000, "MIN_SLASHING_PENALTY_QUOTIENT_ELECTRA": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT_ELECTRA": 4096, "PROPORTIONAL_SLASHING_MULTIPLIER_BELLATRIX": 3, "EPOCHS_PER_SLASHINGS_VECTOR": 8192, "_note": "현행 규칙(Electra 이후): 슬래싱 즉시 벌금 = 유효잔고/4096, 신고자 보상 = 유효잔고/4096, 약 18일 뒤(EPOCHS_PER_SLASHINGS_VECTOR/2 에포크) 상관 벌금 = 유효잔고 × min(최근 슬래싱 합계 × 3, 총 활성 잔고) / 총 활성 잔고(명세는 1 ETH 단위 정수 나눗셈 순서로 계산). MAX_EFFECTIVE_BALANCE(32 ETH)는 0x01 출금 자격 검증자에, _ELECTRA(2048 ETH)는 0x02 복리 자격 검증자에 적용된다.", "history": [{"fork": "Phase0 (2020-12-01)", "MIN_SLASHING_PENALTY_QUOTIENT": 128, "WHISTLEBLOWER_REWARD_QUOTIENT": 512, "PROPORTIONAL_SLASHING_MULTIPLIER": 1, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000}, {"fork": "Altair (epoch 74240, 2021-10-27)", "MIN_SLASHING_PENALTY_QUOTIENT": 64, "PROPORTIONAL_SLASHING_MULTIPLIER": 2}, {"fork": "Bellatrix (epoch 144896, 2022-09-06)", "MIN_SLASHING_PENALTY_QUOTIENT": 32, "PROPORTIONAL_SLASHING_MULTIPLIER": 3}, {"fork": "Electra (epoch 364032, 2025-05-07)", "MIN_SLASHING_PENALTY_QUOTIENT": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT": 4096, "MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "note": "PROPORTIONAL_SLASHING_MULTIPLIER 는 Bellatrix 값 3 유지"}, {"fork": "Fulu (epoch 411392, 2025-12-03)", "note": "위 상수 변경 없음"}], "_src_history": "https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/phase0.yaml#L62-L70, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/altair.yaml#L8-L10, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/bellatrix.yaml#L8-L10, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/electra.yaml#L6-L15; 포크 에포크·날짜는 https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/configs/mainnet.yaml#L41-L57. Phase0 시작은 https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/configs/mainnet.yaml#L28 MIN_GENESIS_TIME 1606824000 (2020-12-01T12:00:00Z) 기준."}}, "timeline": {"as_of": "2026-10-25", "range": {"start": "1976", "end": "2023"}, "anchor_ids": {"01-블록체인이푸는문제": "ch0", "02-30년전사": "ch1", "03-이책을읽는법": "ch2", "04-해시함수": "ch3", "05-공개키서명": "ch4", "06-머클트리": "ch5", "07-블록과체인": "ch6", "08-작업증명": "ch7", "09-최종성의확률적성격": "ch8", "10-지분증명": "ch9", "11-UTXO와계정": "ch10", "12-진짜블록해부": "ch11", "13-이더리움가상머신과가스": "ch12", "14-토큰표준": "ch13", "15-탈중앙거래소와AMM": "ch14", "16-오라클문제": "ch15", "17-MEV와거래순서": "ch16", "18-확장성": "ch17", "19-화폐의기능론": "ch18", "20-보안예산": "ch19", "21-수수료시장": "ch20", "22-토큰설계의경제학": "ch21", "23-게임이론": "ch22", "24-스테이블코인": "ch23", "25-버블의계량검정": "ch24", "26-네사건": "ch25", "27-기술과법의다리-1": "ch26", "28-기술과법의다리-2": "ch27", "29-양자전환": "ch28", "30-명명문제": "ch29", "9A-동향노트-색인": "ch30", "9B-오해판정표": "ch31", "9C-대역표": "ch32", "9D-연표": "ch33", "9E-수학보충": "ch34", "9F-용어집-목록-판권": "ch35"}, "_anchor_ids_note": "화면본 책 안의 장 머리 id(장 순서대로 0부터). 항목을 누르면 이 id 로 간다.", "events": [{"date": "1976-11", "precision": "month", "title": "디피·헬먼 「New Directions in Cryptography」 — 공개키 암호", "chapter": 5, "anchor": "05-공개키서명", "_src": "IEEE Trans. Inform. Theory IT-22(6): 644-654, November 1976"}, {"date": "1980-04", "precision": "month", "title": "머클 「Protocols for Public Key Cryptosystems」 — 공개키 목록의 트리 인증", "chapter": 6, "anchor": "06-머클트리", "_src": "Proc. 1980 IEEE Symposium on Security and Privacy, pp. 122-134 (DOI 10.1109/SP.1980.10006), 126-127쪽", "note": "자세한 논의는 참고문헌 [13] 「A certified digital signature」로 넘김"}, {"date": "1982-07", "precision": "month", "title": "램포트·쇼스택·피즈 「The Byzantine Generals Problem」", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "ACM TOPLAS 4(3): 382-401, July 1982"}, {"date": "1983", "precision": "year", "title": "차움 「Blind Signatures for Untraceable Payments」 — 은닉 서명 전자현금", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "Advances in Cryptology: Proceedings of Crypto 82, pp. 199-203 (Springer, 1983)", "year_note": "학회 1982(Crypto 82), 출판 1983"}, {"date": "1988", "precision": "year", "title": "머클 「A Digital Signature Based on a Conventional Encryption Function」 — 트리 서명", "chapter": 6, "anchor": "06-머클트리", "_src": "CRYPTO 87, LNCS 293, pp. 369-378 (Springer, 1988)", "year_note": "학회 1987(CRYPTO 87), 출판 1988"}, {"date": "1991", "precision": "year", "title": "하버·스토네타 「How To Time-Stamp a Digital Document」 — 타임스탬프 사슬", "chapter": 7, "anchor": "07-블록과체인", "_src": "J. Cryptology 3(2): 99-111 (1991)"}, {"date": "1993", "precision": "year", "title": "베이어·하버·스토네타 「Improving the Efficiency and Reliability of Digital Time-Stamping」 — 사슬을 트리로", "chapter": 7, "anchor": "07-블록과체인", "_src": "Sequences II, pp. 329-334 (Springer, 1993)", "note": "저자 조판본은 「March 1992」 표기; 출판 1993"}, {"date": "1997-03-28", "precision": "day", "title": "백, 해시캐시 공지(cypherpunks) — 계산으로 비용을 매기는 우표", "chapter": 8, "anchor": "08-작업증명", "_src": "http://www.hashcash.org/papers/announce.txt (Fri, 28 Mar 1997); Back (2002) 논문은 「May 1997」 — 불일치는 2장 각주"}, {"date": "1998", "precision": "year", "title": "다이 「b-money」 — 계산으로 돈을 만들고 모두가 장부를 갖는 그림", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "http://www.weidai.com/bmoney.txt; 1998은 Nakamoto (2008) 참고문헌 [1] 기재", "note": "문서에 날짜 없음, 월·일 미기재"}, {"date": "2005-12-29", "precision": "day", "title": "사보 「Bit gold」 — 작업증명·타임스탬프·소유권 등기", "chapter": 8, "anchor": "08-작업증명", "_src": "https://unenumerated.blogspot.com/2005/12/bit-gold.html; 게시일은 Wayback 2006-03-29 보존본의 표시일; 현 페이지 표시일 2008-12-27로 달라진 경위는 미확인"}, {"date": "2008-10-31", "precision": "day", "title": "나카모토 「Bitcoin P2P e-cash paper」 — 백서 공개", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "https://www.metzdowd.com/pipermail/cryptography/2008-October/014810.html (Fri Oct 31 14:10:00 EDT 2008); 백서 PDF"}, {"date": "2009-01-03", "precision": "day", "title": "제네시스 블록(nTime 1231006505 = 2009-01-03T18:15:05Z)", "chapter": 12, "anchor": "12-진짜블록해부", "_src": "data/genesis_block.hex·genesis_block.meta.json; Bitcoin Core v31.1 chainparams.cpp L134-L137"}, {"date": "2014", "precision": "year", "title": "부테린, 이더리움 백서(초고 2013, 공식 판 2014)", "chapter": 13, "anchor": "13-이더리움가상머신과가스", "_src": "ethereum.org 공식 PDF; Wayback 최초 캡처 2013-12-19(2장 각주)", "year_note": "초고 2013, 공식 판 2014"}, {"date": "2014-02-28", "precision": "day", "title": "Mt.Gox 민사재생 신청(東京地裁 平成26年(再)第12号)", "chapter": 26, "anchor": "26-네사건", "_src": "채무자 공지(일·영)"}, {"date": "2014-04-24", "precision": "day", "title": "Mt.Gox 파산절차 개시결정(東京地裁 平成26年(フ)第3830号)", "chapter": 26, "anchor": "26-네사건", "_src": "東京地裁 平成26年(フ)第3830号 파산절차 개시결정 원문"}, {"date": "2016-04-30", "precision": "day", "title": "The DAO 토큰 매각 시작(~2016-05-28)", "chapter": 26, "anchor": "26-네사건", "_src": "SEC Release No. 81207 (2017-07-25), 2쪽"}, {"date": "2016-06-17", "precision": "day", "title": "The DAO 공격(재귀 호출 결함)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-06-17 CRITICAL UPDATE Re: DAO Vulnerability; SEC Release No. 81207, 9쪽"}, {"date": "2016-07-20", "precision": "day", "title": "이더리움 하드포크(블록 1,920,000, irregular state change)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-07-20 Hard Fork Completed; EIP-779; SEC Release No. 81207, 9쪽"}, {"date": "2017-07-25", "precision": "day", "title": "SEC 「Report of Investigation … The DAO」 — DAO Tokens are securities", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "SEC Release No. 81207"}, {"date": "2019-03-15", "precision": "day", "title": "東京地裁 Mt.Gox 대표 형사 1심 판결", "chapter": 26, "anchor": "26-네사건", "_src": "東京地裁 2019. 3. 15. 판결 전문(平成27年(刑わ)第2274号 등)"}, {"date": "2020-03", "precision": "month", "title": "애덤스·진스마이스터·로빈슨 「Uniswap v2 Core」 — 상수곱 자동화 시장", "chapter": 15, "anchor": "15-탈중앙거래소와AMM", "_src": "Adams, Zinsmeister & Robinson, Uniswap v2 Core 백서 (March 2020)"}, {"date": "2020-06-11", "precision": "day", "title": "東京高裁 Mt.Gox 대표 형사 항소심 판결(항소 기각)", "chapter": 26, "anchor": "26-네사건", "_src": "東京高裁 2020. 6. 11. 판결(令和元年(う)第948号), courts.go.jp 판결 PDF"}, {"date": "2021-08-05", "precision": "day", "title": "이더리움 런던 포크(EIP-1559, 블록 12,965,000, 2021-08-05T12:33:42Z)", "chapter": 21, "anchor": "21-수수료시장", "_src": "블록 12,965,000 헤더(공개 RPC, timestamp 1628166822); go-ethereum v1.17.10 params/chainspecs/mainnet.json londonBlock — 21장 각주"}, {"date": "2021-11", "precision": "month", "title": "비트코인 탭루트 활성화(최소 활성화 높이 709,632)", "chapter": 5, "anchor": "05-공개키서명", "_src": "Bitcoin Core v31.1 src/kernel/chainparams.cpp (「Approximately November 12th, 2021」) — 부록 A-8"}, {"date": "2022-05", "precision": "month", "title": "Terra 붕괴", "chapter": 26, "anchor": "26-네사건", "_src": "BIS Annual Economic Report 2022 ch. III Box A(기제); SEC v. Terraform 평결·최종판결(26장)"}, {"date": "2022-09-15", "precision": "day", "title": "이더리움 지분증명 전환(The Merge; TTD 도달 추정일)", "chapter": 10, "anchor": "10-지분증명", "_src": "consensus-specs configs/mainnet.yaml 주석 「Estimated on Sept 15, 2022」 — 부록 A-7", "note": "추정일"}, {"date": "2022-11-11", "precision": "day", "title": "FTX 챕터 11 신청(Petition Date; West Realm Shires 는 11-14)", "chapter": 26, "anchor": "26-네사건", "_src": "Declaration of John J. Ray III, In re FTX Trading Ltd., D.I. 24, ¶40"}, {"date": "2023-02-03", "precision": "day", "title": "영국 항소법원 Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83 판결 PDF"}, {"date": "2023-06-09", "precision": "day", "title": "EU MiCA 관보 게재(OJ L 150; 적용 2024-12-30)", "chapter": 30, "anchor": "30-명명문제", "_src": "Regulation (EU) 2023/1114 (MiCA), OJ L 150 (2023-06-09)"}]}};window.WIDGET_ID="timeline";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #4b5f78; --accent2: #8b7f6f; --mark: #f3f1ed; --soft: #eef1f4;
+  --ok: #4f7d5e; --warn: #9a5b4f;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; min-width: 0; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 36px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 20px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > .lab { font-size: 13px; color: var(--mut); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 6px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.tick { font-size: 12px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.chart .ev { cursor: pointer; }
+.chart .ev:hover circle, .chart .ev:focus circle { r: 7; }
+.chart .ev:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.item .c button { font: inherit; font-size: 12.5px; font-family: var(--mono); border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--accent); padding: 2px 8px; cursor: pointer; }
+.list { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.item { display: grid; grid-template-columns: 118px 1fr auto; gap: 8px 12px; align-items: baseline; padding: 7px 4px; border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; }
+.item:hover, .item:focus, .item.on { background: var(--soft); }
+.item .d { font-family: var(--mono); font-size: 13px; color: var(--accent); white-space: nowrap; }
+.item .d small { color: var(--accent2); font-weight: 700; font-family: var(--sans); font-size: 11px; margin-left: 4px; }
+.item .t { font-size: 14px; line-height: 1.5; }
+.item .t small { color: var(--mut); display: block; font-size: 12px; }
+.item .c { font-size: 12.5px; color: var(--mut); white-space: nowrap; font-family: var(--mono); }
+@media (max-width: 560px) { .item { grid-template-columns: 1fr; gap: 2px; } }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 5px 9px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { min-width: 0; overflow-wrap: anywhere; font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--accent); }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">2장 · 30년 전사 — 부록 D</div>
+  <h1>원문을 열어 확인한 이정표 29개</h1>
+  <p class="lede">1976년 공개키 암호에서 2023년 MiCA 관보 게재까지. 2장 1절의 표·부록 D 와 같은 항목·같은 서지이고, 항목을 누르면 그 사건을 원문으로 다루는 장으로 간다. 날짜는 확인된 정밀도(연·월·일)대로 적었고 추정일은 따로 표시했다. 가격 축은 없다.</p>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">연표</h2>
+  <div id="figure-appendix" data-part="appendix">
+  <div class="bench" id="figure">
+    <div class="controls">
+      <div class="ctl">
+        <div class="lab">보기</div>
+        <div class="seg" id="filt" role="group" aria-label="갈래">
+          <button type="button" data-v="all" aria-pressed="true">전부</button>
+          <button type="button" data-v="pre" aria-pressed="false">백서 이전 (부품)</button>
+          <button type="button" data-v="post" aria-pressed="false">백서 이후</button>
+          <button type="button" data-v="legal" aria-pressed="false">법·사건 (26·27·30장)</button>
+        </div>
+      </div>
+      <div class="ctl"><div class="lab" id="range"></div></div>
+    </div>
+    <div class="chart" id="chart" role="img" aria-label="1976년부터 2023년까지의 시간축 위 이정표"></div>
+    <div class="list" id="list" role="list"></div>
+    <p class="note" id="msg"></p>
+  </div>
+  </div>
+  <details class="check">
+    <summary>데이터 점검 (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">「본문」 열은 2장 1절 표·부록 D 의 항목 수와 범위(1976~2023), 날짜 정밀도별 개수, 추정 표시, 「2024년 이후 없음」, 그리고 몇 개 대표 항목의 날짜다(data.json timeline, 기준일 2026-10-25).</caption>
+        <thead><tr><th>항목</th><th>계산</th><th>본문</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 연표에 없는 것</h2>
+  <ul class="limits">
+    <li>2024년 이후의 일. 낡기 쉬운 현황은 본문이 아니라 부록 A(동향 노트)에 둔다는 이 책의 규칙에 따른다.</li>
+    <li>가격·시가총액. 어느 축에도 없다(이 책은 시세를 싣지 않는다).</li>
+    <li>원문을 열어 확인하지 못한 사건은 넣지 않았다.</li>
+    <li>연도 규칙: 학회 논문은 학회 연도와 출판 연도가 다를 수 있다(차움 1982/1983, 머클 1987/1988). 항목의 작은 글자가 둘을 함께 적는다.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>데이터: <code>widgets/data.json</code> <code>timeline</code>(29건, 기준일 2026-10-25) — 『법률가를 위한 블록체인』 2장 1절 표·부록 D 와 같은 항목·같은 1차 자료. 각 항목의 서지는 담당 장의 각주.</div>
+  <div>『법률가를 위한 블록체인 — 기술과 경제학으로 읽기』 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)와 설명 글은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">저장소 이슈</a>로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.timeline || !D.timeline.events) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#9a5b4f;padding:16px'>공유 상수(BOOK_DATA.timeline)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  var TL = D.timeline, EV = TL.events.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+  var state = { filt: "all", sel: null };
+  var LEGAL = [26, 27, 28, 30];
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+  function yearOf(e) { return Number(e.date.slice(0, 4)); }
+  function frac(e) {                                         // 축 위 위치: 연(가운데)·월(월 가운데)·일
+    var y = yearOf(e), p = e.precision;
+    if (p === "year") return y + 0.5;
+    var m = Number(e.date.slice(5, 7));
+    if (p === "month") return y + (m - 0.5) / 12;
+    var d = Number(e.date.slice(8, 10)); return y + (m - 1) / 12 + (d - 0.5) / 365;
+  }
+  function label(e) {                                        // precision 대로. 추정은 note 로
+    var s = e.precision === "year" ? e.date.slice(0, 4) : e.precision === "month" ? e.date.slice(0, 4) + "-" + e.date.slice(5, 7) : e.date;
+    return s;
+  }
+  function isEstimate(e) { return !!(e.note && /추정/.test(e.note)); }
+  function visible(e) { if (state.filt === "all") return true; if (state.filt === "pre") return e.date < "2008-10-31"; if (state.filt === "post") return e.date >= "2008-10-31"; return LEGAL.indexOf(e.chapter) >= 0; }
+  function go(e) {                                           // 장으로 이동: data.json anchor_ids(stem → 책 안 id) 가 있으면 그것, 없으면 top 문서에서 「n장」 제목을 찾는다
+    var id = TL.anchor_ids && TL.anchor_ids[e.anchor];
+    try {
+      var top = window.top, doc = top.document;
+      if (!id && window.parent !== window) {
+        var re = new RegExp("^\\s*" + e.chapter + "장(\\b|[^0-9])");
+        var hs = doc.querySelectorAll("section.chapter h1, section.chapter .eyebrow");
+        for (var i = 0; i < hs.length; i++) { if (re.test(hs[i].textContent)) { var h1 = hs[i].tagName === "H1" ? hs[i] : hs[i].parentNode.querySelector("h1"); if (h1 && h1.id) { id = h1.id; break; } } }
+      }
+      if (window.parent !== window) { if (id) top.location.hash = id; else top.location.hash = "ch" + e.chapter; }   // 책 안: 상위 문서의 장으로
+      else location.href = "../index.html#" + (id || e.anchor);                                                           // 단독 페이지: dist/widgets/ 옆의 책(dist/index.html)으로
+    } catch (err) { $("msg").innerHTML = "책 문서에 닿을 수 없어 이동하지 못했다(" + e.chapter + "장). 책 본문의 " + e.chapter + "장을 직접 여십시오."; }   // sandbox 등 — 위젯 상자 자신을 옮기지 않는다
+  }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (tag === "text" && attrs.fill) e.style.fill = attrs.fill; if (text !== undefined) e.textContent = text; return e; }
+  function draw() {
+    var W = 760, H = 150, L = 24, R = 24, y0 = 100, Y0 = 1976, Y1 = 2024, svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    function sx(f) { return L + (f - Y0) / (Y1 - Y0) * (W - L - R); }
+    svg.appendChild(el("line", { x1: L, x2: W - R, y1: y0, y2: y0, stroke: "var(--line)", "stroke-width": 2 }));
+    for (var y = 1976; y <= 2024; y += 4) { svg.appendChild(el("line", { x1: sx(y), x2: sx(y), y1: y0 - 5, y2: y0 + 5, stroke: "var(--mut)" })); svg.appendChild(el("text", { x: sx(y), y: y0 + 22, "text-anchor": "middle", "class": "tick" }, String(y))); }
+    svg.appendChild(el("text", { x: sx(2008.83), y: 22, "text-anchor": "middle", "font-size": 11.5, fill: "var(--accent2)", "font-weight": 700 }, "2008-10-31 백서"));
+    svg.appendChild(el("line", { x1: sx(2008.83), x2: sx(2008.83), y1: 28, y2: y0, stroke: "var(--accent2)", "stroke-dasharray": "3 4" }));
+    // 겹침을 피해 줄기 높이를 번갈아
+    var lastX = -100, lvl = 0;
+    EV.forEach(function (e, i) {
+      if (!visible(e)) return;
+      var x = sx(frac(e)); lvl = x - lastX < 14 ? (lvl + 1) % 3 : 0; lastX = x;
+      var top = y0 - 18 - lvl * 16, legal = LEGAL.indexOf(e.chapter) >= 0, col = legal ? "var(--accent2)" : "var(--accent)";
+      var g = el("g", { "class": "ev", tabindex: "0", role: "link", "data-i": i, "aria-label": label(e) + (isEstimate(e) ? " (추정)" : "") + " " + e.title + " — " + e.chapter + "장" });
+      g.appendChild(el("line", { x1: x, x2: x, y1: top, y2: y0, stroke: col, "stroke-width": 1.2 }));
+      g.appendChild(el("circle", { cx: x, cy: top, r: state.sel === i ? 7 : 5, fill: state.sel === i ? col : "var(--card)", stroke: col, "stroke-width": 2, "stroke-dasharray": isEstimate(e) ? "2 2" : "" }));
+      var t = el("title", {}, label(e) + (isEstimate(e) ? " (추정)" : "") + " · " + e.title + " → " + e.chapter + "장"); g.appendChild(t);
+      svg.appendChild(g);
+    });
+    svg.appendChild(el("text", { x: W - R, y: H - 6, "text-anchor": "end", "font-size": 11.5, fill: "var(--mut)" }, "○ 기술·경제  ○ 법·사건(갈색)  점선 테두리 = 추정일 · 누르면 해당 장으로"));
+    $("chart").replaceChildren(svg);
+  }
+  function renderList() {
+    $("list").innerHTML = EV.map(function (e, i) {
+      if (!visible(e)) return "";
+      var est = isEstimate(e), sub = [e.year_note, e.note && !est ? e.note : null, est ? e.note : null].filter(Boolean).join(" · ");
+      return "<div class='item" + (state.sel === i ? " on" : "") + "' data-i='" + i + "' role='listitem'><span class='d'>" + label(e) + (est ? "<small>추정</small>" : "") + "</span><span class='t'>" + esc(e.title) + (sub ? "<small>" + esc(sub) + "</small>" : "") + "</span><span class='c'><button type='button' data-go='" + i + "' aria-label='" + esc(label(e)) + " " + esc(e.title) + " — " + e.chapter + "장으로 이동'>" + e.chapter + "장 →</button></span></div>";
+    }).join("");
+  }
+  function update() {
+    $("filt").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === state.filt)); });
+    var shown = EV.filter(visible).length;
+    $("range").textContent = TL.range.start + "~" + TL.range.end + " · " + shown + " / " + EV.length + "건 · 기준일 " + TL.as_of + " · 연도 규칙: 학회명과 함께면 학회 연도, 서지면 출판 연도";
+    draw(); renderList();
+    var cnt = { year: 0, month: 0, day: 0 }; EV.forEach(function (e) { cnt[e.precision]++; });
+    $("msg").innerHTML = "날짜 정밀도: 연 " + cnt.year + "건 · 월 " + cnt.month + "건 · 일 " + cnt.day + "건. 추정일 " + EV.filter(isEstimate).length + "건(점선 테두리). " + (state.sel !== null ? "<b>" + esc(EV[state.sel].title) + "</b> — " + EV[state.sel].chapter + "장. 출처: " + esc(EV[state.sel]._src || "담당 장 각주") : "항목을 누르면 출처가 보이고, 「n장 →」 단추를 누르면 그 사건을 원문으로 다루는 장으로 간다. 2024년 이후는 부록 A 에만 있다.");
+  }
+
+  // ---- 데이터 점검 ----
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected) { rows.push({ name: name, got: got, expected: expected, status: got === expected ? "match" : "miss" }); }
+    add("처음 상태 · 항목 수 (2장 1절 표·부록 D)", EV.length, 29);
+    add("범위 start~end", TL.range.start + "~" + TL.range.end, "1976~2023");
+    add("첫 항목 / 마지막 항목 날짜", EV[0].date + " / " + EV[EV.length - 1].date, "1976-11 / 2023-06-09");
+    add("2024년 이후 항목 수", EV.filter(function (e) { return yearOf(e) >= 2024; }).length, 0);
+    var cnt = { year: 0, month: 0, day: 0 }; EV.forEach(function (e) { cnt[e.precision]++; });
+    add("정밀도 연 / 월 / 일 (건)", cnt.year + " / " + cnt.month + " / " + cnt.day, "6 / 6 / 17");
+    add("추정일 항목", EV.filter(isEstimate).map(function (e) { return e.date; }).join(","), "2022-09-15");
+    add("가격·시가총액 필드 없음", EV.every(function (e) { return !/price|가격|market_cap|시가총액/i.test(Object.keys(e).join(",")); }) ? "True" : "False", "True");
+    add("모든 항목에 chapter·anchor·_src", EV.every(function (e) { return e.chapter && e.anchor && e._src; }) ? "True" : "False", "True");
+    function find(s) { var e = EV.filter(function (x) { return x.title.indexOf(s) >= 0; })[0]; return e ? label(e) + " → " + e.chapter + "장" : "없음"; }
+    add("나카모토 백서 공개", find("Bitcoin P2P e-cash"), "2008-10-31 → 1장");
+    add("제네시스 블록", find("제네시스"), "2009-01-03 → 12장");
+    add("해시캐시 공지", find("해시캐시"), "1997-03-28 → 8장");
+    add("차움 (학회 1982 / 출판 1983)", find("Blind Signatures"), "1983 → 1장");
+    add("런던 포크 (EIP-1559)", find("런던 포크"), "2021-08-05 → 21장");
+    add("MiCA 관보 게재", find("MiCA"), "2023-06-09 → 30장");
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", round: "<span class='round'>반올림 차</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) { return "<tr><td>" + r.name + "</td><td class='num'>" + esc(r.got) + "</td><td class='num'>" + esc(r.expected) + "</td><td>" + tag[r.status] + "</td></tr>"; }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : " · 모두 일치");
+  }
+
+  // ---- 조작 ----
+  $("filt").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.filt = b.dataset.v; update(); });
+  // 누르면 고르고(출처가 보인다), 「n장 →」 단추(목록)나 고른 점에서 Enter 를 한 번 더 누르면 그 장으로 간다
+  function pick(target) { var t = target.closest("[data-i]"); if (!t) return null; var i = Number(t.dataset.i); if (state.sel !== i) { state.sel = i; update(); return i; } return -1; }
+  $("chart").addEventListener("click", function (e) { pick(e.target); });
+  $("chart").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { var r = pick(e.target); if (r === -1) go(EV[state.sel]); if (r !== null) e.preventDefault(); } });
+  $("list").addEventListener("click", function (e) { var b = e.target.closest("button[data-go]"); if (b) { state.sel = Number(b.dataset.go); go(EV[state.sel]); return; } pick(e.target); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

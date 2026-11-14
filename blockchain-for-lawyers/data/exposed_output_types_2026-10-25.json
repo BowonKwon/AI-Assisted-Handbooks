@@ -1,0 +1,147 @@
+{
+ "_about": "Bitcoin held in outputs whose public key (or spending script) is already visible on-chain, by output category. Unit: BTC amount (not UTXO count). Secondary aggregate published by a third party with an open-source query; not re-run for this snapshot. No price data.",
+ "as_of": "2026-10-25",
+ "accessed_utc": "2026-10-24T18:19:27Z",
+ "primary": {
+  "source": "Project Eleven, Bitcoin Risq List metrics endpoint",
+  "source_url": "https://bitcoin-risq-list.projecteleven.com/api/btc-at-risk/metrics",
+  "method_url": "https://github.com/p-11/bitcoin-risq-list-query/blob/bb3177f89de8a5d826132658ffc7ca0f08dc4688/btc_at_quantum_risk_query.sql",
+  "method": "SQL over the public BigQuery Bitcoin ETL dataset: (1) outputs whose script type puts a key in the locking script (P2PK, bare multisig, P2TR); (2) unspent balances of P2PKH/P2WPKH/P2SH/P2WSH addresses that have previously been spent from (key or script revealed).",
+  "snapshot_block_height": 972132,
+  "snapshot_created_at_utc": "2026-10-19T10:28:55.523Z",
+  "total_btc_exposed": "7121995.44126635",
+  "total_addresses": 18888443,
+  "by_category": [
+   {
+    "category": "p2pk_script_type",
+    "label": "P2PK (public key in locking script)",
+    "btc": "1715076.99695260",
+    "share_of_issued_supply_pct": 8.533
+   },
+   {
+    "category": "taproot_script_type",
+    "label": "P2TR (x-only key in locking script)",
+    "btc": "217063.18329201",
+    "share_of_issued_supply_pct": 1.08
+   },
+   {
+    "category": "multisig_script_type",
+    "label": "bare P2MS (keys in locking script)",
+    "btc": "416.60645555",
+    "share_of_issued_supply_pct": 0.002
+   },
+   {
+    "category": "pubkeyhash_reuse",
+    "label": "P2PKH address that has already spent (key revealed)",
+    "btc": "1185672.15392868",
+    "share_of_issued_supply_pct": 5.899
+   },
+   {
+    "category": "witness_v0_keyhash_reuse",
+    "label": "P2WPKH address that has already spent (key revealed)",
+    "btc": "2098570.39816002",
+    "share_of_issued_supply_pct": 10.44
+   },
+   {
+    "category": "scripthash_reuse",
+    "label": "P2SH script that has already spent (script revealed)",
+    "btc": "1199814.71613438",
+    "share_of_issued_supply_pct": 5.969
+   },
+   {
+    "category": "witness_v0_scripthash_reuse",
+    "label": "P2WSH script that has already spent (script revealed)",
+    "btc": "705381.38634311",
+    "share_of_issued_supply_pct": 3.509
+   },
+   {
+    "category": "witness_unknown_reuse",
+    "label": "other witness versions, reused",
+    "btc": "0.00000000",
+    "share_of_issued_supply_pct": 0.0
+   }
+  ],
+  "subtotal_script_type_btc": "1932556.78670016",
+  "subtotal_address_reuse_btc": "5189438.65456619",
+  "fields_dropped": "the endpoint also returns an exchange-rate field; it was deliberately not copied"
+ },
+ "denominator": {
+  "issued_supply_btc": "20100415.625",
+  "formula": "sum over heights 0..snapshot height of 50 BTC >> floor(height/210000) (Bitcoin Core GetBlockSubsidy). Upper bound: includes the unspendable genesis output and any subsidy miners did not claim; real UTXO-set total is slightly smaller.",
+  "total_exposed_share_of_issued_supply_pct": 35.432
+ },
+ "comparison": {
+  "source": "mempool research, UTXO Set Report (orangesurf, 18 May 2025)",
+  "source_url": "https://research.mempool.space/utxo-set-report/",
+  "method": "bitcoin-utxo-dump (in3rsha) over a Bitcoin Core chainstate snapshot; script type only, no address-reuse analysis",
+  "snapshot_block_height": 892385,
+  "snapshot_date": "2025-04-14",
+  "unit_note": "count = number of UTXOs; value = BTC; percentages of the whole UTXO set",
+  "by_script_type": [
+   {
+    "type": "p2tr",
+    "count": 59262426,
+    "count_pct": 34.22,
+    "value_btc": 147912,
+    "value_pct": 0.75
+   },
+   {
+    "type": "p2pkh",
+    "count": 49862580,
+    "count_pct": 28.79,
+    "value_btc": 6496612,
+    "value_pct": 32.87
+   },
+   {
+    "type": "p2wpkh",
+    "count": 45944460,
+    "count_pct": 26.53,
+    "value_btc": 6132282,
+    "value_pct": 31.02
+   },
+   {
+    "type": "p2sh",
+    "count": 13722075,
+    "count_pct": 7.92,
+    "value_btc": 4203041,
+    "value_pct": 21.25
+   },
+   {
+    "type": "p2ms",
+    "count": 2522447,
+    "count_pct": 1.46,
+    "value_btc": 33137,
+    "value_pct": 0.17
+   },
+   {
+    "type": "p2wsh",
+    "count": 1810508,
+    "count_pct": 1.05,
+    "value_btc": 1115123,
+    "value_pct": 5.64
+   },
+   {
+    "type": "p2pk",
+    "count": 45257,
+    "count_pct": 0.03,
+    "value_btc": 1720270,
+    "value_pct": 8.7
+   },
+   {
+    "type": "non-standard",
+    "count": 21108,
+    "count_pct": 0.01,
+    "value_btc": 2617,
+    "value_pct": 0.01
+   }
+  ],
+  "caveat_from_source": "The report says it will be updated to fix false identification of <37 byte scripts as P2MS outputs."
+ },
+ "limitations": [
+  "Both figures are third-party aggregates; neither was recomputed from a node for this snapshot.",
+  "The two sources use different snapshots (block 892385 vs the primary snapshot height) and different methods, so they agree only in order of magnitude for the overlapping categories (P2PK, P2TR).",
+  "Address-reuse categories for P2SH/P2WSH count any previously spent script as exposed even if the revealed script holds no ECDSA/Schnorr key.",
+  "Keys exposed off-chain (signed messages, xpub sharing) and in-mempool exposure are not counted.",
+  "Shares are computed against scheduled issuance, an upper bound on circulating supply."
+ ]
+}

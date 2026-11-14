@@ -1,0 +1,73 @@
+{
+ "_about": "Estimated Bitcoin network hash rate from the current difficulty. Structural variable only; no price or energy-cost data.",
+ "as_of": "2026-10-25",
+ "observed_at_utc": "2026-10-24T18:17:18Z/2026-10-24T18:17:34Z",
+ "chain_tip_height_at_observation": 972958,
+ "last_retarget_block": {
+  "height": 971712,
+  "hash": "00000000000000000000c185f0906690a08d62d6fe842682a888d5560217e467",
+  "header_timestamp_unix": 1792154251,
+  "nBits": "0x17020093",
+  "difficulty": 140577680051919.62,
+  "sources": [
+   {
+    "url": "https://blockstream.info/api/block/00000000000000000000c185f0906690a08d62d6fe842682a888d5560217e467",
+    "accessed_utc": "2026-10-24T18:17:22Z"
+   },
+   {
+    "url": "https://mempool.space/api/block/00000000000000000000c185f0906690a08d62d6fe842682a888d5560217e467",
+    "accessed_utc": "2026-10-24T18:17:23Z"
+   },
+   {
+    "url": "https://blockstream.info/api/block/00000000000000000000c185f0906690a08d62d6fe842682a888d5560217e467/header",
+    "note": "raw 80-byte header; identical bytes from mempool.space /header"
+   }
+  ],
+  "checks": "header bytes identical across both explorers; SHA256d(header) equals block hash; hash <= target(nBits); difficulty recomputed from nBits equals explorer value"
+ },
+ "tip_block": {
+  "height": 972958,
+  "hash": "000000000000000000001857369fd717b186adc5c22960b54b87875029cc65ee",
+  "header_timestamp_unix": 1792865689,
+  "nBits": "0x17020093",
+  "difficulty": 140577680051919.62,
+  "sources": [
+   {
+    "url": "https://blockstream.info/api/block/000000000000000000001857369fd717b186adc5c22960b54b87875029cc65ee",
+    "accessed_utc": "2026-10-24T18:17:29Z"
+   },
+   {
+    "url": "https://mempool.space/api/block/000000000000000000001857369fd717b186adc5c22960b54b87875029cc65ee",
+    "accessed_utc": "2026-10-24T18:17:31Z"
+   },
+   {
+    "url": "https://blockstream.info/api/block/000000000000000000001857369fd717b186adc5c22960b54b87875029cc65ee/header",
+    "note": "raw 80-byte header; identical bytes from mempool.space /header"
+   }
+  ],
+  "checks": "header bytes identical across both explorers; SHA256d(header) equals block hash; hash <= target(nBits); difficulty recomputed from nBits equals explorer value"
+ },
+ "formula": {
+  "difficulty": "D = target(0x1d00ffff) / target(nBits), where target(bits) = mantissa * 256^(exponent-3)",
+  "hashrate_H_per_s": "H = D * 2^32 / 600",
+  "assumption": "One block is found on average every 600 s (the protocol target). 2^32 is the expected number of hashes per block at difficulty 1. If actual block intervals differ from 600 s, the true hash rate differs proportionally; this is an estimate, not a measurement."
+ },
+ "estimate": {
+  "difficulty": 140577680051919.62,
+  "hashrate_H_per_s": 1.0062942306175772e+21,
+  "hashrate_EH_per_s": 1006.294
+ },
+ "comparison_only": {
+  "note": "Explorer-published figures shown for comparison; neither this file's estimate nor these is asserted to be the true value.",
+  "mempool_space_currentHashrate_H_per_s": 1.077240378672487e+21,
+  "mempool_space_url": "https://mempool.space/api/v1/mining/hashrate/1w",
+  "mempool_space_difficulty_adjustment": {
+   "url": "https://mempool.space/api/v1/difficulty-adjustment",
+   "timeAvg_ms": 571113,
+   "nextRetargetHeight": 973728,
+   "previousRetarget_pct": 5.923684832227039,
+   "estimated_change_pct": 5.142304670977094
+  },
+  "accessed_utc": "2026-10-24T18:17:36Z"
+ }
+}

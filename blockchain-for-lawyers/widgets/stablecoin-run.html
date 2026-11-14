@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>스테이블코인 뱅크런 — 담보율과 상환 가능 비율</title>
+<script>window.BOOK_DATA={"as_of": "2026-10-25", "bitcoin": {"_src_release": "Bitcoin Core v31.1 (태그 커밋 9be056a8a72b624dae9623b2f7bded92c2a21c91), https://github.com/bitcoin/bitcoin/releases/tag/v31.1, 접근 2026-10-25 (UTC 2026-10-24)", "difficulty_adjustment": {"interval_blocks": 2016, "target_timespan_s": 1209600, "target_spacing_s": 600, "max_factor_per_adjustment": 4, "_note": "상한·하한은 목표 난이도(target)에 곱해지는 배수의 범위다. 난이도로 말하면 한 번에 최대 4배 오르거나 1/4로 내린다."}, "subsidy": {"halving_interval_blocks": 210000, "initial_subsidy_btc": 50, "initial_subsidy_sat": 5000000000}, "max_block_weight": {"value_wu": 4000000, "witness_scale_factor": 4, "observed_tip_weight": {"height": 972958, "weight_wu": 3993715}}, "genesis_header": {"hex": "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c", "block_hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", "nVersion": 1, "nTime": 1231006505, "nBits": "0x1d00ffff", "nNonce": 2083236893, "_note": "W12 블록 헤더 해부기의 입력. 위젯은 이 80바이트의 이중 SHA-256 을 다시 계산해 block_hash 와 대조한다(12장 NB12-1·NB12-2 와 같은 바이트)."}, "hashrate_snapshot": {"as_of": "2026-10-25", "observed_utc": "2026-10-24T18:17:18Z/18:17:34Z", "chain_tip_height": 972958, "last_retarget_height": 971712, "nBits": "0x17020093", "difficulty": 140577680051919.62, "hashrate_H_per_s": 1.0062942306175772e+21, "formula": "D = target(0x1d00ffff)/target(nBits); H = D × 2^32 / 600 (블록이 평균 600초마다 하나라는 가정 위의 추정, 측정이 아님)", "comparison_only_mempool_currentHashrate_H_per_s": 1.077240378672487e+21, "_note": "W6 51% 공격 비용 계산기의 기준 해시율. 코인 가격·전력 단가는 넣지 않는다(이 책은 가격을 다루지 않는다) — 단가는 사용자가 입력한다. 20장 NB20-3 과 같은 값."}}, "ethereum": {"active_fork": {"consensus": "Fulu", "execution": "Osaka", "combined_name": "Fusaka", "fulu_fork_epoch": 411392, "fork_version": "0x06000000", "osaka_time_unix": 1764798551, "activated_utc": "2025-12-03T21:49:11Z", "next_fork_scheduled_on_mainnet": false}, "eip1559": {"ELASTICITY_MULTIPLIER": 2, "BASE_FEE_MAX_CHANGE_DENOMINATOR": 8, "INITIAL_BASE_FEE_wei": 1000000000, "gas_target_rule": "gas_target = parent.gas_limit // ELASTICITY_MULTIPLIER", "_note": "기준일 메인넷 활성 포크(Osaka)까지 이 두 상수를 바꾼 개정은 없다: go-ethereum v1.17.10 이 포크 분기 없이 상수를 쓴다. 블록 가스 한도는 프로토콜 상수가 아니라 검증자가 블록마다 부모의 ±1/1024 범위에서 움직이는 값이다(GasLimitBoundDivisor = 1024, https://github.com/ethereum/go-ethereum/blob/1df30b18d9ed35ee9d28ffd4648442c2204554ad/params/protocol_params.go#L26).", "observed_latest_block": {"number": 26264275, "hash": "0x3f75ce9e8634bfac938e192b011f202fc2f10555d1ee7f78cc033b6814fd695c", "timestamp_unix": 1792866179, "gas_limit": 60000000, "gas_used": 32652385, "gas_target_computed": 30000000, "base_fee_per_gas_wei": 68997174}}, "staking": {"MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000, "MIN_SLASHING_PENALTY_QUOTIENT_ELECTRA": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT_ELECTRA": 4096, "PROPORTIONAL_SLASHING_MULTIPLIER_BELLATRIX": 3, "EPOCHS_PER_SLASHINGS_VECTOR": 8192, "_note": "현행 규칙(Electra 이후): 슬래싱 즉시 벌금 = 유효잔고/4096, 신고자 보상 = 유효잔고/4096, 약 18일 뒤(EPOCHS_PER_SLASHINGS_VECTOR/2 에포크) 상관 벌금 = 유효잔고 × min(최근 슬래싱 합계 × 3, 총 활성 잔고) / 총 활성 잔고(명세는 1 ETH 단위 정수 나눗셈 순서로 계산). MAX_EFFECTIVE_BALANCE(32 ETH)는 0x01 출금 자격 검증자에, _ELECTRA(2048 ETH)는 0x02 복리 자격 검증자에 적용된다.", "history": [{"fork": "Phase0 (2020-12-01)", "MIN_SLASHING_PENALTY_QUOTIENT": 128, "WHISTLEBLOWER_REWARD_QUOTIENT": 512, "PROPORTIONAL_SLASHING_MULTIPLIER": 1, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000}, {"fork": "Altair (epoch 74240, 2021-10-27)", "MIN_SLASHING_PENALTY_QUOTIENT": 64, "PROPORTIONAL_SLASHING_MULTIPLIER": 2}, {"fork": "Bellatrix (epoch 144896, 2022-09-06)", "MIN_SLASHING_PENALTY_QUOTIENT": 32, "PROPORTIONAL_SLASHING_MULTIPLIER": 3}, {"fork": "Electra (epoch 364032, 2025-05-07)", "MIN_SLASHING_PENALTY_QUOTIENT": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT": 4096, "MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "note": "PROPORTIONAL_SLASHING_MULTIPLIER 는 Bellatrix 값 3 유지"}, {"fork": "Fulu (epoch 411392, 2025-12-03)", "note": "위 상수 변경 없음"}], "_src_history": "https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/phase0.yaml#L62-L70, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/altair.yaml#L8-L10, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/bellatrix.yaml#L8-L10, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/electra.yaml#L6-L15; 포크 에포크·날짜는 https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/configs/mainnet.yaml#L41-L57. Phase0 시작은 https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/configs/mainnet.yaml#L28 MIN_GENESIS_TIME 1606824000 (2020-12-01T12:00:00Z) 기준."}}, "timeline": {"as_of": "2026-10-25", "range": {"start": "1976", "end": "2023"}, "anchor_ids": {"01-블록체인이푸는문제": "ch0", "02-30년전사": "ch1", "03-이책을읽는법": "ch2", "04-해시함수": "ch3", "05-공개키서명": "ch4", "06-머클트리": "ch5", "07-블록과체인": "ch6", "08-작업증명": "ch7", "09-최종성의확률적성격": "ch8", "10-지분증명": "ch9", "11-UTXO와계정": "ch10", "12-진짜블록해부": "ch11", "13-이더리움가상머신과가스": "ch12", "14-토큰표준": "ch13", "15-탈중앙거래소와AMM": "ch14", "16-오라클문제": "ch15", "17-MEV와거래순서": "ch16", "18-확장성": "ch17", "19-화폐의기능론": "ch18", "20-보안예산": "ch19", "21-수수료시장": "ch20", "22-토큰설계의경제학": "ch21", "23-게임이론": "ch22", "24-스테이블코인": "ch23", "25-버블의계량검정": "ch24", "26-네사건": "ch25", "27-기술과법의다리-1": "ch26", "28-기술과법의다리-2": "ch27", "29-양자전환": "ch28", "30-명명문제": "ch29", "9A-동향노트-색인": "ch30", "9B-오해판정표": "ch31", "9C-대역표": "ch32", "9D-연표": "ch33", "9E-수학보충": "ch34", "9F-용어집-목록-판권": "ch35"}, "_anchor_ids_note": "화면본 책 안의 장 머리 id(장 순서대로 0부터). 항목을 누르면 이 id 로 간다.", "events": [{"date": "1976-11", "precision": "month", "title": "디피·헬먼 「New Directions in Cryptography」 — 공개키 암호", "chapter": 5, "anchor": "05-공개키서명", "_src": "IEEE Trans. Inform. Theory IT-22(6): 644-654, November 1976"}, {"date": "1980-04", "precision": "month", "title": "머클 「Protocols for Public Key Cryptosystems」 — 공개키 목록의 트리 인증", "chapter": 6, "anchor": "06-머클트리", "_src": "Proc. 1980 IEEE Symposium on Security and Privacy, pp. 122-134 (DOI 10.1109/SP.1980.10006), 126-127쪽", "note": "자세한 논의는 참고문헌 [13] 「A certified digital signature」로 넘김"}, {"date": "1982-07", "precision": "month", "title": "램포트·쇼스택·피즈 「The Byzantine Generals Problem」", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "ACM TOPLAS 4(3): 382-401, July 1982"}, {"date": "1983", "precision": "year", "title": "차움 「Blind Signatures for Untraceable Payments」 — 은닉 서명 전자현금", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "Advances in Cryptology: Proceedings of Crypto 82, pp. 199-203 (Springer, 1983)", "year_note": "학회 1982(Crypto 82), 출판 1983"}, {"date": "1988", "precision": "year", "title": "머클 「A Digital Signature Based on a Conventional Encryption Function」 — 트리 서명", "chapter": 6, "anchor": "06-머클트리", "_src": "CRYPTO 87, LNCS 293, pp. 369-378 (Springer, 1988)", "year_note": "학회 1987(CRYPTO 87), 출판 1988"}, {"date": "1991", "precision": "year", "title": "하버·스토네타 「How To Time-Stamp a Digital Document」 — 타임스탬프 사슬", "chapter": 7, "anchor": "07-블록과체인", "_src": "J. Cryptology 3(2): 99-111 (1991)"}, {"date": "1993", "precision": "year", "title": "베이어·하버·스토네타 「Improving the Efficiency and Reliability of Digital Time-Stamping」 — 사슬을 트리로", "chapter": 7, "anchor": "07-블록과체인", "_src": "Sequences II, pp. 329-334 (Springer, 1993)", "note": "저자 조판본은 「March 1992」 표기; 출판 1993"}, {"date": "1997-03-28", "precision": "day", "title": "백, 해시캐시 공지(cypherpunks) — 계산으로 비용을 매기는 우표", "chapter": 8, "anchor": "08-작업증명", "_src": "http://www.hashcash.org/papers/announce.txt (Fri, 28 Mar 1997); Back (2002) 논문은 「May 1997」 — 불일치는 2장 각주"}, {"date": "1998", "precision": "year", "title": "다이 「b-money」 — 계산으로 돈을 만들고 모두가 장부를 갖는 그림", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "http://www.weidai.com/bmoney.txt; 1998은 Nakamoto (2008) 참고문헌 [1] 기재", "note": "문서에 날짜 없음, 월·일 미기재"}, {"date": "2005-12-29", "precision": "day", "title": "사보 「Bit gold」 — 작업증명·타임스탬프·소유권 등기", "chapter": 8, "anchor": "08-작업증명", "_src": "https://unenumerated.blogspot.com/2005/12/bit-gold.html; 게시일은 Wayback 2006-03-29 보존본의 표시일; 현 페이지 표시일 2008-12-27로 달라진 경위는 미확인"}, {"date": "2008-10-31", "precision": "day", "title": "나카모토 「Bitcoin P2P e-cash paper」 — 백서 공개", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "https://www.metzdowd.com/pipermail/cryptography/2008-October/014810.html (Fri Oct 31 14:10:00 EDT 2008); 백서 PDF"}, {"date": "2009-01-03", "precision": "day", "title": "제네시스 블록(nTime 1231006505 = 2009-01-03T18:15:05Z)", "chapter": 12, "anchor": "12-진짜블록해부", "_src": "data/genesis_block.hex·genesis_block.meta.json; Bitcoin Core v31.1 chainparams.cpp L134-L137"}, {"date": "2014", "precision": "year", "title": "부테린, 이더리움 백서(초고 2013, 공식 판 2014)", "chapter": 13, "anchor": "13-이더리움가상머신과가스", "_src": "ethereum.org 공식 PDF; Wayback 최초 캡처 2013-12-19(2장 각주)", "year_note": "초고 2013, 공식 판 2014"}, {"date": "2014-02-28", "precision": "day", "title": "Mt.Gox 민사재생 신청(東京地裁 平成26年(再)第12号)", "chapter": 26, "anchor": "26-네사건", "_src": "채무자 공지(일·영)"}, {"date": "2014-04-24", "precision": "day", "title": "Mt.Gox 파산절차 개시결정(東京地裁 平成26年(フ)第3830号)", "chapter": 26, "anchor": "26-네사건", "_src": "東京地裁 平成26年(フ)第3830号 파산절차 개시결정 원문"}, {"date": "2016-04-30", "precision": "day", "title": "The DAO 토큰 매각 시작(~2016-05-28)", "chapter": 26, "anchor": "26-네사건", "_src": "SEC Release No. 81207 (2017-07-25), 2쪽"}, {"date": "2016-06-17", "precision": "day", "title": "The DAO 공격(재귀 호출 결함)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-06-17 CRITICAL UPDATE Re: DAO Vulnerability; SEC Release No. 81207, 9쪽"}, {"date": "2016-07-20", "precision": "day", "title": "이더리움 하드포크(블록 1,920,000, irregular state change)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-07-20 Hard Fork Completed; EIP-779; SEC Release No. 81207, 9쪽"}, {"date": "2017-07-25", "precision": "day", "title": "SEC 「Report of Investigation … The DAO」 — DAO Tokens are securities", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "SEC Release No. 81207"}, {"date": "2019-03-15", "precision": "day", "title": "東京地裁 Mt.Gox 대표 형사 1심 판결", "chapter": 26, "anchor": "26-네사건", "_src": "東京地裁 2019. 3. 15. 판결 전문(平成27年(刑わ)第2274号 등)"}, {"date": "2020-03", "precision": "month", "title": "애덤스·진스마이스터·로빈슨 「Uniswap v2 Core」 — 상수곱 자동화 시장", "chapter": 15, "anchor": "15-탈중앙거래소와AMM", "_src": "Adams, Zinsmeister & Robinson, Uniswap v2 Core 백서 (March 2020)"}, {"date": "2020-06-11", "precision": "day", "title": "東京高裁 Mt.Gox 대표 형사 항소심 판결(항소 기각)", "chapter": 26, "anchor": "26-네사건", "_src": "東京高裁 2020. 6. 11. 판결(令和元年(う)第948号), courts.go.jp 판결 PDF"}, {"date": "2021-08-05", "precision": "day", "title": "이더리움 런던 포크(EIP-1559, 블록 12,965,000, 2021-08-05T12:33:42Z)", "chapter": 21, "anchor": "21-수수료시장", "_src": "블록 12,965,000 헤더(공개 RPC, timestamp 1628166822); go-ethereum v1.17.10 params/chainspecs/mainnet.json londonBlock — 21장 각주"}, {"date": "2021-11", "precision": "month", "title": "비트코인 탭루트 활성화(최소 활성화 높이 709,632)", "chapter": 5, "anchor": "05-공개키서명", "_src": "Bitcoin Core v31.1 src/kernel/chainparams.cpp (「Approximately November 12th, 2021」) — 부록 A-8"}, {"date": "2022-05", "precision": "month", "title": "Terra 붕괴", "chapter": 26, "anchor": "26-네사건", "_src": "BIS Annual Economic Report 2022 ch. III Box A(기제); SEC v. Terraform 평결·최종판결(26장)"}, {"date": "2022-09-15", "precision": "day", "title": "이더리움 지분증명 전환(The Merge; TTD 도달 추정일)", "chapter": 10, "anchor": "10-지분증명", "_src": "consensus-specs configs/mainnet.yaml 주석 「Estimated on Sept 15, 2022」 — 부록 A-7", "note": "추정일"}, {"date": "2022-11-11", "precision": "day", "title": "FTX 챕터 11 신청(Petition Date; West Realm Shires 는 11-14)", "chapter": 26, "anchor": "26-네사건", "_src": "Declaration of John J. Ray III, In re FTX Trading Ltd., D.I. 24, ¶40"}, {"date": "2023-02-03", "precision": "day", "title": "영국 항소법원 Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83 판결 PDF"}, {"date": "2023-06-09", "precision": "day", "title": "EU MiCA 관보 게재(OJ L 150; 적용 2024-12-30)", "chapter": 30, "anchor": "30-명명문제", "_src": "Regulation (EU) 2023/1114 (MiCA), OJ L 150 (2023-06-09)"}]}};window.WIDGET_ID="stablecoin-run";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #4b5f78; --accent2: #8b7f6f; --mark: #f3f1ed; --soft: #eef1f4;
+  --ok: #4f7d5e; --warn: #9a5b4f;
+  --a1: #6d7f97; --a2: #8b7f6f; --a3: #a9a39a; --a4: #c3b8a4;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; --a1: #7f93ad; --a2: #a3957f; --a3: #7d776e; --a4: #5e5850; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; --a1: #7f93ad; --a2: #a3957f; --a3: #7d776e; --a4: #5e5850; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; min-width: 0; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 36px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 20px; margin: 0; text-wrap: balance; word-break: keep-all; }
+h3 { font-size: 14px; margin: 0; color: var(--mut); font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { min-width: 0; font-family: var(--mono); font-size: 13.5px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 6px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.assets { display: grid; gap: 6px; }
+.asset { display: grid; grid-template-columns: minmax(90px, 1.2fr) 1fr 1fr 1fr; gap: 8px 12px; align-items: center; font-size: 13px; }
+.asset .nm { color: var(--fg); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.asset .nm i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+.asset label { display: grid; gap: 2px; font-size: 12px; color: var(--mut); }
+.asset output { font-family: var(--mono); color: var(--fg); }
+.ahead { display: grid; grid-template-columns: minmax(90px, 1.2fr) 1fr 1fr 1fr; gap: 8px 12px; font-size: 12px; color: var(--mut); }
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.big dd { font-size: 22px; color: var(--accent); font-weight: 500; }
+.bad dd { color: var(--warn); }
+.okc dd { color: var(--ok); }
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 480px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.tick { font-size: 12px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 5px 9px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { min-width: 0; overflow-wrap: anywhere; font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--accent); }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">24장 · 스테이블코인</div>
+  <h1>담보율은 지급능력의 수, 상환 가능 비율은 유동성의 수</h1>
+  <p class="lede">발행 1 에 대한 준비자산의 구성을 정하고 상환 요구가 얼마나 몰리는지 고른다. 당장 처분할 수 있는 가치가 요구를 덮지 못하면 가격이 미끄러지고, 가격이 1 아래면 더 많은 보유자가 상환에 나선다 — 이 되먹임은 이 책의 단순한 규칙이다. 유형은 구조의 예시이지 어느 코인의 장부가 아니다.</p>
+  <div class="formula">CR = A/S · RR(q) = Σ ℓ<sub>i</sub>A<sub>i</sub>(1−h<sub>i</sub>) / (qS) · 규칙: RR ≥ 1 이면 액면 상환, 아니면 가격 → RR, q ← q + 1.5·(1−가격)·(1−q) · 창구 닫힘: 가격 −0.05/라운드</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">준비자산 구성 × 상환 요구</h2>
+  <div class="bench" id="figure">
+    <div class="controls">
+      <div class="ctl">
+        <div class="lab">유형 (처음 구성 — 아래 칸에서 고칠 수 있다)</div>
+        <div class="seg" id="typeSeg" role="group" aria-label="준비자산 유형">
+          <button type="button" data-v="A" aria-pressed="false">A 현금·국채 위주</button>
+          <button type="button" data-v="B" aria-pressed="false">B 예금·어음 섞임</button>
+          <button type="button" data-v="Bp" aria-pressed="true">B′ 예금 동결</button>
+          <button type="button" data-v="C" aria-pressed="false">C 초과담보 급락</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="q0"><span>처음 상환 요구 비율 q₀</span> <output id="q0Out"></output></label>
+        <input type="range" id="q0" min="1" max="100" step="1" value="40">
+        <div class="seg" id="qSeg" role="group" aria-label="본문의 세 값"><button type="button" data-v="10" aria-pressed="false">10%</button><button type="button" data-v="40" aria-pressed="true">40%</button><button type="button" data-v="80" aria-pressed="false">80%</button></div>
+      </div>
+      <div class="ctl">
+        <label for="cr"><span>담보율 CR (준비자산 합 / 발행)</span> <output id="crOut"></output></label>
+        <input type="range" id="cr" min="0.5" max="1.5" step="0.01" value="1">
+      </div>
+      <div class="ctl">
+        <div class="lab">발행자의 상환 창구</div>
+        <div class="seg" id="winSeg" role="group" aria-label="창구"><button type="button" data-v="open" aria-pressed="true">열림</button><button type="button" data-v="closed" aria-pressed="false">닫힘 (가격 −0.05/라운드)</button></div>
+      </div>
+    </div>
+    <h3>준비자산 (비중은 담보율에 비례해 늘거나 준다)</h3>
+    <div class="ahead"><span>자산</span><span>비중 (담보율 1 기준)</span><span>처분 가능 몫 ℓ</span><span>급매 할인 h</span></div>
+    <div class="assets" id="assets"></div>
+    <dl class="readout">
+      <div><dt>담보율 CR</dt><dd id="oCR"></dd></div>
+      <div><dt>지금 처분 가능한 가치 Σ ℓA(1−h)</dt><dd id="oLiq"></dd></div>
+      <div class="big" id="rrBox"><dt>RR(q₀) 처음 라운드</dt><dd id="oRR"></dd></div>
+      <div class="big" id="endBox"><dt>결과</dt><dd id="oEnd"></dd></div>
+    </dl>
+    <div class="chart" id="chart" role="img" aria-label="라운드별 대차대조표(처분 가능 가치 대 상환 요구)와 가격"></div>
+    <div class="legend"><span><i style="background:var(--a1)"></i>처분 가능 가치</span><span><i style="background:var(--a3)"></i>처분 불가(동결 등)</span><span><i style="background:var(--warn)"></i>상환 요구</span><span><i style="background:var(--accent2)"></i>2차 시장 가격 (1 = 액면)</span></div>
+    <div class="tbl"><table aria-label="라운드 표"><thead><tr><th>라운드</th><th>요구 q</th><th>RR</th><th>가격</th><th>상태</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>본문과 대조 (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">「본문」 열은 24장 2절 수치 예(처분 가능 가치 99.45·RR 0.93)와 NB24-2 출력(유형 A·B·B′·C × 처음 요구 10·40·80%, B′ 창구 닫힘 6라운드) 그대로다. 반올림은 노트북의 round() 와 같은 자리.</caption>
+        <thead><tr><th>항목</th><th>계산</th><th>본문</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 모형이 아닌 것</h2>
+  <ul class="limits">
+    <li>어느 코인의 장부도 아니다. 비중·ℓ·h 는 구조의 예시이고, 가격 하락이 상환을 부른다는 되먹임(민감도 1.5)은 보고된 사실이 아니라 이 책의 모형 가정이다(24장 5절).</li>
+    <li>2차 시장이 있다는 가정의 귀결로 창구 폐쇄가 런을 멈추지 못한다. 그 가정의 근거는 24장이 인용하는 연준 노트(2025년 12월)이고, 수치는 아니다.</li>
+    <li>알고리듬형의 반사적 되먹임(두 번째 토큰으로의 교환 약속)은 다른 모형이다 — 24장 NB24-3.</li>
+    <li>라운드는 시간 단위가 아니다. 여섯 라운드는 「되먹임이 몇 번 도는가」를 보이는 횟수일 뿐이다.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>식: 『법률가를 위한 블록체인』 24장 2절(담보율·상환 가능 비율)·5절 NB24-2(되먹임 규칙 — 이 책의 단순화). 다이아몬드–딥비그의 두 균형은 NB24-1.</div>
+  <div>『법률가를 위한 블록체인 — 기술과 경제학으로 읽기』 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)와 설명 글은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">저장소 이슈</a>로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#9a5b4f;padding:16px'>공유 상수(BOOK_DATA)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  // 이 위젯은 공유 상수를 쓰지 않는다. 규칙·유형은 24장 NB24-2 그대로.
+  var TYPES = {
+    A: { name: "A 현금·국채 위주", cr: 1.0, res: [["현금", 0.20, 1.0, 0.0], ["단기국채", 0.75, 1.0, 0.005], ["은행예금", 0.05, 1.0, 0.0]] },
+    B: { name: "B 예금·어음 섞임", cr: 1.0, res: [["현금", 0.05, 1.0, 0.0], ["단기국채", 0.40, 1.0, 0.005], ["은행예금", 0.30, 1.0, 0.0], ["기업어음", 0.25, 1.0, 0.05]] },
+    Bp: { name: "B′ B에서 은행예금 전부 동결", cr: 1.0, res: [["현금", 0.05, 1.0, 0.0], ["단기국채", 0.40, 1.0, 0.005], ["은행예금(동결)", 0.30, 0.0, 0.0], ["기업어음", 0.25, 1.0, 0.05]] },
+    C: { name: "C 암호자산 초과담보(처음 담보율 1.5 → 담보 45% 급락 뒤 0.83)", cr: 1.5 * 0.55, res: [["담보 암호자산 — 급락 뒤 잔존 가치", 1.0, 1.0, 0.15]] }   // 비중 1.0 × 담보율 0.825 = 노트북의 1.5·0.55
+  };
+  var SENS = 1.5, ROUNDS = 6;
+  var EXAMPLE = { type: "Bp", q0: 40 };
+  var state = { type: "Bp", q0: 40, cr: 1.0, open: true, res: null };
+  var INIT = { type: state.type, q0: state.q0 };
+  var assetsBuilt = false;                                  // 슬라이더는 유형이 바뀔 때만 다시 만든다 — 조작 중 다시 만들면 포커스를 잃는다(검증 ② 지적)
+  function loadType(t) { state.type = t; state.cr = TYPES[t].cr; state.res = TYPES[t].res.map(function (r) { return r.slice(); }); assetsBuilt = false; }
+  loadType("Bp");
+
+  // 파이썬 round(x, d)·f"{x:.0%}" 와 같은 자리로 맞춘다(정확한 .5 는 짝수로)
+  // 정확한 반올림 경계(x 가 꼭 k+0.5/10^d 인 때)만 짝수로, 그 밖은 toFixed(이진값의 정확한 십진 전개) — 파이썬 round() 와 같다
+  function pyRound(x, d) { var m = Math.pow(10, d), f = Math.floor(x * m); var tie = x * m === f + 0.5 && (f + 0.5) / m === x && (2 * f + 1) % Math.pow(5, d) === 0; if (tie) return (f % 2 === 0 ? f : f + 1) / m; return Number(x.toFixed(d)); }
+  function pyPct0(x) { var y = x * 100, f = Math.floor(y), diff = y - f; if (diff === 0.5) return (f % 2 === 0 ? f : f + 1); return Number(y.toFixed(0)); }
+  function liquidOf(reserves, cr) { return reserves.reduce(function (a, x) { return a + x[1] * cr * x[2] * (1 - x[3]); }, 0); }   // 지금 당장 처분 가능한 가치 Σ ℓ·A·(1−h)
+  function pyRepr(x) { return Number.isInteger(x) ? x + ".0" : String(x); }     // 파이썬 f"{x}" 의 float 표기(1.0·0.704)
+  function runDynamics(reserves, cr, q0, open) {              // NB24-2 run_dynamics. reserves 비중 × cr 가 실제 비중
+    var q = q0, price = 1.0, hist = [], redeemed = 0.0;
+    for (var r = 1; r <= ROUNDS; r++) {
+      var liquid = liquidOf(reserves, cr);
+      var demand = Math.min(q, 1.0) - redeemed, rr = demand > 0 ? liquid / demand : Infinity;
+      if (open && rr >= 1) { redeemed += demand; price = 1.0; hist.push({ r: r, q: q, rr: pyRound(rr, 2), price: price, st: "액면 상환 완료", liquid: liquid, demand: demand, done: true }); break; }
+      price = open ? Math.max(Math.min(rr, 1.0), 0.0) : Math.max(price - 0.05, 0.0);
+      hist.push({ r: r, q: pyRound(q, 3), rr: pyRound(rr, 2), price: pyRound(price, 3), st: open ? "창구 열림" : "창구 닫힘", liquid: liquid, demand: demand, done: false });
+      q = Math.min(1.0, q + SENS * (1 - price) * (1 - q));
+    }
+    return hist;
+  }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: d === undefined ? 0 : d }); }
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (tag === "text" && attrs.fill) e.style.fill = attrs.fill; if (text !== undefined) e.textContent = text; return e; }
+  function draw(hist) {
+    var W = 720, H = 240, L = 50, R = 50, T = 20, Bm = 40, svg = el("svg", { viewBox: "0 0 " + W + " " + H });
+    var n = ROUNDS, slot = (W - L - R) / n, vmax = Math.max(1.05, state.cr * 1.05);
+    function sy(v) { return H - Bm - v / vmax * (H - T - Bm); }
+    [0, 0.25, 0.5, 0.75, 1].forEach(function (v) { svg.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v), stroke: "var(--line)" })); svg.appendChild(el("text", { x: L - 6, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, String(v))); });
+    var total = state.res.reduce(function (a, x) { return a + x[1] * state.cr; }, 0);
+    var pricePts = "";
+    for (var i = 0; i < n; i++) {
+      var x0 = L + i * slot + slot * 0.12, bw = slot * 0.3, h = hist[i];
+      svg.appendChild(el("text", { x: L + i * slot + slot / 2, y: H - Bm + 16, "text-anchor": "middle", "class": "tick" }, "R" + (i + 1)));
+      if (!h) continue;
+      // 대차대조표 막대: 처분 가능(아래) + 처분 불가(위) ; 옆에 상환 요구 막대
+      var liq = h.liquid, ill = total - liq;
+      svg.appendChild(el("rect", { x: x0, y: sy(liq), width: bw, height: sy(0) - sy(liq), fill: "var(--a1)" }));
+      svg.appendChild(el("rect", { x: x0, y: sy(liq + ill), width: bw, height: sy(liq) - sy(liq + ill), fill: "var(--a3)" }));
+      var dem = Math.min(h.demand, vmax);
+      svg.appendChild(el("rect", { x: x0 + bw + 4, y: sy(dem), width: bw, height: sy(0) - sy(dem), fill: "var(--warn)", opacity: 0.85 }));
+      var px = L + i * slot + slot / 2, py = sy(h.price);
+      pricePts += (pricePts ? " L" : "M") + px.toFixed(1) + "," + py.toFixed(1);
+      svg.appendChild(el("circle", { cx: px, cy: py, r: 4, fill: "var(--accent2)" }));
+      svg.appendChild(el("text", { x: px, y: py - 8, "text-anchor": "middle", "font-size": 11, fill: "var(--accent2)" }, h.price.toFixed(3)));
+    }
+    svg.appendChild(el("path", { d: pricePts, fill: "none", stroke: "var(--accent2)", "stroke-width": 1.8, "stroke-dasharray": "4 3" }));
+    svg.appendChild(el("text", { x: W - R + 6, y: sy(1) + 4, "font-size": 11, fill: "var(--accent2)" }, "가격 1"));
+    svg.appendChild(el("text", { x: W - R, y: H - 6, "text-anchor": "end", "font-size": 12, opacity: 0.8 }, "라운드 (막대: 준비자산 | 상환 요구, 발행 1 기준)"));
+    $("chart").replaceChildren(svg);
+  }
+  function renderAssets() {
+    var cols = ["var(--a1)", "var(--a2)", "var(--a3)", "var(--a4)"];
+    $("assets").innerHTML = state.res.map(function (r, i) {
+      return "<div class='asset'><span class='nm'><i style='background:" + cols[i % 4] + "'></i>" + r[0] + "</span>" +
+        "<label>비중 <output>" + fmt(r[1] * state.cr, 3) + "</output><input type='range' data-i='" + i + "' data-k='1' min='0' max='1' step='0.01' value='" + r[1] + "' aria-label='" + r[0] + " 비중'></label>" +
+        "<label>ℓ <output>" + r[2].toFixed(2) + "</output><input type='range' data-i='" + i + "' data-k='2' min='0' max='1' step='0.05' value='" + r[2] + "' aria-label='" + r[0] + " 처분 가능 몫'></label>" +
+        "<label>h <output>" + (100 * r[3]).toFixed(1) + "%</output><input type='range' data-i='" + i + "' data-k='3' min='0' max='0.5' step='0.005' value='" + r[3] + "' aria-label='" + r[0] + " 급매 할인'></label></div>";
+    }).join("");
+    assetsBuilt = true;
+  }
+  function syncAssets() {                                   // 이미 있는 슬라이더의 값·읽기만 고친다
+    $("assets").querySelectorAll(".asset").forEach(function (row, i) { var r = state.res[i]; if (!r) return; var outs = row.querySelectorAll("output"), ins = row.querySelectorAll("input");
+      outs[0].textContent = fmt(r[1] * state.cr, 3); outs[1].textContent = r[2].toFixed(2); outs[2].textContent = (100 * r[3]).toFixed(1) + "%";
+      if (document.activeElement !== ins[0]) ins[0].value = r[1]; if (document.activeElement !== ins[1]) ins[1].value = r[2]; if (document.activeElement !== ins[2]) ins[2].value = r[3]; });
+  }
+
+  function update() {
+    var hist = runDynamics(state.res, state.cr, state.q0 / 100, state.open), last = hist[hist.length - 1], first = hist[0];
+    $("q0Out").textContent = state.q0 + "%"; $("q0").value = state.q0; $("crOut").textContent = state.cr.toFixed(2); $("cr").value = state.cr;
+    $("typeSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === state.type)); });
+    $("qSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === state.q0)); });
+    $("winSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String((b.dataset.v === "open") === state.open)); });
+    if (assetsBuilt) syncAssets(); else renderAssets();
+    var crNow = state.res.reduce(function (a, x) { return a + x[1] * state.cr; }, 0);
+    $("oCR").textContent = crNow.toFixed(2); $("oLiq").textContent = first.liquid.toFixed(4);
+    $("oRR").textContent = isFinite(first.rr) ? first.rr.toFixed(2) : "∞"; $("rrBox").className = first.rr >= 1 ? "big okc" : "big bad";
+    $("oEnd").textContent = last.done ? "액면 상환 완료 (" + hist.length + "라운드)" : "요구 " + pyPct0(last.q) + "%, 가격 " + last.price.toFixed(3); $("endBox").className = last.done ? "big okc" : "big bad";
+    draw(hist);
+    $("rows").innerHTML = hist.map(function (h) { return "<tr><td>" + h.r + "</td><td class='num'>" + h.q.toFixed(3) + "</td><td class='num'>" + (isFinite(h.rr) ? h.rr.toFixed(2) : "∞") + "</td><td class='num'>" + h.price.toFixed(3) + "</td><td>" + h.st + "</td></tr>"; }).join("");
+    var msg = "담보율 " + crNow.toFixed(2) + ", 처음 요구 " + state.q0 + "%. 당장 처분 가능한 가치 " + first.liquid.toFixed(4) + " 대 요구 " + first.demand.toFixed(2) + " — RR = <b>" + (isFinite(first.rr) ? first.rr.toFixed(2) : "∞") + "</b>. ";
+    if (last.done) msg += "요구를 액면으로 전부 맞췄다. 런은 유동성의 수(RR)가 1 아래로 내려갈 때 시작한다.";
+    else if (state.open) msg += "처분 가능한 가치가 요구에 못 미쳐 가격이 RR 쪽으로 내려가고, 가격이 1 아래라 더 많은 보유자가 상환에 나선다. " + hist.length + "라운드 뒤 요구 " + pyPct0(last.q) + "%, 가격 " + last.price.toFixed(3) + ". 담보율이 " + (crNow >= 1 ? "1 이상인데도" : "1 아래라") + " " + (crNow >= 1 ? "유동성이 문제다." : "지급능력 자체가 문제다.");
+    else msg += "창구를 닫아도 2차 시장이 있으면 상환 압력이 가격으로 빠져나간다(규칙: 라운드마다 −0.05). " + hist.length + "라운드 뒤 요구 " + pyPct0(last.q) + "%, 가격 " + last.price.toFixed(3) + " — 창구 폐쇄는 은행과 달리 런을 멈추지 못한다.";
+    $("msg").innerHTML = msg;
+  }
+
+  // ---- 본문 풀이와 대조 ----
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected) { rows.push({ name: name, got: got, expected: expected, status: got === expected ? "match" : "miss" }); }
+    function summ(t, q0) { var T = TYPES[t], h = runDynamics(T.res, T.cr, q0, true), l = h[h.length - 1]; return h.length + "라운드 → 요구 " + pyPct0(l.q) + "%, 상환가능비율 " + pyRepr(l.rr) + ", 가격 " + pyRepr(l.price) + " (" + l.st + ")"; }
+    var initSame = INIT.type === "Bp" && INIT.q0 === 40;
+    var h0 = runDynamics(TYPES.Bp.res, TYPES.Bp.cr, 0.40, true);
+    rows.push({ name: "처음 상태 · B′ · 요구 40% · RR", got: h0[0].rr, expected: 1.71, status: initSame && h0[0].rr === 1.71 && h0.length === 1 ? "match" : "miss" });
+    // 2절 수치 예: 발행 100·준비 100(현금 10, 국채 60(할인 0.5%), 예금 25, 어음 5(할인 5%)) — 위젯의 liquidOf·runDynamics 로 낸다
+    var EX2 = [["현금", 0.10, 1, 0], ["단기국채", 0.60, 1, 0.005], ["은행예금", 0.25, 1, 0], ["어음", 0.05, 1, 0.05]], EX2f = EX2.map(function (r) { return r[0] === "은행예금" ? [r[0], r[1], 0, r[3]] : r; });
+    add("2절 수치 예 · 처분 가능 가치 (동결 없음, q=0.3) ×100", pyRound(100 * liquidOf(EX2, 1.0), 2), 99.45);
+    add("2절 수치 예 · 예금 동결·q=0.8 · RR", runDynamics(EX2f, 1.0, 0.8, true)[0].rr, 0.93);
+    var want = { A: ["1라운드 → 요구 10%, 상환가능비율 9.96, 가격 1.0 (액면 상환 완료)", "1라운드 → 요구 40%, 상환가능비율 2.49, 가격 1.0 (액면 상환 완료)", "1라운드 → 요구 80%, 상환가능비율 1.25, 가격 1.0 (액면 상환 완료)"],
+      B: ["1라운드 → 요구 10%, 상환가능비율 9.86, 가격 1.0 (액면 상환 완료)", "1라운드 → 요구 40%, 상환가능비율 2.46, 가격 1.0 (액면 상환 완료)", "1라운드 → 요구 80%, 상환가능비율 1.23, 가격 1.0 (액면 상환 완료)"],
+      Bp: ["1라운드 → 요구 10%, 상환가능비율 6.85, 가격 1.0 (액면 상환 완료)", "1라운드 → 요구 40%, 상환가능비율 1.71, 가격 1.0 (액면 상환 완료)", "6라운드 → 요구 97%, 상환가능비율 0.7, 가격 0.704 (창구 열림)"],
+      C: ["1라운드 → 요구 10%, 상환가능비율 7.01, 가격 1.0 (액면 상환 완료)", "1라운드 → 요구 40%, 상환가능비율 1.75, 가격 1.0 (액면 상환 완료)", "6라운드 → 요구 96%, 상환가능비율 0.73, 가격 0.726 (창구 열림)"] };
+    ["A", "B", "Bp", "C"].forEach(function (t) { add("NB24-2 · " + TYPES[t].name.split(" ")[0] + " · 담보율", pyRound(TYPES[t].res.reduce(function (a, x) { return a + x[1] * TYPES[t].cr; }, 0), 2), t === "C" ? 0.83 : 1.00); [0.10, 0.40, 0.80].forEach(function (q0, i) { add("NB24-2 · " + TYPES[t].name.split(" ")[0] + " · 처음 요구 " + (q0 * 100) + "%", summ(t, q0), want[t][i]); }); });
+    var closed = runDynamics(TYPES.Bp.res, TYPES.Bp.cr, 0.40, false), wantC = ["라운드 1 요구 0.4 RR 1.71 가격 0.95 창구 닫힘", "라운드 2 요구 0.445 RR 1.54 가격 0.9 창구 닫힘", "라운드 3 요구 0.528 RR 1.3 가격 0.85 창구 닫힘", "라운드 4 요구 0.634 RR 1.08 가격 0.8 창구 닫힘", "라운드 5 요구 0.744 RR 0.92 가격 0.75 창구 닫힘", "라운드 6 요구 0.84 RR 0.82 가격 0.7 창구 닫힘"];
+    closed.forEach(function (h, i) { add("NB24-2 · B′ 창구 닫힘 · 라운드 " + h.r, "라운드 " + h.r + " 요구 " + pyRepr(h.q) + " RR " + pyRepr(h.rr) + " 가격 " + pyRepr(h.price) + " " + h.st, wantC[i]); });
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", round: "<span class='round'>반올림 차</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) { return "<tr><td>" + r.name + "</td><td class='num'>" + r.got + "</td><td class='num'>" + r.expected + "</td><td>" + tag[r.status] + "</td></tr>"; }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : " · 모두 일치");
+  }
+
+  // ---- 조작 ----
+  $("typeSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; loadType(b.dataset.v); update(); });
+  $("qSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.q0 = Number(b.dataset.v); update(); });
+  $("winSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.open = b.dataset.v === "open"; update(); });
+  $("q0").addEventListener("input", function (e) { state.q0 = Number(e.target.value); update(); });
+  $("cr").addEventListener("input", function (e) { state.cr = Number(e.target.value); update(); });
+  $("assets").addEventListener("input", function (e) { var t = e.target; if (!t.dataset.i) return; state.res[Number(t.dataset.i)][Number(t.dataset.k)] = Number(t.value); update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

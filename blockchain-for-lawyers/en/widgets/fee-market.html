@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The fee market — the EIP-1559 base fee</title>
+<script>window.BOOK_DATA={"as_of": "2026-10-25", "bitcoin": {"difficulty_adjustment": {"interval_blocks": 2016, "target_timespan_s": 1209600, "target_spacing_s": 600, "max_factor_per_adjustment": 4}, "subsidy": {"halving_interval_blocks": 210000, "initial_subsidy_btc": 50, "initial_subsidy_sat": 5000000000}, "max_block_weight": {"value_wu": 4000000, "witness_scale_factor": 4, "observed_tip_weight": {"height": 972958, "weight_wu": 3993715}}, "genesis_header": {"hex": "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c", "block_hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", "nVersion": 1, "nTime": 1231006505, "nBits": "0x1d00ffff", "nNonce": 2083236893}, "hashrate_snapshot": {"as_of": "2026-10-25", "observed_utc": "2026-10-24T18:17:18Z/18:17:34Z", "chain_tip_height": 972958, "last_retarget_height": 971712, "nBits": "0x17020093", "difficulty": 140577680051919.62, "hashrate_H_per_s": 1.0062942306175772e+21, "formula": "D = target(0x1d00ffff)/target(nBits); H = D × 2^32 / 600 (an estimate resting on the assumption of one block every 600 seconds on average, not a measurement)", "comparison_only_mempool_currentHashrate_H_per_s": 1.077240378672487e+21}}, "ethereum": {"active_fork": {"consensus": "Fulu", "execution": "Osaka", "combined_name": "Fusaka", "fulu_fork_epoch": 411392, "fork_version": "0x06000000", "osaka_time_unix": 1764798551, "activated_utc": "2025-12-03T21:49:11Z", "next_fork_scheduled_on_mainnet": false}, "eip1559": {"ELASTICITY_MULTIPLIER": 2, "BASE_FEE_MAX_CHANGE_DENOMINATOR": 8, "INITIAL_BASE_FEE_wei": 1000000000, "gas_target_rule": "gas_target = parent.gas_limit // ELASTICITY_MULTIPLIER", "observed_latest_block": {"number": 26264275, "hash": "0x3f75ce9e8634bfac938e192b011f202fc2f10555d1ee7f78cc033b6814fd695c", "timestamp_unix": 1792866179, "gas_limit": 60000000, "gas_used": 32652385, "gas_target_computed": 30000000, "base_fee_per_gas_wei": 68997174}}, "staking": {"MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000, "MIN_SLASHING_PENALTY_QUOTIENT_ELECTRA": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT_ELECTRA": 4096, "PROPORTIONAL_SLASHING_MULTIPLIER_BELLATRIX": 3, "EPOCHS_PER_SLASHINGS_VECTOR": 8192, "history": [{"fork": "Phase0 (2020-12-01)", "MIN_SLASHING_PENALTY_QUOTIENT": 128, "WHISTLEBLOWER_REWARD_QUOTIENT": 512, "PROPORTIONAL_SLASHING_MULTIPLIER": 1, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000}, {"fork": "Altair (epoch 74240, 2021-10-27)", "MIN_SLASHING_PENALTY_QUOTIENT": 64, "PROPORTIONAL_SLASHING_MULTIPLIER": 2}, {"fork": "Bellatrix (epoch 144896, 2022-09-06)", "MIN_SLASHING_PENALTY_QUOTIENT": 32, "PROPORTIONAL_SLASHING_MULTIPLIER": 3}, {"fork": "Electra (epoch 364032, 2025-05-07)", "MIN_SLASHING_PENALTY_QUOTIENT": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT": 4096, "MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "note": "PROPORTIONAL_SLASHING_MULTIPLIER stays at the Bellatrix value of 3"}, {"fork": "Fulu (epoch 411392, 2025-12-03)", "note": "No change to the constants above"}]}}, "timeline": {"as_of": "2026-10-25", "range": {"start": "1976", "end": "2023"}, "anchor_ids": {"01-블록체인이푸는문제": "ch0", "02-30년전사": "ch1", "03-이책을읽는법": "ch2", "04-해시함수": "ch3", "05-공개키서명": "ch4", "06-머클트리": "ch5", "07-블록과체인": "ch6", "08-작업증명": "ch7", "09-최종성의확률적성격": "ch8", "10-지분증명": "ch9", "11-UTXO와계정": "ch10", "12-진짜블록해부": "ch11", "13-이더리움가상머신과가스": "ch12", "14-토큰표준": "ch13", "15-탈중앙거래소와AMM": "ch14", "16-오라클문제": "ch15", "17-MEV와거래순서": "ch16", "18-확장성": "ch17", "19-화폐의기능론": "ch18", "20-보안예산": "ch19", "21-수수료시장": "ch20", "22-토큰설계의경제학": "ch21", "23-게임이론": "ch22", "24-스테이블코인": "ch23", "25-버블의계량검정": "ch24", "26-네사건": "ch25", "27-기술과법의다리-1": "ch26", "28-기술과법의다리-2": "ch27", "29-양자전환": "ch28", "30-명명문제": "ch29", "9A-동향노트-색인": "ch30", "9B-오해판정표": "ch31", "9C-대역표": "ch32", "9D-연표": "ch33", "9E-수학보충": "ch34", "9F-용어집-목록-판권": "ch35"}, "events": [{"date": "1976-11", "precision": "month", "title": "Diffie and Hellman, \"New Directions in Cryptography\": public-key cryptography", "chapter": 5, "anchor": "05-공개키서명", "_src": "IEEE Trans. Inform. Theory IT-22(6): 644-654, November 1976"}, {"date": "1980-04", "precision": "month", "title": "Merkle, \"Protocols for Public Key Cryptosystems\": tree authentication of a list of public keys", "chapter": 6, "anchor": "06-머클트리", "_src": "Proc. 1980 IEEE Symposium on Security and Privacy, pp. 122-134 (DOI 10.1109/SP.1980.10006), at pp. 126-127", "note": "Detailed discussion deferred to reference [13], \"A certified digital signature\""}, {"date": "1982-07", "precision": "month", "title": "Lamport, Shostak and Pease, \"The Byzantine Generals Problem\"", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "ACM TOPLAS 4(3): 382-401, July 1982"}, {"date": "1983", "precision": "year", "title": "Chaum, \"Blind Signatures for Untraceable Payments\": blind-signature electronic cash", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "Advances in Cryptology: Proceedings of Crypto 82, pp. 199-203 (Springer, 1983)", "year_note": "Conference 1982 (Crypto 82), published 1983"}, {"date": "1988", "precision": "year", "title": "Merkle, \"A Digital Signature Based on a Conventional Encryption Function\": tree signatures", "chapter": 6, "anchor": "06-머클트리", "_src": "CRYPTO 87, LNCS 293, pp. 369-378 (Springer, 1988)", "year_note": "Conference 1987 (CRYPTO 87), published 1988"}, {"date": "1991", "precision": "year", "title": "Haber and Stornetta, \"How To Time-Stamp a Digital Document\": a chain of time stamps", "chapter": 7, "anchor": "07-블록과체인", "_src": "J. Cryptology 3(2): 99-111 (1991)"}, {"date": "1993", "precision": "year", "title": "Bayer, Haber and Stornetta, \"Improving the Efficiency and Reliability of Digital Time-Stamping\": the chain turned into a tree", "chapter": 7, "anchor": "07-블록과체인", "_src": "Sequences II, pp. 329-334 (Springer, 1993)", "note": "The authors' typeset version is marked \"March 1992\"; published 1993"}, {"date": "1997-03-28", "precision": "day", "title": "Back, Hashcash announcement (cypherpunks): a stamp whose cost is paid in computation", "chapter": 8, "anchor": "08-작업증명", "_src": "http://www.hashcash.org/papers/announce.txt (Fri, 28 Mar 1997); the Back (2002) paper gives \"May 1997\" (the discrepancy is discussed in a footnote to Chapter 2)"}, {"date": "1998", "precision": "year", "title": "Dai, \"b-money\": a picture in which money is created by computation and everyone holds the ledger", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "http://www.weidai.com/bmoney.txt; 1998 is the date given in reference [1] of Nakamoto (2008)", "note": "No date in the document; month and day not given"}, {"date": "2005-12-29", "precision": "day", "title": "Szabo, \"Bit gold\": proof of work, time stamps and a registry of ownership", "chapter": 8, "anchor": "08-작업증명", "_src": "https://unenumerated.blogspot.com/2005/12/bit-gold.html; the posting date is the date shown in the Wayback snapshot of 2006-03-29; how the date now displayed on the page came to be 2008-12-27 was not verified"}, {"date": "2008-10-31", "precision": "day", "title": "Nakamoto, \"Bitcoin P2P e-cash paper\": the white paper is released", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "https://www.metzdowd.com/pipermail/cryptography/2008-October/014810.html (Fri Oct 31 14:10:00 EDT 2008); white paper PDF"}, {"date": "2009-01-03", "precision": "day", "title": "The genesis block (nTime 1231006505 = 2009-01-03T18:15:05Z)", "chapter": 12, "anchor": "12-진짜블록해부", "_src": "data/genesis_block.hex·genesis_block.meta.json; Bitcoin Core v31.1 chainparams.cpp L134-L137"}, {"date": "2014", "precision": "year", "title": "Buterin, the Ethereum white paper (draft 2013, official version 2014)", "chapter": 13, "anchor": "13-이더리움가상머신과가스", "_src": "Official PDF at ethereum.org; earliest Wayback capture 2013-12-19 (footnote to Chapter 2)", "year_note": "Draft 2013, official version 2014"}, {"date": "2014-02-28", "precision": "day", "title": "Mt.Gox files a petition for civil rehabilitation (Tokyo District Court (東京地裁), 平成26年(再)第12号)", "chapter": 26, "anchor": "26-네사건", "_src": "Debtor's announcement (Japanese and English)"}, {"date": "2014-04-24", "precision": "day", "title": "Order commencing bankruptcy proceedings against Mt.Gox (Tokyo District Court (東京地裁), 平成26年(フ)第3830号)", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo District Court (東京地裁), 平成26年(フ)第3830号, original text of the order commencing bankruptcy proceedings"}, {"date": "2016-04-30", "precision": "day", "title": "The DAO token sale begins (to 2016-05-28)", "chapter": 26, "anchor": "26-네사건", "_src": "SEC Release No. 81207 (2017-07-25), p. 2"}, {"date": "2016-06-17", "precision": "day", "title": "The DAO attack (a recursive-call flaw)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-06-17 CRITICAL UPDATE Re: DAO Vulnerability; SEC Release No. 81207, p. 9"}, {"date": "2016-07-20", "precision": "day", "title": "Ethereum hard fork (block 1,920,000, irregular state change)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-07-20 Hard Fork Completed; EIP-779; SEC Release No. 81207, p. 9"}, {"date": "2017-07-25", "precision": "day", "title": "SEC, \"Report of Investigation … The DAO\": DAO Tokens are securities", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "SEC Release No. 81207"}, {"date": "2019-03-15", "precision": "day", "title": "Tokyo District Court (東京地裁), first-instance criminal judgment against Mt.Gox's representative director", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo District Court (東京地裁), judgment of March 15, 2019, full text (平成27年(刑わ)第2274号 and others)"}, {"date": "2020-03", "precision": "month", "title": "Adams, Zinsmeister and Robinson, \"Uniswap v2 Core\": a constant-product automated market", "chapter": 15, "anchor": "15-탈중앙거래소와AMM", "_src": "Adams, Zinsmeister & Robinson, Uniswap v2 Core white paper (March 2020)"}, {"date": "2020-06-11", "precision": "day", "title": "Tokyo High Court (東京高裁), criminal judgment on appeal against Mt.Gox's representative director (appeal dismissed)", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo High Court (東京高裁), judgment of June 11, 2020 (令和元年(う)第948号), judgment PDF at courts.go.jp"}, {"date": "2021-08-05", "precision": "day", "title": "Ethereum's London fork (EIP-1559, block 12,965,000, 2021-08-05T12:33:42Z)", "chapter": 21, "anchor": "21-수수료시장", "_src": "Header of block 12,965,000 (public RPC, timestamp 1628166822); go-ethereum v1.17.10 params/chainspecs/mainnet.json londonBlock (footnote to Chapter 21)"}, {"date": "2021-11", "precision": "month", "title": "Bitcoin's Taproot activation (minimum activation height 709,632)", "chapter": 5, "anchor": "05-공개키서명", "_src": "Bitcoin Core v31.1 src/kernel/chainparams.cpp (\"Approximately November 12th, 2021\"); Appendix A-8"}, {"date": "2022-05", "precision": "month", "title": "The collapse of Terra", "chapter": 26, "anchor": "26-네사건", "_src": "BIS Annual Economic Report 2022 ch. III Box A (mechanism); verdict and final judgment in SEC v. Terraform (Chapter 26)"}, {"date": "2022-09-15", "precision": "day", "title": "Ethereum's transition to proof of stake (The Merge; estimated date the TTD was reached)", "chapter": 10, "anchor": "10-지분증명", "_src": "consensus-specs configs/mainnet.yaml, comment \"Estimated on Sept 15, 2022\"; Appendix A-7", "note": "Estimated date"}, {"date": "2022-11-11", "precision": "day", "title": "FTX files under Chapter 11 (Petition Date; West Realm Shires on 11-14)", "chapter": 26, "anchor": "26-네사건", "_src": "Declaration of John J. Ray III, In re FTX Trading Ltd., D.I. 24, ¶40"}, {"date": "2023-02-03", "precision": "day", "title": "Court of Appeal of England and Wales, Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83, judgment PDF"}, {"date": "2023-06-09", "precision": "day", "title": "EU MiCA published in the Official Journal (OJ L 150; applies from 2024-12-30)", "chapter": 30, "anchor": "30-명명문제", "_src": "Regulation (EU) 2023/1114 (MiCA), OJ L 150 (2023-06-09)"}]}};window.WIDGET_ID="fee-market";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #4b5f78; --accent2: #8b7f6f; --mark: #f3f1ed; --soft: #eef1f4;
+  --ok: #4f7d5e; --warn: #9a5b4f;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; min-width: 0; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 36px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 20px; margin: 0; text-wrap: balance; word-break: keep-all; }
+h3 { font-size: 14px; margin: 0; color: var(--mut); font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { min-width: 0; font-family: var(--mono); font-size: 13.5px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 6px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.segs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 24px; }
+.segbox { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 6px; }
+.segbox .t { font-size: 13px; font-weight: 600; }
+.snap { font-size: 12.5px; color: var(--mut); background: var(--soft); padding: 8px 12px; border-radius: 6px; }
+.snap b { color: var(--fg); }
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.big dd { font-size: 22px; color: var(--accent); font-weight: 500; }
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 12px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 5px 9px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { min-width: 0; overflow-wrap: anywhere; font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--accent); }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Chapter 21 · The fee market</div>
+  <h1>A toll set by formula</h1>
+  <p class="lede">The base fee is a function only of the parent block's gas used and its target (limit ÷ 2). If a block is full, the next block's base fee goes up by 1/8; if it is empty, it goes down by 1/8; if it equals the target, it stays where it is. Only the gas used per block moves, and you watch the path that results. The base fee is wei per gas set by the protocol, not market price data.</p>
+  <div class="formula">target = limit // 2 · above it: b′ = b + max(b·(g−target)//target//8, 1) · below it: b′ = b − b·(target−g)//target//8 · every division is integer division</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">Congestion → easing → normal</h2>
+  <div class="bench" id="figure">
+    <div class="snap" id="snap"></div>
+    <div class="controls">
+      <div class="ctl">
+        <label for="limit"><span>Gas limit (an observed value — not a constant)</span> <output id="limitOut"></output></label>
+        <input type="range" id="limit" min="15000000" max="100000000" step="1000000" value="60000000">
+      </div>
+      <div class="ctl">
+        <div class="lab">Scenario shortcuts</div>
+        <div class="seg" id="preset" role="group" aria-label="Scenario">
+          <button type="button" data-v="book" aria-pressed="true">Text (20 full → 20 at 1/8 of the limit → 5 at target)</button>
+          <button type="button" data-v="target" aria-pressed="false">All at target</button>
+          <button type="button" data-v="empty" aria-pressed="false">20 empty blocks</button>
+        </div>
+      </div>
+    </div>
+    <h3>Gas used per block — three segments</h3>
+    <div class="segs" id="segs"></div>
+    <dl class="readout">
+      <div><dt>Starting base fee (INITIAL_BASE_FEE)</dt><dd id="oInit"></dd></div>
+      <div class="big"><dt>Base fee at the end of congestion (after segment 1)</dt><dd id="oPeak"></dd></div>
+      <div class="big"><dt>Base fee of the last block</dt><dd id="oEnd"></dd></div>
+      <div><dt>Target g* = limit // 2</dt><dd id="oTarget"></dd></div>
+    </dl>
+    <div class="chart" id="chart" role="img" aria-label="Base fee (line) and gas used (bars) by block"></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>Base fee (gwei, log axis)</span><span><i style="background:var(--accent2);opacity:.6"></i>Gas used (relative to the limit)</span><span>Dotted line: target g*</span></div>
+    <div class="tbl"><table aria-label="Blocks in the text output"><thead><tr><th>Block</th><th>Gas used</th><th>Base fee (gwei)</th><th>Change</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>Check against the text (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Text" column is the output of NB21-1 in Chapter 21, as printed — the check on the first block of the London fork (1,124,967,822 wei for 12,965,000 → 12,965,001), ±12.5%, the 12 rows of the scenario table, and (1.125)^20 ≈ 10.5. The constants are data.json ethereum.eip1559 (the EIP-1559 text and go-ethereum v1.17.10).</caption>
+        <thead><tr><th>Item</th><th>Computed</th><th>Text</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">What this figure does not show</h2>
+  <ul class="limits">
+    <li>The tip the user specifies (priority fee), the fee cap, and burning. The base fee share is burned and the tip goes to the producer ((6) to (8) in the table in Chapter 21, Section 3).</li>
+    <li>The gas limit is not a protocol constant. It is a value that producers move block by block within ±1/1024 of the parent's, and the observed value on the reference date, 60,000,000, is in Appendix A-10.</li>
+    <li>The blob fee market (EIP-4844) is the same principle with a different resource and a different update formula (fake_exponential) — Chapter 21, Section 5, NB21-3.</li>
+    <li>The comparison of incentives with the first-price auction (whether guesses about "what others will bid" enter the payment) is in NB21-2.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>Formulas: the reference implementation in the EIP-1559 text (Final) — Blockchain for Lawyers, Chapter 21, Section 3, NB21-1. Constants ELASTICITY_MULTIPLIER = 2, BASE_FEE_MAX_CHANGE_DENOMINATOR = 8, INITIAL_BASE_FEE = 10⁹ wei (data.json _src: EIP text L152–L159, go-ethereum v1.17.10 params/protocol_params.go).</div>
+  <div>Blockchain for Lawyers: A Reading Through Technology and Economics · interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) and the explanatory text are under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through a <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issue</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.ethereum || !D.ethereum.eip1559) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#9a5b4f;padding:16px'>Shared constants (BOOK_DATA.ethereum.eip1559) not found. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  var E = D.ethereum.eip1559;                               //
+  var ELAST = BigInt(E.ELASTICITY_MULTIPLIER), DENOM = BigInt(E.BASE_FEE_MAX_CHANGE_DENOMINATOR), INIT_FEE = BigInt(E.INITIAL_BASE_FEE_wei);
+  var OBS_LIMIT = E.observed_latest_block ? E.observed_latest_block.gas_limit : 60000000;   //
+  var EXAMPLE = { limit: 60000000, segs: [[20, 1], [20, 0.125], [5, 0.5]] };      //
+  var state = { limit: EXAMPLE.limit, segs: EXAMPLE.segs.map(function (s) { return s.slice(); }) };
+  var INIT = { limit: state.limit, segs: JSON.stringify(state.segs) };
+
+  function nextBaseFee(b, g, limit) {                        //
+    b = BigInt(b); g = BigInt(g); limit = BigInt(limit);
+    var target = limit / ELAST;
+    if (g === target) return b;
+    if (g > target) { var d = b * (g - target) / target / DENOM; return b + (d > 1n ? d : 1n); }
+    return b - b * (target - g) / target / DENOM;
+  }
+  function scenario(limit, segs) { var out = []; segs.forEach(function (s) { for (var i = 0; i < s[0]; i++) out.push(Math.round(limit * s[1])); }); return out; }
+  function run(limit, segs) { var gs = scenario(limit, segs), b = INIT_FEE, rows = []; gs.forEach(function (g, i) { var nb = nextBaseFee(b, g, limit); rows.push({ i: i + 1, g: g, fee: nb, prev: b, change: Number(nb) / Number(b) - 1 }); b = nb; }); return rows; }
+  function gwei(wei) { return Number(wei) / 1e9; }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: d === undefined ? 0 : d }); }
+  function pctS(x) { return (x >= 0 ? "+" : "") + (100 * x).toFixed(2) + "%"; }
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (tag === "text" && attrs.fill) e.style.fill = attrs.fill; if (text !== undefined) e.textContent = text; return e; }
+  function drawChart(rows) {
+    var W = 720, H = 280, L = 56, R = 56, T = 18, Bm = 44, svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" }), n = rows.length;
+    var fees = rows.map(function (r) { return gwei(r.fee); }).concat([1]), lo = Math.floor(Math.log10(Math.min.apply(null, fees))), hi = Math.ceil(Math.log10(Math.max.apply(null, fees))); if (hi <= lo) hi = lo + 1;
+    function sx(i) { return L + (i + 0.5) / n * (W - L - R); }
+    function sy(f) { return H - Bm - (Math.log10(f) - lo) / (hi - lo) * (H - T - Bm); }
+    function sg(v) { return H - Bm - v / state.limit * (H - T - Bm) * 0.6; }
+    for (var e = lo; e <= hi; e++) { var v = Math.pow(10, e); g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) })); svg.appendChild(el("text", { x: L - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, fmt(v))); }
+    var xs = n <= 12 ? 1 : n <= 50 ? 5 : 10;
+    for (var i = 0; i < n; i += xs) svg.appendChild(el("text", { x: sx(i), y: H - Bm + 16, "text-anchor": "middle", "class": "tick" }, String(i + 1)));
+    svg.appendChild(g);
+    var bw = Math.max(1, (W - L - R) / n * 0.7);
+    rows.forEach(function (r, i) { svg.appendChild(el("rect", { x: sx(i) - bw / 2, y: sg(r.g), width: bw, height: H - Bm - sg(r.g), fill: "var(--accent2)", opacity: 0.45 })); });
+    var gstar = Number(BigInt(state.limit) / ELAST);
+    svg.appendChild(el("line", { x1: L, x2: W - R, y1: sg(gstar), y2: sg(gstar), stroke: "var(--accent2)", "stroke-dasharray": "3 4" }));
+    svg.appendChild(el("text", { x: W - R + 6, y: sg(gstar) + 4, "font-size": 11, fill: "var(--accent2)" }, "g*"));
+    svg.appendChild(el("text", { x: W - R + 6, y: sg(state.limit) + 4, "font-size": 11, fill: "var(--accent2)" }, "limit"));
+    svg.appendChild(el("path", { d: rows.map(function (r, i) { return (i ? "L" : "M") + sx(i).toFixed(1) + "," + sy(gwei(r.fee)).toFixed(1); }).join(" "), fill: "none", stroke: "var(--accent)", "stroke-width": 2.4 }));
+    rows.forEach(function (r, i) { if (n <= 60) svg.appendChild(el("circle", { cx: sx(i), cy: sy(gwei(r.fee)), r: 2.6, fill: "var(--accent)" })); });
+    svg.appendChild(el("text", { x: W - R, y: H - 6, "text-anchor": "end", "font-size": 12, opacity: 0.8 }, "Block (the parent's gas used sets the next block's base fee)"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "Base fee [gwei, log]"));
+    $("chart").replaceChildren(svg);
+  }
+  var segsBuilt = false;                                    //
+  function renderSegs() {
+    var names = ["Segment 1 (congestion)", "Segment 2 (easing)", "Segment 3 (normal)"];
+    $("segs").innerHTML = state.segs.map(function (s, i) {
+      return "<div class='segbox'><span class='t'>" + names[i] + "</span><label style='font-size:12.5px;color:var(--mut);display:grid;gap:2px'>Number of blocks <output>" + s[0] + "</output><input type='range' data-i='" + i + "' data-k='0' min='0' max='40' step='1' value='" + s[0] + "' aria-label='" + names[i] + ", number of blocks'></label>" +
+        "<label style='font-size:12.5px;color:var(--mut);display:grid;gap:2px'>Gas used (relative to the limit) <output>" + (100 * s[1]).toFixed(1) + "% = " + fmt(Math.round(state.limit * s[1])) + "</output><input type='range' data-i='" + i + "' data-k='1' min='0' max='1' step='0.005' value='" + s[1] + "' aria-label='" + names[i] + ", gas used'></label></div>";
+    }).join("");
+    segsBuilt = true;
+  }
+  function syncSegs() {
+    $("segs").querySelectorAll(".segbox").forEach(function (box, i) { var s = state.segs[i]; if (!s) return; var outs = box.querySelectorAll("output"), ins = box.querySelectorAll("input");
+      outs[0].textContent = s[0]; outs[1].textContent = (100 * s[1]).toFixed(1) + "% = " + fmt(Math.round(state.limit * s[1]));
+      if (document.activeElement !== ins[0]) ins[0].value = s[0]; if (document.activeElement !== ins[1]) ins[1].value = s[1]; });
+  }
+
+  function update() {
+    var rows = run(state.limit, state.segs), target = Number(BigInt(state.limit) / ELAST), up = 1 + 1 / Number(DENOM);   //
+    $("snap").innerHTML = "Constants (fixed, data.json _src): ELASTICITY_MULTIPLIER = <b>" + E.ELASTICITY_MULTIPLIER + "</b>, BASE_FEE_MAX_CHANGE_DENOMINATOR = <b>" + E.BASE_FEE_MAX_CHANGE_DENOMINATOR + "</b>, INITIAL_BASE_FEE = <b>" + fmt(E.INITIAL_BASE_FEE_wei) + " wei</b> (1 gwei). Reference date: " + (E.observed_latest_block ? "block " + fmt(E.observed_latest_block.number) + ", observed gas limit " + fmt(OBS_LIMIT) + " (not a constant, Appendix A-10)" : "") + ".";
+    $("limitOut").textContent = fmt(state.limit); $("limit").value = state.limit; $("oTarget").textContent = fmt(target);
+    $("oInit").textContent = gwei(INIT_FEE).toFixed(4) + " gwei";
+    if (segsBuilt) syncSegs(); else renderSegs();
+    var isBook = state.limit === 60000000 && JSON.stringify(state.segs) === JSON.stringify(EXAMPLE.segs);
+    $("preset").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === "book" ? isBook : b.dataset.v === "target" ? state.segs.every(function (s) { return s[1] === 0.5; }) : b.dataset.v === "empty" ? state.segs[0][1] === 0 && state.segs[1][0] === 0 && state.segs[2][0] === 0 : false)); });
+    var n1 = state.segs[0][0];
+    $("oPeak").textContent = rows.length && n1 > 0 ? gwei(rows[n1 - 1].fee).toFixed(4) + " gwei" : "—"; $("oEnd").textContent = rows.length ? gwei(rows[rows.length - 1].fee).toFixed(4) + " gwei" : "—";
+    drawChart(rows);
+    var show = isBook ? [1, 2, 3, 10, 20, 21, 22, 23, 30, 40, 41, 45] : rows.map(function (r) { return r.i; }).filter(function (i, k, a) { return a.length <= 14 || k < 3 || k === a.length - 1 || i % Math.ceil(a.length / 10) === 0; });
+    $("rows").innerHTML = rows.filter(function (r) { return show.indexOf(r.i) >= 0; }).map(function (r) { return "<tr><td>" + r.i + "</td><td class='num'>" + fmt(r.g) + "</td><td class='num'>" + gwei(r.fee).toFixed(4) + "</td><td class='num'>" + pctS(r.change) + "</td></tr>"; }).join("");
+    $("msg").innerHTML = isBook
+      ? "With 20 full blocks in a row, each block raises the base fee by +" + (100 / Number(DENOM)).toFixed(1) + "%, (" + up + ")<sup>20</sup> ≈ <b>" + Math.pow(up, 20).toFixed(1) + " times</b> (" + gwei(rows[19].fee).toFixed(4) + " gwei) in all. Twenty blocks at 1/8 of the limit bring it down by −9.37% per block to " + gwei(rows[39].fee).toFixed(4) + " gwei, and at target blocks it stays where it is. When demand falls it comes down at the same speed — the base fee is a function of the parent block only."
+      : "The gas used in each segment sets the path of the base fee. A block above the target (" + fmt(target) + ") raises the next block's base fee and a block below it lowers it, and the size of the change is proportional to the excess or shortfall, up to ±12.5%. With n full blocks, 1.125<sup>n</sup> times.";
+  }
+
+  //
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected) { rows.push({ name: name, got: got, expected: expected, status: got === expected ? "match" : "miss" }); }
+    var r0 = run(60000000, EXAMPLE.segs), initSame = INIT.limit === 60000000 && INIT.segs === JSON.stringify(EXAMPLE.segs);
+    rows.push({ name: "Starting state · scenario in the text · base fee of block 20 (gwei)", got: gwei(r0[19].fee).toFixed(4), expected: "10.5451", status: initSame && gwei(r0[19].fee).toFixed(4) === "10.5451" ? "match" : "miss" });
+    add("data.json · ELASTICITY_MULTIPLIER", E.ELASTICITY_MULTIPLIER, 2); add("data.json · BASE_FEE_MAX_CHANGE_DENOMINATOR", E.BASE_FEE_MAX_CHANGE_DENOMINATOR, 8); add("data.json · INITIAL_BASE_FEE (wei)", E.INITIAL_BASE_FEE_wei, 1000000000);
+    add("NB21-1 check 1 · base fee of block 12,965,000 → 12,965,001 (wei)", String(nextBaseFee(1000000000n, 30025257, 30029122)), "1124967822");
+    add("NB21-1 check 1 · target (30,029,122 // 2)", String(30029122n / ELAST), "15014561");
+    add("NB21-1 check 2 · after a full block (gwei)", gwei(nextBaseFee(1000000000n, 60000000, 60000000)).toFixed(4), "1.1250");
+    add("NB21-1 check 2 · after an empty block (gwei)", gwei(nextBaseFee(1000000000n, 0, 60000000)).toFixed(4), "0.8750");
+    var want = { 1: ["60,000,000", "1.1250", "+12.50%"], 2: ["60,000,000", "1.2656", "+12.50%"], 3: ["60,000,000", "1.4238", "+12.50%"], 10: ["60,000,000", "3.2473", "+12.50%"], 20: ["60,000,000", "10.5451", "+12.50%"], 21: ["7,500,000", "9.5565", "-9.37%"], 22: ["7,500,000", "8.6606", "-9.37%"], 23: ["7,500,000", "7.8486", "-9.37%"], 30: ["7,500,000", "3.9403", "-9.37%"], 40: ["7,500,000", "1.4723", "-9.37%"], 41: ["30,000,000", "1.4723", "+0.00%"], 45: ["30,000,000", "1.4723", "+0.00%"] };
+    Object.keys(want).map(Number).sort(function (a, b) { return a - b; }).forEach(function (i) { var r = r0[i - 1]; add("NB21-1 scenario · block " + i + " · gas / base fee (gwei) / change", r.g.toLocaleString("en-US") + " / " + gwei(r.fee).toFixed(4) + " / " + pctS(r.change), want[i].join(" / ")); });
+    add("NB21-1 · (1 + 1/DENOMINATOR)^20 = (1.125)^20 (one decimal place)", Math.pow(1 + 1 / Number(DENOM), 20).toFixed(1), "10.5");
+    add("Section 3 numerical example · 10⁹ + ⌊10⁹·(30,025,257−15,014,561)/15,014,561⌋/8", String(1000000000n + 1000000000n * (30025257n - 15014561n) / 15014561n / 8n), "1124967822");
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding difference</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) { return "<tr><td>" + r.name + "</td><td class='num'>" + r.got + "</td><td class='num'>" + r.expected + "</td><td>" + tag[r.status] + "</td></tr>"; }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  //
+  $("limit").addEventListener("input", function (e) { state.limit = Number(e.target.value); update(); });
+  $("segs").addEventListener("input", function (e) { var t = e.target; if (!t.dataset.i) return; state.segs[Number(t.dataset.i)][Number(t.dataset.k)] = Number(t.value); update(); });
+  $("preset").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; segsBuilt = false; if (b.dataset.v === "book") { state.limit = EXAMPLE.limit; state.segs = EXAMPLE.segs.map(function (s) { return s.slice(); }); } else if (b.dataset.v === "target") state.segs = [[20, 0.5], [20, 0.5], [5, 0.5]]; else state.segs = [[20, 0], [0, 0.125], [0, 0.5]]; update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

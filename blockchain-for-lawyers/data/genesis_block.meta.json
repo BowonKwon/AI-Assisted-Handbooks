@@ -1,0 +1,58 @@
+{
+ "_about": "Metadata for genesis_block.hex (full serialized block, 285 bytes) and genesis_header.hex (first 80 bytes). Both files hold lowercase hex with a trailing newline.",
+ "as_of": "2026-10-25",
+ "sources": [
+  {
+   "url": "https://blockstream.info/api/block/000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f/raw",
+   "accessed_utc": "2026-10-24T18:15:22Z",
+   "bytes": 285
+  },
+  {
+   "url": "https://mempool.space/api/block/000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f/raw",
+   "accessed_utc": "2026-10-24T18:15:24Z",
+   "bytes": 285
+  }
+ ],
+ "byte_identical_across_sources": true,
+ "sha256_of_raw_block_bytes": "5299fac924b5a2fc19a88876a0042c19ac4d11fe69c3f66e47516e26185f9e99",
+ "reference_source": {
+  "url": "https://github.com/bitcoin/bitcoin/blob/9be056a8a72b624dae9623b2f7bded92c2a21c91/src/kernel/chainparams.cpp#L134-L137",
+  "release_tag": "v31.1",
+  "commit": "9be056a8a72b624dae9623b2f7bded92c2a21c91",
+  "params": {
+   "nTime": 1231006505,
+   "nNonce": 2083236893,
+   "nBits": "0x1d00ffff",
+   "nVersion": 1,
+   "reward": "50 * COIN",
+   "hashGenesisBlock": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+   "hashMerkleRoot": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"
+  },
+  "pszTimestamp_line": "https://github.com/bitcoin/bitcoin/blob/9be056a8a72b624dae9623b2f7bded92c2a21c91/src/kernel/chainparams.cpp#L70"
+ },
+ "second_reference": {
+  "url": "https://github.com/btcsuite/btcd/blob/dd169fe0c32a56087d28b92fff3b8cf4fb43477a/chaincfg/genesis.go#L78-L88",
+  "note": "independent Go implementation: Version 1, Timestamp 0x495fab29 (=1231006505), Bits 0x1d00ffff, Nonce 0x7c2bac1d (=2083236893)"
+ },
+ "decoded_from_data": {
+  "nVersion": 1,
+  "hashPrevBlock": "0000000000000000000000000000000000000000000000000000000000000000",
+  "hashMerkleRoot": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+  "nTime": 1231006505,
+  "nBits": "0x1d00ffff",
+  "nNonce": 2083236893,
+  "block_hash_computed": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+  "coinbase_txid_computed": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+  "coinbase_scriptSig_hex": "04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73",
+  "coinbase_scriptSig_pushes": [
+   "ffff001d (486604799 little-endian)",
+   "04",
+   "69-byte ASCII text"
+  ],
+  "coinbase_text_ascii": "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks",
+  "output_value_sat": 5000000000,
+  "output_script": "P2PK: 65-byte uncompressed public key + OP_CHECKSIG"
+ },
+ "method": "Python hashlib: block hash = SHA256(SHA256(header 80 bytes)), displayed byte-reversed; merkle root of a one-transaction block = txid of that transaction = SHA256(SHA256(serialized tx)), byte-reversed.",
+ "all_checks_passed": true
+}

@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>51% 공격 비용 계산기 — 해시율·단가·시간</title>
+<script>window.BOOK_DATA={"as_of": "2026-10-25", "bitcoin": {"_src_release": "Bitcoin Core v31.1 (태그 커밋 9be056a8a72b624dae9623b2f7bded92c2a21c91), https://github.com/bitcoin/bitcoin/releases/tag/v31.1, 접근 2026-10-25 (UTC 2026-10-24)", "difficulty_adjustment": {"interval_blocks": 2016, "target_timespan_s": 1209600, "target_spacing_s": 600, "max_factor_per_adjustment": 4, "_note": "상한·하한은 목표 난이도(target)에 곱해지는 배수의 범위다. 난이도로 말하면 한 번에 최대 4배 오르거나 1/4로 내린다."}, "subsidy": {"halving_interval_blocks": 210000, "initial_subsidy_btc": 50, "initial_subsidy_sat": 5000000000}, "max_block_weight": {"value_wu": 4000000, "witness_scale_factor": 4, "observed_tip_weight": {"height": 972958, "weight_wu": 3993715}}, "genesis_header": {"hex": "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c", "block_hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", "nVersion": 1, "nTime": 1231006505, "nBits": "0x1d00ffff", "nNonce": 2083236893, "_note": "W12 블록 헤더 해부기의 입력. 위젯은 이 80바이트의 이중 SHA-256 을 다시 계산해 block_hash 와 대조한다(12장 NB12-1·NB12-2 와 같은 바이트)."}, "hashrate_snapshot": {"as_of": "2026-10-25", "observed_utc": "2026-10-24T18:17:18Z/18:17:34Z", "chain_tip_height": 972958, "last_retarget_height": 971712, "nBits": "0x17020093", "difficulty": 140577680051919.62, "hashrate_H_per_s": 1.0062942306175772e+21, "formula": "D = target(0x1d00ffff)/target(nBits); H = D × 2^32 / 600 (블록이 평균 600초마다 하나라는 가정 위의 추정, 측정이 아님)", "comparison_only_mempool_currentHashrate_H_per_s": 1.077240378672487e+21, "_note": "W6 51% 공격 비용 계산기의 기준 해시율. 코인 가격·전력 단가는 넣지 않는다(이 책은 가격을 다루지 않는다) — 단가는 사용자가 입력한다. 20장 NB20-3 과 같은 값."}}, "ethereum": {"active_fork": {"consensus": "Fulu", "execution": "Osaka", "combined_name": "Fusaka", "fulu_fork_epoch": 411392, "fork_version": "0x06000000", "osaka_time_unix": 1764798551, "activated_utc": "2025-12-03T21:49:11Z", "next_fork_scheduled_on_mainnet": false}, "eip1559": {"ELASTICITY_MULTIPLIER": 2, "BASE_FEE_MAX_CHANGE_DENOMINATOR": 8, "INITIAL_BASE_FEE_wei": 1000000000, "gas_target_rule": "gas_target = parent.gas_limit // ELASTICITY_MULTIPLIER", "_note": "기준일 메인넷 활성 포크(Osaka)까지 이 두 상수를 바꾼 개정은 없다: go-ethereum v1.17.10 이 포크 분기 없이 상수를 쓴다. 블록 가스 한도는 프로토콜 상수가 아니라 검증자가 블록마다 부모의 ±1/1024 범위에서 움직이는 값이다(GasLimitBoundDivisor = 1024, https://github.com/ethereum/go-ethereum/blob/1df30b18d9ed35ee9d28ffd4648442c2204554ad/params/protocol_params.go#L26).", "observed_latest_block": {"number": 26264275, "hash": "0x3f75ce9e8634bfac938e192b011f202fc2f10555d1ee7f78cc033b6814fd695c", "timestamp_unix": 1792866179, "gas_limit": 60000000, "gas_used": 32652385, "gas_target_computed": 30000000, "base_fee_per_gas_wei": 68997174}}, "staking": {"MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000, "MIN_SLASHING_PENALTY_QUOTIENT_ELECTRA": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT_ELECTRA": 4096, "PROPORTIONAL_SLASHING_MULTIPLIER_BELLATRIX": 3, "EPOCHS_PER_SLASHINGS_VECTOR": 8192, "_note": "현행 규칙(Electra 이후): 슬래싱 즉시 벌금 = 유효잔고/4096, 신고자 보상 = 유효잔고/4096, 약 18일 뒤(EPOCHS_PER_SLASHINGS_VECTOR/2 에포크) 상관 벌금 = 유효잔고 × min(최근 슬래싱 합계 × 3, 총 활성 잔고) / 총 활성 잔고(명세는 1 ETH 단위 정수 나눗셈 순서로 계산). MAX_EFFECTIVE_BALANCE(32 ETH)는 0x01 출금 자격 검증자에, _ELECTRA(2048 ETH)는 0x02 복리 자격 검증자에 적용된다.", "history": [{"fork": "Phase0 (2020-12-01)", "MIN_SLASHING_PENALTY_QUOTIENT": 128, "WHISTLEBLOWER_REWARD_QUOTIENT": 512, "PROPORTIONAL_SLASHING_MULTIPLIER": 1, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000}, {"fork": "Altair (epoch 74240, 2021-10-27)", "MIN_SLASHING_PENALTY_QUOTIENT": 64, "PROPORTIONAL_SLASHING_MULTIPLIER": 2}, {"fork": "Bellatrix (epoch 144896, 2022-09-06)", "MIN_SLASHING_PENALTY_QUOTIENT": 32, "PROPORTIONAL_SLASHING_MULTIPLIER": 3}, {"fork": "Electra (epoch 364032, 2025-05-07)", "MIN_SLASHING_PENALTY_QUOTIENT": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT": 4096, "MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "note": "PROPORTIONAL_SLASHING_MULTIPLIER 는 Bellatrix 값 3 유지"}, {"fork": "Fulu (epoch 411392, 2025-12-03)", "note": "위 상수 변경 없음"}], "_src_history": "https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/phase0.yaml#L62-L70, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/altair.yaml#L8-L10, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/bellatrix.yaml#L8-L10, https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/presets/mainnet/electra.yaml#L6-L15; 포크 에포크·날짜는 https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/configs/mainnet.yaml#L41-L57. Phase0 시작은 https://github.com/ethereum/consensus-specs/blob/b834fa8411cb2152563e8835c5b72c28f7503e7a/configs/mainnet.yaml#L28 MIN_GENESIS_TIME 1606824000 (2020-12-01T12:00:00Z) 기준."}}, "timeline": {"as_of": "2026-10-25", "range": {"start": "1976", "end": "2023"}, "anchor_ids": {"01-블록체인이푸는문제": "ch0", "02-30년전사": "ch1", "03-이책을읽는법": "ch2", "04-해시함수": "ch3", "05-공개키서명": "ch4", "06-머클트리": "ch5", "07-블록과체인": "ch6", "08-작업증명": "ch7", "09-최종성의확률적성격": "ch8", "10-지분증명": "ch9", "11-UTXO와계정": "ch10", "12-진짜블록해부": "ch11", "13-이더리움가상머신과가스": "ch12", "14-토큰표준": "ch13", "15-탈중앙거래소와AMM": "ch14", "16-오라클문제": "ch15", "17-MEV와거래순서": "ch16", "18-확장성": "ch17", "19-화폐의기능론": "ch18", "20-보안예산": "ch19", "21-수수료시장": "ch20", "22-토큰설계의경제학": "ch21", "23-게임이론": "ch22", "24-스테이블코인": "ch23", "25-버블의계량검정": "ch24", "26-네사건": "ch25", "27-기술과법의다리-1": "ch26", "28-기술과법의다리-2": "ch27", "29-양자전환": "ch28", "30-명명문제": "ch29", "9A-동향노트-색인": "ch30", "9B-오해판정표": "ch31", "9C-대역표": "ch32", "9D-연표": "ch33", "9E-수학보충": "ch34", "9F-용어집-목록-판권": "ch35"}, "_anchor_ids_note": "화면본 책 안의 장 머리 id(장 순서대로 0부터). 항목을 누르면 이 id 로 간다.", "events": [{"date": "1976-11", "precision": "month", "title": "디피·헬먼 「New Directions in Cryptography」 — 공개키 암호", "chapter": 5, "anchor": "05-공개키서명", "_src": "IEEE Trans. Inform. Theory IT-22(6): 644-654, November 1976"}, {"date": "1980-04", "precision": "month", "title": "머클 「Protocols for Public Key Cryptosystems」 — 공개키 목록의 트리 인증", "chapter": 6, "anchor": "06-머클트리", "_src": "Proc. 1980 IEEE Symposium on Security and Privacy, pp. 122-134 (DOI 10.1109/SP.1980.10006), 126-127쪽", "note": "자세한 논의는 참고문헌 [13] 「A certified digital signature」로 넘김"}, {"date": "1982-07", "precision": "month", "title": "램포트·쇼스택·피즈 「The Byzantine Generals Problem」", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "ACM TOPLAS 4(3): 382-401, July 1982"}, {"date": "1983", "precision": "year", "title": "차움 「Blind Signatures for Untraceable Payments」 — 은닉 서명 전자현금", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "Advances in Cryptology: Proceedings of Crypto 82, pp. 199-203 (Springer, 1983)", "year_note": "학회 1982(Crypto 82), 출판 1983"}, {"date": "1988", "precision": "year", "title": "머클 「A Digital Signature Based on a Conventional Encryption Function」 — 트리 서명", "chapter": 6, "anchor": "06-머클트리", "_src": "CRYPTO 87, LNCS 293, pp. 369-378 (Springer, 1988)", "year_note": "학회 1987(CRYPTO 87), 출판 1988"}, {"date": "1991", "precision": "year", "title": "하버·스토네타 「How To Time-Stamp a Digital Document」 — 타임스탬프 사슬", "chapter": 7, "anchor": "07-블록과체인", "_src": "J. Cryptology 3(2): 99-111 (1991)"}, {"date": "1993", "precision": "year", "title": "베이어·하버·스토네타 「Improving the Efficiency and Reliability of Digital Time-Stamping」 — 사슬을 트리로", "chapter": 7, "anchor": "07-블록과체인", "_src": "Sequences II, pp. 329-334 (Springer, 1993)", "note": "저자 조판본은 「March 1992」 표기; 출판 1993"}, {"date": "1997-03-28", "precision": "day", "title": "백, 해시캐시 공지(cypherpunks) — 계산으로 비용을 매기는 우표", "chapter": 8, "anchor": "08-작업증명", "_src": "http://www.hashcash.org/papers/announce.txt (Fri, 28 Mar 1997); Back (2002) 논문은 「May 1997」 — 불일치는 2장 각주"}, {"date": "1998", "precision": "year", "title": "다이 「b-money」 — 계산으로 돈을 만들고 모두가 장부를 갖는 그림", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "http://www.weidai.com/bmoney.txt; 1998은 Nakamoto (2008) 참고문헌 [1] 기재", "note": "문서에 날짜 없음, 월·일 미기재"}, {"date": "2005-12-29", "precision": "day", "title": "사보 「Bit gold」 — 작업증명·타임스탬프·소유권 등기", "chapter": 8, "anchor": "08-작업증명", "_src": "https://unenumerated.blogspot.com/2005/12/bit-gold.html; 게시일은 Wayback 2006-03-29 보존본의 표시일; 현 페이지 표시일 2008-12-27로 달라진 경위는 미확인"}, {"date": "2008-10-31", "precision": "day", "title": "나카모토 「Bitcoin P2P e-cash paper」 — 백서 공개", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "https://www.metzdowd.com/pipermail/cryptography/2008-October/014810.html (Fri Oct 31 14:10:00 EDT 2008); 백서 PDF"}, {"date": "2009-01-03", "precision": "day", "title": "제네시스 블록(nTime 1231006505 = 2009-01-03T18:15:05Z)", "chapter": 12, "anchor": "12-진짜블록해부", "_src": "data/genesis_block.hex·genesis_block.meta.json; Bitcoin Core v31.1 chainparams.cpp L134-L137"}, {"date": "2014", "precision": "year", "title": "부테린, 이더리움 백서(초고 2013, 공식 판 2014)", "chapter": 13, "anchor": "13-이더리움가상머신과가스", "_src": "ethereum.org 공식 PDF; Wayback 최초 캡처 2013-12-19(2장 각주)", "year_note": "초고 2013, 공식 판 2014"}, {"date": "2014-02-28", "precision": "day", "title": "Mt.Gox 민사재생 신청(東京地裁 平成26年(再)第12号)", "chapter": 26, "anchor": "26-네사건", "_src": "채무자 공지(일·영)"}, {"date": "2014-04-24", "precision": "day", "title": "Mt.Gox 파산절차 개시결정(東京地裁 平成26年(フ)第3830号)", "chapter": 26, "anchor": "26-네사건", "_src": "東京地裁 平成26年(フ)第3830号 파산절차 개시결정 원문"}, {"date": "2016-04-30", "precision": "day", "title": "The DAO 토큰 매각 시작(~2016-05-28)", "chapter": 26, "anchor": "26-네사건", "_src": "SEC Release No. 81207 (2017-07-25), 2쪽"}, {"date": "2016-06-17", "precision": "day", "title": "The DAO 공격(재귀 호출 결함)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-06-17 CRITICAL UPDATE Re: DAO Vulnerability; SEC Release No. 81207, 9쪽"}, {"date": "2016-07-20", "precision": "day", "title": "이더리움 하드포크(블록 1,920,000, irregular state change)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-07-20 Hard Fork Completed; EIP-779; SEC Release No. 81207, 9쪽"}, {"date": "2017-07-25", "precision": "day", "title": "SEC 「Report of Investigation … The DAO」 — DAO Tokens are securities", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "SEC Release No. 81207"}, {"date": "2019-03-15", "precision": "day", "title": "東京地裁 Mt.Gox 대표 형사 1심 판결", "chapter": 26, "anchor": "26-네사건", "_src": "東京地裁 2019. 3. 15. 판결 전문(平成27年(刑わ)第2274号 등)"}, {"date": "2020-03", "precision": "month", "title": "애덤스·진스마이스터·로빈슨 「Uniswap v2 Core」 — 상수곱 자동화 시장", "chapter": 15, "anchor": "15-탈중앙거래소와AMM", "_src": "Adams, Zinsmeister & Robinson, Uniswap v2 Core 백서 (March 2020)"}, {"date": "2020-06-11", "precision": "day", "title": "東京高裁 Mt.Gox 대표 형사 항소심 판결(항소 기각)", "chapter": 26, "anchor": "26-네사건", "_src": "東京高裁 2020. 6. 11. 판결(令和元年(う)第948号), courts.go.jp 판결 PDF"}, {"date": "2021-08-05", "precision": "day", "title": "이더리움 런던 포크(EIP-1559, 블록 12,965,000, 2021-08-05T12:33:42Z)", "chapter": 21, "anchor": "21-수수료시장", "_src": "블록 12,965,000 헤더(공개 RPC, timestamp 1628166822); go-ethereum v1.17.10 params/chainspecs/mainnet.json londonBlock — 21장 각주"}, {"date": "2021-11", "precision": "month", "title": "비트코인 탭루트 활성화(최소 활성화 높이 709,632)", "chapter": 5, "anchor": "05-공개키서명", "_src": "Bitcoin Core v31.1 src/kernel/chainparams.cpp (「Approximately November 12th, 2021」) — 부록 A-8"}, {"date": "2022-05", "precision": "month", "title": "Terra 붕괴", "chapter": 26, "anchor": "26-네사건", "_src": "BIS Annual Economic Report 2022 ch. III Box A(기제); SEC v. Terraform 평결·최종판결(26장)"}, {"date": "2022-09-15", "precision": "day", "title": "이더리움 지분증명 전환(The Merge; TTD 도달 추정일)", "chapter": 10, "anchor": "10-지분증명", "_src": "consensus-specs configs/mainnet.yaml 주석 「Estimated on Sept 15, 2022」 — 부록 A-7", "note": "추정일"}, {"date": "2022-11-11", "precision": "day", "title": "FTX 챕터 11 신청(Petition Date; West Realm Shires 는 11-14)", "chapter": 26, "anchor": "26-네사건", "_src": "Declaration of John J. Ray III, In re FTX Trading Ltd., D.I. 24, ¶40"}, {"date": "2023-02-03", "precision": "day", "title": "영국 항소법원 Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83 판결 PDF"}, {"date": "2023-06-09", "precision": "day", "title": "EU MiCA 관보 게재(OJ L 150; 적용 2024-12-30)", "chapter": 30, "anchor": "30-명명문제", "_src": "Regulation (EU) 2023/1114 (MiCA), OJ L 150 (2023-06-09)"}]}};window.WIDGET_ID="attack-cost";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #4b5f78; --accent2: #8b7f6f; --mark: #f3f1ed; --soft: #eef1f4;
+  --ok: #4f7d5e; --warn: #9a5b4f;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; min-width: 0; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 36px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 20px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { min-width: 0; font-family: var(--mono); font-size: 13.5px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+input[type=text] { font: inherit; font-family: var(--mono); font-size: 14px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: var(--fg); width: 100%; box-sizing: border-box; }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 6px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.readout small { font-size: 12px; color: var(--mut); }
+.big dd { font-size: 22px; color: var(--accent); font-weight: 500; }
+.snap { font-size: 12.5px; color: var(--mut); background: var(--soft); padding: 8px 12px; border-radius: 6px; }
+.snap b { color: var(--fg); }
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 480px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--sans); }
+.grid line { stroke: var(--line); }
+.tick { font-size: 12.5px; fill: var(--mut) !important; font-family: var(--mono) !important; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend svg { vertical-align: -2px; margin-right: 6px; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 5px 9px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr.now td { background: var(--soft); }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { min-width: 0; overflow-wrap: anywhere; font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--accent); }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">20장 · 보안 예산</div>
+  <h1>공격은 얼마나 걸리고, 얼마가 드는가</h1>
+  <p class="lede">공격자가 정직한 쪽의 A 배 해시율을 동원해 k + e 블록을 뒤집는 데 기대 몇 블록이 걸리는지(부디시 명제 3), 그 시간 동안 해시율을 돌리는 비용이 얼마인지 본다. 코인 가격은 어디에도 들어가지 않는다. 단가 c 는 독자가 넣고, 이 책은 값을 주지 않는다 — 넣지 않으면 비용은 「블록 보상 개수」로 나온다.</p>
+  <div class="formula">t(A, k+e) = (k+e) + Σ<sub>i=0</sub><sup>k+e</sup> (i+1)/(A−1) · (2(k+e)−1−i)! / ((k+e−i)!(k+e−1)!) · (A/(1+A))<sup>k+e−i</sup> (1/(1+A))<sup>k+e</sup>　·　비용 = A·H·c·t·600 s　·　블록 보상 단위: A·t</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">점유율 · 에스크로 · 단가</h2>
+  <div class="bench" id="figure">
+    <div class="snap" id="snap"></div>
+    <div class="controls">
+      <div class="ctl">
+        <label for="q"><span>공격자 점유율 q = A/(1+A)</span> <output id="qOut"></output></label>
+        <input type="range" id="q" min="51" max="90" step="1" value="60">
+        <div class="seg" id="qSeg" role="group" aria-label="본문 표의 점유율"><button type="button" data-v="55" aria-pressed="false">55%</button><button type="button" data-v="60" aria-pressed="true">60%</button><button type="button" data-v="67" aria-pressed="false">67%</button></div>
+      </div>
+      <div class="ctl">
+        <label for="ke"><span>뒤집을 블록 수 k + e (심은 블록 + 에스크로)</span> <output id="keOut"></output></label>
+        <input type="range" id="ke" min="1" max="144" step="1" value="12">
+        <div class="seg" id="keSeg" role="group" aria-label="본문 표의 k+e"><button type="button" data-v="6" aria-pressed="false">6</button><button type="button" data-v="12" aria-pressed="true">12</button><button type="button" data-v="144" aria-pressed="false">144 (하루)</button></div>
+      </div>
+      <div class="ctl">
+        <label for="c"><span>단가 c — 1 H/s 를 1초 돌리는 비용 (독자가 넣는 값, 단위 자유)</span> <output id="cOut"></output></label>
+        <input type="text" id="c" inputmode="decimal" placeholder="예: 1e-19 (가상의 자리 값 — 비워 두면 블록 보상 단위)" autocomplete="off">
+      </div>
+    </div>
+    <dl class="readout">
+      <div><dt>공격자 배수 A = q/(1−q)</dt><dd id="oA"></dd></div>
+      <div class="big"><dt>기대 지속 t (블록)</dt><dd id="oT"></dd></div>
+      <div><dt>시간 (600초/블록 가정)</dt><dd id="oH"></dd></div>
+      <div><dt>공격자 해시율 A·H</dt><dd id="oHs"></dd></div>
+      <div class="big"><dt>비용 — 블록 보상 개수 A·t</dt><dd id="oR"></dd></div>
+      <div id="costBox"><dt>비용 — 단가 단위 A·H·c·t·600</dt><dd id="oC"></dd></div>
+    </dl>
+    <div class="chart" id="chart" role="img" aria-label="점유율에 따른 비용(블록 보상 개수) 곡선, k+e 별"></div>
+    <div class="legend" id="legend"></div>
+    <div class="tbl"><table aria-label="본문 표 (가)"><thead><tr><th>점유율</th><th>A</th><th>k+e</th><th>기대 블록</th><th>시간(h)</th><th>블록 보상 개수</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>본문과 대조 (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">「본문」 열은 20장 NB20-2(부디시 표 II 재현 — t 와 A·t)와 NB20-3(가: 블록 보상 단위 표, 나: 가상 단가 1e-19 의 두 줄, 기준일 해시율) 출력 그대로다. (나)의 단가는 자리만 채운 가상의 값이다.</caption>
+        <thead><tr><th>항목</th><th>계산</th><th>본문</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">이 계산기가 주지 않는 것</h2>
+  <ul class="limits">
+    <li>코인 가격, 전력 단가, 장비 임대료. 비용의 단위는 독자가 c 를 무엇으로 넣느냐가 정한다. 단가를 반으로 넣으면 비용도 반 — 이 계산기가 말하는 것은 수준이 아니라 비례다(20장 5절).</li>
+    <li>공격의 수익. 부디시의 식 (3)은 보상 p<sub>block</sub> 과 공격 가치의 비율을 묻지만, 이 그림은 비용 쪽만 그린다. 순비용이 0 이 될 수 있는 경우(블록 보상을 공격자가 갖는 경우)는 20장 4절.</li>
+    <li>해시율 H 는 기준일 난이도에서 D·2³²/600 으로 낸 추정이지 측정이 아니다. 블록 간격이 600초와 다르면 그만큼 다르다(data/README). 비교값(탐색기 공표치)과 약 7% 차이가 있다.</li>
+    <li>명제 3은 공격자가 추가 해시율을 「동원할 수 있다」고 가정한다. 재고(ASIC)가 걸려 있을 때의 전문 자본 모형은 20장 7절.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>식: 『법률가를 위한 블록체인』 20장 4절(Budish, QJE 2025, 명제 3·표 II)·5절 NB20-3. 해시율 스냅샷: <code>data/hashrate_2026-10-25.json</code>(blockstream.info·mempool.space, 접근 2026-10-24 UTC).</div>
+  <div>『법률가를 위한 블록체인 — 기술과 경제학으로 읽기』 인터랙티브 그림 · 권보원 엮음</div>
+  <div>이용 허락: 이 페이지의 코드(HTML·CSS·자바스크립트)와 설명 글은 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.ko">CC BY-NC 4.0</a>이다(엮은이에게 권리가 있는 범위에서). 상업적 이용은 <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">저장소 이슈</a>로 연락해 따로 협의한다. © 2026 권보원(Bowon Kwon)</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D || !D.bitcoin || !D.bitcoin.hashrate_snapshot) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#9a5b4f;padding:16px'>공유 상수(BOOK_DATA.bitcoin.hashrate_snapshot)가 없다. 빌드 도구로 감싼 판을 열어야 한다.</p>");
+    throw new Error("BOOK_DATA 없음");
+  }
+  var S = D.bitcoin.hashrate_snapshot, H_NET = S.hashrate_H_per_s;   // 기준일 추정 해시율 (data.json _src: data/hashrate_2026-10-25.json)
+  var BLOCK_S = 600;
+  var EXAMPLE = { q: 60, ke: 12 };
+  var state = { q: EXAMPLE.q, ke: EXAMPLE.ke, c: null };
+  var INIT = { q: state.q, ke: state.ke };
+
+  var LNF = [0]; for (var n = 1; n < 400; n++) LNF[n] = LNF[n - 1] + Math.log(n);   // log n!
+  function attackDuration(A, ke) {                          // NB20-2: 식 (6). 계승은 로그로
+    var t = ke;
+    for (var i = 0; i <= ke; i++) { var lc = LNF[2 * ke - i - 1] - LNF[ke - i] - LNF[ke - 1]; var lp = (ke - i) * Math.log(A / (1 + A)) + ke * Math.log(1 / (1 + A)); t += (i + 1) / (A - 1) * Math.exp(lc + lp); }
+    return t;
+  }
+  function calc(qPct, ke, c) { var q = qPct / 100, A = q / (1 - q), t = attackDuration(A, ke), sec = t * BLOCK_S; return { q: q, A: A, t: t, hours: sec / 3600, hs: A * H_NET, rewards: A * t, cost: c !== null ? A * H_NET * c * sec : null }; }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x, d) { return x.toLocaleString("ko-KR", { maximumFractionDigits: d === undefined ? 0 : d, minimumFractionDigits: d === undefined ? 0 : d }); }
+  function sci(x, d) { return x.toExponential(d === undefined ? 3 : d).replace("e+", "e"); }
+  function parseC(s) { s = (s || "").trim().replace(/,/g, ""); if (!s) return null; var v = Number(s); return isFinite(v) && v > 0 ? v : null; }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (tag === "text" && attrs.fill) e.style.fill = attrs.fill; if (text !== undefined) e.textContent = text; return e; }
+  function drawChart() {
+    var W = 720, H = 260, L = 60, R = 20, T = 18, Bm = 44, svg = el("svg", { viewBox: "0 0 " + W + " " + H }), g = el("g", { "class": "grid" });
+    // 지금 k+e 와 그보다 작은 기준선(6)만 그린다 — 144 를 늘 그리면 세로축이 커져 지금 곡선이 납작해진다
+    var kes = [6, state.ke].filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
+    var pts = {}, vmax = 0;
+    kes.forEach(function (ke) { pts[ke] = []; for (var qp = 51; qp <= 90; qp++) { var r = calc(qp, ke, null); pts[ke].push([qp, r.rewards]); if (qp >= 53) vmax = Math.max(vmax, r.rewards); } });
+    vmax = Math.max(vmax, calc(state.q, state.ke, null).rewards) * 1.08;
+    function sx(qp) { return L + (qp - 51) / 39 * (W - L - R); }
+    function sy(v) { return H - Bm - Math.min(v, vmax) / vmax * (H - T - Bm); }
+    for (var qp = 55; qp <= 90; qp += 5) { g.appendChild(el("line", { x1: sx(qp), x2: sx(qp), y1: T, y2: H - Bm })); svg.appendChild(el("text", { x: sx(qp), y: H - Bm + 16, "text-anchor": "middle", "class": "tick" }, qp + "%")); }
+    var step = vmax > 400 ? 100 : vmax > 150 ? 50 : vmax > 60 ? 20 : 10;
+    for (var v = 0; v <= vmax; v += step) { g.appendChild(el("line", { x1: L, x2: W - R, y1: sy(v), y2: sy(v) })); svg.appendChild(el("text", { x: L - 8, y: sy(v) + 4, "text-anchor": "end", "class": "tick" }, fmt(v))); }
+    svg.appendChild(g);
+    var styles = { 6: ["var(--accent2)", "4 3", 1.6], 144: ["var(--mut)", "7 4", 1.6] };
+    kes.forEach(function (ke) { var st = ke === state.ke ? ["var(--accent)", "", 2.6] : styles[ke] || ["var(--accent2)", "4 3", 1.6]; svg.appendChild(el("path", { d: pts[ke].map(function (p, i) { return (i ? "L" : "M") + sx(p[0]).toFixed(1) + "," + sy(p[1]).toFixed(1); }).join(" "), fill: "none", stroke: st[0], "stroke-dasharray": st[1], "stroke-width": st[2] })); svg.appendChild(el("text", { x: sx(90) - 2, y: sy(pts[ke][pts[ke].length - 1][1]) + (ke === state.ke ? -8 : 14), "text-anchor": "end", "font-size": 11.5, fill: st[0] }, "k+e = " + ke)); });
+    var cur = calc(state.q, state.ke, null);
+    svg.appendChild(el("circle", { cx: sx(state.q), cy: sy(cur.rewards), r: 5.5, fill: "var(--accent)", stroke: "var(--card)", "stroke-width": 1.5 }));
+    svg.appendChild(el("text", { x: sx(state.q) + 8, y: sy(cur.rewards) - 8, "font-size": 12.5, "font-weight": 700, fill: "var(--accent)" }, "지금 " + cur.rewards.toFixed(1) + "개분"));
+    svg.appendChild(el("text", { x: W - R, y: H - 6, "text-anchor": "end", "font-size": 12.5, opacity: 0.8 }, "공격자 점유율 q"));
+    svg.appendChild(el("text", { x: 14, y: T + 4, "font-size": 12.5, opacity: 0.8, transform: "rotate(-90 14 " + (T + 4) + ")", "text-anchor": "end" }, "비용 A·t [블록 보상 개수]"));
+    $("chart").replaceChildren(svg);
+    var solid = "<svg width='22' height='10' viewBox='0 0 22 10'><line x1='0' y1='5' x2='22' y2='5' stroke='var(--accent)' stroke-width='2.6'/></svg>";
+    $("legend").innerHTML = "<span>" + solid + "지금 k+e = " + state.ke + "</span><span>점유율이 51% 에 다가갈수록 A → 1, t → ∞. 비용을 최소로 하는 점유율은 51% 보다 다소 크다(k+e = 12 에서 약 59%).</span>";
+  }
+
+  function update() {
+    var r = calc(state.q, state.ke, state.c);
+    $("snap").innerHTML = "기준일 <b>" + S.as_of + "</b> 추정 해시율 H = <b>" + sci(H_NET) + " H/s = " + fmt(H_NET / 1e18) + " EH/s</b> — 높이 " + fmt(S.chain_tip_height) + " 의 nBits " + S.nBits + " 에서 난이도 " + fmt(S.difficulty, 1) + ", H = D·2³²/600 (600초 가정 추정; 관측 " + S.observed_utc + " UTC, 출처 data.json _src). 비교값 " + sci(S.comparison_only_mempool_currentHashrate_H_per_s) + " H/s 보다 " + (100 * (1 - H_NET / S.comparison_only_mempool_currentHashrate_H_per_s)).toFixed(1) + "% 작다. 출처: blockstream.info·mempool.space 블록 API(높이 " + fmt(S.last_retarget_height) + "·" + fmt(S.chain_tip_height) + " 헤더, 두 탐색기 바이트 일치) — data/hashrate_2026-10-25.json, data.json _src.";
+    $("qOut").textContent = state.q + "%"; $("q").value = state.q; $("keOut").textContent = String(state.ke); $("ke").value = state.ke;
+    $("cOut").textContent = state.c === null ? "미입력 → 블록 보상 단위" : sci(state.c, 2);
+    $("qSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === state.q)); });
+    $("keSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === state.ke)); });
+    $("oA").textContent = r.A.toFixed(2); $("oT").textContent = r.t.toFixed(1); $("oH").textContent = r.hours.toFixed(1) + " h"; $("oHs").textContent = sci(r.hs, 2) + " H/s";
+    $("oR").textContent = r.rewards.toFixed(1) + " 개분";
+    $("oC").textContent = r.cost === null ? "단가를 넣으면 계산 (단가 단위)" : fmt(r.cost) + " (단가 단위)";
+    drawChart();
+    $("rows").innerHTML = [55, 60, 67].map(function (qp) { return [6, 12, 144].map(function (ke) { var x = calc(qp, ke, null); return "<tr" + (qp === state.q && ke === state.ke ? " class='now'" : "") + "><td>" + qp + "%</td><td class='num'>" + x.A.toFixed(2) + "</td><td class='num'>" + ke + "</td><td class='num'>" + x.t.toFixed(1) + "</td><td class='num'>" + x.hours.toFixed(1) + "</td><td class='num'>" + x.rewards.toFixed(1) + "</td></tr>"; }).join(""); }).join("");
+    $("msg").innerHTML = "점유율 " + state.q + "%(A = " + r.A.toFixed(2) + ")의 공격자가 " + state.ke + "블록을 뒤집는 데 기대 <b>" + r.t.toFixed(1) + "블록</b>(약 " + r.hours.toFixed(1) + "시간)이 걸리고, 그동안 돌리는 해시율은 " + sci(r.hs, 2) + " H/s 다. 비용은 블록 보상 <b>" + r.rewards.toFixed(1) + "개분</b> — 보상의 크기와 무관한 수이고, 보조금이 반감으로 반이 되면 같은 개수분의 코인 상당도 반이 된다(「반감기는 보안 예산의 사건」). " + (r.cost === null ? "단가 c 를 넣으면 A·H·c·t·600 으로 단가 단위의 비용이 나온다. 이 책은 단가 값을 주지 않는다." : "단가 " + sci(state.c, 2) + " 에서 비용 " + fmt(r.cost) + " (단가 단위). 단가를 반으로 넣으면 비용도 반이다.");
+  }
+
+  // ---- 본문 풀이와 대조 ----
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected, d) { var g = Number(got.toFixed(d)); rows.push({ name: name, got: g, expected: expected, status: g === expected ? "match" : "miss", d: d }); }
+    var initSame = INIT.q === 60 && INIT.ke === 12, r0 = calc(INIT.q, INIT.ke, null), g0 = Number(r0.rewards.toFixed(1));
+    rows.push({ name: "처음 상태 · 점유율 60%, k+e=12 · 블록 보상 개수", got: g0, expected: 20.1, status: initSame && g0 === 20.1 ? "match" : "miss", d: 1 });
+    add("NB20-3 · 기준일 추정 해시율 (EH/s, 정수)", H_NET / 1e18, 1006, 0);
+    add("NB20-3 · 기준일 추정 해시율 (×10²¹ H/s)", H_NET / 1e21, 1.006, 3);
+    var tbl = { "55-6": [1.22, 12.3, 2.0, 15.0, 47.0], "55-12": [1.22, 18.5, 3.1, 22.7, 70.8], "55-144": [1.22, 145.8, 24.3, 178.2, 556.7], "60-6": [1.50, 7.8, 1.3, 11.8, 36.7], "60-12": [1.50, 13.4, 2.2, 20.1, 62.9], "60-144": [1.50, 144.0, 24.0, 216.0, 675.0], "67-6": [2.03, 6.4, 1.1, 13.0, 40.7], "67-12": [2.03, 12.2, 2.0, 24.7, 77.3], "67-144": [2.03, 144.0, 24.0, 292.4, 913.6] };
+    [55, 60, 67].forEach(function (qp) { [6, 12, 144].forEach(function (ke) { var x = calc(qp, ke, null), w = tbl[qp + "-" + ke]; add("NB20-3 (가) · " + qp + "%, k+e=" + ke + " · A", x.A, w[0], 2); add("NB20-3 (가) · " + qp + "%, k+e=" + ke + " · 기대 블록", x.t, w[1], 1); add("NB20-3 (가) · " + qp + "%, k+e=" + ke + " · 시간(h)", x.hours, w[2], 1); add("NB20-3 (가) · " + qp + "%, k+e=" + ke + " · 블록 보상 개수", x.rewards, w[3], 1); add("NB20-3 (가) · " + qp + "%, k+e=" + ke + " · 보조금 3.125 BTC 상당", x.rewards * 3.125, w[4], 1); }); });
+    var c = 1e-19, a = calc(55, 12, c), b = calc(60, 12, c);
+    add("NB20-3 (나) · 55%, k+e=12, c=1e-19 · 공격자 해시율 (×10²¹ H/s)", a.hs / 1e21, 1.23, 2); add("NB20-3 (나) · 55% · 비용 (단가 단위, 정수)", a.cost, 1368343, 0);
+    add("NB20-3 (나) · 60%, k+e=12, c=1e-19 · 공격자 해시율 (×10²¹ H/s)", b.hs / 1e21, 1.51, 2); add("NB20-3 (나) · 60% · 비용 (단가 단위, 정수)", b.cost, 1215857, 0);
+    var t2 = { 1.05: [25.51, 42.43, 56.59, 97.91, 229.61], 1.5: [3.08, 7.84, 13.43, 36.47, 144.00], 2: [1.89, 6.45, 12.20, 36.01, 144.00] };
+    [1.05, 1.5, 2].forEach(function (A) { [1, 6, 12, 36, 144].forEach(function (ke, i) { add("NB20-2 (부디시 표 II) · A=" + A + ", k+e=" + ke + " · t", attackDuration(A, ke), t2[A][i], 2); }); });
+    add("NB20-2 · k+e=12 · A·t 최소 (A=1.43)", 1.43 * attackDuration(1.43, 12), 20.00, 2);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>일치</span>", round: "<span class='round'>반올림 차</span>", miss: "<span class='miss'>불일치</span>" };
+    $("check").innerHTML = rows.map(function (r) { return "<tr><td>" + r.name + "</td><td class='num'>" + r.got.toFixed(r.d) + "</td><td class='num'>" + r.expected.toFixed(r.d) + "</td><td>" + tag[r.status] + "</td></tr>"; }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + "행" + (miss ? " · 불일치 " + miss : " · 모두 일치");
+  }
+
+  // ---- 조작 ----
+  $("q").addEventListener("input", function (e) { state.q = Number(e.target.value); update(); });
+  $("ke").addEventListener("input", function (e) { state.ke = Number(e.target.value); update(); });
+  $("qSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.q = Number(b.dataset.v); update(); });
+  $("keSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.ke = Number(b.dataset.v); update(); });
+  $("c").addEventListener("input", function (e) { state.c = parseC(e.target.value); update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

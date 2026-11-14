@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merkle proof — log₂ n sibling hashes</title>
+<script>window.BOOK_DATA={"as_of": "2026-10-25", "bitcoin": {"difficulty_adjustment": {"interval_blocks": 2016, "target_timespan_s": 1209600, "target_spacing_s": 600, "max_factor_per_adjustment": 4}, "subsidy": {"halving_interval_blocks": 210000, "initial_subsidy_btc": 50, "initial_subsidy_sat": 5000000000}, "max_block_weight": {"value_wu": 4000000, "witness_scale_factor": 4, "observed_tip_weight": {"height": 972958, "weight_wu": 3993715}}, "genesis_header": {"hex": "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c", "block_hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f", "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b", "nVersion": 1, "nTime": 1231006505, "nBits": "0x1d00ffff", "nNonce": 2083236893}, "hashrate_snapshot": {"as_of": "2026-10-25", "observed_utc": "2026-10-24T18:17:18Z/18:17:34Z", "chain_tip_height": 972958, "last_retarget_height": 971712, "nBits": "0x17020093", "difficulty": 140577680051919.62, "hashrate_H_per_s": 1.0062942306175772e+21, "formula": "D = target(0x1d00ffff)/target(nBits); H = D × 2^32 / 600 (an estimate resting on the assumption of one block every 600 seconds on average, not a measurement)", "comparison_only_mempool_currentHashrate_H_per_s": 1.077240378672487e+21}}, "ethereum": {"active_fork": {"consensus": "Fulu", "execution": "Osaka", "combined_name": "Fusaka", "fulu_fork_epoch": 411392, "fork_version": "0x06000000", "osaka_time_unix": 1764798551, "activated_utc": "2025-12-03T21:49:11Z", "next_fork_scheduled_on_mainnet": false}, "eip1559": {"ELASTICITY_MULTIPLIER": 2, "BASE_FEE_MAX_CHANGE_DENOMINATOR": 8, "INITIAL_BASE_FEE_wei": 1000000000, "gas_target_rule": "gas_target = parent.gas_limit // ELASTICITY_MULTIPLIER", "observed_latest_block": {"number": 26264275, "hash": "0x3f75ce9e8634bfac938e192b011f202fc2f10555d1ee7f78cc033b6814fd695c", "timestamp_unix": 1792866179, "gas_limit": 60000000, "gas_used": 32652385, "gas_target_computed": 30000000, "base_fee_per_gas_wei": 68997174}}, "staking": {"MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000, "MIN_SLASHING_PENALTY_QUOTIENT_ELECTRA": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT_ELECTRA": 4096, "PROPORTIONAL_SLASHING_MULTIPLIER_BELLATRIX": 3, "EPOCHS_PER_SLASHINGS_VECTOR": 8192, "history": [{"fork": "Phase0 (2020-12-01)", "MIN_SLASHING_PENALTY_QUOTIENT": 128, "WHISTLEBLOWER_REWARD_QUOTIENT": 512, "PROPORTIONAL_SLASHING_MULTIPLIER": 1, "MAX_EFFECTIVE_BALANCE_gwei": 32000000000}, {"fork": "Altair (epoch 74240, 2021-10-27)", "MIN_SLASHING_PENALTY_QUOTIENT": 64, "PROPORTIONAL_SLASHING_MULTIPLIER": 2}, {"fork": "Bellatrix (epoch 144896, 2022-09-06)", "MIN_SLASHING_PENALTY_QUOTIENT": 32, "PROPORTIONAL_SLASHING_MULTIPLIER": 3}, {"fork": "Electra (epoch 364032, 2025-05-07)", "MIN_SLASHING_PENALTY_QUOTIENT": 4096, "WHISTLEBLOWER_REWARD_QUOTIENT": 4096, "MIN_ACTIVATION_BALANCE_gwei": 32000000000, "MAX_EFFECTIVE_BALANCE_ELECTRA_gwei": 2048000000000, "note": "PROPORTIONAL_SLASHING_MULTIPLIER stays at the Bellatrix value of 3"}, {"fork": "Fulu (epoch 411392, 2025-12-03)", "note": "No change to the constants above"}]}}, "timeline": {"as_of": "2026-10-25", "range": {"start": "1976", "end": "2023"}, "anchor_ids": {"01-블록체인이푸는문제": "ch0", "02-30년전사": "ch1", "03-이책을읽는법": "ch2", "04-해시함수": "ch3", "05-공개키서명": "ch4", "06-머클트리": "ch5", "07-블록과체인": "ch6", "08-작업증명": "ch7", "09-최종성의확률적성격": "ch8", "10-지분증명": "ch9", "11-UTXO와계정": "ch10", "12-진짜블록해부": "ch11", "13-이더리움가상머신과가스": "ch12", "14-토큰표준": "ch13", "15-탈중앙거래소와AMM": "ch14", "16-오라클문제": "ch15", "17-MEV와거래순서": "ch16", "18-확장성": "ch17", "19-화폐의기능론": "ch18", "20-보안예산": "ch19", "21-수수료시장": "ch20", "22-토큰설계의경제학": "ch21", "23-게임이론": "ch22", "24-스테이블코인": "ch23", "25-버블의계량검정": "ch24", "26-네사건": "ch25", "27-기술과법의다리-1": "ch26", "28-기술과법의다리-2": "ch27", "29-양자전환": "ch28", "30-명명문제": "ch29", "9A-동향노트-색인": "ch30", "9B-오해판정표": "ch31", "9C-대역표": "ch32", "9D-연표": "ch33", "9E-수학보충": "ch34", "9F-용어집-목록-판권": "ch35"}, "events": [{"date": "1976-11", "precision": "month", "title": "Diffie and Hellman, \"New Directions in Cryptography\": public-key cryptography", "chapter": 5, "anchor": "05-공개키서명", "_src": "IEEE Trans. Inform. Theory IT-22(6): 644-654, November 1976"}, {"date": "1980-04", "precision": "month", "title": "Merkle, \"Protocols for Public Key Cryptosystems\": tree authentication of a list of public keys", "chapter": 6, "anchor": "06-머클트리", "_src": "Proc. 1980 IEEE Symposium on Security and Privacy, pp. 122-134 (DOI 10.1109/SP.1980.10006), at pp. 126-127", "note": "Detailed discussion deferred to reference [13], \"A certified digital signature\""}, {"date": "1982-07", "precision": "month", "title": "Lamport, Shostak and Pease, \"The Byzantine Generals Problem\"", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "ACM TOPLAS 4(3): 382-401, July 1982"}, {"date": "1983", "precision": "year", "title": "Chaum, \"Blind Signatures for Untraceable Payments\": blind-signature electronic cash", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "Advances in Cryptology: Proceedings of Crypto 82, pp. 199-203 (Springer, 1983)", "year_note": "Conference 1982 (Crypto 82), published 1983"}, {"date": "1988", "precision": "year", "title": "Merkle, \"A Digital Signature Based on a Conventional Encryption Function\": tree signatures", "chapter": 6, "anchor": "06-머클트리", "_src": "CRYPTO 87, LNCS 293, pp. 369-378 (Springer, 1988)", "year_note": "Conference 1987 (CRYPTO 87), published 1988"}, {"date": "1991", "precision": "year", "title": "Haber and Stornetta, \"How To Time-Stamp a Digital Document\": a chain of time stamps", "chapter": 7, "anchor": "07-블록과체인", "_src": "J. Cryptology 3(2): 99-111 (1991)"}, {"date": "1993", "precision": "year", "title": "Bayer, Haber and Stornetta, \"Improving the Efficiency and Reliability of Digital Time-Stamping\": the chain turned into a tree", "chapter": 7, "anchor": "07-블록과체인", "_src": "Sequences II, pp. 329-334 (Springer, 1993)", "note": "The authors' typeset version is marked \"March 1992\"; published 1993"}, {"date": "1997-03-28", "precision": "day", "title": "Back, Hashcash announcement (cypherpunks): a stamp whose cost is paid in computation", "chapter": 8, "anchor": "08-작업증명", "_src": "http://www.hashcash.org/papers/announce.txt (Fri, 28 Mar 1997); the Back (2002) paper gives \"May 1997\" (the discrepancy is discussed in a footnote to Chapter 2)"}, {"date": "1998", "precision": "year", "title": "Dai, \"b-money\": a picture in which money is created by computation and everyone holds the ledger", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "http://www.weidai.com/bmoney.txt; 1998 is the date given in reference [1] of Nakamoto (2008)", "note": "No date in the document; month and day not given"}, {"date": "2005-12-29", "precision": "day", "title": "Szabo, \"Bit gold\": proof of work, time stamps and a registry of ownership", "chapter": 8, "anchor": "08-작업증명", "_src": "https://unenumerated.blogspot.com/2005/12/bit-gold.html; the posting date is the date shown in the Wayback snapshot of 2006-03-29; how the date now displayed on the page came to be 2008-12-27 was not verified"}, {"date": "2008-10-31", "precision": "day", "title": "Nakamoto, \"Bitcoin P2P e-cash paper\": the white paper is released", "chapter": 1, "anchor": "01-블록체인이푸는문제", "_src": "https://www.metzdowd.com/pipermail/cryptography/2008-October/014810.html (Fri Oct 31 14:10:00 EDT 2008); white paper PDF"}, {"date": "2009-01-03", "precision": "day", "title": "The genesis block (nTime 1231006505 = 2009-01-03T18:15:05Z)", "chapter": 12, "anchor": "12-진짜블록해부", "_src": "data/genesis_block.hex·genesis_block.meta.json; Bitcoin Core v31.1 chainparams.cpp L134-L137"}, {"date": "2014", "precision": "year", "title": "Buterin, the Ethereum white paper (draft 2013, official version 2014)", "chapter": 13, "anchor": "13-이더리움가상머신과가스", "_src": "Official PDF at ethereum.org; earliest Wayback capture 2013-12-19 (footnote to Chapter 2)", "year_note": "Draft 2013, official version 2014"}, {"date": "2014-02-28", "precision": "day", "title": "Mt.Gox files a petition for civil rehabilitation (Tokyo District Court (東京地裁), 平成26年(再)第12号)", "chapter": 26, "anchor": "26-네사건", "_src": "Debtor's announcement (Japanese and English)"}, {"date": "2014-04-24", "precision": "day", "title": "Order commencing bankruptcy proceedings against Mt.Gox (Tokyo District Court (東京地裁), 平成26年(フ)第3830号)", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo District Court (東京地裁), 平成26年(フ)第3830号, original text of the order commencing bankruptcy proceedings"}, {"date": "2016-04-30", "precision": "day", "title": "The DAO token sale begins (to 2016-05-28)", "chapter": 26, "anchor": "26-네사건", "_src": "SEC Release No. 81207 (2017-07-25), p. 2"}, {"date": "2016-06-17", "precision": "day", "title": "The DAO attack (a recursive-call flaw)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-06-17 CRITICAL UPDATE Re: DAO Vulnerability; SEC Release No. 81207, p. 9"}, {"date": "2016-07-20", "precision": "day", "title": "Ethereum hard fork (block 1,920,000, irregular state change)", "chapter": 26, "anchor": "26-네사건", "_src": "Ethereum Foundation Blog 2016-07-20 Hard Fork Completed; EIP-779; SEC Release No. 81207, p. 9"}, {"date": "2017-07-25", "precision": "day", "title": "SEC, \"Report of Investigation … The DAO\": DAO Tokens are securities", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "SEC Release No. 81207"}, {"date": "2019-03-15", "precision": "day", "title": "Tokyo District Court (東京地裁), first-instance criminal judgment against Mt.Gox's representative director", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo District Court (東京地裁), judgment of March 15, 2019, full text (平成27年(刑わ)第2274号 and others)"}, {"date": "2020-03", "precision": "month", "title": "Adams, Zinsmeister and Robinson, \"Uniswap v2 Core\": a constant-product automated market", "chapter": 15, "anchor": "15-탈중앙거래소와AMM", "_src": "Adams, Zinsmeister & Robinson, Uniswap v2 Core white paper (March 2020)"}, {"date": "2020-06-11", "precision": "day", "title": "Tokyo High Court (東京高裁), criminal judgment on appeal against Mt.Gox's representative director (appeal dismissed)", "chapter": 26, "anchor": "26-네사건", "_src": "Tokyo High Court (東京高裁), judgment of June 11, 2020 (令和元年(う)第948号), judgment PDF at courts.go.jp"}, {"date": "2021-08-05", "precision": "day", "title": "Ethereum's London fork (EIP-1559, block 12,965,000, 2021-08-05T12:33:42Z)", "chapter": 21, "anchor": "21-수수료시장", "_src": "Header of block 12,965,000 (public RPC, timestamp 1628166822); go-ethereum v1.17.10 params/chainspecs/mainnet.json londonBlock (footnote to Chapter 21)"}, {"date": "2021-11", "precision": "month", "title": "Bitcoin's Taproot activation (minimum activation height 709,632)", "chapter": 5, "anchor": "05-공개키서명", "_src": "Bitcoin Core v31.1 src/kernel/chainparams.cpp (\"Approximately November 12th, 2021\"); Appendix A-8"}, {"date": "2022-05", "precision": "month", "title": "The collapse of Terra", "chapter": 26, "anchor": "26-네사건", "_src": "BIS Annual Economic Report 2022 ch. III Box A (mechanism); verdict and final judgment in SEC v. Terraform (Chapter 26)"}, {"date": "2022-09-15", "precision": "day", "title": "Ethereum's transition to proof of stake (The Merge; estimated date the TTD was reached)", "chapter": 10, "anchor": "10-지분증명", "_src": "consensus-specs configs/mainnet.yaml, comment \"Estimated on Sept 15, 2022\"; Appendix A-7", "note": "Estimated date"}, {"date": "2022-11-11", "precision": "day", "title": "FTX files under Chapter 11 (Petition Date; West Realm Shires on 11-14)", "chapter": 26, "anchor": "26-네사건", "_src": "Declaration of John J. Ray III, In re FTX Trading Ltd., D.I. 24, ¶40"}, {"date": "2023-02-03", "precision": "day", "title": "Court of Appeal of England and Wales, Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83", "chapter": 27, "anchor": "27-기술과법의다리-1", "_src": "Tulip Trading Ltd v van der Laan [2023] EWCA Civ 83, judgment PDF"}, {"date": "2023-06-09", "precision": "day", "title": "EU MiCA published in the Official Journal (OJ L 150; applies from 2024-12-30)", "chapter": 30, "anchor": "30-명명문제", "_src": "Regulation (EU) 2023/1114 (MiCA), OJ L 150 (2023-06-09)"}]}};window.WIDGET_ID="merkle-proof";window.WIDGET_PART=null;window.__widgetErrors=[];window.addEventListener('error',function(e){window.__widgetErrors.push(String(e.message));});</script>
+<style>
+html,body{margin:0}
+
+html[data-embed]{overflow:hidden}
+[data-embed] .standalone-only{display:none!important}
+[data-embed] .wrap{padding-block:14px 10px;gap:22px}
+[data-embed] h2{font-size:16px}
+</style>
+</head>
+<body>
+<style>
+
+:root {
+  --bg: #f7f8fa; --card: #ffffff; --fg: #16181d; --mut: #5d6470; --line: #dfe3ea;
+  --accent: #4b5f78; --accent2: #8b7f6f; --mark: #f3f1ed; --soft: #eef1f4;
+  --ok: #4f7d5e; --warn: #9a5b4f;
+  --serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, "Batang", serif;
+  --sans: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --mono: "D2Coding", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121419; --card: #181b21; --fg: #e6e9ef; --mut: #98a0ad; --line: #2a2f38;
+  --accent: #a3b4c8; --accent2: #b9ab95; --mark: #262320; --soft: #1f2530;
+  --ok: #8cc0a0; --warn: #d09a8c; color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15.5px; line-height: 1.7; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 36px; }
+header { display: grid; gap: 10px; min-width: 0; }
+.eyebrow { font-size: 12.5px; letter-spacing: .08em; color: var(--accent2); font-weight: 700; }
+h1 { font-family: var(--serif); font-size: clamp(26px, 5vw, 36px); line-height: 1.25; margin: 0; text-wrap: balance; word-break: keep-all; }
+h2 { font-family: var(--serif); font-size: 20px; margin: 0; text-wrap: balance; word-break: keep-all; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--mut); }
+section { display: grid; gap: 16px; min-width: 0; }
+.formula { min-width: 0; font-family: var(--mono); font-size: 13.5px; background: var(--soft); padding: 10px 14px; border-radius: 6px; overflow-x: auto; white-space: nowrap; }
+.bench { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 16px; min-width: 0; }
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 24px; }
+.ctl { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.ctl > label, .ctl > .lab { font-size: 13px; color: var(--mut); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { color: var(--fg); font-family: var(--mono); font-weight: 500; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; width: fit-content; max-width: 100%; }
+.seg button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--fg); padding: 6px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button.act { font: inherit; font-size: 13.5px; border: 1px solid var(--accent); border-radius: 7px; background: transparent; color: var(--accent); padding: 6px 12px; cursor: pointer; width: fit-content; }
+button.act[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.readout div { display: grid; gap: 2px; min-width: 0; }
+.readout dt { font-size: 12.5px; color: var(--mut); }
+.readout dd { margin: 0; font-family: var(--mono); font-size: 17px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.big dd { font-size: 22px; color: var(--accent); font-weight: 500; }
+.bad dd { color: var(--warn); }
+.okc dd { color: var(--ok); }
+.chart { overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.chart text { fill: var(--fg); font-family: var(--mono); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--mut); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; }
+.note { font-size: 13.5px; color: var(--mut); background: var(--mark); padding: 10px 14px; border-radius: 6px; max-width: none; }
+.note b { color: var(--fg); font-weight: 600; }
+details.check { border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+details.check > summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--mut); }
+details.check[open] > summary { border-bottom: 1px solid var(--line); }
+details.check > .tbl { padding: 6px 10px 10px; }
+.tbl { overflow-x: auto; min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 5px 9px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--mut); font-size: 12.5px; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr.now td { background: var(--soft); }
+.match { color: var(--ok); font-size: 12.5px; }
+.round { color: var(--mut); font-size: 12.5px; }
+.miss { color: var(--warn); font-size: 12.5px; font-weight: 700; }
+ul.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 68ch; }
+footer { min-width: 0; overflow-wrap: anywhere; font-size: 13px; color: var(--mut); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 16px; }
+footer a { color: var(--accent); }
+</style>
+
+<div class="wrap">
+<header class="standalone-only">
+  <div class="eyebrow">Chapter 6 · Merkle trees</div>
+  <h1>You only need to remember your opponents</h1>
+  <p class="lede">The n transactions are paired two at a time up to a single root. To show that one transaction is included, one sibling hash per level from leaf to root, ⌈log₂ n⌉ in all, is enough. Increase the number of transactions and see how much the proof grows.</p>
+  <div class="formula">proof length = ⌈log₂ n⌉ hashes = 32·⌈log₂ n⌉ bytes · on a level with an odd count, the last one is used once more to make a pair · H = one SHA-256 (general form)</div>
+</header>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">The tree and the inclusion proof</h2>
+  <div class="bench" id="figure">
+    <div class="controls">
+      <div class="ctl">
+        <label for="n"><span>Number of transactions n</span> <output id="nOut"></output></label>
+        <input type="range" id="n" min="1" max="16" step="1" value="8">
+        <div class="seg" id="nSeg" role="group" aria-label="Transaction-count shortcuts">
+          <button type="button" data-v="4" aria-pressed="false">4</button>
+          <button type="button" data-v="7" aria-pressed="false">7 (odd)</button>
+          <button type="button" data-v="8" aria-pressed="true">8 (text)</button>
+          <button type="button" data-v="16" aria-pressed="false">16</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <label for="leaf"><span>Transaction to prove (counting from 1)</span> <output id="leafOut"></output></label>
+        <input type="range" id="leaf" min="1" max="8" step="1" value="5">
+      </div>
+      <div class="ctl">
+        <div class="lab">Transaction the verifier received</div>
+        <button type="button" class="act" id="tamper" aria-pressed="false">Verify with a tampered tx</button>
+      </div>
+    </div>
+    <div class="chart" id="chart" role="img" aria-label="Merkle tree, highlighting the leaf to prove, the sibling hashes and the path to the root"></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>Path from the leaf to prove up to the root</span><span><i style="background:var(--accent2)"></i>Sibling hashes (what goes into the proof)</span><span><i style="background:var(--soft);border:1px solid var(--line)"></i>Other nodes</span></div>
+    <dl class="readout">
+      <div><dt>Hashes per level</dt><dd id="oLevels"></dd></div>
+      <div class="big"><dt>Proof length ⌈log₂ n⌉</dt><dd id="oLen"></dd></div>
+      <div><dt>Proof bytes 32·⌈log₂ n⌉</dt><dd id="oBytes"></dd></div>
+      <div id="verBox"><dt>Proof verification</dt><dd id="oVer"></dd></div>
+    </dl>
+    <div class="tbl"><table aria-label="Proof length by number of transactions (NB06-2)"><thead><tr><th>Number of transactions n</th><th>Chain walk (max steps)</th><th>Merkle proof (hashes)</th><th>Proof bytes</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="note" id="msg"></p>
+  </div>
+  <details class="check">
+    <summary>Check against the text (<span id="checkSum"></span>)</summary>
+    <div class="tbl">
+      <table>
+        <caption class="note" style="caption-side:bottom;text-align:left;margin-top:8px">The "Text" column is the output of NB06-1 (hash counts per level for 8 transactions, first 16 digits of the root, length of the tx4 proof, verification result), NB06-2 (table of proof lengths by n) and the numerical example in Section 3 (n = 4,000) in Chapter 6, as printed. The leaves are the same byte strings as in the notebook, <code>tx{i}: Alice pays Bob {i} coin</code>.</caption>
+        <thead><tr><th>Item</th><th>Computed</th><th>Text</th><th></th></tr></thead>
+        <tbody id="check"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="s4" class="standalone-only">
+  <h2 id="s4">How this tree differs from Bitcoin's tree</h2>
+  <ul class="limits">
+    <li>Here SHA-256 is applied once. Bitcoin applies it twice (double SHA-256), and the leaves are txids (Chapter 6, Section 4, NB06-3).</li>
+    <li>The rule of duplicating the last hash on a level with an odd count is the same as Bitcoin's. That rule created the weakness by which different transaction lists can produce the same root (CVE-2012-2459) — Chapter 6, Section 4.</li>
+    <li>A proof guarantees only that "this transaction is under this root." That the root belongs to a real block is guaranteed by the header hash of Chapter 7 and the proof of work of Chapter 8.</li>
+  </ul>
+</section>
+
+<footer class="standalone-only">
+  <div>Formulas: Blockchain for Lawyers, Chapter 6, Section 3, NB06-1 and NB06-2. An inclusion proof is a list of (sibling hash, whether the sibling is on the right), and the left/right marks travel with it.</div>
+  <div>Blockchain for Lawyers: A Reading Through Technology and Economics · interactive figure · edited by Bowon Kwon</div>
+  <div>License: the code on this page (HTML, CSS, JavaScript) and the explanatory text are under <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.en">CC BY-NC 4.0</a> (to the extent the editor holds the rights). For commercial use, get in touch through a <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">repository issue</a> to arrange terms separately. © 2026 Bowon Kwon</div>
+  <div>Required Notice: Copyright 2026 Bowon Kwon (https://github.com/BowonKwon/AI-Assisted-Handbooks)</div>
+</footer>
+</div>
+
+<script>
+var SHA256 = (function () {
+  var K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  var W = new Int32Array(64);
+  function digest(msg) {
+    var len = msg.length, bitLen = len * 8, padLen = ((len + 9 + 63) >> 6) << 6, buf = new Uint8Array(padLen);
+    buf.set(msg); buf[len] = 0x80;
+    var hi = Math.floor(bitLen / 0x100000000), lo = bitLen >>> 0;
+    buf[padLen - 8] = (hi >>> 24) & 255; buf[padLen - 7] = (hi >>> 16) & 255; buf[padLen - 6] = (hi >>> 8) & 255; buf[padLen - 5] = hi & 255;
+    buf[padLen - 4] = (lo >>> 24) & 255; buf[padLen - 3] = (lo >>> 16) & 255; buf[padLen - 2] = (lo >>> 8) & 255; buf[padLen - 1] = lo & 255;
+    var h0 = 0x6a09e667, h1 = 0xbb67ae85, h2 = 0x3c6ef372, h3 = 0xa54ff53a, h4 = 0x510e527f, h5 = 0x9b05688c, h6 = 0x1f83d9ab, h7 = 0x5be0cd19;
+    for (var off = 0; off < padLen; off += 64) {
+      for (var i = 0; i < 16; i++) { var j = off + i * 4; W[i] = (buf[j] << 24) | (buf[j + 1] << 16) | (buf[j + 2] << 8) | buf[j + 3]; }
+      for (i = 16; i < 64; i++) { var w15 = W[i - 15], w2 = W[i - 2]; var s0 = ((w15 >>> 7) | (w15 << 25)) ^ ((w15 >>> 18) | (w15 << 14)) ^ (w15 >>> 3); var s1 = ((w2 >>> 17) | (w2 << 15)) ^ ((w2 >>> 19) | (w2 << 13)) ^ (w2 >>> 10); W[i] = (W[i - 16] + s0 + W[i - 7] + s1) | 0; }
+      var a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
+      for (i = 0; i < 64; i++) { var S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7)); var ch = (e & f) ^ (~e & g); var t1 = (h + S1 + ch + K[i] + W[i]) | 0; var S0 = ((a >>> 2) | (a << 30)) ^ ((a >>> 13) | (a << 19)) ^ ((a >>> 22) | (a << 10)); var mj = (a & b) ^ (a & c) ^ (b & c); var t2 = (S0 + mj) | 0; h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0; }
+      h0 = (h0 + a) | 0; h1 = (h1 + b) | 0; h2 = (h2 + c) | 0; h3 = (h3 + d) | 0; h4 = (h4 + e) | 0; h5 = (h5 + f) | 0; h6 = (h6 + g) | 0; h7 = (h7 + h) | 0;
+    }
+    var out = new Uint8Array(32), hs = [h0, h1, h2, h3, h4, h5, h6, h7];
+    for (i = 0; i < 8; i++) { out[i * 4] = (hs[i] >>> 24) & 255; out[i * 4 + 1] = (hs[i] >>> 16) & 255; out[i * 4 + 2] = (hs[i] >>> 8) & 255; out[i * 4 + 3] = hs[i] & 255; }
+    return out;
+  }
+  function utf8(s) { return new TextEncoder().encode(s); }
+  function hex(u8) { var s = ""; for (var i = 0; i < u8.length; i++) s += (u8[i] < 16 ? "0" : "") + u8[i].toString(16); return s; }
+  function concat(a, b) { var u = new Uint8Array(a.length + b.length); u.set(a); u.set(b, a.length); return u; }
+  return { digest: digest, utf8: utf8, hex: hex, concat: concat };
+})();
+
+(function () {
+  "use strict";
+  var D = window.BOOK_DATA;
+  if (!D) {
+    document.body.insertAdjacentHTML("afterbegin", "<p style='color:#9a5b4f;padding:16px'>Shared constants (BOOK_DATA) not found. Open the version wrapped by the build tool.</p>");
+    throw new Error("BOOK_DATA missing");
+  }
+  //
+  var EXAMPLE = { n: 8, leaf: 4 };                        //
+  var state = { n: EXAMPLE.n, leaf: EXAMPLE.leaf, tamper: false };
+  var INIT = { n: state.n, leaf: state.leaf };
+
+  function H(u) { return SHA256.digest(u); }
+  function txBytes(i) { return SHA256.utf8("tx" + i + ": Alice pays Bob " + i + " coin"); }
+  function leavesOf(n) { var L = []; for (var i = 0; i < n; i++) L.push(H(txBytes(i))); return L; }
+  function merkleLevels(leaves) { var levels = [leaves]; while (levels[levels.length - 1].length > 1) { var cur = levels[levels.length - 1]; if (cur.length % 2 === 1) cur = cur.concat([cur[cur.length - 1]]); var nx = []; for (var i = 0; i < cur.length; i += 2) nx.push(H(SHA256.concat(cur[i], cur[i + 1]))); levels.push(nx); } return levels; }
+  function merkleProof(levels, index) { var proof = []; for (var li = 0; li < levels.length - 1; li++) { var level = levels[li]; if (level.length % 2 === 1) level = level.concat([level[level.length - 1]]); var sib = index ^ 1; proof.push({ hash: level[sib], right: sib > index, level: li, index: sib }); index = index >> 1; } return proof; }
+  function verifyProof(leaf, proof, root) { var h = leaf; proof.forEach(function (p) { h = p.right ? H(SHA256.concat(h, p.hash)) : H(SHA256.concat(p.hash, h)); }); return SHA256.hex(h) === SHA256.hex(root); }
+  function ceilLog2(n) { return n > 1 ? Math.ceil(Math.log2(n)) : 0; }
+
+  function $(id) { return document.getElementById(id); }
+  function fmt(x) { return x.toLocaleString("ko-KR"); }
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (tag === "text" && attrs.fill) e.style.fill = attrs.fill; if (text !== undefined) e.textContent = text; return e; }
+  function draw(levels, proof, leafIdx) {
+    var depth = levels.length, W = 760, rowH = 54, H_ = 30 + depth * rowH, svg = el("svg", { viewBox: "0 0 " + W + " " + H_ });
+    var pathIdx = [], idx = leafIdx; for (var li = 0; li < depth; li++) { pathIdx.push(idx); idx = idx >> 1; }
+    var sibAt = {}; proof.forEach(function (p) { sibAt[p.level + ":" + p.index] = true; });
+    function pos(li, i) { var cnt = levels[li].length, padded = cnt % 2 === 1 && li < depth - 1 ? cnt + 1 : cnt, slot = W / padded; return { x: slot * (i + 0.5), y: H_ - 20 - li * rowH, w: Math.min(slot - 6, 86) }; }
+    for (li = 0; li < depth; li++) {
+      var level = levels[li], cnt = level.length, dup = cnt % 2 === 1 && li < depth - 1;
+      for (var i = 0; i < cnt + (dup ? 1 : 0); i++) {
+        var isDup = i >= cnt, h = level[Math.min(i, cnt - 1)], p = pos(li, i), onPath = pathIdx[li] === i, isSib = sibAt[li + ":" + i];
+        if (li < depth - 1) { var q = pos(li + 1, i >> 1); svg.appendChild(el("line", { x1: p.x, y1: p.y - 11, x2: q.x, y2: q.y + 11, stroke: onPath ? "var(--accent)" : "var(--line)", "stroke-width": onPath ? 2.4 : 1.2 })); }
+        svg.appendChild(el("rect", { x: p.x - p.w / 2, y: p.y - 11, width: p.w, height: 22, rx: 5, fill: onPath ? "var(--accent)" : isSib ? "var(--accent2)" : "var(--soft)", stroke: isDup ? "var(--accent2)" : "var(--line)", "stroke-dasharray": isDup ? "3 3" : "" }));
+        svg.appendChild(el("text", { x: p.x, y: p.y + 4, "text-anchor": "middle", "font-size": 10.5, fill: onPath || isSib ? "var(--bg)" : "var(--fg)" }, (li === 0 ? (isDup ? "dup " : "tx" + i + " ") : "") + SHA256.hex(h).slice(0, p.w > 70 ? 6 : 4) + "…"));
+      }
+      svg.appendChild(el("text", { x: 4, y: pos(li, 0).y - 16, "font-size": 10.5, fill: "var(--mut)" }, li === depth - 1 ? "root" : li === 0 ? "leaves (transaction hashes)" : "level " + li));
+    }
+    $("chart").replaceChildren(svg);
+  }
+
+  function update() {
+    var n = state.n, leafIdx = Math.min(state.leaf, n - 1), leaves = leavesOf(n), levels = merkleLevels(leaves), root = levels[levels.length - 1][0], proof = merkleProof(levels, leafIdx);
+    state.leaf = leafIdx;
+    $("nOut").textContent = n + " transactions"; $("n").value = n; $("leaf").max = n; $("leaf").value = leafIdx + 1; $("leafOut").textContent = (leafIdx + 1) + " (tx" + leafIdx + ")";
+    $("nSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(Number(b.dataset.v) === n)); });
+    $("tamper").setAttribute("aria-pressed", String(state.tamper));
+    draw(levels, proof, leafIdx);
+    var tamperedTx = "tx" + leafIdx + ": Alice pays Bob " + (leafIdx === 0 ? 1 : leafIdx * 10) + " coin";   //
+    var leafGiven = state.tamper ? H(SHA256.utf8(tamperedTx)) : leaves[leafIdx], ok = verifyProof(leafGiven, proof, root);
+    $("oLevels").textContent = "[" + levels.map(function (l) { return l.length; }).join(", ") + "]";
+    $("oLen").textContent = proof.length + " hashes"; $("oBytes").textContent = fmt(32 * proof.length) + " bytes";
+    $("oVer").textContent = (ok ? "True" : "False") + (state.tamper ? " (tampered tx)" : " (original tx)"); $("verBox").className = ok ? "okc" : "bad";
+    var ns = [1, 2, 8, 100, 1000, 4000, 10000, 100000, 1000000];
+    $("rows").innerHTML = ns.map(function (m) { var k = ceilLog2(m); return "<tr" + (m === n ? " class='now'" : "") + "><td class='num'>" + fmt(m) + "</td><td class='num'>" + fmt(m) + "</td><td class='num'>" + k + "</td><td class='num'>" + fmt(32 * k) + "</td></tr>"; }).join("");
+    $("msg").innerHTML = "Transactions: " + n + " → hashes per level " + levels.map(function (l) { return l.length; }).join("·") + " → root " + SHA256.hex(root).slice(0, 16) + "…. tx" + leafIdx + " has an inclusion proof of <b>" + proof.length + " sibling hashes = " + fmt(32 * proof.length) + " bytes</b>" + (proof.length ? " (" + proof.map(function (p) { return SHA256.hex(p.hash).slice(0, 6) + "…" + (p.right ? "(right)" : "(left)"); }).join(", ") + ")" : "") + ". " + (state.tamper ? "Change the transaction to \"" + tamperedTx + "\" and the same proof " + (ok ? "still reaches the root (verification True — this should never happen)" : "no longer reaches the root — verification False.") : "Even when the number of transactions doubles, the proof grows by only one hash. Even at a million transactions it is 20 hashes, 640 bytes.") + (levels[0].length % 2 === 1 && n > 1 ? " The leaves are odd in number, so the last leaf was used once more to make a pair (dotted)." : "");
+  }
+
+  //
+  function checkRows() {
+    var rows = [];
+    function add(name, got, expected) { rows.push({ name: name, got: got, expected: expected, status: got === expected ? "match" : "miss" }); }
+    var lv = merkleLevels(leavesOf(INIT.n)), root = lv[lv.length - 1][0], pr = merkleProof(lv, INIT.leaf);
+    rows.push({ name: "Starting state · n=8, tx4 · proof length", got: pr.length, expected: 3, status: INIT.n === 8 && INIT.leaf === 4 && pr.length === 3 ? "match" : "miss" });
+    add("NB06-1 · 8 transactions → hashes per level", "[" + lv.map(function (l) { return l.length; }).join(", ") + "]", "[8, 4, 2, 1]");
+    add("NB06-1 · root, first 16 digits", SHA256.hex(root).slice(0, 16), "23db046cc041f456");
+    add("NB06-1 · tx4 proof bytes", 32 * pr.length, 96);
+    add("NB06-1 · proof verification (original tx4)", verifyProof(lv[0][4], pr, root) ? "True" : "False", "True");
+    add("NB06-1 · proof verification (tampered tx4 'Alice pays Bob 40 coin')", verifyProof(H(SHA256.utf8("tx4: Alice pays Bob 40 coin")), pr, root) ? "True" : "False", "False");
+    var t = leavesOf(8); t[2] = H(SHA256.utf8("tx2: Alice pays Bob 200 coin")); var lv2 = merkleLevels(t);
+    add("NB06-1 · does changing tx2 change the root?", SHA256.hex(lv2[lv2.length - 1][0]) !== SHA256.hex(root) ? "True" : "False", "True");
+    var tbl = [[1, 0], [2, 1], [8, 3], [100, 7], [1000, 10], [4000, 12], [10000, 14], [100000, 17], [1000000, 20]];
+    tbl.forEach(function (r) { add("NB06-2 · n=" + fmt(r[0]) + " · proof hashes / bytes", ceilLog2(r[0]) + " / " + 32 * ceilLog2(r[0]), r[1] + " / " + 32 * r[1]); });
+    add("Section 3 numerical example · n=4,000 · ⌈log₂ n⌉", ceilLog2(4000), 12);
+    return rows;
+  }
+  window.__selftest = function () { return checkRows().map(function (r) { return { name: r.name, got: r.got, expected: r.expected, status: r.status }; }); };
+  function renderCheck() {
+    var rows = checkRows(), tag = { match: "<span class='match'>match</span>", round: "<span class='round'>rounding difference</span>", miss: "<span class='miss'>mismatch</span>" };
+    $("check").innerHTML = rows.map(function (r) { return "<tr><td>" + r.name + "</td><td class='num'>" + r.got + "</td><td class='num'>" + r.expected + "</td><td>" + tag[r.status] + "</td></tr>"; }).join("");
+    var miss = rows.filter(function (r) { return r.status === "miss"; }).length;
+    $("checkSum").textContent = rows.length + " rows" + (miss ? " · mismatches " + miss : " · all match");
+  }
+
+  //
+  $("nSeg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.n = Number(b.dataset.v); update(); });
+  $("n").addEventListener("input", function (e) { state.n = Number(e.target.value); update(); });
+  $("leaf").addEventListener("input", function (e) { state.leaf = Number(e.target.value) - 1; update(); });
+  $("tamper").addEventListener("click", function () { state.tamper = !state.tamper; update(); });
+  renderCheck();
+  update();
+})();
+</script>
+<script>
+(function(){
+  if (window.parent === window) return;
+  var last = 0;
+  function send(){
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) { last = h;
+      parent.postMessage({type: "widget-height", id: window.WIDGET_ID, part: window.WIDGET_PART, h: h}, "*"); }
+  }
+  if (window.ResizeObserver) new ResizeObserver(send).observe(document.body);
+  window.addEventListener("load", send);
+  send();
+})();
+</script>
+</body>
+</html>

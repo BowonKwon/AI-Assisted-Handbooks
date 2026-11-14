@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI-Assisted Handbooks</title>
-<meta name="description" content="생성형 AI와 함께 엮은 자습서 네 권 — Agentic AI 논문 읽기, 실전편, AI 인프라와 반도체, 법률가를 위한 LLM 위키. Study handbooks compiled with generative AI.">
+<meta name="description" content="생성형 AI와 함께 엮은 자습서 다섯 권 — Agentic AI 논문 읽기, 실전편, AI 인프라와 반도체, 법률가를 위한 LLM 위키, 법률가를 위한 블록체인. Study handbooks compiled with generative AI.">
 <meta property="og:title" content="AI-Assisted Handbooks">
-<meta property="og:description" content="생성형 AI와 함께 엮은 자습서 네 권과 영문판 세 권 · Four study handbooks, three in English.">
+<meta property="og:description" content="생성형 AI와 함께 엮은 자습서 다섯 권과 그 영문판 · Five study handbooks, each with an English edition.">
 <meta name="color-scheme" content="light dark">
 <style>
 @font-face{font-family:"HB Serif";src:url(agentic-ai-reading/fonts/hb-serif-400.woff2) format("woff2");font-weight:400;font-display:swap}
@@ -31,6 +31,7 @@
   --prac:#395785; --prac-tint:#e9eef5; --prac-line:#aebdd3;
   --semi:#7a5841; --semi-tint:#f2ece6; --semi-line:#cdb9a8;
   --wiki:#6b4049; --wiki-tint:#f3eaeb; --wiki-line:#cfb3b8;
+  --chain:#4b5f78; --chain-tint:#eef1f4; --chain-line:#b9c3cf;
   --shadow:0 1px 0 rgba(0,0,0,.04),0 12px 28px -14px rgba(30,25,20,.28);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -40,6 +41,7 @@
   --prac:#9db3d6; --prac-tint:#1f2530; --prac-line:#3a4a63;
   --semi:#cfb29b; --semi-tint:#2a241f; --semi-line:#5a4a3d;
   --wiki:#d2a6ae; --wiki-tint:#2b2224; --wiki-line:#5d4247;
+  --chain:#a3b4c8; --chain-tint:#22272e; --chain-line:#3b4652;
   --shadow:0 1px 0 rgba(0,0,0,.3),0 14px 30px -16px rgba(0,0,0,.7);
 }}
 :root[data-theme="dark"]{
@@ -49,6 +51,7 @@
   --prac:#9db3d6; --prac-tint:#1f2530; --prac-line:#3a4a63;
   --semi:#cfb29b; --semi-tint:#2a241f; --semi-line:#5a4a3d;
   --wiki:#d2a6ae; --wiki-tint:#2b2224; --wiki-line:#5d4247;
+  --chain:#a3b4c8; --chain-tint:#22272e; --chain-line:#3b4652;
   --shadow:0 1px 0 rgba(0,0,0,.3),0 14px 30px -16px rgba(0,0,0,.7);
 }
 html[data-lang="ko"] .en, html[data-lang="en"] .ko{display:none!important}
@@ -93,6 +96,7 @@ a{color:inherit}
 .book.prac{--c:var(--prac);--t:var(--prac-tint);--l:var(--prac-line)}
 .book.semi{--c:var(--semi);--t:var(--semi-tint);--l:var(--semi-line)}
 .book.wiki{--c:var(--wiki);--t:var(--wiki-tint);--l:var(--wiki-line)}
+.book.chain{--c:var(--chain);--t:var(--chain-tint);--l:var(--chain-line)}
 .book::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:4px;background:var(--c);border-radius:6px 6px 0 0}
 .cover{position:relative;aspect-ratio:1/1.414;background:var(--t);border:1px solid var(--l);border-radius:2px 5px 5px 2px;overflow:hidden;
   box-shadow:inset 9px 0 0 -1px var(--c),inset 10px 0 0 -1px rgba(255,255,255,.25),3px 4px 0 -1px var(--line-2),3px 4px 0 0 var(--line);
@@ -190,14 +194,14 @@ footer a:hover{text-decoration-color:var(--ink)}
     <p class="kicker"><span class="ko">권보원 엮음 · 2026</span><span class="en">Edited by Bowon Kwon · 2026</span></p>
     <h1 class="ko">생성형 AI와 함께 엮은 <em>자습서</em></h1>
     <h1 class="en">Study handbooks, compiled <em>with generative AI</em></h1>
-    <p class="lede ko">에이전트가 어떻게 생각하고 움직이는지 논문으로 읽고, 내 컴퓨터에 직접 붙여 일을 맡겨 보고, 그 밑에서 도는 반도체까지 내려가 봅니다. 법률가가 읽은 자료를 쌓아 두는 위키도 한 권 있습니다. 모두 화면본과 PDF로 읽을 수 있습니다.</p>
-    <p class="lede en">Read how agents think and act, paper by paper. Attach those parts to your own computer and hand them real work. Then go down to the chips they run on. A fourth volume shows lawyers how to keep what they read in an LLM wiki. Every book is free to read online or as a PDF.</p>
+    <p class="lede ko">에이전트가 어떻게 생각하고 움직이는지 논문으로 읽고, 내 컴퓨터에 직접 붙여 일을 맡겨 보고, 그 밑에서 도는 반도체까지 내려가 봅니다. 법률가가 읽은 자료를 쌓아 두는 위키도 한 권 있고, 블록체인을 기술과 경제학의 말로 읽는 책도 한 권 있습니다. 모두 화면본과 PDF로 읽을 수 있습니다.</p>
+    <p class="lede en">Read how agents think and act, paper by paper. Attach those parts to your own computer and hand them real work. Then go down to the chips they run on. A fourth volume shows lawyers how to keep what they read in an LLM wiki, and a fifth reads blockchains through technology and economics. Every book is free to read online or as a PDF.</p>
   </div>
   <div>
     <div class="stats">
-      <div><b>4</b><span class="ko">자습서</span><span class="en">handbooks</span></div>
-      <div><b>3</b><span class="ko">영문판</span><span class="en">English editions</span></div>
-      <div><b>1,851</b><span class="ko">쪽 (PDF 합계)</span><span class="en">PDF pages in all</span></div>
+      <div><b>5</b><span class="ko">자습서</span><span class="en">handbooks</span></div>
+      <div><b>5</b><span class="ko">영문판</span><span class="en">English editions</span></div>
+      <div><b>2,986</b><span class="ko">쪽 (PDF 합계)</span><span class="en">PDF pages in all</span></div>
     </div>
   </div>
   <p class="spec">
@@ -400,6 +404,51 @@ footer a:hover{text-decoration-color:var(--ink)}
       </div>
     </div>
   </article>
+  <!-- Blockchain -->
+  <article class="book chain">
+    <div class="cover" aria-hidden="true">
+      <small class="ko">법률가를 위한 자습서</small><small class="en">For lawyers</small>
+      <strong class="ko">법률가를 위한 블록체인</strong>
+      <strong class="en">Blockchain for Lawyers</strong>
+      <svg viewBox="0 0 120 92" fill="none" stroke="currentColor" style="color:var(--c)" aria-hidden="true" focusable="false">
+        <rect x="8" y="30" width="28" height="32" rx="2" fill="var(--paper)" stroke-width="1.4"/>
+        <rect x="46" y="30" width="28" height="32" rx="2" fill="var(--paper)" stroke-width="1.4"/>
+        <rect x="84" y="30" width="28" height="32" rx="2" fill="var(--paper)" stroke-width="1.4"/>
+        <path d="M36 46H46M74 46H84" stroke-width="1.6"/>
+        <path d="M13 38H31M51 38H69M89 38H107" stroke-width="2"/>
+        <path d="M13 46H27M13 52H31M51 46H65M51 52H69M89 46H103M89 52H107" stroke-opacity=".5"/>
+        <path d="M22 62V74H98V62" stroke-dasharray="2 2.5" stroke-opacity=".6"/>
+      </svg>
+      <span class="ed">1.0 · 1.0-en</span>
+    </div>
+    <div class="meta">
+      <p class="field ko">법학 · 블록체인 · 경제학</p><p class="field en">Law · Blockchain · Economics</p>
+      <h3 class="ko">법률가를 위한 블록체인</h3>
+      <h3 class="en">Blockchain for Lawyers</h3>
+      <p class="sub ko">기술과 경제학으로 읽기</p>
+      <p class="sub en">A Reading Through Technology and Economics</p>
+      <p class="desc ko">고교 수학만으로 끝까지. 해시와 서명에서 수수료 시장과 스테이블코인까지 기술과 경제학의 말로 풀고, 법의 질문이 생기는 자리를 표시했습니다. 7부 30장과 부록 6종, 인터랙티브 그림 12종, 노트북 21권. 투자 권유나 법률 자문이 아닙니다.</p>
+      <p class="desc en">Readable to the end with high-school mathematics: from hashes and signatures to fee markets and stablecoins, in the language of technology and economics, with the places where legal questions arise marked. Seven parts and 30 chapters, six appendices, 12 interactive figures and 21 notebooks. Not investment or legal advice.</p>
+      <dl>
+        <dt class="ko">독자</dt><dt class="en">Readers</dt>
+        <dd class="ko">법률가(법관·변호사·기업 법무·연구자), 혼자 읽는 독자</dd>
+        <dd class="en">Lawyers (judges, attorneys, in-house counsel, researchers)</dd>
+        <dt class="ko">판</dt><dt class="en">Edition</dt>
+        <dd class="ko">1.0 · 2026. 11. 14. · 464쪽</dd>
+        <dd class="en">1.0-en · Nov 14, 2026 · 549 pp.</dd>
+      </dl>
+      <div class="acts ko">
+        <a class="btn pri" href="blockchain-for-lawyers/index.html">화면본으로 읽기</a>
+        <a class="btn" href="blockchain-for-lawyers/blockchain-for-lawyers-v1.0.pdf"><span class="k">PDF</span> 내려받기</a>
+        <a class="btn" href="blockchain-for-lawyers/en/index.html"><span class="k">EN</span> English</a>
+      </div>
+      <div class="acts en">
+        <a class="btn pri" href="blockchain-for-lawyers/en/index.html">Read online</a>
+        <a class="btn" href="blockchain-for-lawyers/en/blockchain-for-lawyers-v1.0-en.pdf"><span class="k">PDF</span> Download</a>
+        <a class="btn" href="blockchain-for-lawyers/index.html"><span class="k">KO</span> Korean edition</a>
+      </div>
+    </div>
+  </article>
 </div>
 
 <div class="sh"><h2 class="ko">어디서 시작할까</h2><h2 class="en">Where to start</h2><hr></div>
@@ -411,7 +460,7 @@ footer a:hover{text-decoration-color:var(--ink)}
   <div class="p3"><b class="ko">밑바닥까지</b><b class="en">All the way down</b>
     <p class="ko">모델을 돌리는 칩과 메모리, 그 산업 — 반도체 자습서.</p><p class="en">The chips, memory and industry that run the models: the semiconductor guide.</p></div>
   <div class="p4"><b class="ko">법률가라면</b><b class="en">If you practice law</b>
-    <p class="ko">읽은 판결·논문을 쌓아 두는 개인 위키 — 서재.</p><p class="en">A personal wiki for the judgments and papers you read (Korean).</p></div>
+    <p class="ko">읽은 판결·논문을 쌓아 두는 개인 위키 — 서재. 블록체인을 기술과 경제학의 말로 — 법률가를 위한 블록체인.</p><p class="en">A personal wiki for the judgments and papers you read; and blockchains read through technology and economics.</p></div>
 </div>
 
 <footer>
