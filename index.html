@@ -72,8 +72,9 @@ a{color:inherit}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .gh{font:600 12.5px/1 var(--sans);text-decoration:none;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:8px 13px;background:var(--paper)}
 .gh:hover{color:var(--ink);border-color:var(--ink-3)}
-.hubl{font:600 12.5px/1 var(--sans);text-decoration:none;color:var(--ink-2);white-space:nowrap}
-.hubl:hover{color:var(--ink)}
+.hubl{display:inline-flex;align-items:center;gap:6px;font:600 12.5px/1 var(--sans);text-decoration:none;color:var(--ink-2);white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:8px 13px;background:var(--paper)}
+.hubl::before{content:"";width:.7em;height:.7em;flex:none;background:linear-gradient(currentColor,currentColor) 0 0/42% 42% no-repeat,linear-gradient(currentColor,currentColor) 100% 0/42% 42% no-repeat,linear-gradient(currentColor,currentColor) 0 100%/42% 42% no-repeat,linear-gradient(currentColor,currentColor) 100% 100%/42% 42% no-repeat}
+.hubl:hover{color:var(--ink);border-color:var(--ink-3)}
 .hero{padding:72px 0 56px;display:grid;grid-template-columns:1.25fr .75fr;gap:56px;align-items:end}
 .kicker{font:600 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
 .hero h1{font:600 clamp(36px,5.2vw,62px)/1.12 var(--serif);letter-spacing:-.015em;margin:0 0 22px}
