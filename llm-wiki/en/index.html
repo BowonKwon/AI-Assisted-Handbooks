@@ -10,10 +10,10 @@
   --bg:#f7f8fa; --fg:#16181d; --mut:#5d6470; --line:#dfe3ea;
   --card:#ffffff; --accent:#2f4b8f; --accent2:#a3612c;
   --code:#eef1f5; --mark:#fdf4e3;
-  --cw:#a8410f; --cw-bg:#fdf3ec;   
-  --co:#1c6b45; --co-bg:#edf7f1;   
-  --ch:#7a5a12; --ch-bg:#fdf8e8;   
-  --cr:#4a3a72; --cr-bg:#f3f1f9;   
+  --cw:#a8410f; --cw-bg:#fdf3ec;
+  --co:#1c6b45; --co-bg:#edf7f1;
+  --ch:#7a5a12; --ch-bg:#fdf8e8;
+  --cr:#4a3a72; --cr-bg:#f3f1f9;
   --serif:"Noto Serif KR","Nanum Myeongjo",Georgia,"Batang",serif;
   --sans:"Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
   --mono:"D2Coding","Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
@@ -150,14 +150,14 @@ details>*:last-child{padding-bottom:10px}
 
 .printtoc{display:none}
 
-@media screen and (max-width:1080px){            
-  :not(pre)>code{overflow-wrap:anywhere}         
-  .mb{overflow-x:auto;overflow-y:hidden}         
-  main{overflow-wrap:break-word}                 
-  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}  
+@media screen and (max-width:1080px){
+  :not(pre)>code{overflow-wrap:anywhere}
+  .mb{overflow-x:auto;overflow-y:hidden}
+  main{overflow-wrap:break-word}
+  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}
 }
 @media (max-width:1080px){
-  .layout{grid-template-columns:minmax(0,1fr)}  
+  .layout{grid-template-columns:minmax(0,1fr)}
   .rail{position:static;height:auto;border-right:0;
     border-bottom:1px solid var(--line);padding:18px}
   main{padding:32px 22px 80px}
@@ -213,7 +213,7 @@ details>*:last-child{padding-bottom:10px}
   h3{font-size:11pt;margin:12pt 0 4pt;color:#000}
   h4{font-size:10pt;color:#333}
 
-  
+
   details{border:1px solid #bbb;page-break-inside:auto}
   details>summary{background:#eee;color:#000;border-bottom:1px solid #bbb}
   details>*:not(summary){display:block!important}
@@ -235,7 +235,7 @@ details>*:last-child{padding-bottom:10px}
 
   .prn{display:inline} .scr{display:none}
   a{color:#000;text-decoration:none}
-  
+
   a[href^="http"]{color:#1f4e86;text-decoration:underline;text-decoration-thickness:.5pt;
     text-underline-offset:1.5pt;overflow-wrap:anywhere}
   h2,h3,h4{page-break-after:avoid}
@@ -272,11 +272,11 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
 
 :root{
   --fg:#1d2026; --mut:#5c6370; --line:#e1e3e7; --bg:#fbfbfa; --card:#ffffff;
-  --cw:#9b4f4f; --cw-bg:#f8f0ef;   
-  --ch:#85704a; --ch-bg:#f7f3ea;   
-  --cr:#5b6170; --cr-bg:#f2f3f5;   
+  --cw:#9b4f4f; --cw-bg:#f8f0ef;
+  --ch:#85704a; --ch-bg:#f7f3ea;
+  --cr:#5b6170; --cr-bg:#f2f3f5;
   --box-bg:#f7f7f5; --box-line:#dcdde0;
-  --sand-bg:#f6f3ee;   
+  --sand-bg:#f6f3ee;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -291,7 +291,7 @@ main p,main li{-webkit-hyphens:auto;hyphens:auto}td,th,td p,th p,h1,h2,h3,h4,pre
   --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
 }
 :root{
-  
+
   --serif:"HB Serif","HB Serif KR","HB Symbols",Georgia,"Noto Serif KR",serif;
   --sans:"HB Sans","HB Sans KR","HB Symbols","Segoe UI",system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
   --mono:"HB Mono","HB Sans KR","HB Symbols","Cascadia Mono",Consolas,"D2Coding",monospace;
@@ -366,7 +366,7 @@ h2{font-family:var(--sans);font-weight:700;font-size:1.45rem;letter-spacing:-.01
 h2::before{content:"";display:block;width:34px;height:3px;background:var(--accent);margin:0 0 .55em}
 h3{font-family:var(--sans);font-weight:700;font-size:1.1rem;color:var(--fg)!important;margin:1.8em 0 .4em}
 h4{font-family:var(--sans);font-weight:700;color:var(--mut)}
-strong{font-weight:600}  
+strong{font-weight:600}
 hr{border:0!important;border-top:1px solid var(--line)!important}
 
 
@@ -612,7 +612,7 @@ hr{border-top-color:var(--accent-line)!important}
 <p class="kicker">Public edition · developed from the lecture materials (version 2.1) for the advanced hands-on course of the 2026 AI Literacy Super Week, Judicial Research and Training Institute (Korea), September 2, 2026</p>
 <h1>A Library That Remembers What You Read</h1>
 <p class="lede">Building an LLM Wiki — A Self-Study Guide for Lawyers. On your own, from start to finish: from installation to keeping what you read from disappearing, and running the wiki for three months.</p>
-<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>Bowon Kwon</b> (Presiding Judge, Daegu District Court)</p><p><b>Contents</b> · How to use + The guide on one page + 7 parts, 26 chapters + 6 appendices + colophon<br><b>Two tracks</b> · Track A (Chapters 1–22) · Track B (Chapters 23–26, for readers who already write code)</p><p style="margin-top:14px"><b>Printing</b> · Press Ctrl+P and save as PDF to get a printed copy with the cover and contents.<br><b>Offline</b> · This one file is complete. It needs no internet connection.</p><p style="margin-top:14px;font-size:.94em">Edition 2.1-en · translated from Korean edition 2.1 (November 7, 2026) · For the dates on which outside sources were checked, see the source notes in each section · The parts in which the editor holds rights are licensed CC BY-NC 4.0</p></div>
+<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>Bowon Kwon</b> (Presiding Judge, Daegu District Court)</p><p><b>Contents</b> · How to use + The guide on one page + 7 parts, 26 chapters + 6 appendices + colophon<br><b>Two tracks</b> · Track A (Chapters 1–22) · Track B (Chapters 23–26, for readers who already write code)</p><p style="margin-top:14px"><b>Printing</b> · Press Ctrl+P and save as PDF to get a printed copy with the cover and contents.<br><b>Offline</b> · This one file is complete. It needs no internet connection.</p><p style="margin-top:14px;font-size:.94em">Edition 2.1.1-en · translated from Korean edition 2.1 (November 7, 2026) · For the dates on which outside sources were checked, see the source notes in each section · The parts in which the editor holds rights are licensed CC BY-NC 4.0</p></div>
 </section>
 <section class="printtoc"><h2>Contents</h2><ol>
 <li><a href="#ch0">How to use this guide</a>
@@ -5614,7 +5614,7 @@ Try to read one file in {the folder you denied}.
 </tr>
 <tr>
 <td>Edition</td>
-<td>Edition 2.1-en · translated from Korean edition 2.1 (2026-11-07)</td>
+<td>Edition 2.1.1-en · translated from Korean edition 2.1 (2026-11-07)</td>
 </tr>
 <tr>
 <td>License</td>
@@ -5664,11 +5664,11 @@ Try to read one file in {the folder you denied}.
 </tr>
 <tr>
 <td><strong class="lng">Guide, editions 1.0–1.3</strong><br>2026-09-05 to 2026-09-08</td>
-<td>Rewritten as a guide to read alone, without the lecture. Installation, permission modes, data policies, theoretical background, review and the samples were newly added, bringing it to 26 chapters in seven parts and six appendices, and it was split into two versions, one for internal court use and one for outside readers. Three reviews by Codex were reflected in editions 1.1–1.3. <strong class="lng">Not posted to the public repository</strong></td>
+<td>Rewritten as a guide to read alone, without the lecture. Installation, permission modes, data policies, theoretical background, review and the samples were newly added, bringing it to 26 chapters in seven parts and six appendices, and it was split into two versions. Three reviews by Codex were reflected in editions 1.1–1.3. <strong class="lng">Not posted to the public repository</strong></td>
 </tr>
 <tr>
 <td><strong>Edition 2.0</strong><br>2026-10-13</td>
-<td><strong class="lng">First public edition.</strong> Based on the version for outside readers. The facts about Claude Code that had changed (the default starting mode of interactive sessions, the conditions under which <code>AGENTS.md</code> is read, reading long PDFs, <code>/diff</code>, the setting that blocks reads outside the folder, and others) were compared again against the official documentation and fixed, and one quotation that did not match the original was corrected. Codex's independent verification was reflected, and this colophon and the license were added</td>
+<td><strong class="lng">First public edition.</strong> Based on the public one of the two versions. The facts about Claude Code that had changed (the default starting mode of interactive sessions, the conditions under which <code>AGENTS.md</code> is read, reading long PDFs, <code>/diff</code>, the setting that blocks reads outside the folder, and others) were compared again against the official documentation and fixed, and one quotation that did not match the original was corrected. Codex's independent verification was reflected, and this colophon and the license were added</td>
 </tr>
 <tr>
 <td><strong>Edition 2.1</strong><br>2026-11-07</td>
@@ -5677,6 +5677,10 @@ Try to read one file in {the folder you denied}.
 <tr>
 <td><strong>Edition 2.1-en</strong><br>2026-11</td>
 <td><strong>English edition.</strong> Translated from Korean edition 2.1 (2026-11-07). One "Comparable cases elsewhere" box added (§18.1). Compared with the Korean edition and the sources by OpenAI Codex.</td>
+</tr>
+<tr>
+<td><strong>Edition 2.1.1-en</strong><br>2026-11-17</td>
+<td>Wording tidied (no new content).</td>
 </tr>
 </tbody>
 </table></div>
@@ -5688,7 +5692,7 @@ Try to read one file in {the folder you denied}.
 <li><strong class="lng">Errors and revisions.</strong> If you find a statement that differs from its source, please report it through the <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">issue tracker of the public repository</a>. Corrections will be made in a new edition with a new date.</li>
 <li><strong class="lng">A personal study resource.</strong> The editor compiled this guide in the course of personal study. It is unrelated to the views or work of any institution the editor belongs to.</li>
 </ul>
-<p>Edited by Bowon Kwon · edition 2.1-en · translated from Korean edition 2.1 (November 7, 2026)</p>
+<p>Edited by Bowon Kwon · edition 2.1.1-en · translated from Korean edition 2.1 (November 7, 2026)</p>
 </section>
 </main>
 </div>

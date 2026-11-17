@@ -10,10 +10,10 @@
   --bg:#f7f8fa; --fg:#16181d; --mut:#5d6470; --line:#dfe3ea;
   --card:#ffffff; --accent:#2f4b8f; --accent2:#a3612c;
   --code:#eef1f5; --mark:#fdf4e3;
-  --cw:#a8410f; --cw-bg:#fdf3ec;   
-  --co:#1c6b45; --co-bg:#edf7f1;   
-  --ch:#7a5a12; --ch-bg:#fdf8e8;   
-  --cr:#4a3a72; --cr-bg:#f3f1f9;   
+  --cw:#a8410f; --cw-bg:#fdf3ec;
+  --co:#1c6b45; --co-bg:#edf7f1;
+  --ch:#7a5a12; --ch-bg:#fdf8e8;
+  --cr:#4a3a72; --cr-bg:#f3f1f9;
   --serif:"Noto Serif KR","Nanum Myeongjo",Georgia,"Batang",serif;
   --sans:"Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
   --mono:"D2Coding","Cascadia Mono",Consolas,"DejaVu Sans Mono",monospace;
@@ -150,14 +150,14 @@ details>*:last-child{padding-bottom:10px}
 
 .printtoc{display:none}
 
-@media screen and (max-width:1080px){            
-  :not(pre)>code{overflow-wrap:anywhere}         
-  .mb{overflow-x:auto;overflow-y:hidden}         
-  main{overflow-wrap:break-word}                 
-  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}  
+@media screen and (max-width:1080px){
+  :not(pre)>code{overflow-wrap:anywhere}
+  .mb{overflow-x:auto;overflow-y:hidden}
+  main{overflow-wrap:break-word}
+  .mi{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.1em 0}
 }
 @media (max-width:1080px){
-  .layout{grid-template-columns:minmax(0,1fr)}  
+  .layout{grid-template-columns:minmax(0,1fr)}
   .rail{position:static;height:auto;border-right:0;
     border-bottom:1px solid var(--line);padding:18px}
   main{padding:32px 22px 80px}
@@ -213,7 +213,7 @@ details>*:last-child{padding-bottom:10px}
   h3{font-size:11pt;margin:12pt 0 4pt;color:#000}
   h4{font-size:10pt;color:#333}
 
-  
+
   details{border:1px solid #bbb;page-break-inside:auto}
   details>summary{background:#eee;color:#000;border-bottom:1px solid #bbb}
   details>*:not(summary){display:block!important}
@@ -235,7 +235,7 @@ details>*:last-child{padding-bottom:10px}
 
   .prn{display:inline} .scr{display:none}
   a{color:#000;text-decoration:none}
-  
+
   a[href^="http"]{color:#1f4e86;text-decoration:underline;text-decoration-thickness:.5pt;
     text-underline-offset:1.5pt;overflow-wrap:anywhere}
   h2,h3,h4{page-break-after:avoid}
@@ -275,11 +275,11 @@ details>*:last-child{padding-bottom:10px}
 
 :root{
   --fg:#1d2026; --mut:#5c6370; --line:#e1e3e7; --bg:#fbfbfa; --card:#ffffff;
-  --cw:#9b4f4f; --cw-bg:#f8f0ef;   
-  --ch:#85704a; --ch-bg:#f7f3ea;   
-  --cr:#5b6170; --cr-bg:#f2f3f5;   
+  --cw:#9b4f4f; --cw-bg:#f8f0ef;
+  --ch:#85704a; --ch-bg:#f7f3ea;
+  --cr:#5b6170; --cr-bg:#f2f3f5;
   --box-bg:#f7f7f5; --box-line:#dcdde0;
-  --sand-bg:#f6f3ee;   
+  --sand-bg:#f6f3ee;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -294,7 +294,7 @@ details>*:last-child{padding-bottom:10px}
   --box-bg:#1b1e23; --box-line:#30343c; --sand-bg:#24211c;
 }
 :root{
-  
+
   --serif:"HB Serif","HB Serif KR","HB Symbols",Georgia,"Noto Serif KR",serif;
   --sans:"HB Sans","HB Sans KR","HB Symbols","Segoe UI",system-ui,"Noto Sans KR","Malgun Gothic",sans-serif;
   --mono:"HB Mono","HB Sans KR","HB Symbols","Cascadia Mono",Consolas,"D2Coding",monospace;
@@ -369,7 +369,7 @@ h2{font-family:var(--sans);font-weight:700;font-size:1.45rem;letter-spacing:-.01
 h2::before{content:"";display:block;width:34px;height:3px;background:var(--accent);margin:0 0 .55em}
 h3{font-family:var(--sans);font-weight:700;font-size:1.1rem;color:var(--fg)!important;margin:1.8em 0 .4em}
 h4{font-family:var(--sans);font-weight:700;color:var(--mut)}
-strong{font-weight:600}  
+strong{font-weight:600}
 hr{border:0!important;border-top:1px solid var(--line)!important}
 
 
@@ -609,7 +609,7 @@ hr{border-top-color:var(--accent-line)!important}
 <p class="kicker">공개판 · 2026. 9. 2. 사법연수원 AI 리터러시 슈퍼위크 고급 실습 과정 강의 자료집(판 2.1)에서 발전</p>
 <h1>읽은 것이 사라지지 않는 서재</h1>
 <p class="lede">법률가를 위한 LLM 위키 자습서 — 혼자서 처음부터 끝까지. 설치부터 시작해, 읽은 자료가 사라지지 않게 쌓아 두고 석 달 동안 운영하는 방법.</p>
-<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>권보원</b> (대구지방법원 부장판사)</p><p><b>구성</b> · 사용법 + 한 장 요약 + 7부 26장 + 부록 6종 + 간기<br><b>읽는 길</b> · A 트랙(제1~22장) · B 트랙(제23~26장, 이미 코드를 쓰시는 분)</p><p style="margin-top:14px"><b>인쇄</b> · Ctrl+P → PDF로 저장하면 표지와 차례가 붙은 인쇄본이 됩니다.<br><b>오프라인</b> · 이 파일 하나로 완결됩니다. 인터넷 연결이 필요 없습니다.</p><p style="margin-top:14px;font-size:.94em">2.1판 · 2026. 11. 7. · 외부 자료 확인일은 절별 출처 표기 참조 · 엮은이가 쓴 부분은 CC BY-NC 4.0</p></div>
+<div class="meta"><p style="font-size:1.06em;margin-bottom:18px"><b>권보원</b> (대구지방법원 부장판사)</p><p><b>구성</b> · 사용법 + 한 장 요약 + 7부 26장 + 부록 6종 + 간기<br><b>읽는 길</b> · A 트랙(제1~22장) · B 트랙(제23~26장, 이미 코드를 쓰시는 분)</p><p style="margin-top:14px"><b>인쇄</b> · Ctrl+P → PDF로 저장하면 표지와 차례가 붙은 인쇄본이 됩니다.<br><b>오프라인</b> · 이 파일 하나로 완결됩니다. 인터넷 연결이 필요 없습니다.</p><p style="margin-top:14px;font-size:.94em">2.1.1판 · 2026. 11. 17. · 외부 자료 확인일은 절별 출처 표기 참조 · 엮은이가 쓴 부분은 CC BY-NC 4.0</p></div>
 </section>
 <section class="printtoc"><h2>차례</h2><ol>
 <li><a href="#ch0">이 자습서를 쓰는 법</a>
@@ -5605,7 +5605,7 @@ CLAUDE.md의 어느 규칙을 어떻게 고치면 좋을지 제안해줘.
 </tr>
 <tr>
 <td>판</td>
-<td>2.1판 · 2026. 11. 7.</td>
+<td>2.1.1판 · 2026. 11. 17.</td>
 </tr>
 <tr>
 <td>이용 허락</td>
@@ -5647,15 +5647,19 @@ CLAUDE.md의 어느 규칙을 어떻게 고치면 좋을지 제안해줘.
 </tr>
 <tr>
 <td><strong>자습서 판 1.0~1.3</strong><br>2026. 9. 5. ~ 9. 8.</td>
-<td>강의 없이 혼자 읽는 자습서로 다시 썼다. 설치·권한 모드·데이터 정책·이론적 배경·검수·견본을 새로 넣어 7부 26장·부록 6종으로 늘리고, 법원 내부용과 외부용 두 판본으로 나눴다. Codex 세 차례 검토를 판 1.1~1.3에 반영했다. <strong>공개 저장소에는 올리지 않았다</strong></td>
+<td>강의 없이 혼자 읽는 자습서로 다시 썼다. 설치·권한 모드·데이터 정책·이론적 배경·검수·견본을 새로 넣어 7부 26장·부록 6종으로 늘리고, 두 판본으로 나눴다. Codex 세 차례 검토를 판 1.1~1.3에 반영했다. <strong>공개 저장소에는 올리지 않았다</strong></td>
 </tr>
 <tr>
 <td><strong>2.0판</strong><br>2026. 10. 13.</td>
-<td><strong>첫 공개판.</strong> 외부용을 바탕으로 했다. Claude Code의 바뀐 사실(대화형 세션의 기본 시작 모드, <code>AGENTS.md</code> 를 읽는 조건, 긴 PDF 읽기, <code>/diff</code>, 폴더 밖 읽기 차단 설정 등)을 공식 문서로 다시 대조해 고치고, 원문과 어긋난 인용 한 곳을 바로잡았다. Codex의 독립 검증을 반영하고, 이 간기와 이용 허락을 더했다</td>
+<td><strong>첫 공개판.</strong> 두 판본 가운데 공개용을 바탕으로 했다. Claude Code의 바뀐 사실(대화형 세션의 기본 시작 모드, <code>AGENTS.md</code> 를 읽는 조건, 긴 PDF 읽기, <code>/diff</code>, 폴더 밖 읽기 차단 설정 등)을 공식 문서로 다시 대조해 고치고, 원문과 어긋난 인용 한 곳을 바로잡았다. Codex의 독립 검증을 반영하고, 이 간기와 이용 허락을 더했다</td>
 </tr>
 <tr>
 <td><strong>2.1판</strong><br>2026. 11. 7.</td>
 <td>영문판(2.1-en)을 만들며 찾아낸 것을 고쳤다. 원문과 어긋난 따옴표 인용(요약을 따옴표 안에 넣거나 생략 표시 없이 자른 것)을 원문대로 바로잡고 비판 ①의 출처를 밝혔다. Claude Code의 바뀐 사실(Ultra 요금제, 패키지 관리자 자동 업그레이드 설정, 대화록 보존 기간, <code>AGENTS.md</code> 를 읽는 조건, 클라우드 업로드 조건)을 공식 문서로 고쳤다. 인쇄본·화면본 모양을 같은 저장소의 다른 자습서와 같은 시리즈 디자인으로 바꿨다. Codex의 독립 대조를 반영했다</td>
+</tr>
+<tr>
+<td><strong>2.1.1판</strong><br>2026. 11. 17.</td>
+<td>문구 정리(새 내용 없음)</td>
 </tr>
 </tbody>
 </table></div>
@@ -5667,7 +5671,7 @@ CLAUDE.md의 어느 규칙을 어떻게 고치면 좋을지 제안해줘.
 <li><strong>틀린 곳과 개정.</strong> 원문과 다른 서술을 찾으면 <a href="https://github.com/BowonKwon/AI-Assisted-Handbooks/issues">공개 저장소의 이슈(Issues)</a>로 알려 주기 바란다. 고친 내용은 판과 날짜를 올려 반영한다.</li>
 <li><strong>개인의 학습 자료.</strong> 이 책은 엮은이가 개인적으로 공부하며 엮은 것이다. 엮은이가 속한 기관의 견해나 업무와는 관계가 없다.</li>
 </ul>
-<p>권보원 엮음 · 2.1판 · 2026. 11. 7.</p>
+<p>권보원 엮음 · 2.1.1판 · 2026. 11. 17.</p>
 </section>
 </main>
 </div>
