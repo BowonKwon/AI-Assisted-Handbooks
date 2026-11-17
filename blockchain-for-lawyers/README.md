@@ -1,9 +1,9 @@
 # 법률가를 위한 블록체인
 
-**기술과 경제학으로 읽기** · 권보원 엮음 · 1.0판(2026. 11. 14.) · 수치 기준일 2026. 10. 25.
+**기술과 경제학으로 읽기** · 권보원 엮음 · 1.0.1판(2026. 11. 17.) · 수치 기준일 2026. 10. 25.
 
 - [화면본(HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/blockchain-for-lawyers/)
-- [인쇄본(PDF, 464쪽)](blockchain-for-lawyers-v1.0.pdf)
+- [인쇄본(PDF, 464쪽)](blockchain-for-lawyers-v1.0.1.pdf)
 - [노트북 21권](notebooks/README.md) · [동봉 데이터](data/README.md)
 
 GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일이 커서 표시되지 않습니다. 책은 위 화면본 링크로 여십시오. 인터랙티브 그림 12종은 화면본 본문에 들어 있고, 그림 하나씩 따로 여는 단독 페이지는 `widgets/` 폴더에 있습니다(예: [이중지불 확률](https://bowonkwon.github.io/AI-Assisted-Handbooks/blockchain-for-lawyers/widgets/double-spend.html)).
@@ -27,7 +27,7 @@ GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일
 
 ## 인용
 
-권보원(Bowon Kwon) 엮음, 『법률가를 위한 블록체인 — 기술과 경제학으로 읽기』, 1.0판(2026. 11. 14.), https://github.com/BowonKwon/AI-Assisted-Handbooks
+권보원(Bowon Kwon) 엮음, 『법률가를 위한 블록체인 — 기술과 경제학으로 읽기』, 1.0.1판(2026. 11. 17.), https://github.com/BowonKwon/AI-Assisted-Handbooks
 
 ## 이용 허락
 
@@ -42,13 +42,14 @@ GitHub에서 `index.html` 을 누르면 책 대신 코드가 보이거나 파일
 | 판 | 날짜 | 내용 |
 |---|---|---|
 | 1.0 | 2026. 11. 14. | 첫 공개판 |
+| 1.0.1 | 2026. 11. 17. | 표기·인용 표시 고침(새 내용 없음), PDF 파일 이름을 판 번호에 맞춤 |
 
 ## English edition
 
-*Blockchain for Lawyers: A Reading Through Technology and Economics* · edited by Bowon Kwon · edition 1.0-en (November 14, 2026), translated from the Korean edition 1.0 · reference date for figures 2026-10-25
+*Blockchain for Lawyers: A Reading Through Technology and Economics* · edited by Bowon Kwon · edition 1.0.1-en (November 17, 2026), translated from the Korean edition 1.0.1 · reference date for figures 2026-10-25
 
 - [Read online (HTML)](https://bowonkwon.github.io/AI-Assisted-Handbooks/blockchain-for-lawyers/en/)
-- [Print edition (PDF, 549 pages)](en/blockchain-for-lawyers-v1.0-en.pdf)
+- [Print edition (PDF, 550 pages)](en/blockchain-for-lawyers-v1.0.1-en.pdf)
 - [21 notebooks](en/notebooks/README.md)
 
 The twelve interactive figures are embedded in the online edition; stand-alone pages for each figure are in the `en/widgets/` folder (for example, [double-spend probability](https://bowonkwon.github.io/AI-Assisted-Handbooks/blockchain-for-lawyers/en/widgets/double-spend.html)). The print edition shows each figure in its initial state.
@@ -59,6 +60,6 @@ This book is an academic self-study guide. It is not investment advice or legal 
 
 The editor translated the book working with a generative AI system (Claude). Quotations that were originally in English were restored from the original sources rather than translated back from Korean, and numbers were carried over unchanged. Before publication, another AI model (OpenAI Codex), given only the Korean and English texts and the sources they cite, compared the two editions and checked the quotations against the originals; each finding was rechecked against the originals before it was applied. Errors may remain; please report any discrepancy via [Issues](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues).
 
-**Citation:** Bowon Kwon (ed.), *Blockchain for Lawyers: A Reading Through Technology and Economics*, edition 1.0-en (November 14, 2026), https://github.com/BowonKwon/AI-Assisted-Handbooks
+**Citation:** Bowon Kwon (ed.), *Blockchain for Lawyers: A Reading Through Technology and Economics*, edition 1.0.1-en (November 17, 2026), https://github.com/BowonKwon/AI-Assisted-Handbooks
 
 **License:** To the extent the editor holds rights in them, the text and the interactive figures (code and explanatory text) are licensed under [CC BY-NC 4.0](../LICENSE); see also [`en/widgets/LICENSE.md`](en/widgets/LICENSE.md). Originals quoted in the footnotes, and tables and figures reproduced or redrawn from original works, are not covered by this license and remain subject to the rights of their authors. The fonts in `en/fonts/` are modified (instanced, subset and renamed) versions of Source Serif 4, Source Sans 3, Source Code Pro and Noto Sans KR, licensed under the SIL Open Font License 1.1 (see the license files in that folder).
