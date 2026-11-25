@@ -18,7 +18,9 @@
 ## 이용 허락
 
 - 이 저장소의 자료에서 엮은이에게 권리가 있는 부분은 [CC BY-NC 4.0](LICENSE)(저작자표시-비영리 4.0 국제)으로 공개합니다. 저작자와 라이선스(링크 포함)를 밝히고, 고친 곳이 있으면 고쳤다고 알리면 비영리 목적으로 고쳐 쓰고 나눌 수 있습니다. 받은 사람의 이용을 법적 조건이나 기술적 조치로 제한해서는 안 됩니다. 이 요약은 이해를 돕기 위한 것이고, 조건은 라이선스 원문을 따릅니다.
-- 인터랙티브 그림의 코드(HTML·CSS·자바스크립트)는 [PolyForm Noncommercial 1.0.0](ai-infra-semiconductors/widgets/LICENSE.md)으로 공개합니다. 비영리 목적의 이용·수정·재배포는 그 라이선스의 조건에 따라 허용됩니다. 상업적으로 이용하시려면 미리 [Issues](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues)로 연락해 이용 조건을 따로 협의해 주십시오.
+- 반도체 자습서(`ai-infra-semiconductors/`)의 인터랙티브 그림 코드(HTML·CSS·자바스크립트)는 [PolyForm Noncommercial 1.0.0](ai-infra-semiconductors/widgets/LICENSE.md)으로 공개합니다. 비영리 목적의 이용·수정·재배포는 그 라이선스의 조건에 따라 허용됩니다.
+- 블록체인 자습서(`blockchain-for-lawyers/`)의 인터랙티브 그림은 코드와 설명 글 모두 책 본문과 같은 CC BY-NC 4.0 입니다([widgets/LICENSE.md](blockchain-for-lawyers/widgets/LICENSE.md)).
+- 상업적으로 이용하시려면 미리 [Issues](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues)로 연락해 이용 조건을 따로 협의해 주십시오.
 - © 2026 권보원(Bowon Kwon)
 - 원문에서 옮기거나 다시 그린 표·인용·그림은 이 라이선스들의 대상이 아니며 각 원저작자의 권리를 따릅니다. 권리자께서 알려 주시면 고치거나 빼겠습니다.
 - 논문 PDF는 링크로만 안내합니다.
@@ -58,4 +60,4 @@ Everything the editor has published — the legal-language handbooks, the AI han
 
 The handbooks have been checked against the original sources several times, but errors may remain. Please report any discrepancy with the originals via [Issues](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues); corrections are released with a new version number and date.
 
-To the extent the editor holds rights in them, the texts are licensed under [CC BY-NC 4.0](LICENSE); this summary is for convenience, and the license text governs. The code of the interactive figures (HTML/CSS/JavaScript) is licensed under the [PolyForm Noncommercial License 1.0.0](ai-infra-semiconductors/widgets/LICENSE.md); for commercial use, please open an [issue](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues) to arrange separate terms. © 2026 Bowon Kwon. Tables, quotations, and figures reproduced or redrawn from original works are not covered by these licenses and remain subject to the rights of their authors. Papers are linked, not redistributed. These are personal study materials and do not represent the views of any institution the editor belongs to.
+To the extent the editor holds rights in them, the texts are licensed under [CC BY-NC 4.0](LICENSE); this summary is for convenience, and the license text governs. The code of the semiconductor handbook's interactive figures (HTML/CSS/JavaScript) is licensed under the [PolyForm Noncommercial License 1.0.0](ai-infra-semiconductors/widgets/LICENSE.md); the blockchain handbook's interactive figures, code and text alike, are under CC BY-NC 4.0 like the book text ([widgets/LICENSE.md](blockchain-for-lawyers/widgets/LICENSE.md)). For commercial use, please open an [issue](https://github.com/BowonKwon/AI-Assisted-Handbooks/issues) to arrange separate terms. © 2026 Bowon Kwon. Tables, quotations, and figures reproduced or redrawn from original works are not covered by these licenses and remain subject to the rights of their authors. Papers are linked, not redistributed. These are personal study materials and do not represent the views of any institution the editor belongs to.
